@@ -24,18 +24,18 @@ typedef uint64_t    	DWORDLONG;
 ]]
 
 ffi.cdef[[
-typedef uint64_t   *PDWORDLONG;
+typedef uint64_t        *PDWORDLONG;
 ]]
 
 ffi.cdef[[
-typedef int8_t         INT8, *PINT8;
-typedef int16_t        INT16, *PINT16;
-typedef int32_t          INT32, *PINT32;
-typedef int64_t      INT64, *PINT64;
-typedef uint8_t       UINT8, *PUINT8;
-typedef uint16_t      UINT16, *PUINT16;
+typedef int8_t          INT8, *PINT8;
+typedef int16_t         INT16, *PINT16;
+typedef int32_t         INT32, *PINT32;
+typedef int64_t         INT64, *PINT64;
+typedef uint8_t         UINT8, *PUINT8;
+typedef uint16_t        UINT16, *PUINT16;
 typedef uint32_t        UINT32, *PUINT32;
-typedef uint64_t    UINT64, *PUINT64;
+typedef uint64_t        UINT64, *PUINT64;
 ]]
 
 ffi.cdef[[

@@ -3,9 +3,8 @@
 local ffi = require("ffi")
 
 --local _WIN64 = ffi.os == "Windows" and ffi.abi("64bit");
-local basetsd = require("win32.basetsd")
-
-require("win32.WTypes");
+require("win32.basetsd")
+require("win32.wtypes");
 
 
 
@@ -93,8 +92,9 @@ typedef struct _IMAGE_OPTIONAL_HEADER {
     DWORD   NumberOfRvaAndSizes;
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;
+]]
 
-
+ffi.cdef[[
 typedef struct _IMAGE_OPTIONAL_HEADER64 {
     WORD        Magic;
     BYTE        MajorLinkerVersion;
@@ -127,8 +127,9 @@ typedef struct _IMAGE_OPTIONAL_HEADER64 {
     DWORD       NumberOfRvaAndSizes;
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER64, *PIMAGE_OPTIONAL_HEADER64;
+]]
 
-
+ffi.cdef[[
 typedef struct _IMAGE_NT_HEADERS64 {
     DWORD Signature;
     IMAGE_FILE_HEADER FileHeader;

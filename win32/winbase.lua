@@ -4,7 +4,6 @@ local ffi = require "ffi"
 
 require ("win32.wtypes");
 require ("win32.ntstatus");
-local advapiLib = ffi.load("win32.advapi32");
 
 
 
@@ -58,28 +57,27 @@ FILE_GENERIC_READ          =
             SYNCHRONIZE,
 --]]
 
-
-CREATE_NEW         = 1;
-CREATE_ALWAYS      = 2;
-OPEN_EXISTING      = 3;
-OPEN_ALWAYS        = 4;
-TRUNCATE_EXISTING  = 5;
-
-
-
-
-
-PURGE_TXABORT = 0x01;
-PURGE_RXABORT = 0x02;
-PURGE_TXCLEAR = 0x04;
-PURGE_RXCLEAR = 0x08;
-
-
-
-
-ERROR_IO_PENDING = 0x03E5; -- 997
-
 ffi.cdef[[
+static const int CREATE_NEW         = 1;
+static const int CREATE_ALWAYS      = 2;
+static const int OPEN_EXISTING      = 3;
+static const int OPEN_ALWAYS        = 4;
+static const int TRUNCATE_EXISTING  = 5;
+
+
+
+
+
+static const int PURGE_TXABORT = 0x01;
+static const int PURGE_RXABORT = 0x02;
+static const int PURGE_TXCLEAR = 0x04;
+static const int PURGE_RXCLEAR = 0x08;
+
+
+
+
+static const int ERROR_IO_PENDING = 0x03E5; // 997
+
 static const int INFINITE = 0xFFFFFFFF;
 ]]
 
@@ -434,7 +432,9 @@ typedef enum _FILE_INFO_BY_HANDLE_CLASS {
 
 typedef WCHAR *PWCHAR, *LPWCH, *PWCH;
 typedef const WCHAR *LPCWCH, *PCWCH;
+]]
 
+ffi.cdef[[
 typedef
 void (* LPOVERLAPPED_COMPLETION_ROUTINE)(
     DWORD dwErrorCode,
@@ -478,7 +478,9 @@ static const int LPTR                =(LMEM_FIXED | LMEM_ZEROINIT);
 
 static const int NONZEROLHND         =(LMEM_MOVEABLE);
 static const int NONZEROLPTR         =(LMEM_FIXED);
+]]
 
+ffi.cdef[[
 HLOCAL
 LocalAlloc(
     UINT uFlags,
@@ -520,6 +522,7 @@ LocalSize(HLOCAL hMem);
 ]]
 
 local k32Lib = ffi.load("kernel32")
+local advapiLib = ffi.load("advapi32");
 
 return {
     Lib = advapiLib,
