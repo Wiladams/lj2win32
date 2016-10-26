@@ -1,8 +1,34 @@
 # lj2win32
 module supporting win32 ffi binding
 
-The lineage for this module is TINN.  Instead of being a part of a standalone LuaJIT shell, this project creates
-a module that can be installed via luarocks.
+If you are writing LuaJIT code on the Windows platform, the binding code here
+will make that task easier.  The code was originally borrowed from TINN.  The
+difference is, whereas TINN provides an entire application shell within which
+you run your code, this project just provides raw low level bindings, without
+all the application level stuff.  This makes is possible for you to write simple
+applications by just requiring the bits and pieces of this package as your
+needs dictate.
 
-This module strives to contain the essence of the win32 API.  As such, it's fairly minimal in terms
-of Object abstractions and other details that are not essential to making it work.
+The ultimate goal is that you'd be able to use luarocks to install this thing.
+Without luarocks, you can simply copy the win32 directory and its contents into 
+you luajit distribution directly and you're good to go.
+
+In the TINN project, there are core low level win32 bindings, as well as lots 
+of higher level Lua 'object' modules.  That makes for an entire package of 
+convenience.  It makes it easy to throw together applications from simple Windows
+on the screen to complex high scale internet services.  This is great, but if you
+don't like the object models, it's kind of a pain to tease apart.  In this 
+project, you primarily get the bindings, with fewer object abstractions.  The
+abstractions are saved for the sample code and experimental area.
+
+The directory 'core' contains the bulk of the bindings.  These bindings follow 
+the lowest level library structure within Windows.  It's different from the more
+traditional 'Kernel32', 'GDI', 'User32', etc.  It breaks down into how windows 
+actually layers the libraries to minimize interdependencies.  If you know what 
+specific functions you're looking for, then you can 'require' at this level:
+
+```lua 
+require ("win32.core.console_l1_1_0")
+require ("win32.core.datetime_l1_1_1")
+```
+
