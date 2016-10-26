@@ -1,9 +1,9 @@
 -- core_profile_l1_1_0.lua
 -- api-ms-win-core-profile-l1-1-0.dll	
 local ffi = require("ffi");
-local WTypes = require("WTypes");
-local errorhandling = require("core_errorhandling_l1_1_1");
-local k32Lib = ffi.load("kernel32");
+
+local WTypes = require("win32.wtypes");
+local errorhandling = require("win32.core.errorhandling_l1_1_1");
 
 ffi.cdef[[
 BOOL QueryPerformanceFrequency(int64_t *lpFrequency);
@@ -38,6 +38,7 @@ local function GetCurrentTickTime()
 	return seconds;
 end
 
+local k32Lib = ffi.load("kernel32");
 
 return {
 	Lib = k32Lib,

@@ -2,8 +2,8 @@
 -- api-ms-win-core-io-l1-1-1.dll	
 
 local ffi = require("ffi");
-local Lib = ffi.load("kernel32");
-local WinBase = require("WinBase");
+
+local WinBase = require("win32.winbase");
 
 ffi.cdef[[
 BOOL
@@ -67,6 +67,8 @@ BOOL PostQueuedCompletionStatus(
 	LPOVERLAPPED lpOverlapped
 );
 ]]
+
+local Lib = ffi.load("kernel32");
 
 return {
     Lib = Lib,

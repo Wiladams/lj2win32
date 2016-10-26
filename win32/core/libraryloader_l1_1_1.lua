@@ -3,9 +3,7 @@
 
 local ffi = require("ffi");
 
-local WTypes = require("WTypes")
-local k32Lib = ffi.load("kernel32");
-local u32Lib = ffi.load("user32");
+local WTypes = require("win32.wtypes")
 
 ffi.cdef[[
 static const int  RESOURCE_ENUM_LN              = (0x0001);
@@ -215,6 +213,8 @@ SizeofResource(
 ]]
 
 
+local k32Lib = ffi.load("kernel32");
+local u32Lib = ffi.load("user32");
 
 return {	
     Lib = k32Lib,

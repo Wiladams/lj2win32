@@ -2,8 +2,6 @@
 -- api-ms-win-core-processthreads-l1-1-1.dll	
 local ffi = require("ffi");
 
-local k32Lib = ffi.load("kernel32");
-local advLib = ffi.load("Advapi32");
 local WinBase = require("WinBase");
 local WinNT = require("WinNT");
 
@@ -399,6 +397,8 @@ UpdateProcThreadAttribute(
     );
 ]]
 
+local k32Lib = ffi.load("kernel32");
+local advLib = ffi.load("Advapi32");
 
 return {
     Lib = k32Lib,

@@ -3,7 +3,6 @@
 
 local ffi = require("ffi");
 
-local k32Lib = ffi.load("kernel32");
 
 local WTypes = require("WTypes");
 local WinNT = require("WinNT");
@@ -50,7 +49,7 @@ static const int RTL_CRITICAL_SECTION_FLAG_RESERVED             = (RTL_CRITICAL_
 //
 static const int RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT    = 0x00000001;
 
-#pragma pack(push, 8)
+//#pragma pack(push, 8)
 
 typedef struct _RTL_CRITICAL_SECTION {
     PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
@@ -67,7 +66,7 @@ typedef struct _RTL_CRITICAL_SECTION {
     ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
-#pragma pack(pop)
+//#pragma pack(pop)
 
 
 typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
@@ -460,6 +459,8 @@ void WakeConditionVariable (
     PCONDITION_VARIABLE ConditionVariable
     );
 ]]
+
+local k32Lib = ffi.load("kernel32");
 
 return {
     Lib = K32Lib,

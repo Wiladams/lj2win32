@@ -2,11 +2,10 @@
 --api-ms-win-core-namedpipe-l1-2-0.dll	
 
 local ffi = require("ffi");
-local WTypes = require("WTypes");
-local WinBase = require("WinBase")
 
-local k32Lib = ffi.load("kernel32");
-local advapiLib = ffi.load("AdvApi32");
+local WTypes = require("win32.wtypes");
+local WinBase = require("win32.winbase")
+
 
 
 ffi.cdef[[
@@ -129,6 +128,10 @@ static const int PIPE_REJECT_REMOTE_CLIENTS = 0x00000008;
 
 static const int PIPE_UNLIMITED_INSTANCES    = 255;
 ]]
+
+
+local k32Lib = ffi.load("kernel32");
+local advapiLib = ffi.load("AdvApi32");
 
 return {
     Lib = k32Lib,

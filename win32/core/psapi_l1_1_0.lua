@@ -2,7 +2,8 @@
 -- api-ms-win-core-psapi-l1-1-0.dll	
 
 local ffi = require("ffi");
-local WTypes = require("WTypes");
+
+local WTypes = require("win32.wtypes");
 
 ffi.cdef[[
 // Structure for GetProcessMemoryInfo()

@@ -2,8 +2,8 @@
 -- api-ms-win-core-sysinfo-l1-2-0.dll	
 
 local ffi = require("ffi");
-local k32Lib = ffi.load("kernel32");
-local WinNT = require("WinNT");
+
+local WinNT = require("win32.winnt");
 
 
 
@@ -257,6 +257,7 @@ VerSetConditionMask(
     );
 ]]
 
+local k32Lib = ffi.load("kernel32");
 
 return {
     Lib = k32Lib,

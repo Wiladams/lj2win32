@@ -3,9 +3,8 @@
 
 local ffi = require("ffi");
 
-local WTypes = require("WTypes");
+local WTypes = require("win32.wtypes");
 
-local Lib = ffi.load("kernel32");
 
 ffi.cdef[[
 typedef struct _TIME_ZONE_INFORMATION {
@@ -78,6 +77,7 @@ TzSpecificLocalTimeToSystemTime(
        LPSYSTEMTIME lpUniversalTime);
 ]]
 
+local Lib = ffi.load("kernel32");
 
 return {
     Lib = Lib,

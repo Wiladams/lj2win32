@@ -2,8 +2,8 @@
 -- api-ms-win-core-string-l1-1-0.dll
 
 local ffi = require("ffi");
-local k32Lib = ffi.load("kernel32")
-local WTypes = require("WTypes");
+
+local WTypes = require("win32.wtypes");
 
 ffi.cdef[[
 static const int CP_ACP 		= 0;	// default to ANSI code page
@@ -107,6 +107,8 @@ local TEXT = function (quote)
 		return quote;
 	end
 end
+
+local k32Lib = ffi.load("kernel32")
 
 return {
 	Lib = k32Lib,

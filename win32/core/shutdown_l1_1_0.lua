@@ -2,8 +2,8 @@
 -- api-ms-win-core-shutdown-l1-1-0.dll	
 
 local ffi = require("ffi");
-require ("WTypes")
-local Lib = ffi.load("advapi32");
+
+require ("win32.wtypes")
 
 ffi.cdef[[
 //
@@ -135,6 +135,8 @@ InitiateSystemShutdownExW(
     BOOL bRebootAfterShutdown,
     DWORD dwReason);
 ]]
+
+local Lib = ffi.load("advapi32");
 
 return {
     Lib = Lib,

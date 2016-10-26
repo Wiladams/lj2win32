@@ -2,8 +2,8 @@
 --api-ms-win-core-processenvironment-l1-2-0.dll	
 
 local ffi = require("ffi");
-local k32Lib = ffi.load("kernel32");
-local WTypes = require("WTypes");
+
+local WTypes = require("win32.wtypes");
 
 
 ffi.cdef[[
@@ -46,6 +46,8 @@ ffi.cdef[[
 HANDLE
 GetStdHandle(DWORD nStdHandle);
 ]]
+
+local k32Lib = ffi.load("kernel32");
 
 return {
 	Lib = k32Lib,
