@@ -43,8 +43,7 @@ GetEnvironmentVariableW
 
 
 ffi.cdef[[
-HANDLE
-GetStdHandle(DWORD nStdHandle);
+HANDLE GetStdHandle(DWORD nStdHandle);
 ]]
 
 local k32Lib = ffi.load("kernel32");

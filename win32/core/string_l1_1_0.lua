@@ -5,6 +5,8 @@ local ffi = require("ffi");
 
 local WTypes = require("win32.wtypes");
 
+local k32Lib = ffi.load("kernel32")
+
 ffi.cdef[[
 static const int CP_ACP 		= 0;	// default to ANSI code page
 static const int CP_OEMCP		= 1;	// default to OEM code page
@@ -100,7 +102,7 @@ local function toAnsi(in_Src, nsrcBytes)
 	return ffi.string(buff, byteswritten)
 end
 
-local TEXT = function (quote)
+local function TEXT(quote)
 	if UNICODE then
 		return toUnicode(quote);
 	else
@@ -108,14 +110,14 @@ local TEXT = function (quote)
 	end
 end
 
-local k32Lib = ffi.load("kernel32")
 
 return {
 	Lib = k32Lib,
 	
 	toUnicode = toUnicode,
 	toAnsi = toAnsi,
-
+	TEXT = TEXT,
+	
 	--CompareStringEx = k32Lib.CompareStringEx,
 	--CompareStringOrdinal = k32Lib.CompareStringOrdinal,
 	--CompareStringW = k32Lib.CompareStringW,
