@@ -215,7 +215,7 @@ if STRICT then
         typedef void *HANDLE;
     ]]
 
-    function DECLARE_HANDLE(name) 
+    local function DECLARE_HANDLE(name) 
         ffi.cdef(string.format("struct %s__{int unused;}; typedef struct %s__ *%s", name, name, name));
     end
 else
@@ -223,7 +223,7 @@ else
         typedef PVOID HANDLE;
     ]]
     
-    function DECLARE_HANDLE(name) 
+    local function DECLARE_HANDLE(name) 
         ffi.cdef(string.format("typedef HANDLE %s",name));
     end
 end
@@ -652,8 +652,8 @@ typedef const RECT * LPCRECT;
 ]]
 
 
-RECT = ffi.typeof("RECT")
-RECT_mt = {
+local RECT = ffi.typeof("RECT")
+local RECT_mt = {
 	__tostring = function(self)
 		local str = string.format("%d %d %d %d", self.left, self.top, self.right, self.bottom)
 		return str
