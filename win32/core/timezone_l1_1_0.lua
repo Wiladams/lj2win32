@@ -5,6 +5,13 @@ local ffi = require("ffi");
 
 local WTypes = require("win32.wtypes");
 
+ffi.cdef[[
+static const int TIME_ZONE_ID_INVALID = -1;
+static const int TIME_ZONE_ID_UNKNOWN = 0;
+static const int TIME_ZONE_ID_STANDARD = 1;
+static const int TIME_ZONE_ID_DAYLIGHT = 2;
+
+]]
 
 ffi.cdef[[
 typedef struct _TIME_ZONE_INFORMATION {
@@ -77,7 +84,8 @@ TzSpecificLocalTimeToSystemTime(
        LPSYSTEMTIME lpUniversalTime);
 ]]
 
-local Lib = ffi.load("kernel32");
+--local Lib = ffi.load("kernel32");
+local Lib = ffi.load("api-ms-win-core-timezone-l1-1-0")
 
 return {
     Lib = Lib,

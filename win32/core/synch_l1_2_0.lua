@@ -4,9 +4,9 @@
 local ffi = require("ffi");
 
 
-local WTypes = require("WTypes");
-local WinNT = require("WinNT");
-local WinBase = require("WinBase");
+local WTypes = require("win32.wtypes");
+local WinNT = require("win32.winnt");
+local WinBase = require("win32.winbase");
 
 ffi.cdef[[
 typedef struct _RTL_SRWLOCK {                            
@@ -48,7 +48,9 @@ static const int RTL_CRITICAL_SECTION_FLAG_RESERVED             = (RTL_CRITICAL_
 // These flags define possible values stored in the Flags field of a critsec debuginfo.
 //
 static const int RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT    = 0x00000001;
+]]
 
+ffi.cdef[[
 //#pragma pack(push, 8)
 
 typedef struct _RTL_CRITICAL_SECTION {
@@ -61,13 +63,15 @@ typedef struct _RTL_CRITICAL_SECTION {
 
     LONG LockCount;
     LONG RecursionCount;
-    HANDLE OwningThread;        // from the thread's ClientId->UniqueThread
+    HANDLE OwningThread;        // from the threads ClientId->UniqueThread 
     HANDLE LockSemaphore;
     ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
 //#pragma pack(pop)
+]]
 
+ffi.cdef[[
 
 typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 typedef PRTL_CRITICAL_SECTION PCRITICAL_SECTION;
