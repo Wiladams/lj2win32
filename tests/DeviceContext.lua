@@ -12,14 +12,14 @@ local gdi_ffi = require("win32.gdi32")
 
 	The Drawing Context for good ol' GDI drawing
 --]]
-DeviceContext = {}
+local DeviceContext = {}
 setmetatable(DeviceContext, {
 	__call = function(self, ...)
 		return self:create(...)
 	end,
 })
 
-DeviceContext_mt = {
+local DeviceContext_mt = {
 	__index = DeviceContext,
 
 	__tostring = function(self)
@@ -27,7 +27,7 @@ DeviceContext_mt = {
 	end,
 }
 
-DeviceContext.init = function(self, rawhandle)
+function DeviceContext.init(self, rawhandle)
 	local obj = {
 		Handle = rawhandle;
 	}
@@ -36,7 +36,7 @@ DeviceContext.init = function(self, rawhandle)
 	return obj;
 end
 
-DeviceContext.create = function(self, lpszDriver, lpszDevice, lpszOutput, lpInitData)
+function DeviceContext.create(self, lpszDriver, lpszDevice, lpszOutput, lpInitData)
 	lpszDriver = lpszDriver or "DISPLAY"
 	
 	local rawhandle = gdi_ffi.CreateDCA(lpszDriver, lpszDevice, lpszOutput, lpInitData);
@@ -51,7 +51,7 @@ DeviceContext.create = function(self, lpszDriver, lpszDevice, lpszOutput, lpInit
 	return self:init(rawhandle)
 end
 
-DeviceContext.CreateForMemory = function(self, hDC)
+function DeviceContext.CreateForMemory(self, hDC)
 	hDC = hDC or gdi_ffi.CreateDCA("DISPLAY", nil, nil, nil)
 	local rawhandle = gdi_ffi.CreateCompatibleDC(hDC) 
 	
@@ -59,18 +59,20 @@ DeviceContext.CreateForMemory = function(self, hDC)
 end
 
 
-DeviceContext.clone = function(self)
+function DeviceContext.clone(self)
 	local hDC = gdi_ffi.CreateCompatibleDC(self.Handle);
 	local ctxt = DeviceContext:init(hDC)
 	
 	return ctxt;
 end
 
+--[[
 DeviceContext.createCompatibleBitmap = function(self, width, height)
 	local bm, err = GDIBitmap:createCompatible(width, height, self);
 
 	return bm, err
 end
+--]]
 
 -- Coordinates and Transforms
 DeviceContext.setGraphicsMode = function(self, mode)
