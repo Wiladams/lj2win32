@@ -46,16 +46,17 @@ ffi.cdef[[
 HANDLE GetStdHandle(DWORD nStdHandle);
 ]]
 
-local k32Lib = ffi.load("kernel32");
+--local k32Lib = ffi.load("kernel32");
+local Lib = ffi.load("api-ms-win-core-processenvironment-l1-2-0");
 
 return {
-	Lib = k32Lib,
+	Lib = Lib,
 	
-	GetCommandLineA = k32Lib.GetCommandLineA,
-	GetCommandLineW = k32Lib.GetCommandLineW,
-	GetCurrentDirectoryA = k32Lib.GetCurrentDirectoryA,
-	GetCurrentDirectoryW = k32Lib.GetCurrentDirectoryW,
-	GetStdHandle = k32Lib.GetStdHandle,
+	GetCommandLineA = Lib.GetCommandLineA,
+	GetCommandLineW = Lib.GetCommandLineW,
+	GetCurrentDirectoryA = Lib.GetCurrentDirectoryA,
+	GetCurrentDirectoryW = Lib.GetCurrentDirectoryW,
+	GetStdHandle = Lib.GetStdHandle,
 }
 
 --[[
