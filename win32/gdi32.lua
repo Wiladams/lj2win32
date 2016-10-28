@@ -22,35 +22,35 @@ static const int AD_CLOCKWISE        =2;
 ffi.cdef[[
 /* Device Parameters for GetDeviceCaps() */
 typedef enum  {
-	DRIVERVERSION = 0,     /* Device driver version                    */
-	TECHNOLOGY    = 2,     /* Device classification                    */
-	HORZSIZE      = 4,     /* Horizontal size in millimeters           */
-	VERTSIZE      = 6,     /* Vertical size in millimeters             */
-	HORZRES       = 8,     /* Horizontal width in pixels               */
-	VERTRES       = 10,    /* Vertical height in pixels                */
-	BITSPIXEL     = 12,    /* Number of bits per pixel                 */
-	PLANES        = 14,    /* Number of planes                         */
-	NUMBRUSHES    = 16,    /* Number of brushes the device has         */
-	NUMPENS       = 18,    /* Number of pens the device has            */
-	NUMMARKERS    = 20,    /* Number of markers the device has         */
-	NUMFONTS      = 22,    /* Number of fonts the device has           */
-	NUMCOLORS     = 24,    /* Number of colors the device supports     */
-	PDEVICESIZE   = 26,    /* Size required for device descriptor      */
-	CURVECAPS     = 28,    /* Curve capabilities                       */
-	LINECAPS      = 30,    /* Line capabilities                        */
-	POLYGONALCAPS = 32,    /* Polygonal capabilities                   */
-	TEXTCAPS      = 34,    /* Text capabilities                        */
-	CLIPCAPS      = 36,    /* Clipping capabilities                    */
-	RASTERCAPS    = 38,    /* Bitblt capabilities                      */
-	ASPECTX       = 40,    /* Length of the X leg                      */
-	ASPECTY       = 42,    /* Length of the Y leg                      */
-	ASPECTXY      = 44,    /* Length of the hypotenuse                 */
+	DRIVERVERSION = 0;     /* Device driver version                    */
+	TECHNOLOGY    = 2;     /* Device classification                    */
+	HORZSIZE      = 4;     /* Horizontal size in millimeters           */
+	VERTSIZE      = 6;     /* Vertical size in millimeters             */
+	HORZRES       = 8;     /* Horizontal width in pixels               */
+	VERTRES       = 10;    /* Vertical height in pixels                */
+	BITSPIXEL     = 12;    /* Number of bits per pixel                 */
+	PLANES        = 14;    /* Number of planes                         */
+	NUMBRUSHES    = 16;    /* Number of brushes the device has         */
+	NUMPENS       = 18;    /* Number of pens the device has            */
+	NUMMARKERS    = 20;    /* Number of markers the device has         */
+	NUMFONTS      = 22;    /* Number of fonts the device has           */
+	NUMCOLORS     = 24;    /* Number of colors the device supports     */
+	PDEVICESIZE   = 26;    /* Size required for device descriptor      */
+	CURVECAPS     = 28;    /* Curve capabilities                       */
+	LINECAPS      = 30;    /* Line capabilities                        */
+	POLYGONALCAPS = 32;    /* Polygonal capabilities                   */
+	TEXTCAPS      = 34;    /* Text capabilities                        */
+	CLIPCAPS      = 36;    /* Clipping capabilities                    */
+	RASTERCAPS    = 38;    /* Bitblt capabilities                      */
+	ASPECTX       = 40;    /* Length of the X leg                      */
+	ASPECTY       = 42;    /* Length of the Y leg                      */
+	ASPECTXY      = 44;    /* Length of the hypotenuse                 */
 
-	LOGPIXELSX    = 88,    /* Logical pixels/inch in X                 */
-	LOGPIXELSY    = 90,    /* Logical pixels/inch in Y                 */
+	LOGPIXELSX    = 88;    /* Logical pixels/inch in X                 */
+	LOGPIXELSY    = 90;    /* Logical pixels/inch in Y                 */
 
-	SIZEPALETTE  = 104,    /* Number of entries in physical palette    */
-	NUMRESERVED  = 106,    /* Number of reserved entries in palette    */
+	SIZEPALETTE  = 104;    /* Number of entries in physical palette    */
+	NUMRESERVED  = 106;    /* Number of reserved entries in palette    */
 	COLORRES     = 108    /* Actual color resolution                  */
 } DevCapEnums;
 
@@ -86,8 +86,8 @@ ffi.cdef[[
 #define DT_RASDISPLAY       1   /* Raster display                   */
 #define DT_RASPRINTER       2   /* Raster printer                   */
 #define DT_RASCAMERA        3   /* Raster camera                    */
-#define DT_CHARSTREAM       4   /* Character-stream, PLP            */
-#define DT_METAFILE         5   /* Metafile, VDM                    */
+#define DT_CHARSTREAM       4   /* Character-stream; PLP            */
+#define DT_METAFILE         5   /* Metafile; VDM                    */
 #define DT_DISPFILE         6   /* Display-file                     */
 ]]
 
@@ -220,7 +220,7 @@ typedef struct _GLYPHMETRICSFLOAT {
   POINTFLOAT gmfptGlyphOrigin;
   FLOAT      gmfCellIncX;
   FLOAT      gmfCellIncY;
-} GLYPHMETRICSFLOAT, *LPGLYPHMETRICSFLOAT;
+} GLYPHMETRICSFLOAT; *LPGLYPHMETRICSFLOAT;
 
 typedef struct tagPIXELFORMATDESCRIPTOR {
   WORD  nSize;
@@ -277,7 +277,7 @@ typedef struct tagLAYERPLANEDESCRIPTOR {
   BYTE  iLayerPlane;
   BYTE  bReserved;
   COLORREF crTransparent;
-} LAYERPLANEDESCRIPTOR, *LPLAYERPLANEDESCRIPTOR;
+} LAYERPLANEDESCRIPTOR; *LPLAYERPLANEDESCRIPTOR;
 
 ]]
 
@@ -286,12 +286,12 @@ typedef struct _GRADIENT_TRIANGLE {
   ULONG    Vertex1;
   ULONG    Vertex2;
   ULONG    Vertex3;
-}GRADIENT_TRIANGLE, *PGRADIENT_TRIANGLE;
+}GRADIENT_TRIANGLE; *PGRADIENT_TRIANGLE;
 
 typedef struct _GRADIENT_RECT {
   ULONG    UpperLeft;
   ULONG    LowerRight;
-}GRADIENT_RECT, *PGRADIENT_RECT;
+}GRADIENT_RECT; *PGRADIENT_RECT;
 ]]
 
 --[[
@@ -301,15 +301,15 @@ typedef struct _GRADIENT_RECT {
 ffi.cdef[[
 
 // For OpenGL
-typedef int  (* PFNCHOOSEPIXELFORMAT)(HDC  hdc, const PIXELFORMATDESCRIPTOR *  ppfd);
-typedef int  (* PFNDESCRIBEPIXELFORMAT)(HDC hdc, int iPixelFormat, unsigned int nBytes, PIXELFORMATDESCRIPTOR *  ppfd);
-typedef BOOL (* PFNSETPIXELFORMAT)(HDC hdc, int  iPixelFormat, const PIXELFORMATDESCRIPTOR *  ppfd);
+typedef int  (* PFNCHOOSEPIXELFORMAT)(HDC  hdc; const PIXELFORMATDESCRIPTOR *  ppfd);
+typedef int  (* PFNDESCRIBEPIXELFORMAT)(HDC hdc; int iPixelFormat; unsigned int nBytes; PIXELFORMATDESCRIPTOR *  ppfd);
+typedef BOOL (* PFNSETPIXELFORMAT)(HDC hdc; int  iPixelFormat; const PIXELFORMATDESCRIPTOR *  ppfd);
 typedef int  (* PFNSWAPBUFFERS)(HDC hdc);
 
 
-int ChoosePixelFormat(HDC  hdc, const PIXELFORMATDESCRIPTOR *  ppfd);
-int DescribePixelFormat(HDC hdc, int iPixelFormat, unsigned int nBytes, PIXELFORMATDESCRIPTOR *  ppfd);
-BOOL SetPixelFormat(HDC hdc, int  iPixelFormat, const PIXELFORMATDESCRIPTOR *  ppfd);
+int ChoosePixelFormat(HDC  hdc; const PIXELFORMATDESCRIPTOR *  ppfd);
+int DescribePixelFormat(HDC hdc; int iPixelFormat; unsigned int nBytes; PIXELFORMATDESCRIPTOR *  ppfd);
+BOOL SetPixelFormat(HDC hdc; int  iPixelFormat; const PIXELFORMATDESCRIPTOR *  ppfd);
 int SwapBuffers(HDC hdc);
 ]]
 
@@ -318,7 +318,7 @@ int SwapBuffers(HDC hdc);
 
 
 ffi.cdef[[
-typedef void (__stdcall * LINEDDAPROC)(int, int, LPARAM);
+typedef void (__stdcall * LINEDDAPROC)(int; int; LPARAM);
 ]]
 
 
@@ -339,7 +339,7 @@ typedef struct _BLENDFUNCTION
     BYTE   BlendFlags;
     BYTE   SourceConstantAlpha;
     BYTE   AlphaFormat;
-}BLENDFUNCTION,*PBLENDFUNCTION;
+}BLENDFUNCTION;*PBLENDFUNCTION;
 
 typedef struct _TRIVERTEX {
   LONG        x;
@@ -348,7 +348,7 @@ typedef struct _TRIVERTEX {
   COLOR16     Green;
   COLOR16     Blue;
   COLOR16     Alpha;
-}TRIVERTEX, *PTRIVERTEX;
+}TRIVERTEX; *PTRIVERTEX;
 
 
 typedef struct tagRGBQUAD {
@@ -375,7 +375,7 @@ typedef struct tagBITMAP {
   WORD   bmPlanes;
   WORD   bmBitsPixel;
   LPVOID bmBits;
-} BITMAP, *PBITMAP;
+} BITMAP; *PBITMAP;
 ]]
 
 local BITMAP = ffi.typeof("BITMAP")
@@ -387,7 +387,7 @@ typedef struct tagBITMAPCOREHEADER {
   WORD    bcHeight;
   WORD    bcPlanes;
   WORD    bcBitCount;
-} BITMAPCOREHEADER, *PBITMAPCOREHEADER;
+} BITMAPCOREHEADER; *PBITMAPCOREHEADER;
 
 typedef struct tagBITMAPINFOHEADER{
   DWORD  biSize;
@@ -401,27 +401,27 @@ typedef struct tagBITMAPINFOHEADER{
   LONG   biYPelsPerMeter;
   DWORD  biClrUsed;
   DWORD  biClrImportant;
-} BITMAPINFOHEADER, *PBITMAPINFOHEADER;
+} BITMAPINFOHEADER; *PBITMAPINFOHEADER;
 
 
 typedef struct tagBITMAPINFO {
   BITMAPINFOHEADER bmiHeader;
   RGBQUAD          bmiColors[1];
-} BITMAPINFO, *PBITMAPINFO;
+} BITMAPINFO; *PBITMAPINFO;
 
 
 typedef struct tagCIEXYZ {
   FXPT2DOT30 ciexyzX;
   FXPT2DOT30 ciexyzY;
   FXPT2DOT30 ciexyzZ;
-} CIEXYZ, * PCIEXYZ;
+} CIEXYZ; * PCIEXYZ;
 
 
 typedef struct tagCIEXYZTRIPLE {
   CIEXYZ  ciexyzRed;
   CIEXYZ  ciexyzGreen;
   CIEXYZ  ciexyzBlue;
-} CIEXYZTRIPLE, *PCIEXYZTRIPLE;
+} CIEXYZTRIPLE; *PCIEXYZTRIPLE;
 
 
 
@@ -446,7 +446,7 @@ typedef struct {
   DWORD        bV4GammaRed;
   DWORD        bV4GammaGreen;
   DWORD        bV4GammaBlue;
-} BITMAPV4HEADER, *PBITMAPV4HEADER;
+} BITMAPV4HEADER; *PBITMAPV4HEADER;
 
 typedef struct {
   DWORD        bV5Size;
@@ -473,7 +473,7 @@ typedef struct {
   DWORD        bV5ProfileData;
   DWORD        bV5ProfileSize;
   DWORD        bV5Reserved;
-} BITMAPV5HEADER, *PBITMAPV5HEADER;
+} BITMAPV5HEADER; *PBITMAPV5HEADER;
 
 ]]
 
@@ -487,14 +487,14 @@ BITMAPINFOHEADER_mt = {
       local obj = ffi.new(ct);
       obj.biSize = ffi.sizeof("BITMAPINFOHEADER")
       return obj;
-    end,
+    end;
 
     Init = function(self)
       self.biSize = ffi.sizeof("BITMAPINFOHEADER")
-    end,
+    end;
   }
 }
-BITMAPINFOHEADER = ffi.metatype("BITMAPINFOHEADER", BITMAPINFOHEADER_mt)
+BITMAPINFOHEADER = ffi.metatype("BITMAPINFOHEADER"; BITMAPINFOHEADER_mt)
 
 
 BITMAPINFO = ffi.typeof("BITMAPINFO")
@@ -505,111 +505,111 @@ BITMAPINFO_mt = {
     obj:Init();
     obj.bmiHeader:Init();
     return obj;
-  end,
+  end;
 
   __index = {
     Init = function(self)
       self.bmiHeader:Init();
-    end,
-  },
+    end;
+  };
 }
-BITMAPINFO = ffi.metatype("BITMAPINFO", BITMAPINFO_mt)
+BITMAPINFO = ffi.metatype("BITMAPINFO"; BITMAPINFO_mt)
 
 
 ffi.cdef[[
 BOOL AlphaBlend(
-  HDC hdcDest,
-  int xoriginDest,
-  int yoriginDest,
-  int wDest,
-  int hDest,
-  HDC hdcSrc,
-  int xoriginSrc,
-  int yoriginSrc,
-  int wSrc,
-  int hSrc,
+  HDC hdcDest;
+  int xoriginDest;
+  int yoriginDest;
+  int wDest;
+  int hDest;
+  HDC hdcSrc;
+  int xoriginSrc;
+  int yoriginSrc;
+  int wSrc;
+  int hSrc;
   BLENDFUNCTION ftn
 );
 
-BOOL BitBlt(  HDC hdcDest,
-  int nXDest,
-  int nYDest,
-  int nWidth,
-  int nHeight,
-  HDC hdcSrc,
-  int nXSrc,
-  int nYSrc,
+BOOL BitBlt(  HDC hdcDest;
+  int nXDest;
+  int nYDest;
+  int nWidth;
+  int nHeight;
+  HDC hdcSrc;
+  int nXSrc;
+  int nYSrc;
   DWORD dwRop);
 
 HBITMAP CreateBitmap(
-  int nWidth,
-  int nHeight,
-  UINT cPlanes,
-  UINT cBitsPerPel,
+  int nWidth;
+  int nHeight;
+  UINT cPlanes;
+  UINT cBitsPerPel;
   const void *lpvBits
 );
 
 HBITMAP CreateBitmapIndirect(const BITMAP *lpbm);
 
-HBITMAP CreateCompatibleBitmap(HDC hdc,
-  int nWidth,
+HBITMAP CreateCompatibleBitmap(HDC hdc;
+  int nWidth;
   int nHeight);
 
 HBITMAP CreateDIBitmap(
-  HDC hdc,
-  const BITMAPINFOHEADER *lpbmih,
-  DWORD fdwInit,
-  const void *lpbInit,
-  const BITMAPINFO *lpbmi,
+  HDC hdc;
+  const BITMAPINFOHEADER *lpbmih;
+  DWORD fdwInit;
+  const void *lpbInit;
+  const BITMAPINFO *lpbmi;
   UINT fuUsage
 );
 
-HBITMAP CreateDIBSection(HDC hdc,
-  const BITMAPINFO *pbmi,
-  UINT iUsage,
-  void **ppvBits,
-  HANDLE hSection,
+HBITMAP CreateDIBSection(HDC hdc;
+  const BITMAPINFO *pbmi;
+  UINT iUsage;
+  void **ppvBits;
+  HANDLE hSection;
   DWORD dwOffset);
 
 BOOL ExtFloodFill(
-  HDC hdc,
-  int nXStart,
-  int nYStart,
-  COLORREF crColor,
+  HDC hdc;
+  int nXStart;
+  int nYStart;
+  COLORREF crColor;
   UINT fuFillType
 );
 
 
 
 LONG GetBitmapBits(
-   HBITMAP hbmp,
-   LONG cbBuffer,
+   HBITMAP hbmp;
+   LONG cbBuffer;
    LPVOID lpvBits
 );
 
 BOOL GetBitmapDimensionEx(
-   HBITMAP hBitmap,
+   HBITMAP hBitmap;
    LPSIZE lpDimension
 );
 
 UINT GetDIBColorTable(
-   HDC hdc,
-   UINT uStartIndex,
-   UINT cEntries,
+   HDC hdc;
+   UINT uStartIndex;
+   UINT cEntries;
    RGBQUAD *pColors
 );
 
-int   GetDIBits(HDC hdc,
-  HBITMAP hbmp,
-  UINT uStartScan,
-  UINT cScanLines,
-  LPVOID lpvBits,
-  PBITMAPINFO lpbi,
+int   GetDIBits(HDC hdc;
+  HBITMAP hbmp;
+  UINT uStartScan;
+  UINT cScanLines;
+  LPVOID lpvBits;
+  PBITMAPINFO lpbi;
   UINT uUsage);
 
 COLORREF GetPixel(
-  HDC hdc,
-  int nXPos,
+  HDC hdc;
+  int nXPos;
   int nYPos
 );
 
@@ -618,121 +618,121 @@ int GetStretchBltMode(
 );
 
 BOOL GradientFill(
-  HDC hdc,
-  PTRIVERTEX pVertex,
-  ULONG nVertex,
-  PVOID pMesh,
-  ULONG nMesh,
+  HDC hdc;
+  PTRIVERTEX pVertex;
+  ULONG nVertex;
+  PVOID pMesh;
+  ULONG nMesh;
   ULONG ulMode
 );
 
 BOOL MaskBlt(
-  HDC hdcDest,
-  int nXDest,
-  int nYDest,
-  int nWidth,
-  int nHeight,
-  HDC hdcSrc,
-  int nXSrc,
-  int nYSrc,
-  HBITMAP hbmMask,
-  int xMask,
-  int yMask,
+  HDC hdcDest;
+  int nXDest;
+  int nYDest;
+  int nWidth;
+  int nHeight;
+  HDC hdcSrc;
+  int nXSrc;
+  int nYSrc;
+  HBITMAP hbmMask;
+  int xMask;
+  int yMask;
   DWORD dwRop
 );
 
 BOOL PlgBlt(
-  HDC hdcDest,
-  const POINT *lpPoint,
-  HDC hdcSrc,
-  int nXSrc,
-  int nYSrc,
-  int nWidth,
-  int nHeight,
-  HBITMAP hbmMask,
-  int xMask,
+  HDC hdcDest;
+  const POINT *lpPoint;
+  HDC hdcSrc;
+  int nXSrc;
+  int nYSrc;
+  int nWidth;
+  int nHeight;
+  HBITMAP hbmMask;
+  int xMask;
   int yMask
 );
 
 UINT SetDIBColorTable(
-  HDC hdc,
-  UINT uStartIndex,
-  UINT cEntries,
+  HDC hdc;
+  UINT uStartIndex;
+  UINT cEntries;
   const RGBQUAD *pColors
 );
 
 int SetDIBits(
-  HDC hdc,
-  HBITMAP hbmp,
-  UINT uStartScan,
-  UINT cScanLines,
-  const VOID *lpvBits,
-  const BITMAPINFO *lpbmi,
+  HDC hdc;
+  HBITMAP hbmp;
+  UINT uStartScan;
+  UINT cScanLines;
+  const VOID *lpvBits;
+  const BITMAPINFO *lpbmi;
   UINT fuColorUse
 );
 
 int SetDIBitsToDevice(
-  HDC hdc,
-  int XDest,
-  int YDest,
-  DWORD dwWidth,
-  DWORD dwHeight,
-  int XSrc,
-  int YSrc,
-  UINT uStartScan,
-  UINT cScanLines,
-  const VOID *lpvBits,
-  const BITMAPINFO *lpbmi,
+  HDC hdc;
+  int XDest;
+  int YDest;
+  DWORD dwWidth;
+  DWORD dwHeight;
+  int XSrc;
+  int YSrc;
+  UINT uStartScan;
+  UINT cScanLines;
+  const VOID *lpvBits;
+  const BITMAPINFO *lpbmi;
   UINT fuColorUse
 );
 
-uint32_t SetPixel(HDC hdc, int x, int y, uint32_t color);
-BOOL SetPixelV(HDC hdc, int X, int Y, uint32_t crColor);
+uint32_t SetPixel(HDC hdc; int x; int y; uint32_t color);
+BOOL SetPixelV(HDC hdc; int X; int Y; uint32_t crColor);
 
 int SetStretchBltMode(
-  HDC hdc,
+  HDC hdc;
   int iStretchMode
 );
 
 BOOL StretchBlt(
-  HDC hdcDest,
-  int nXOriginDest,
-  int nYOriginDest,
-  int nWidthDest,
-  int nHeightDest,
-  HDC hdcSrc,
-  int nXOriginSrc,
-  int nYOriginSrc,
-  int nWidthSrc,
-  int nHeightSrc,
+  HDC hdcDest;
+  int nXOriginDest;
+  int nYOriginDest;
+  int nWidthDest;
+  int nHeightDest;
+  HDC hdcSrc;
+  int nXOriginSrc;
+  int nYOriginSrc;
+  int nWidthSrc;
+  int nHeightSrc;
   DWORD dwRop
 );
 
-int StretchDIBits(HDC hdc,
-  int XDest,
-  int YDest,
-  int nDestWidth,
-  int nDestHeight,
-  int XSrc,
-  int YSrc,
-  int nSrcWidth,
-  int nSrcHeight,
-  const void *lpBits,
-  const BITMAPINFO *lpBitsInfo,
-  UINT iUsage,
+int StretchDIBits(HDC hdc;
+  int XDest;
+  int YDest;
+  int nDestWidth;
+  int nDestHeight;
+  int XSrc;
+  int YSrc;
+  int nSrcWidth;
+  int nSrcHeight;
+  const void *lpBits;
+  const BITMAPINFO *lpBitsInfo;
+  UINT iUsage;
   DWORD dwRop);
 
 BOOL TransparentBlt(
-  HDC hdcDest,
-  int xoriginDest,
-  int yoriginDest,
-  int wDest,
-  int hDest,
-  HDC hdcSrc,
-  int xoriginSrc,
-  int yoriginSrc,
-  int wSrc,
-  int hSrc,
+  HDC hdcDest;
+  int xoriginDest;
+  int yoriginDest;
+  int wDest;
+  int hDest;
+  HDC hdcSrc;
+  int xoriginSrc;
+  int yoriginSrc;
+  int wSrc;
+  int hSrc;
   UINT crTransparent
 );
 ]]
@@ -745,19 +745,19 @@ ffi.cdef[[
 /* Graphics Modes */
 
 typedef enum {
-  GM_COMPATIBLE      = 1,
+  GM_COMPATIBLE      = 1;
   GM_ADVANCED        = 2
 } GraphicsMode;
 
 /* Mapping Modes */
 typedef enum {
-  MM_TEXT            = 1,
-  MM_LOMETRIC        = 2,
-  MM_HIMETRIC        = 3,
-  MM_LOENGLISH       = 4,
-  MM_HIENGLISH       = 5,
-  MM_TWIPS           = 6,
-  MM_ISOTROPIC       = 7,
+  MM_TEXT            = 1;
+  MM_LOMETRIC        = 2;
+  MM_HIMETRIC        = 3;
+  MM_LOENGLISH       = 4;
+  MM_HIENGLISH       = 5;
+  MM_TWIPS           = 6;
+  MM_ISOTROPIC       = 7;
   MM_ANISOTROPIC     = 8
 } MappingMode;
 
@@ -771,26 +771,26 @@ typedef struct _XFORM {
   FLOAT eM22;
   FLOAT eDx;
   FLOAT eDy;
-} XFORM, *PXFORM, *LPXFORM;
+} XFORM; *PXFORM; *LPXFORM;
 ]]
 local XFORM = ffi.typeof("XFORM")
 
 ffi.cdef[[
 
 BOOL CombineTransform(
-  LPXFORM lpxformResult,
-  const XFORM *lpxform1,
+  LPXFORM lpxformResult;
+  const XFORM *lpxform1;
   const XFORM *lpxform2
 );
 
 BOOL DPtoLP(
-    HDC hdc,
-    PPOINT lpPoints,
+    HDC hdc;
+    PPOINT lpPoints;
     int nCount
 );
 
 BOOL GetCurrentPositionEx(
-  HDC hdc,
+  HDC hdc;
   LPPOINT lpPoint
 );
 
@@ -803,114 +803,114 @@ MappingMode GetMapMode(
 );
 
 BOOL GetViewportExtEx(
-  HDC hdc,
+  HDC hdc;
   LPSIZE lpSize
 );
 
 BOOL GetViewportOrgEx(
-  HDC hdc,
+  HDC hdc;
   LPPOINT lpPoint
 );
 
 BOOL GetWindowExtEx(
-  HDC hdc,
+  HDC hdc;
   LPSIZE lpSize
 );
 
 BOOL GetWindowOrgEx(
-  HDC hdc,
+  HDC hdc;
   LPPOINT lpPoint
 );
 
 BOOL GetWorldTransform(
-  HDC hdc,
+  HDC hdc;
   LPXFORM lpXform
 );
 
 BOOL LPtoDP(
-    HDC hdc,
-  LPPOINT lpPoints,
+    HDC hdc;
+  LPPOINT lpPoints;
     int nCount
 );
 
 BOOL ModifyWorldTransform(
-  HDC hdc,
-  const XFORM *lpXform,
+  HDC hdc;
+  const XFORM *lpXform;
   DWORD iMode
 );
 
 BOOL OffsetViewportOrgEx(
-  HDC hdc,
-  int nXOffset,
-  int nYOffset,
+  HDC hdc;
+  int nXOffset;
+  int nYOffset;
   LPPOINT lpPoint
 );
 
 BOOL OffsetWindowOrgEx(
-  HDC hdc,
-  int nXOffset,
-  int nYOffset,
+  HDC hdc;
+  int nXOffset;
+  int nYOffset;
   LPPOINT lpPoint
 );
 
 BOOL ScaleViewportExtEx(
-  HDC hdc,
-  int Xnum,
-  int Xdenom,
-  int Ynum,
-  int Ydenom,
+  HDC hdc;
+  int Xnum;
+  int Xdenom;
+  int Ynum;
+  int Ydenom;
   LPSIZE lpSize
 );
 
 BOOL ScaleWindowExtEx(
-  HDC hdc,
-  int Xnum,
-  int Xdenom,
-  int Ynum,
-  int Ydenom,
+  HDC hdc;
+  int Xnum;
+  int Xdenom;
+  int Ynum;
+  int Ydenom;
   LPSIZE lpSize
 );
 
 int SetGraphicsMode(
-  HDC hdc,
+  HDC hdc;
   GraphicsMode iMode
 );
 
 int SetMapMode(
-  HDC hdc,
+  HDC hdc;
   MappingMode fnMapMode
 );
 
 BOOL SetViewportExtEx(
-  HDC hdc,
-  int nXExtent,
-  int nYExtent,
+  HDC hdc;
+  int nXExtent;
+  int nYExtent;
   LPSIZE lpSize
 );
 
 BOOL SetViewportOrgEx(
-  HDC hdc,
-  int X,
-  int Y,
+  HDC hdc;
+  int X;
+  int Y;
   LPPOINT lpPoint
 );
 
 BOOL SetWindowExtEx(
-  HDC hdc,
-  int nXExtent,
-  int nYExtent,
+  HDC hdc;
+  int nXExtent;
+  int nYExtent;
   LPSIZE lpSize
 );
 
 BOOL SetWindowOrgEx(
-  HDC hdc,
-  int X,
-  int Y,
+  HDC hdc;
+  int X;
+  int Y;
   LPPOINT lpPoint
 );
 
 BOOL SetWorldTransform(
-  HDC hdc,
+  HDC hdc;
   const XFORM *lpXform
 );
 
@@ -921,7 +921,7 @@ BOOL SetWorldTransform(
     Device Context
 --]]
 ffi.cdef[[
-typedef int (__stdcall * GOBJENUMPROC)(LPVOID, LPARAM);
+typedef int (__stdcall * GOBJENUMPROC)(LPVOID; LPARAM);
 
 static const int  CCHDEVICENAME = 32;
 static const int  CCHFORMNAME = 32;
@@ -973,7 +973,7 @@ typedef struct _devicemode {
   DWORD  dmReserved2;
   DWORD  dmPanningWidth;
   DWORD  dmPanningHeight;
-} DEVMODE, *PDEVMODE;
+} DEVMODE; *PDEVMODE;
 ]]
 
 ffi.cdef[[
@@ -982,12 +982,12 @@ BOOL CancelDC(HDC hdc);
 
 HDC   CreateCompatibleDC(HDC hdc);
 
-HDC   CreateDCA(LPCSTR lpszDriver,LPCSTR lpszDevice,LPCSTR lpszOutput,const void * lpInitData);
+HDC   CreateDCA(LPCSTR lpszDriver;LPCSTR lpszDevice;LPCSTR lpszOutput;const void * lpInitData);
 
 HDC CreateICA(
-  LPCTSTR lpszDriver,
-  LPCTSTR lpszDevice,
-  LPCTSTR lpszOutput,
+  LPCTSTR lpszDriver;
+  LPCTSTR lpszDevice;
+  LPCTSTR lpszOutput;
   const DEVMODE *lpdvmInit
 );
 
@@ -1000,46 +1000,46 @@ BOOL DeleteObject(
 );
 
 int DrawEscape(
-  HDC hdc,
-  int nEscape,
-  int cbInput,
+  HDC hdc;
+  int nEscape;
+  int cbInput;
   LPCSTR lpszInData
 );
 
 int EnumObjects(
-  HDC hdc,
-  int nObjectType,
-  GOBJENUMPROC lpObjectFunc,
+  HDC hdc;
+  int nObjectType;
+  GOBJENUMPROC lpObjectFunc;
   LPARAM lParam
 );
 
 HGDIOBJ GetCurrentObject(
-  HDC hdc,
+  HDC hdc;
   UINT uObjectType
 );
 
-int   GetDeviceCaps(HDC hdc, DevCapEnums index);
+int   GetDeviceCaps(HDC hdc; DevCapEnums index);
 
-int GetObjectA(HGDIOBJ hgdiobj, int cbBuffer, LPVOID lpvObject);
+int GetObjectA(HGDIOBJ hgdiobj; int cbBuffer; LPVOID lpvObject);
 
 HGDIOBJ GetStockObject(int fnObject);
 
 bool  GdiFlush();
 
 
-HDC ResetDC(HDC hdc, const DEVMODE *lpInitData);
+HDC ResetDC(HDC hdc; const DEVMODE *lpInitData);
 
-bool  RestoreDC(HDC hdc, int nSavedDC);
+bool  RestoreDC(HDC hdc; int nSavedDC);
 
 int   SaveDC(HDC hdc);
 
-HGDIOBJ SelectObject(HDC hdc, HGDIOBJ hgdiobj);
+HGDIOBJ SelectObject(HDC hdc; HGDIOBJ hgdiobj);
 
-COLORREF SetDCBrushColor(HDC hdc, COLORREF crColor);
+COLORREF SetDCBrushColor(HDC hdc; COLORREF crColor);
 
 
 DWORD SetLayout(
-  HDC hdc,
+  HDC hdc;
   DWORD dwLayout
 );
 
@@ -1050,41 +1050,41 @@ DWORD SetLayout(
 --]]
 
 ffi.cdef[[
-BOOL Ellipse(HDC hdc,
-  int nLeftRect,
-  int nTopRect,
-  int nRightRect,
+BOOL Ellipse(HDC hdc;
+  int nLeftRect;
+  int nTopRect;
+  int nRightRect;
   int nBottomRect);
 
 BOOL Pie(
-  HDC hdc,
-  int nLeftRect,
-  int nTopRect,
-  int nRightRect,
-  int nBottomRect,
-  int nXRadial1,
-  int nYRadial1,
-  int nXRadial2,
+  HDC hdc;
+  int nLeftRect;
+  int nTopRect;
+  int nRightRect;
+  int nBottomRect;
+  int nXRadial1;
+  int nYRadial1;
+  int nXRadial2;
   int nYRadial2
 );
 
 BOOL Polygon(
-  HDC hdc,
-  const POINT *lpPoints,
+  HDC hdc;
+  const POINT *lpPoints;
   int nCount
 );
 
 BOOL PolyPolygon(
-  HDC hdc,
-  const POINT *lpPoints,
-  const INT *lpPolyCounts,
+  HDC hdc;
+  const POINT *lpPoints;
+  const INT *lpPolyCounts;
   int nCount
 );
 
-bool Rectangle(HDC hdc, int left, int top, int right, int bottom);
+bool Rectangle(HDC hdc; int left; int top; int right; int bottom);
 
-bool RoundRect(HDC hdc, int left, int top, int right, int bottom,
-  int width, int height);
+bool RoundRect(HDC hdc; int left; int top; int right; int bottom;
+  int width; int height);
 
 
 
@@ -1097,35 +1097,35 @@ ffi.cdef[[
 // Drawing
 
 BOOL AngleArc(
-  HDC hdc,
-  int X,
-  int Y,
-  DWORD dwRadius,
-  FLOAT eStartAngle,
+  HDC hdc;
+  int X;
+  int Y;
+  DWORD dwRadius;
+  FLOAT eStartAngle;
   FLOAT eSweepAngle
 );
 
 BOOL Arc(
-  HDC hdc,
-  int nLeftRect,
-  int nTopRect,
-  int nRightRect,
-  int nBottomRect,
-  int nXStartArc,
-  int nYStartArc,
-  int nXEndArc,
+  HDC hdc;
+  int nLeftRect;
+  int nTopRect;
+  int nRightRect;
+  int nBottomRect;
+  int nXStartArc;
+  int nYStartArc;
+  int nXEndArc;
   int nYEndArc
 );
 
 BOOL ArcTo(
-  HDC hdc,
-  int nLeftRect,
-  int nTopRect,
-  int nRightRect,
-  int nBottomRect,
-  int nXRadial1,
-  int nYRadial1,
-  int nXRadial2,
+  HDC hdc;
+  int nLeftRect;
+  int nTopRect;
+  int nRightRect;
+  int nBottomRect;
+  int nXRadial1;
+  int nYRadial1;
+  int nXRadial2;
   int nYRadial2
 );
 
@@ -1136,65 +1136,65 @@ int GetArcDirection(
 );
 
 BOOL LineDDA(
-  int nXStart,
-  int nYStart,
-  int nXEnd,
-  int nYEnd,
-  LINEDDAPROC lpLineFunc,
+  int nXStart;
+  int nYStart;
+  int nXEnd;
+  int nYEnd;
+  LINEDDAPROC lpLineFunc;
   LPARAM lpData
 );
 
-int LineTo(HDC hdc, int nXEnd, int nYEnd);
+int LineTo(HDC hdc; int nXEnd; int nYEnd);
 
-int MoveToEx(HDC hdc, int X, int Y, POINT * lpPoint);
+int MoveToEx(HDC hdc; int X; int Y; POINT * lpPoint);
 
 BOOL PolyBezier(
-  HDC hdc,
-  const POINT *lppt,
+  HDC hdc;
+  const POINT *lppt;
   DWORD cPoints
 );
 
 BOOL PolyBezierTo(
-  HDC hdc,
-  const POINT *lppt,
+  HDC hdc;
+  const POINT *lppt;
   DWORD cCount
 );
 
 BOOL PolyDraw(
-  HDC hdc,
-  const POINT *lppt,
-  const BYTE *lpbTypes,
+  HDC hdc;
+  const POINT *lppt;
+  const BYTE *lpbTypes;
   int cCount
 );
 
 BOOL Polyline(
-  HDC hdc,
-  const POINT *lppt,
+  HDC hdc;
+  const POINT *lppt;
   int cPoints
 );
 
 BOOL PolylineTo(
-  HDC hdc,
-  const POINT *lppt,
+  HDC hdc;
+  const POINT *lppt;
   DWORD cCount
 );
 
 BOOL PolyPolyline(
-  HDC hdc,
-  const POINT *lppt,
-  const DWORD *lpdwPolyPoints,
+  HDC hdc;
+  const POINT *lppt;
+  const DWORD *lpdwPolyPoints;
   DWORD cCount
 );
 
 
 int SetArcDirection(
-  HDC hdc,
+  HDC hdc;
   int ArcDirection
 );
 
 
 // Text
-BOOL TextOutA(HDC hdc, int nXStart, int nYStart, LPCSTR lpString, int cbString);
+BOOL TextOutA(HDC hdc; int nXStart; int nYStart; LPCSTR lpString; int cbString);
 
 ]]
 
@@ -1206,13 +1206,13 @@ typedef struct tagLOGBRUSH {
   UINT      lbStyle;
   COLORREF  lbColor;
   ULONG_PTR lbHatch;
-} LOGBRUSH, *PLOGBRUSH;
+} LOGBRUSH; *PLOGBRUSH;
 
 typedef struct tagLOGBRUSH32 {
   UINT     lbStyle;
   COLORREF lbColor;
   ULONG    lbHatch;
-} LOGBRUSH32, *PLOGBRUSH32;
+} LOGBRUSH32; *PLOGBRUSH32;
 ]]
 
 --[[
@@ -1223,7 +1223,7 @@ typedef struct tagLOGPEN {
   UINT     lopnStyle;
   POINT    lopnWidth;
   COLORREF lopnColor;
-} LOGPEN, *PLOGPEN;
+} LOGPEN; *PLOGPEN;
 
 typedef struct tagEXTLOGPEN {
   DWORD     elpPenStyle;
@@ -1233,159 +1233,166 @@ typedef struct tagEXTLOGPEN {
   ULONG_PTR elpHatch;
   DWORD     elpNumEntries;
   DWORD     elpStyleEntry[1];
-} EXTLOGPEN, *PEXTLOGPEN;
+} EXTLOGPEN; *PEXTLOGPEN;
 ]]
 
 ffi.cdef[[
 HPEN CreatePen(
-  int fnPenStyle,
-  int nWidth,
+  int fnPenStyle;
+  int nWidth;
   COLORREF crColor);
 
 HPEN CreatePenIndirect(const LOGPEN *lplgpn);
 
 HPEN ExtCreatePen(
-  DWORD dwPenStyle,
-  DWORD dwWidth,
-  const LOGBRUSH *lplb,
-  DWORD dwStyleCount,
+  DWORD dwPenStyle;
+  DWORD dwWidth;
+  const LOGBRUSH *lplb;
+  DWORD dwStyleCount;
   const DWORD *lpStyle
 );
 
-COLORREF SetDCPenColor(HDC hdc, COLORREF crColor);
+COLORREF SetDCPenColor(HDC hdc; COLORREF crColor);
 
 ]]
 
 
+ffi.cdef[[
+  // Pixel Types
+static const int  PFD_TYPE_RGBA = 0;
+static const int  ColorIndex = 1;
+
+  // Layer Types
+ static const int   PFD_MAIN_PLANE = 0;
+ static const int   Overlay = 1;
+ static const int   Underlay = (-1);
+
+  //PIXELFORMATDESCRIPTOR flags
+static const int  PFD_DOUBLEBUFFER = 0x00000001;
+ static const int   Stereo = 0x00000002;
+ static const int PFD_DRAW_TO_WINDOW = 0x00000004;
+static const int  DrawToBitmap = 0x00000008;
+static const int  SupportGDI = 0x00000010;
+static const int  PFD_SUPPORT_OPENGL = 0x00000020;
+static const int  GenericFormat = 0x00000040;
+static const int  NeedPalette = 0x00000080;
+static const int  NeedSystemPalette = 0x00000100;
+static const int  SwapExchange = 0x00000200;
+static const int  SwapCopy = 0x00000400;
+static const int  SwapLayerBuffers = 0x00000800;
+static const int  GenericAccelerated = 0x00001000;
+static const int  SupportDirectDraw = 0x00002000;
+static const int  Direct3DAccelerated = 0x00004000;
+static const int  SupportComposition = 0x00008000;
+
+  // PIXELFORMATDESCRIPTOR flags for use in ChoosePixelFormat only
+static const int  PFD_DEPTH_DONTCARE = 0x20000000;
+static const int  PFD_DOUBLEBUFFER_DONTCARE = 0x40000000;
+static const int  PFD_STEREO_DONTCARE = 0x80000000;
+
+
+static const int  SRCCOPY   = 0x00CC0020;
+static const int  SRCPAINT  = 0x00EE0086;
+static const int  SRCERASE  = 0x00440328;
+static const int  BLACKNESS = 0x00000042;
+static const int  WHITENESS = 0x00FF0062;
+
+  // Stock Object Index
+static const int  WHITE_BRUSH        = 0;
+static const int  LTGRAY_BRUSH        = 1;
+static const int  GRAY_BRUSH          = 2;
+static const int  DKGRAY_BRUSH        = 3;
+static const int  BLACK_BRUSH         = 4;
+static const int  NULL_BRUSH          = 5;
+static const int  HOLLOW_BRUSH        = NULL_BRUSH;
+
+static const int  WHITE_PEN           = 6;
+static const int  BLACK_PEN           = 7;
+static const int  NULL_PEN            = 8;
+
+static const int  OEM_FIXED_FONT      = 10;
+static const int  ANSI_FIXED_FONT     = 11;
+static const int  ANSI_VAR_FONT       = 12;
+static const int  SYSTEM_FONT         = 13;
+static const int  DEVICE_DEFAULT_FONT = 14;
+static const int  DEFAULT_PALETTE     = 15;
+static const int  SYSTEM_FIXED_FONT   = 16;
+static const int  DEFAULT_GUI_FONT    = 17;
+
+static const int  DC_BRUSH            = 18;
+static const int  DC_PEN              = 19;
+]]
+
 
 local gdi32_ffi = {
-  Lib = Lib,
-  ImgLib = ImgLib,
+  Lib = Lib;
+  ImgLib = ImgLib;
   
--- Pixel Types
-  PFD_TYPE_RGBA = 0,
-  ColorIndex = 1,
 
-  -- Layer Types
-    PFD_MAIN_PLANE = 0,
-    Overlay = 1,
-    Underlay = (-1),
-
-  --PIXELFORMATDESCRIPTOR flags
-  PFD_DOUBLEBUFFER = 0x00000001,
-    Stereo = 0x00000002,
-  PFD_DRAW_TO_WINDOW = 0x00000004,
-  DrawToBitmap = 0x00000008,
-  SupportGDI = 0x00000010,
-  PFD_SUPPORT_OPENGL = 0x00000020,
-  GenericFormat = 0x00000040,
-  NeedPalette = 0x00000080,
-  NeedSystemPalette = 0x00000100,
-  SwapExchange = 0x00000200,
-  SwapCopy = 0x00000400,
-  SwapLayerBuffers = 0x00000800,
-  GenericAccelerated = 0x00001000,
-  SupportDirectDraw = 0x00002000,
-  Direct3DAccelerated = 0x00004000,
-  SupportComposition = 0x00008000,
-
-  -- PIXELFORMATDESCRIPTOR flags for use in ChoosePixelFormat only
-  PFD_DEPTH_DONTCARE = 0x20000000,
-  PFD_DOUBLEBUFFER_DONTCARE = 0x40000000,
-  PFD_STEREO_DONTCARE = 0x80000000,
-
-
-  SRCCOPY   = 0x00CC0020,
-  SRCPAINT  = 0x00EE0086,
-  SRCERASE  = 0x00440328,
-  BLACKNESS = 0x00000042,
-  WHITENESS = 0x00FF0062,
-
-  -- Stock Object Index
-  WHITE_BRUSH        = 0,
-  LTGRAY_BRUSH        = 1,
-  GRAY_BRUSH          = 2,
-  DKGRAY_BRUSH        = 3,
-  BLACK_BRUSH         = 4,
-  NULL_BRUSH          = 5,
-  --HOLLOW_BRUSH        = NULL_BRUSH,
-  WHITE_PEN           = 6,
-  BLACK_PEN           = 7,
-  NULL_PEN            = 8,
-  OEM_FIXED_FONT      = 10,
-  ANSI_FIXED_FONT     = 11,
-  ANSI_VAR_FONT       = 12,
-  SYSTEM_FONT         = 13,
-  DEVICE_DEFAULT_FONT = 14,
-  DEFAULT_PALETTE     = 15,
-  SYSTEM_FIXED_FONT   = 16,
-  DEFAULT_GUI_FONT    = 17,
-  DC_BRUSH            = 18,
-  DC_PEN              = 19,
 
 
   -- Types
-  BITMAP = BITMAP,
-  BITMAPINFOHEADER = BITMAPINFOHEADER,
-  XFORM = XFORM,
+  BITMAP = BITMAP;
+  BITMAPINFOHEADER = BITMAPINFOHEADER;
+  XFORM = XFORM;
   
   -- Functions
   -- Bitmaps
-  AlphaBlend = ImgLib.AlphaBlend,
-  GradientFill = ImgLib.GradientFill,
-  TransparentBlt = ImgLib.TransparentBlt,
+  AlphaBlend = ImgLib.AlphaBlend;
+  GradientFill = ImgLib.GradientFill;
+  TransparentBlt = ImgLib.TransparentBlt;
 
   -- Coordinates and Viewport
-  CombineTransform = Lib.CombineTransform,
-  DPtoLP = Lib.DPtoLP,
-  GetMapMode = Lib.GetMapMode,
-  GetViewportExtEx = Lib.GetViewportExtEx,
-  GetViewportOrgEx = Lib.GetViewportOrgEx,
-  GetWindowExtEx = Lib.GetWindowExtEx,
-  GetWindowOrgEx = Lib.GetWindowOrgEx,
-  GetWorldTransform = Lib.GetWorldTransform,
-  LPtoDP = Lib.LPtoDP,
-  ModifyWorldTransform = Lib.ModifyWorldTransform,
-  OffsetViewportOrgEx = Lib.OffsetViewportOrgEx,
-  OffsetWindowOrgEx = Lib.OffsetWindowOrgEx,
-  ScaleViewportExtEx = Lib.ScaleViewportExtEx,
-  ScaleWindowExtEx = Lib.ScaleWindowExtEx,
-  SetGraphicsMode = Lib.SetGraphicsMode,
-  SetMapMode = Lib.SetMapMode,
-  SetViewportExtEx = Lib.SetViewportExtEx,
-  SetViewportOrgEx = Lib.SetViewportOrgEx,
-  SetWindowExtEx = Lib.SetWindowExtEx,
-  SetWindowOrgEx = Lib.SetWindowOrgEx,
-  SetWorldTransform = Lib.SetWorldTransform,
+  CombineTransform = Lib.CombineTransform;
+  DPtoLP = Lib.DPtoLP;
+  GetMapMode = Lib.GetMapMode;
+  GetViewportExtEx = Lib.GetViewportExtEx;
+  GetViewportOrgEx = Lib.GetViewportOrgEx;
+  GetWindowExtEx = Lib.GetWindowExtEx;
+  GetWindowOrgEx = Lib.GetWindowOrgEx;
+  GetWorldTransform = Lib.GetWorldTransform;
+  LPtoDP = Lib.LPtoDP;
+  ModifyWorldTransform = Lib.ModifyWorldTransform;
+  OffsetViewportOrgEx = Lib.OffsetViewportOrgEx;
+  OffsetWindowOrgEx = Lib.OffsetWindowOrgEx;
+  ScaleViewportExtEx = Lib.ScaleViewportExtEx;
+  ScaleWindowExtEx = Lib.ScaleWindowExtEx;
+  SetGraphicsMode = Lib.SetGraphicsMode;
+  SetMapMode = Lib.SetMapMode;
+  SetViewportExtEx = Lib.SetViewportExtEx;
+  SetViewportOrgEx = Lib.SetViewportOrgEx;
+  SetWindowExtEx = Lib.SetWindowExtEx;
+  SetWindowOrgEx = Lib.SetWindowOrgEx;
+  SetWorldTransform = Lib.SetWorldTransform;
 
   -- Arcs and Lines
-  AngleArc = Lib.AngleArc,
-  Arc = Lib.Arc,
-  ArcTo = Lib.ArcTo,
-  BitBlt = Lib.BitBlt,
-  Ellipse = Lib.Ellipse,
-  GetArcDirection = Lib.GetArcDirection,
-  GetDeviceCaps = Lib.GetDeviceCaps,
-  LineDDA = Lib.LineDDA,
-  LineTo = Lib.LineTo,
-  MoveToEx = Lib.MoveToEx,
-  PolyBezier = Lib.PolyBezier,
-  PolyBezierTo = Lib.PolyBezierTo,
-  PolyDraw = Lib.PolyDraw,
-  Polyline = Lib.Polyline,
-  PolylineTo = Lib.PolylineTo,
-  PolyPolyline = Lib.PolyPolyline,
-  Rectangle = Lib.Rectangle,
-  RoundRect = Lib.RoundRect,
-  SetArcDirection = Lib.SetArcDirection,
-  SetPixel = Lib.SetPixel,
-  SetPixelV = Lib.SetPixelV,
-  StretchBlt = Lib.StretchBlt,
-  StretchDIBits = Lib.StretchDIBits,
-  TextOutA = Lib.TextOutA,
+  AngleArc = Lib.AngleArc;
+  Arc = Lib.Arc;
+  ArcTo = Lib.ArcTo;
+  BitBlt = Lib.BitBlt;
+  Ellipse = Lib.Ellipse;
+  GetArcDirection = Lib.GetArcDirection;
+  GetDeviceCaps = Lib.GetDeviceCaps;
+  LineDDA = Lib.LineDDA;
+  LineTo = Lib.LineTo;
+  MoveToEx = Lib.MoveToEx;
+  PolyBezier = Lib.PolyBezier;
+  PolyBezierTo = Lib.PolyBezierTo;
+  PolyDraw = Lib.PolyDraw;
+  Polyline = Lib.Polyline;
+  PolylineTo = Lib.PolylineTo;
+  PolyPolyline = Lib.PolyPolyline;
+  Rectangle = Lib.Rectangle;
+  RoundRect = Lib.RoundRect;
+  SetArcDirection = Lib.SetArcDirection;
+  SetPixel = Lib.SetPixel;
+  SetPixelV = Lib.SetPixelV;
+  StretchBlt = Lib.StretchBlt;
+  StretchDIBits = Lib.StretchDIBits;
+  TextOutA = Lib.TextOutA;
 
   -- Filled shapes
-  Polygon = Lib.Polygon,
+  Polygon = Lib.Polygon;
 }
 
 return gdi32_ffi
