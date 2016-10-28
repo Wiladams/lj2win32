@@ -384,278 +384,278 @@ static const int RDW_NOFRAME           =  0x0800;
 
 ]]
 
-local Lib = ffi.load("user32");
 
--- Winnt.h
-MAXIMUM_WAIT_OBJECTS = 64     -- Maximum number of wait objects
+ffi.cdef[[
+static const int	CW_USEDEFAULT = 0x80000000;
+
+static const int	CS_VREDRAW			= 0x0001;
+static const int	CS_HREDRAW			= 0x0002;
+static const int	CS_DBLCLKS			= 0x0008;
+static const int	CS_OWNDC			= 0x0020;
+static const int	CS_CLASSDC			= 0x0040;
+static const int	CS_NOCLOSE			= 0x0200;
+static const int	CS_SAVEBITS			= 0x0800;
+static const int	CS_BYTEALIGNCLIENT	= 0x1000;
+static const int	CS_BYTEALIGNWINDOW	= 0x2000;
+static const int	CS_GLOBALCLASS		= 0x4000;
+static const int	CS_DROPSHADOW		= 0x00020000;
+
+
+static const int	WS_POPUP			= 0x80000000;
+static const int	WS_MAXIMIZEBOX 		= 0x00010000;
+static const int	WS_SIZEBOX 			= 0x00040000;
+static const int	WS_SYSMENU 			= 0x00080000;
+static const int	WS_HSCROLL 			= 0x00100000;
+static const int	WS_VSCROLL 			= 0x00200000;
+static const int	WS_OVERLAPPEDWINDOW = 0x00CF0000;
+static const int	WS_MAXIMIZE 		= 0x01000000;
+static const int	WS_VISIBLE 			= 0x10000000;
+static const int	WS_MINIMIZE 		= 0x20000000;
+
+static const int	WS_EX_WINDOWEDGE	= 0x00000100;
+static const int	WS_EX_APPWINDOW		= 0x00040000;
+
+	// Standard User32 Messages
+static const int	WM_CREATE 			= 0x0001;
+static const int	WM_DESTROY 			= 0x0002;
+static const int	WM_SIZE 			= 0x0005;
+static const int	WM_ACTIVATE 		= 0x0006;
+static const int	WM_SETFOCUS			= 0x0007;
+static const int	WM_KILLFOCUS		= 0x0008;
+static const int	WM_ENABLE			= 0x000A;
+static const int	WM_SETTEXT 			= 0x000C;
+static const int	WM_GETTEXT 			= 0x000D;
+static const int	WM_PAINT			= 0x000F;
+static const int	WM_CLOSE 			= 0x0010;
+static const int	WM_QUIT 			= 0x0012;
+static const int	WM_ACTIVATEAPP 		= 0x001C;
+
+static const int	WM_SETCURSOR 		= 0x0020;
+static const int	WM_GETMINMAXINFO 	= 0x0024;
+static const int	WM_WINDOWPOSCHANGING = 0x0046;
+static const int	WM_WINDOWPOSCHANGED = 0x0047;
+static const int	WM_NCCREATE 		= 0x0081;
+static const int	WM_NCDESTROY 		= 0x0082;
+static const int	WM_NCCALCSIZE 		= 0x0083;
+static const int	WM_NCHITTEST 		= 0x0084;
+static const int	WM_NCPAINT 			= 0x0085;
+static const int	WM_NCACTIVATE 		= 0x0086;
+
+	// Non Client (NC) mouse activity
+static const int	WM_NCMOUSEMOVE 		= 0x00A0;
+static const int	WM_NCLBUTTONDOWN 	= 0x00A1;
+static const int	WM_NCLBUTTONUP 		= 0x00A2;
+static const int	WM_NCLBUTTONDBLCLK 	= 0x00A3;
+static const int	WM_NCRBUTTONDOWN 	= 0x00A4;
+static const int	WM_NCRBUTTONUP 		= 0x00A5;
+static const int	WM_NCRBUTTONDBLCLK 	= 0x00A6;
+static const int	WM_NCMBUTTONDOWN 	= 0x00A7;
+static const int	WM_NCMBUTTONUP 		= 0x00A8;
+static const int	WM_NCMBUTTONDBLCLK 	= 0x00A9;
+
+static const int	WM_INPUT_DEVICE_CHANGE = 0x00FE;
+static const int	WM_INPUT			= 0x00FF;
+
+	// Keyboard Activity
+static const int	WM_KEYDOWN			= 0x0100;
+static const int	WM_KEYUP			= 0x0101;
+static const int	WM_CHAR				= 0x0102;
+static const int	WM_DEADCHAR			= 0x0103;
+static const int	WM_SYSKEYDOWN		= 0x0104;
+static const int	WM_SYSKEYUP			= 0x0105;
+static const int	WM_SYSCHAR			= 0x0106;
+static const int	WM_SYSDEADCHAR		= 0x0107;
+static const int	WM_COMMAND			= 0x0111;
+static const int	WM_SYSCOMMAND		= 0x0112;
+
+
+static const int	WM_TIMER = 0x0113;
+
+	// client area mouse activity
+static const int	WM_MOUSEFIRST		= 0x0200;
+static const int	WM_MOUSEMOVE		= 0x0200;
+static const int	WM_LBUTTONDOWN		= 0x0201;
+static const int	WM_LBUTTONUP		= 0x0202;
+static const int	WM_LBUTTONDBLCLK	= 0x0203;
+static const int	WM_RBUTTONDOWN		= 0x0204;
+static const int	WM_RBUTTONUP		= 0x0205;
+static const int	WM_RBUTTONDBLCLK	= 0x0206;
+static const int	WM_MBUTTONDOWN		= 0x0207;
+static const int	WM_MBUTTONUP		= 0x0208;
+static const int	WM_MBUTTONDBLCLK	= 0x0209;
+static const int	WM_MOUSEWHEEL		= 0x020A;
+static const int	WM_XBUTTONDOWN		= 0x020B;
+static const int	WM_XBUTTONUP		= 0x020C;
+static const int	WM_XBUTTONDBLCLK	= 0x020D;
+static const int	WM_MOUSELAST		= 0x020D;
+
+static const int	WM_SIZING 			= 0x0214;
+static const int	WM_CAPTURECHANGED 	= 0x0215;
+static const int	WM_MOVING 			= 0x0216;
+static const int	WM_DEVICECHANGE 	= 0x0219;
+
+static const int	WM_ENTERSIZEMOVE 	= 0x0231;
+static const int	WM_EXITSIZEMOVE 	= 0x0232;
+static const int	WM_DROPFILES 		= 0x0233;
+
+static const int	WM_IME_SETCONTEXT 	= 0x0281;
+static const int	WM_IME_NOTIFY 		= 0x0282;
+
+static const int	WM_NCMOUSEHOVER		= 0x02A0;
+static const int	WM_MOUSEHOVER 		= 0x02A1;
+static const int	WM_NCMOUSELEAVE		= 0x02A2;
+static const int	WM_MOUSELEAVE		= 0x02A3;
+
+static const int	WM_PRINT = 0x0317;
+
+static const int	WM_DWMCOMPOSITIONCHANGED  =      0x031E;
+static const int	WM_DWMNCRENDERINGCHANGED  =      0x031F;
+static const int	WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
+static const int	WM_DWMWINDOWMAXIMIZEDCHANGE    = 0x0321;
+
+
+static const int	SW_HIDE = 0;
+static const int	SW_SHOWNORMAL = 1;
+static const int	SW_SHOWMINIMIZED = 2;
+static const int	SW_SHOWMAXIMIZED = 3;
+static const int	SW_MAXIMIZE = 3;
+static const int	SW_SHOWNOACTIVATE = 4;
+static const int	SW_SHOW = 5;
+static const int	SW_MINIMIZE = 6;
+static const int	SW_SHOWMINNOACTIVE = 7;
+static const int	SW_SHOWNA = 8;
+static const int	SW_RESTORE = 9;
+static const int	SW_SHOWDEFAULT = 10;
+static const int	SW_FORCEMINIMIZE = 11;
+
+static const int	PM_NOREMOVE			= 0x0000;
+static const int	PM_REMOVE 			= 0x0001;
+static const int	PM_NOYIELD 			= 0x0002;
+
+	// dwWakeMask of MsgWaitForMultipleObjectsEx()
+static const int	QS_KEY				= 0x0001;
+static const int	QS_MOUSEMOVE		= 0x0002;
+static const int	QS_MOUSEBUTTON		= 0x0004;
+static const int	QS_MOUSE			= 0x0006;
+static const int	QS_POSTMESSAGE		= 0x0008;
+static const int	QS_TIMER			= 0x0010;
+static const int	QS_PAINT			= 0x0020;
+static const int	QS_SENDMESSAGE		= 0x0040;
+static const int	QS_HOTKEY			= 0x0080;
+static const int	QS_ALLPOSTMESSAGE	= 0x0100;
+static const int	QS_RAWINPUT			= 0x0400;
+static const int	QS_INPUT			= 0x0407;
+static const int	QS_ALLEVENTS		= 0x04BF;
+static const int	QS_ALLINPUT			= 0x04FF;
+
+	// dwFlags of MsgWaitForMultipleObjectsEx()
+static const int	MWMO_WAITALL		= 0x0001;
+static const int	MWMO_ALERTABLE		= 0x0002;
+static const int	MWMO_INPUTAVAILABLE	= 0x0004;
+
+static const int      WAIT_OBJECT_0 	= 0x00000000;
+
+static const int	HWND_DESKTOP    	= 0x0000;
+static const int	HWND_BROADCAST  	= 0xffff;
+static const int	HWND_TOP        	= (0);
+static const int	HWND_BOTTOM     	= (1);
+static const int	HWND_TOPMOST    	= (-1);
+static const int	HWND_NOTOPMOST  	= (-2);
+static const int	HWND_MESSAGE 		= (-3);
+]]
+
+ffi.cdef[[
+	// Used for GetSystemMetrics
+static const int	CXSCREEN = 0;
+static const int	CYSCREEN = 1;
+static const int	CXVSCROLL = 2;
+static const int	CYHSCROLL = 3;
+static const int	CYCAPTION = 4;
+static const int	CXBORDER = 5;
+static const int	CYBORDER = 6;
+static const int	CXDLGFRAME = 7;
+static const int	CXFIXEDFRAME = 7;
+static const int	CYDLGFRAME = 8;
+static const int	CYFIXEDFRAME = 8;
+static const int	CYVTHUMB = 9;
+static const int	CXHTHUMB = 10;
+static const int	CXICON = 11;
+static const int	CYICON = 12;
+static const int	CXCURSOR = 13;
+static const int	CYCURSOR = 14;
+static const int	CYMENU = 15;
+static const int	CXFULLSCREEN = 16;
+static const int	CYFULLSCREEN = 17;
+static const int	CYKANJIWINDOW = 18;
+static const int	MOUSEPRESENT = 19;
+static const int	CYVSCROLL = 20;
+static const int	CXHSCROLL = 21;
+static const int	DEBUG = 22;
+static const int	SWAPBUTTON = 23;
+static const int	RESERVED1 = 24;
+static const int	RESERVED2 = 25;
+static const int	RESERVED3 = 26;
+static const int	RESERVED4 = 27;
+static const int	CXMIN = 28;
+static const int	CYMIN = 29;
+static const int	CXSIZE = 30;
+static const int	CYSIZE = 31;
+static const int	CXSIZEFRAME = 32;
+static const int	CXFRAME = 32;
+static const int	CYFRAME = 33;
+static const int	CYSIZEFRAME = 33;
+static const int	CXMINTRACK = 34;
+static const int	CYMINTRACK = 35;
+static const int	CXDOUBLECLK = 36;
+static const int	CYDOUBLECLK = 37;
+static const int	CXICONSPACING = 38;
+static const int	CYICONSPACING = 39;
+static const int	MENUDROPALIGNMENT = 40;
+static const int	PENWINDOWS = 41;
+static const int	DBCSENABLED = 42;
+static const int	CMOUSEBUTTONS = 43;
+static const int	SECURE = 44;
+static const int	CXEDGE = 45;
+static const int	CYEDGE = 46;
+static const int	CXMINSPACING = 47;
+static const int	CYMINSPACING = 48;
+static const int	CXSMICON = 49;
+static const int	CYSMICON = 50;
+static const int	CYSMCAPTION = 51;
+static const int	CXSMSIZE = 52;
+static const int	CYSMSIZE = 53;
+static const int	CXMENUSIZE = 54;
+static const int	CYMENUSIZE = 55;
+static const int	ARRANGE = 56;
+static const int	CXMINIMIZED = 57;
+static const int	CYMINIMIZED = 58;
+static const int	CXMAXTRACK = 59;
+static const int	CYMAXTRACK = 60;
+static const int	CXMAXIMIZED = 61;
+static const int	CYMAXIMIZED = 62;
+static const int	NETWORK = 63;
+static const int	CLEANBOOT = 67;
+static const int	CXDRAG = 68;
+static const int	CYDRAG = 69;
+static const int	SHOWSOUNDS = 70;
+static const int	CXMENUCHECK = 71;
+static const int	CYMENUCHECK = 72;
+static const int	SLOWMACHINE = 73;
+static const int	MIDEASTENABLED = 74;
+static const int	MOUSEWHEELPRESENT = 75;
+static const int	XVIRTUALSCREEN = 76;
+static const int	YVIRTUALSCREEN = 77;
+static const int	CXVIRTUALSCREEN = 78;
+static const int	CYVIRTUALSCREEN = 79;
+static const int	CMONITORS = 80;
+static const int	SAMEDISPLAYFORMAT = 81;
+static const int	CMETRICS = 83;
+]]
+
+local Lib = ffi.load("user32");
 
 local user32_ffi = {
 	Lib = Lib,
-	
-	CW_USEDEFAULT = 0x80000000,
-
-	CS_VREDRAW			= 0x0001,
-	CS_HREDRAW			= 0x0002,
-	CS_DBLCLKS			= 0x0008,
-	CS_OWNDC			= 0x0020,
-	CS_CLASSDC			= 0x0040,
-	CS_NOCLOSE			= 0x0200,
-	CS_SAVEBITS			= 0x0800,
-	CS_BYTEALIGNCLIENT	= 0x1000,
-	CS_BYTEALIGNWINDOW	= 0x2000,
-	CS_GLOBALCLASS		= 0x4000,
-	CS_DROPSHADOW		= 0x00020000,
-
-
-	WS_POPUP			= 0x80000000,
-	WS_MAXIMIZEBOX 		= 0x00010000,
-	WS_SIZEBOX 			= 0x00040000,
-	WS_SYSMENU 			= 0x00080000,
-	WS_HSCROLL 			= 0x00100000,
-	WS_VSCROLL 			= 0x00200000,
-	WS_OVERLAPPEDWINDOW = 0x00CF0000,
-	WS_MAXIMIZE 		= 0x01000000,
-	WS_VISIBLE 			= 0x10000000,
-	WS_MINIMIZE 		= 0x20000000,
-
-	WS_EX_WINDOWEDGE	= 0x00000100,
-	WS_EX_APPWINDOW		= 0x00040000,
-
-	-- Standard User32 Messages
-	WM_CREATE 			= 0x0001,
-	WM_DESTROY 			= 0x0002,
-	WM_SIZE 			= 0x0005,
-	WM_ACTIVATE 		= 0x0006,
-	WM_SETFOCUS			= 0x0007,
-	WM_KILLFOCUS		= 0x0008,
-	WM_ENABLE			= 0x000A,
-	WM_SETTEXT 			= 0x000C,
-	WM_GETTEXT 			= 0x000D,
-	WM_PAINT			= 0x000F,
-	WM_CLOSE 			= 0x0010,
-	WM_QUIT 			= 0x0012,
-	WM_ACTIVATEAPP 		= 0x001C,
-
-	WM_SETCURSOR 		= 0x0020,
-	WM_GETMINMAXINFO 	= 0x0024,
-	WM_WINDOWPOSCHANGING = 0x0046,
-	WM_WINDOWPOSCHANGED = 0x0047,
-	WM_NCCREATE 		= 0x0081,
-	WM_NCDESTROY 		= 0x0082,
-	WM_NCCALCSIZE 		= 0x0083,
-	WM_NCHITTEST 		= 0x0084,
-	WM_NCPAINT 			= 0x0085,
-	WM_NCACTIVATE 		= 0x0086,
-
-	-- Non Client (NC) mouse activity
-	WM_NCMOUSEMOVE 		= 0x00A0,
-	WM_NCLBUTTONDOWN 	= 0x00A1,
-	WM_NCLBUTTONUP 		= 0x00A2,
-	WM_NCLBUTTONDBLCLK 	= 0x00A3,
-	WM_NCRBUTTONDOWN 	= 0x00A4,
-	WM_NCRBUTTONUP 		= 0x00A5,
-	WM_NCRBUTTONDBLCLK 	= 0x00A6,
-	WM_NCMBUTTONDOWN 	= 0x00A7,
-	WM_NCMBUTTONUP 		= 0x00A8,
-	WM_NCMBUTTONDBLCLK 	= 0x00A9,
-
-	WM_INPUT_DEVICE_CHANGE = 0x00FE,
-	WM_INPUT			= 0x00FF,
-
-	-- Keyboard Activity
-	WM_KEYDOWN			= 0x0100,
-	WM_KEYUP			= 0x0101,
-	WM_CHAR				= 0x0102,
-	WM_DEADCHAR			= 0x0103,
-	WM_SYSKEYDOWN		= 0x0104,
-	WM_SYSKEYUP			= 0x0105,
-	WM_SYSCHAR			= 0x0106,
-	WM_SYSDEADCHAR		= 0x0107,
-	WM_COMMAND			= 0x0111,
-	WM_SYSCOMMAND		= 0x0112,
-
-
-	WM_TIMER = 0x0113,
-
-	-- client area mouse activity
-	WM_MOUSEFIRST		= 0x0200,
-	WM_MOUSEMOVE		= 0x0200,
-	WM_LBUTTONDOWN		= 0x0201,
-	WM_LBUTTONUP		= 0x0202,
-	WM_LBUTTONDBLCLK	= 0x0203,
-	WM_RBUTTONDOWN		= 0x0204,
-	WM_RBUTTONUP		= 0x0205,
-	WM_RBUTTONDBLCLK	= 0x0206,
-	WM_MBUTTONDOWN		= 0x0207,
-	WM_MBUTTONUP		= 0x0208,
-	WM_MBUTTONDBLCLK	= 0x0209,
-	WM_MOUSEWHEEL		= 0x020A,
-	WM_XBUTTONDOWN		= 0x020B,
-	WM_XBUTTONUP		= 0x020C,
-	WM_XBUTTONDBLCLK	= 0x020D,
-	WM_MOUSELAST		= 0x020D,
-
-	WM_SIZING 			= 0x0214,
-	WM_CAPTURECHANGED 	= 0x0215,
-	WM_MOVING 			= 0x0216,
-	WM_DEVICECHANGE 	= 0x0219,
-
-	WM_ENTERSIZEMOVE 	= 0x0231,
-	WM_EXITSIZEMOVE 	= 0x0232,
-	WM_DROPFILES 		= 0x0233,
-
-	WM_IME_SETCONTEXT 	= 0x0281,
-	WM_IME_NOTIFY 		= 0x0282,
-
-	WM_NCMOUSEHOVER		= 0x02A0,
-	WM_MOUSEHOVER 		= 0x02A1,
-	WM_NCMOUSELEAVE		= 0x02A2,
-	WM_MOUSELEAVE		= 0x02A3,
-
-	WM_PRINT = 0x0317,
-
-	WM_DWMCOMPOSITIONCHANGED  =      0x031E,
-	WM_DWMNCRENDERINGCHANGED  =      0x031F,
-	WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320,
-	WM_DWMWINDOWMAXIMIZEDCHANGE    = 0x0321,
-
-
-	SW_HIDE = 0,
-	SW_SHOWNORMAL = 1,
-	SW_SHOWMINIMIZED = 2,
-	SW_SHOWMAXIMIZED = 3,
-	SW_MAXIMIZE = 3,
-	SW_SHOWNOACTIVATE = 4,
-	SW_SHOW = 5,
-	SW_MINIMIZE = 6,
-	SW_SHOWMINNOACTIVE = 7,
-	SW_SHOWNA = 8,
-	SW_RESTORE = 9,
-	SW_SHOWDEFAULT = 10,
-	SW_FORCEMINIMIZE = 11,
-
-	PM_NOREMOVE			= 0x0000,
-	PM_REMOVE 			= 0x0001,
-	PM_NOYIELD 			= 0x0002,
-
-	-- dwWakeMask of MsgWaitForMultipleObjectsEx()
-	QS_KEY				= 0x0001,
-	QS_MOUSEMOVE		= 0x0002,
-	QS_MOUSEBUTTON		= 0x0004,
-	QS_MOUSE			= 0x0006,
-	QS_POSTMESSAGE		= 0x0008,
-	QS_TIMER			= 0x0010,
-	QS_PAINT			= 0x0020,
-	QS_SENDMESSAGE		= 0x0040,
-	QS_HOTKEY			= 0x0080,
-	QS_ALLPOSTMESSAGE	= 0x0100,
-	QS_RAWINPUT			= 0x0400,
-	QS_INPUT			= 0x0407,
-	QS_ALLEVENTS		= 0x04BF,
-	QS_ALLINPUT			= 0x04FF,
-
-	-- dwFlags of MsgWaitForMultipleObjectsEx()
-	MWMO_WAITALL		= 0x0001,
-	MWMO_ALERTABLE		= 0x0002,
-	MWMO_INPUTAVAILABLE	= 0x0004,
-
-      WAIT_OBJECT_0 	= 0x00000000,
-
-	HWND_DESKTOP    	= 0x0000,
-	HWND_BROADCAST  	= 0xffff,
-	HWND_TOP        	= (0),
-	HWND_BOTTOM     	= (1),
-	HWND_TOPMOST    	= (-1),
-	HWND_NOTOPMOST  	= (-2),
-	HWND_MESSAGE 		= (-3),
-
-
-	-- Used for GetSystemMetrics
-	CXSCREEN = 0,
-	CYSCREEN = 1,
-	CXVSCROLL = 2,
-	CYHSCROLL = 3,
-	CYCAPTION = 4,
-	CXBORDER = 5,
-	CYBORDER = 6,
-	CXDLGFRAME = 7,
-	CXFIXEDFRAME = 7,
-	CYDLGFRAME = 8,
-	CYFIXEDFRAME = 8,
-	CYVTHUMB = 9,
-	CXHTHUMB = 10,
-	CXICON = 11,
-	CYICON = 12,
-	CXCURSOR = 13,
-	CYCURSOR = 14,
-	CYMENU = 15,
-	CXFULLSCREEN = 16,
-	CYFULLSCREEN = 17,
-	CYKANJIWINDOW = 18,
-	MOUSEPRESENT = 19,
-	CYVSCROLL = 20,
-	CXHSCROLL = 21,
-	DEBUG = 22,
-	SWAPBUTTON = 23,
-	RESERVED1 = 24,
-	RESERVED2 = 25,
-	RESERVED3 = 26,
-	RESERVED4 = 27,
-	CXMIN = 28,
-	CYMIN = 29,
-	CXSIZE = 30,
-	CYSIZE = 31,
-	CXSIZEFRAME = 32,
-	CXFRAME = 32,
-	CYFRAME = 33,
-	CYSIZEFRAME = 33,
-	CXMINTRACK = 34,
-	CYMINTRACK = 35,
-	CXDOUBLECLK = 36,
-	CYDOUBLECLK = 37,
-	CXICONSPACING = 38,
-	CYICONSPACING = 39,
-	MENUDROPALIGNMENT = 40,
-	PENWINDOWS = 41,
-	DBCSENABLED = 42,
-	CMOUSEBUTTONS = 43,
-	SECURE = 44,
-	CXEDGE = 45,
-	CYEDGE = 46,
-	CXMINSPACING = 47,
-	CYMINSPACING = 48,
-	CXSMICON = 49,
-	CYSMICON = 50,
-	CYSMCAPTION = 51,
-	CXSMSIZE = 52,
-	CYSMSIZE = 53,
-	CXMENUSIZE = 54,
-	CYMENUSIZE = 55,
-	ARRANGE = 56,
-	CXMINIMIZED = 57,
-	CYMINIMIZED = 58,
-	CXMAXTRACK = 59,
-	CYMAXTRACK = 60,
-	CXMAXIMIZED = 61,
-	CYMAXIMIZED = 62,
-	NETWORK = 63,
-	CLEANBOOT = 67,
-	CXDRAG = 68,
-	CYDRAG = 69,
-	SHOWSOUNDS = 70,
-	CXMENUCHECK = 71,
-	CYMENUCHECK = 72,
-	SLOWMACHINE = 73,
-	MIDEASTENABLED = 74,
-	MOUSEWHEELPRESENT = 75,
-	XVIRTUALSCREEN = 76,
-	YVIRTUALSCREEN = 77,
-	CXVIRTUALSCREEN = 78,
-	CYVIRTUALSCREEN = 79,
-	CMONITORS = 80,
-	SAMEDISPLAYFORMAT = 81,
-	CMETRICS = 83,
-
 
 	CloseWindowStation = Lib.CloseWindowStation,
 	CreateWindowExA = Lib.CreateWindowExA,
