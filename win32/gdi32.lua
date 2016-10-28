@@ -1323,6 +1323,44 @@ static const int  DC_BRUSH            = 18;
 static const int  DC_PEN              = 19;
 ]]
 
+-- For Color
+-- 0x00bbggrr
+local function RGB(byRed, byGreen, byBlue)
+	local acolor = lshift(byBlue,16) + lshift(byGreen,8) + byRed;
+	return acolor;
+end
+
+local function GetRValue(c)
+	return band(c, 0xff)
+end
+
+local function GetGValue(c)
+	return band(rshift(c,8), 0xff)
+end
+
+local function GetBValue(c)
+	return band(rshift(c,16), 0xff)
+end
+
+--
+-- This function answers the question:
+-- Given:
+--		We know the size of the byte boundary we want
+--		to align to.
+-- Question:
+--		How many bytes need to be allocated to ensure we
+--		will align to that boundary.
+-- Discussion:
+--		This comes up in cases where you're allocating a bitmap image
+--		for example.  It may be a 24-bit image, but you need to ensure
+--		that each row can align to a 32-bit boundary.  So, we need to
+--		essentially scale up the number of bits to match the alignment.
+--
+local GetAlignedByteCount = function(width, bitsperpixel, alignment)
+	local bytesperpixel = bitsperpixel / 8;
+	return band((width * bytesperpixel + (alignment - 1)), bnot(alignment - 1));
+end
+
 
 local gdi32_ffi = {
   Lib = Lib;
@@ -1330,6 +1368,13 @@ local gdi32_ffi = {
   
 
 
+	-- Some helper functions
+	GetAlignedByteCount = GetAlignedByteCount,
+	GetBValue = GetBValue,
+	GetGValue = GetGValue,
+	GetRValue = GetRValue,
+
+	RGB = RGB,
 
   -- Types
   BITMAP = BITMAP;
@@ -1337,6 +1382,9 @@ local gdi32_ffi = {
   XFORM = XFORM;
   
   -- Functions
+  SelectObject = Lib.SelectObject;
+  SetDCBrushColor = Lib.SetDCBrushColor;
+
   -- Bitmaps
   AlphaBlend = ImgLib.AlphaBlend;
   GradientFill = ImgLib.GradientFill;
