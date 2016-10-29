@@ -3,11 +3,11 @@ local ffi = require("ffi");
 local bit = require("bit");
 local bor = bit.bor;
 
-local Gdi32 = require("GDI32");
-local User32 = require("user32_ffi");
---local User32Lib = ffi.load("User32");
-local errorhandling = require("core_errorhandling_l1_1_1");
-local core_library = require("core_libraryloader_l1_1_1");
+local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local core_library = require("win32.core.libraryloader_l1_1_1");
+
+--local Gdi32 = require("GDI32");
+local User32 = require("win32.user32");
 
 
 ffi.cdef[[
@@ -31,7 +31,7 @@ local NativeWindow_mt = {
 	__index = NativeWindow,
 }
 
-NativeWindow.init = function(self, rawhandle)
+function NativeWindow.init(self, rawhandle)
 	local obj = {
 		Handle = WindowHandle(rawhandle);
 	}
@@ -40,12 +40,12 @@ NativeWindow.init = function(self, rawhandle)
 	return obj;
 end
 
-NativeWindow.create = function(self, className, width, height, title)
+function NativeWindow.create(self, className, width, height, title)
 	className = className or "NativeWindowClass";
 	title = title or "Native Window Title";
 
-	local dwExStyle = bor(User32.WS_EX_APPWINDOW, User32.WS_EX_WINDOWEDGE);
-	local dwStyle = bor(User32.WS_SYSMENU, User32.WS_VISIBLE, User32.WS_POPUP);
+	local dwExStyle = bor(ffi.C.WS_EX_APPWINDOW, ffi.C.WS_EX_WINDOWEDGE);
+	local dwStyle = bor(ffi.C.WS_SYSMENU, ffi.C.WS_VISIBLE, ffi.C.WS_POPUP);
 
 --print("GameWindow:CreateWindow - 1.0")
 	local appInstance = core_library.GetModuleHandleA(nil);
@@ -54,9 +54,9 @@ NativeWindow.create = function(self, className, width, height, title)
 		0,
 		className,
 		title,
-		User32.WS_OVERLAPPEDWINDOW,
-		User32.CW_USEDEFAULT,
-		User32.CW_USEDEFAULT,
+		ffi.C.WS_OVERLAPPEDWINDOW,
+		ffi.C.CW_USEDEFAULT,
+		ffi.C.CW_USEDEFAULT,
 		width, height,
 		nil,
 		nil,
@@ -94,8 +94,8 @@ NativeWindow.Hide = function(self, kind)
 end
 		
 NativeWindow.Maximize = function(self)
-	print("NativeWinow:MAXIMIZE: ", User32.SW_MAXIMIZE);
-	return self:Show(User32.SW_MAXIMIZE);
+	print("NativeWinow:MAXIMIZE: ", ffi.C.SW_MAXIMIZE);
+	return self:Show(ffi.C.SW_MAXIMIZE);
 end
 
 NativeWindow.redraw = function(self, flags)
@@ -113,16 +113,16 @@ NativeWindow.redraw = function(self, flags)
 end
 
 NativeWindow.Show = function(self, kind)
-	kind = kind or User32.SW_SHOWNORMAL;
+	kind = kind or ffi.C.SW_SHOWNORMAL;
 
 	return User32.ShowWindow(self:getNativeHandle(), kind);
 end
 
-NativeWindow.Update = function(self)
+function NativeWindow.Update(self)
 	User32.UpdateWindow(self:getNativeHandle())
 end
 
-NativeWindow.GetClientSize = function(self)
+function NativeWindow.GetClientSize(self)
 	local csize = ffi.new( "RECT[1]" )
 	User32.GetClientRect(self:getNativeHandle(), csize);
 	csize = csize[0]
@@ -132,7 +132,7 @@ NativeWindow.GetClientSize = function(self)
 	return width, height
 end
 
-NativeWindow.GetTitle = function(self)
+function NativeWindow.GetTitle(self)
 	local buf = ffi.new("char[?]", 256)
 	local lbuf = ffi.cast("intptr_t", buf)
 	if User32.SendMessageA(self:getNativeHandle(), User32.WM_GETTEXT, 255, lbuf) ~= 0 then

@@ -33,7 +33,7 @@ require ("win32.core.datetime_l1_1_1")
 ```
 
 Design Concepts
-===============
+---------------
 
 There are a few guiding design concepts that drive the creation of this body 
 of work.  Collectively, they define the set of expectations that any consumer
