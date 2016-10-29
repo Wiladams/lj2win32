@@ -122,19 +122,19 @@ end
 
 
 -- Drawing Attributes
-DeviceContext.UseDCBrush = function(self)
+function DeviceContext.UseDCBrush(self)
 	self:SelectStockObject(ffi.C.DC_BRUSH)
 end
 
-DeviceContext.UseDCPen = function(self)
+function DeviceContext.UseDCPen(self)
 	self:SelectStockObject(ffi.C.DC_PEN)
 end
 
-DeviceContext.SetDCBrushColor = function(self, color)
+function DeviceContext.SetDCBrushColor(self, color)
 	return gdi_ffi.SetDCBrushColor(self.Handle, color)
 end
 
-DeviceContext.SetDCPenColor = function(self, color)
+function DeviceContext.SetDCPenColor(self, color)
 	return gdi_ffi.SetDCPenColor(self.Handle, color)
 end
 
@@ -185,7 +185,7 @@ function DeviceContext.Text(self, txt, x, y)
 	x = x or 0
 	y = y or 0
 	
-	return gdi_ffi.TextOutA(self.Handle, x, y, txt, string.len(txt));
+	return gdi_ffi.TextOutA(self.Handle, x, y, txt, #txt);
 end
 
 -- Bitmap drawing
