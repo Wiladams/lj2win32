@@ -30,3 +30,5 @@ end
 
 print("     Command Line: ", getCommandLine());
 print("Working Directory: ", getCurrentDirectory());
+
+print(coroutine.running())
