@@ -63,21 +63,22 @@ UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 
 ]]
 
-local k32Lib = ffi.load("kernel32");
+--local k32Lib = ffi.load("kernel32");
+local Lib = ffi.load("api-ms-win-core-errorhandling-l1-1-1");
 
 return {
-	Lib = k32Lib,
+	Lib = Lib,
 	
-	AddVectoredContinueHandler = k32Lib.AddVectoredContinueHandler,
-	AddVectoredExceptionHandler = k32Lib.AddVectoredExceptionHandler,
-	GetErrorMode = k32Lib.GetErrorMode,
-	GetLastError = k32Lib.GetLastError,
-	RaiseException = k32Lib.RaiseException,
-	RemoveVectoredContinueHandler = k32Lib.RemoveVectoredContinueHandler,
-	RemoveVectoredExceptionHandler = k32Lib.RemoveVectoredExceptionHandler,
-	RestoreLastError = k32Lib.RestoreLastError,
-	SetErrorMode = k32Lib.SetErrorMode,
-	SetLastError = k32Lib.SetLastError,
-	SetUnhandledExceptionFilter = k32Lib.SetUnhandledExceptionFilter,
-	UnhandledExceptionFilter = k32Lib.UnhandledExceptionFilter,
+	AddVectoredContinueHandler = Lib.AddVectoredContinueHandler,
+	AddVectoredExceptionHandler = Lib.AddVectoredExceptionHandler,
+	GetErrorMode = Lib.GetErrorMode,
+	GetLastError = Lib.GetLastError,
+	RaiseException = Lib.RaiseException,
+	RemoveVectoredContinueHandler = Lib.RemoveVectoredContinueHandler,
+	RemoveVectoredExceptionHandler = Lib.RemoveVectoredExceptionHandler,
+	RestoreLastError = Lib.RestoreLastError,
+	SetErrorMode = Lib.SetErrorMode,
+	SetLastError = Lib.SetLastError,
+	SetUnhandledExceptionFilter = Lib.SetUnhandledExceptionFilter,
+	UnhandledExceptionFilter = Lib.UnhandledExceptionFilter,
 }

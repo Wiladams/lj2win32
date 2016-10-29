@@ -32,3 +32,15 @@ require ("win32.core.console_l1_1_0")
 require ("win32.core.datetime_l1_1_1")
 ```
 
+Design Concepts
+===============
+
+There are a few guiding design concepts that drive the creation of this body 
+of work.  Collectively, they define the set of expectations that any consumer
+of the library can rely on.  They are meant to enhance the ability to use
+the routines in conjunction with other libraries and routines, as well as 
+make for a faithful rendering of the underlying Win32 APIs.
+
+* Nothing should be placed in the global address space
+* All integer constants that can be, should be accessible through ffi.C
+* Lowest level ffi binding should be true to native functions
