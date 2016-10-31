@@ -2,8 +2,8 @@
 -- From guiddef.h
 --
 local ffi = require "ffi"
-local C = ffi.C
 
+local exports = {}
 
 ffi.cdef[[
 typedef struct {
@@ -33,7 +33,7 @@ typedef FMTID *LPFMTID;
 ]]
 
 
-local function bytecompare(a, b, n)
+function exports.bytecompare(a, b, n)
 	local res = true
 	for i=0,n-1 do
 		if a[i] ~= b[i] then
@@ -43,8 +43,9 @@ local function bytecompare(a, b, n)
 	return res
 end
 
-GUID = ffi.typeof("GUID");
-GUID_mt = {
+local GUID = ffi.typeof("GUID");
+exports.GUID = GUID;
+local GUID_mt = {
 	__tostring = function(self)
 		local res = string.format("%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
 			self.Data1, self.Data2, self.Data3,
@@ -71,23 +72,23 @@ GUID_mt = {
 		end,
 	},
 }
-GUID = ffi.metatype("GUID", GUID_mt)
+ffi.metatype("GUID", GUID_mt)
 
 --require "CGuid"
 
-GUID_NULL = GUID()
-IID_NULL = GUID_NULL
-CLSID_NULL = GUID_NULL
-FMTID_NULL = GUID_NULL
+exports.GUID_NULL = GUID()
+exports.IID_NULL = exports.GUID_NULL
+exports.CLSID_NULL = exports.GUID_NULL
+exports.FMTID_NULL = exports.GUID_NULL
 
 
-function DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8)
+function exports.DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8)
 	local aguid = GUID():Define(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8)
 	_G[name] = aguid;
 	return aguid;
 end
 
-DEFINE_UUID = DEFINE_GUID
+exports.DEFINE_UUID = exports.DEFINE_GUID
 
 function DEFINE_OLEGUID(name, l, w1, w2)
 	return GUID():DefineOle(name, l, w1, w2)
@@ -97,44 +98,39 @@ end
 	Useful routines
 --]]
 
-function IsEqualIID(riid1, riid2)
+function exports.IsEqualIID(riid1, riid2)
 	return riid1 == riid2
 end
 
-function IsEqualCLSID(rclsid1, rclsid2)
+function exports.IsEqualCLSID(rclsid1, rclsid2)
 	return rclsid1 == rclsid2
 end
 
-function IsEqualFMTID(rfmtid1, rfmtid2)
+function exports.IsEqualFMTID(rfmtid1, rfmtid2)
 	return rfmtid1 == rfmtid2
 end
 
 
-
-
 -- From Rpcrt4.h
-
-Rpcrt4 = ffi.load("Rpcrt4")
+local Rpcrt4 = ffi.load("Rpcrt4")
 
 ffi.cdef[[
 int UuidCreate(UUID * Uuid);
-
 int UuidFromStringA(const char * StringUuid, UUID * Uuid);
-
 int UuidToStringA(UUID * Uuid , char ** StringUuid);
 ]]
 
 
 -- Helpful function for constructing a UUID/GUID
 -- from a string
-function UUIDFromString(stringid)
+function exports.UUIDFromString(stringid)
 	local id = ffi.new("UUID")
 	Rpcrt4.UuidFromStringA(stringid, id)
 
 	return id
 end
 
-function GetNewGUID()
+function exports.GetNewGUID()
 	local lpGUID = ffi.new("GUID[1]")
 	local status = Rpcrt4.UuidCreate(lpGUID)
 	if status ~= 0 then	-- RPC_S_OK
@@ -143,3 +139,5 @@ function GetNewGUID()
 	
 	return lpGUID[0]
 end
+
+return exports
