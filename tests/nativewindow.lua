@@ -34,6 +34,15 @@ local NativeWindow_mt = {
 	__index = NativeWindow,
 }
 
+function NativeWindow.RegisterClass(self, classname, msgproc, style)
+	msgproc = msgproc or User32.Lib.DefWindowProcA;
+	style = style or bor(ffi.C.CS_HREDRAW, ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
+
+	local winclass = user32.RegisterWindowClass(classname)
+
+	return winclass;
+end
+
 function NativeWindow.init(self, rawhandle)
 	local obj = {
 		Handle = WindowHandle(rawhandle);
@@ -50,7 +59,6 @@ function NativeWindow.create(self, className, width, height, title)
 	local dwExStyle = bor(ffi.C.WS_EX_APPWINDOW, ffi.C.WS_EX_WINDOWEDGE);
 	local dwStyle = bor(ffi.C.WS_SYSMENU, ffi.C.WS_VISIBLE, ffi.C.WS_POPUP);
 
---print("GameWindow:CreateWindow - 1.0")
 	local appInstance = core_library.GetModuleHandleA(nil);
 
 	local hwnd = User32.CreateWindowExA(
@@ -66,16 +74,14 @@ function NativeWindow.create(self, className, width, height, title)
 		appInstance,
 		nil);
 
-local err = errorhandling.GetLastError();
-
-print("hwnd: ", hwnd, err)
-
 	if hwnd == nil then
 		return false, errorhandling.GetLastError();
 	end
 
 	return self:init(hwnd);
 end
+
+
 
 --[[
 	Instance Methods
@@ -95,12 +101,12 @@ NativeWindow.getDeviceContext = function(self)
 end
 
 -- Functions
-NativeWindow.Hide = function(self, kind)
+NativeWindow.hide = function(self, kind)
 	kind = kind or User32.SW_HIDE;
 	self:Show(kind);
 end
 		
-NativeWindow.Maximize = function(self)
+NativeWindow.maximize = function(self)
 	--print("NativeWinow:MAXIMIZE: ", ffi.C.SW_MAXIMIZE);
 	return self:Show(ffi.C.SW_MAXIMIZE);
 end
@@ -119,17 +125,17 @@ NativeWindow.redraw = function(self, flags)
 	return true;
 end
 
-function NativeWindow.Show(self, kind)
+function NativeWindow.show(self, kind)
 	kind = kind or ffi.C.SW_SHOWNORMAL;
 
 	return User32.ShowWindow(self:getNativeHandle(), kind);
 end
 
-function NativeWindow.Update(self)
+function NativeWindow.update(self)
 	User32.UpdateWindow(self:getNativeHandle())
 end
 
-function NativeWindow.GetClientSize(self)
+function NativeWindow.getClientSize(self)
 	local csize = ffi.new( "RECT[1]" )
 	User32.GetClientRect(self:getNativeHandle(), csize);
 	csize = csize[0]
@@ -139,12 +145,14 @@ function NativeWindow.GetClientSize(self)
 	return width, height
 end
 
-function NativeWindow.GetTitle(self)
+function NativeWindow.getTitle(self)
 	local buf = ffi.new("char[?]", 256)
 	local lbuf = ffi.cast("intptr_t", buf)
-	if User32.SendMessageA(self:getNativeHandle(), User32.WM_GETTEXT, 255, lbuf) ~= 0 then
+	if User32.SendMessageA(self:getNativeHandle(), ffi.C.WM_GETTEXT, 255, lbuf) ~= 0 then
 		return ffi.string(buf)
 	end
+
+	return nil;
 end
 
 
