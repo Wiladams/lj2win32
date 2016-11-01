@@ -6,8 +6,11 @@ local bor = bit.bor;
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local core_library = require("win32.core.libraryloader_l1_1_1");
 
---local Gdi32 = require("GDI32");
 local User32 = require("win32.user32");
+
+
+print(" core_library: ", core_library)
+print("errorhandling: ", errorhandling)
 
 
 ffi.cdef[[
@@ -63,6 +66,10 @@ function NativeWindow.create(self, className, width, height, title)
 		appInstance,
 		nil);
 
+local err = errorhandling.GetLastError();
+
+print("hwnd: ", hwnd, err)
+
 	if hwnd == nil then
 		return false, errorhandling.GetLastError();
 	end
@@ -94,7 +101,7 @@ NativeWindow.Hide = function(self, kind)
 end
 		
 NativeWindow.Maximize = function(self)
-	print("NativeWinow:MAXIMIZE: ", ffi.C.SW_MAXIMIZE);
+	--print("NativeWinow:MAXIMIZE: ", ffi.C.SW_MAXIMIZE);
 	return self:Show(ffi.C.SW_MAXIMIZE);
 end
 
@@ -112,7 +119,7 @@ NativeWindow.redraw = function(self, flags)
 	return true;
 end
 
-NativeWindow.Show = function(self, kind)
+function NativeWindow.Show(self, kind)
 	kind = kind or ffi.C.SW_SHOWNORMAL;
 
 	return User32.ShowWindow(self:getNativeHandle(), kind);

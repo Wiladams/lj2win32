@@ -1,8 +1,13 @@
 -- user32_ffi.lua
 
 local ffi = require "ffi"
+local bit = require("bit")
+local bor = bit.bor;
+local band = bit.band;
 
 require "win32.wtypes"
+local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local core_library = require("win32.core.libraryloader_l1_1_1");
 
 
 
@@ -652,9 +657,11 @@ static const int	SAMEDISPLAYFORMAT = 81;
 static const int	CMETRICS = 83;
 ]]
 
+
+
 local Lib = ffi.load("user32");
 
-local user32_ffi = {
+local exports = {
 	Lib = Lib,
 
 	CloseWindowStation = Lib.CloseWindowStation,
@@ -677,4 +684,33 @@ local user32_ffi = {
 	MsgWaitForMultipleObjectsEx = Lib.MsgWaitForMultipleObjectsEx,
 }
 
-return user32_ffi
+function exports.RegisterWindowClass(wndclassname, msgproc, style)
+	msgproc = msgproc or Lib.DefWindowProcA;
+	style = style or bor(ffi.C.CS_HREDRAW, ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
+
+	local hInst = core_library.GetModuleHandleA(nil);
+
+	local wcex = ffi.new("WNDCLASSEXA");
+    wcex.cbSize = ffi.sizeof(wcex);
+    wcex.style          = style;
+    wcex.lpfnWndProc    = msgproc;
+    wcex.cbClsExtra     = 0;
+    wcex.cbWndExtra     = 0;
+    wcex.hInstance      = hInst;
+    wcex.hIcon          = nil;		-- LoadIcon(hInst, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.hCursor        = nil;		-- LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground  = nil;		-- (HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName   = nil;		-- NULL;
+    wcex.lpszClassName  = wndclassname;
+    wcex.hIconSm        = nil;		-- LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+
+	local classAtom = Lib.RegisterClassExA(wcex);
+
+	if classAtom == nil then
+    	return false, "Call to RegistrationClassEx failed."
+    end
+
+	return classAtom;
+end
+
+return exports
