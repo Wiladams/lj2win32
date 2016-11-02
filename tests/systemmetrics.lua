@@ -33,12 +33,12 @@ exports.names = {
     SM_MOUSEPRESENT = {value = 19, converter = SM_toBool};
     SM_CYVSCROLL = {value = 20};
     SM_CXHSCROLL = {value = 21};
-    SM_DEBUG = {value = 22};
+    SM_DEBUG = {value = 22, converter = SM_toBool};
     SM_SWAPBUTTON = {value = 23, converter = SM_toBool};
-    SM_RESERVED1 = {value = 24};
-    SM_RESERVED2 = {value = 25};
-    SM_RESERVED3 = {value = 26};
-    SM_RESERVED4 = {value = 27};
+    SM_RESERVED1 = {value = 24, converter = SM_toBool};
+    SM_RESERVED2 = {value = 25, converter = SM_toBool};
+    SM_RESERVED3 = {value = 26, converter = SM_toBool};
+    SM_RESERVED4 = {value = 27, converter = SM_toBool};
     SM_CXMIN = {value = 28};
     SM_CYMIN = {value = 29};
     SM_CXSIZE = {value = 30};
@@ -57,7 +57,7 @@ exports.names = {
     SM_PENWINDOWS = {value = 41};
     SM_DBCSENABLED = {value = 42, converter = SM_toBool};
     SM_CMOUSEBUTTONS = {value = 43};
-    SM_SECURE = {value = 44};
+    SM_SECURE = {value = 44, converter = SM_toBool};
     SM_CXEDGE = {value = 45};
     SM_CYEDGE = {value = 46};
     SM_CXMINSPACING = {value = 47};
@@ -80,7 +80,7 @@ exports.names = {
     SM_CLEANBOOT = {value = 67};
     SM_CXDRAG = {value = 68};
     SM_CYDRAG = {value = 69};
-    SM_SHOWSOUNDS = {value = 70};
+    SM_SHOWSOUNDS = {value = 70, converter = SM_toBool};
     SM_CXMENUCHECK = {value = 71};
     SM_CYMENUCHECK = {value = 72};
     SM_SLOWMACHINE = {value = 73, converter = SM_toBool};
@@ -94,7 +94,7 @@ exports.names = {
     SM_SAMEDISPLAYFORMAT = {value = 81};
     SM_IMMENABLED = {value = 82, converter = SM_toBool};
     SM_TABLETPC = {value = 86, converter = SM_toBool};
-    SM_MEDIACENTER = {value = 87};
+    SM_MEDIACENTER = {value = 87, converter = SM_toBool};
     SM_STARTER = {value = 88, converter = SM_toBool};
     SM_SERVERR2 = {value = 89, converter = SM_toBool};
     SM_MOUSEHORIZONTALWHEELPRESENT = {value = 91, converter = SM_toBool};
@@ -103,7 +103,7 @@ exports.names = {
 
     SM_REMOTESESSION = {value = 0x1000, converter = SM_toBool};
     SM_SHUTTINGDOWN = {value = 0x2000, converter = SM_toBool};
-    SM_REMOTECONTROL = {value = 0x2001};
+    SM_REMOTECONTROL = {value = 0x2001, converter = SM_toBool};
     SM_CONVERTIBLESLATEMODE = {value = 0x2003, converter = SM_toBool};
     SM_SYSTEMDOCKED = {value = 0x2004, converter = SM_toBool};
 }
@@ -118,27 +118,31 @@ local function lookupByNumber(num)
 	return nil;
 end
 
-local function lookupByName(name)
-	return exports.names[name];
-end
-
 function exports.getSystemMetrics(what)
 	local entry = nil;
-	local value = nil;
+	local idx = nil;
 
 	if type(what) == "string" then
-		entry = lookupByName(what)
-		value = entry.value;
+		entry = exports.names[what]
+		idx = entry.value;
 	else
-		value = tonumber(what)
-		if not value then 
+		idx = tonumber(what)
+		if not idx then 
 			return nil;
 		end
 		
-		--entry = lookupByNumber(num)
+		entry = lookupByNumber(idx)
+
+        if not entry then return nil end
 	end
 
-	return user32.GetSystemMetrics(value)
+	local value = user32.GetSystemMetrics(idx)
+
+    if entry.converter then
+        value = entry.converter(value);
+    end
+
+    return value;
 end
 
 setmetatable(exports, {

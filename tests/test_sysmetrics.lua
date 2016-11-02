@@ -6,17 +6,14 @@ local sysmetrics = require("systemmetrics");
 
 
 local function testAll()
-for _, entry in ipairs(sysmetrics.names) do
-    local value, err = sysmetrics.getSystemMetrics(entry.value)
-    if value then
-        if entry.converter then
-            value = entry.converter(value);
+    for key, entry in pairs(sysmetrics.names) do
+        local value, err = sysmetrics.getSystemMetrics(key)
+        if value ~= nil then
+            print(string.format("{name = '%s', value = %s};", key, value))
+        else
+            print(key, err)
         end
-        print(string.format("{name = '%s', value = %s};", entry.name, tostring(value)))
-    else
-        print(entry.name, err)
     end
-end
 end
 
 local function testSome()
@@ -25,4 +22,4 @@ local function testSome()
 end
 
 testAll();
-testSome();
+--testSome();
