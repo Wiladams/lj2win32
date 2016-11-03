@@ -1,4 +1,18 @@
 
+--[[
+    This file contains general purpose helper routines for handling 
+    the information that comes from GetSystemMetrics()
+
+    getSystemMetrics(what)
+    For this call, the 'what' parameter can either be a number, or
+    one of the symbolic names (as a string) of the items the GetSystemMetrics()
+    OS call takes.
+
+    The return value in most cases will be an integer value.  In the case where the
+    value is intended to be a boolean (0 and not zero), a bool value (true|false)
+    is returned.  If the call fails for some reason, a value of 'nil' is returned.
+]]
+local ffi = require("ffi")
 local user32 = require("win32.user32")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 
@@ -29,7 +43,7 @@ exports.names = {
     SM_CYMENU = {value = 15};
     SM_CXFULLSCREEN = {value = 16};
     SM_CYFULLSCREEN = {value = 17};
-    SM_CYKANJIWINDOW = {value = 18};
+    SM_CYKANJIWINDOW = {value = 18, converter = SM_toBool};
     SM_MOUSEPRESENT = {value = 19, converter = SM_toBool};
     SM_CYVSCROLL = {value = 20};
     SM_CXHSCROLL = {value = 21};
@@ -54,7 +68,7 @@ exports.names = {
     SM_CXICONSPACING = {value = 38};
     SM_CYICONSPACING = {value = 39};
     SM_MENUDROPALIGNMENT = {value = 40};
-    SM_PENWINDOWS = {value = 41};
+    SM_PENWINDOWS = {value = 41, converter = SM_toBool};
     SM_DBCSENABLED = {value = 42, converter = SM_toBool};
     SM_CMOUSEBUTTONS = {value = 43};
     SM_SECURE = {value = 44, converter = SM_toBool};
@@ -91,7 +105,7 @@ exports.names = {
     SM_CXVIRTUALSCREEN = {value = 78};
     SM_CYVIRTUALSCREEN = {value = 79};
     SM_CMONITORS = {value = 80};
-    SM_SAMEDISPLAYFORMAT = {value = 81};
+    SM_SAMEDISPLAYFORMAT = {value = 81, converter = SM_toBool};
     SM_IMMENABLED = {value = 82, converter = SM_toBool};
     SM_TABLETPC = {value = 86, converter = SM_toBool};
     SM_MEDIACENTER = {value = 87, converter = SM_toBool};
@@ -143,6 +157,13 @@ function exports.getSystemMetrics(what)
     end
 
     return value;
+end
+
+-- Create C definitions derived from the names table
+function exports.genCdefs()
+    for key, entry in pairs(exports.names) do
+        ffi.cdef(string.format("static const int %s = %d", key, entry.value))
+    end
 end
 
 setmetatable(exports, {

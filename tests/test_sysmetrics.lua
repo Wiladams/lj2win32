@@ -21,5 +21,10 @@ local function testSome()
     print(sysmetrics.getSystemMetrics(ffi.C.SM_MAXIMUMTOUCHES))
 end
 
-testAll();
+local function testCdefgen()
+    sysmetrics.genCdefs();
+end
+
+--testAll();
 --testSome();
+testCdefgen();
