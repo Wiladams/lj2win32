@@ -1,6 +1,5 @@
 local ffi = require("ffi")
 
---local user32 = require("win32.user32")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 
 ffi.cdef[[
