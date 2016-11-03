@@ -1,6 +1,11 @@
+local ffi = require("ffi")
 
-local user32 = require("win32.user32")
+--local user32 = require("win32.user32")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
+
+ffi.cdef[[
+int GetSystemMetrics(int nIndex);
+]]
 
 local exports = {}
 
@@ -118,7 +123,7 @@ local function lookupByNumber(num)
 	return nil;
 end
 
-function exports.getSystemMetrics(what)
+local function getSystemMetrics(what)
 	local entry = nil;
 	local idx = nil;
 
@@ -136,7 +141,7 @@ function exports.getSystemMetrics(what)
         if not entry then return nil end
 	end
 
-	local value = user32.GetSystemMetrics(idx)
+	local value = ffi.C.GetSystemMetrics(idx)
 
     if entry.converter then
         value = entry.converter(value);
@@ -147,11 +152,8 @@ end
 
 setmetatable(exports, {
 	__index = function(self, what)
-		return exports.getSystemMetrics(what)
+		return getSystemMetrics(what)
 	end,
-
-	__call = function(self, what)
-	end
 })
 
 return exports

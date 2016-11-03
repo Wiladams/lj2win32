@@ -7,7 +7,7 @@ local sysmetrics = require("systemmetrics");
 
 local function testAll()
     for key, entry in pairs(sysmetrics.names) do
-        local value, err = sysmetrics.getSystemMetrics(key)
+        local value, err = sysmetrics[key]
         if value ~= nil then
             print(string.format("{name = '%s', value = %s};", key, value))
         else
@@ -18,7 +18,6 @@ end
 
 local function testSome()
     print(sysmetrics.SM_MAXIMUMTOUCHES)
-    print(sysmetrics.getSystemMetrics(ffi.C.SM_MAXIMUMTOUCHES))
 end
 
 testAll();
