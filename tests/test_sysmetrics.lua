@@ -20,5 +20,10 @@ local function testSome()
     print(sysmetrics.SM_MAXIMUMTOUCHES)
 end
 
-testAll();
+local function testCdefgen()
+    sysmetrics.genCdefs();
+end
+
+--testAll();
 --testSome();
+testCdefgen();
