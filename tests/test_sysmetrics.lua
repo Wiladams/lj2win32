@@ -22,6 +22,7 @@ end
 
 local function testCdefgen()
     sysmetrics.genCdefs();
+    print("CDEF, SM_MAXIMUMTOUCHES: ", ffi.C.SM_MAXIMUMTOUCHES)
 end
 
 --testAll();

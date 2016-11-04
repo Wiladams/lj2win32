@@ -1,7 +1,5 @@
 local ffi = require("ffi")
 
-<<<<<<< HEAD
-=======
 --[[
     This file contains general purpose helper routines for handling 
     the information that comes from GetSystemMetrics()
@@ -15,9 +13,8 @@ local ffi = require("ffi")
     value is intended to be a boolean (0 and not zero), a bool value (true|false)
     is returned.  If the call fails for some reason, a value of 'nil' is returned.
 ]]
+
 local ffi = require("ffi")
-local user32 = require("win32.user32")
->>>>>>> d75a785809bc93dd42b6cdf09adaa252d1a8a4c3
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 
 ffi.cdef[[
