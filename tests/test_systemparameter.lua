@@ -6,7 +6,7 @@ local ffi = require("ffi")
 
 local sysparam = require("systemparametersinfo")
 
-local function printValue(value)
+local function printValue(title, value)
     if type(value) == "table" then
         for k,v in pairs(value) do
             print(k,v)
@@ -16,4 +16,5 @@ local function printValue(value)
     end
 end
 
-printValue(sysparam.SPI_GETNONCLIENTMETRICS)
+printValue("SPI_GETNONCLIENTMETRICS", sysparam.SPI_GETNONCLIENTMETRICS)
+printValue("SPI_GETCLEARTYPE", sysparam.SPI_GETCLEARTYPE)

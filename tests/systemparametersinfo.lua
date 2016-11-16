@@ -2,6 +2,7 @@ local ffi = require("ffi")
 
 local wtypes = require("win32.wtypes")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local Lib = ffi.load("User32")
 
 ffi.cdef[[
 BOOL SystemParametersInfo(
@@ -301,8 +302,13 @@ local Flags = {
 local exports = {}
 
 local function getSystemParameterInfo(what)
+print("getSystemParameterInfo: ", what)
+
     -- lookup the value based on the what
     local entry = names[what]
+
+print("entry: ", entry)
+
     if not entry then
         return false;
     end
@@ -311,8 +317,9 @@ local function getSystemParameterInfo(what)
         return entry.converter()
     end
 
-    return false;
-    
+    local value = Lib.SystemParametersInfo(entry.value, 0, pBool, 0)
+
+    return value;    
 end
 
 local function setSystemParameterInfo()
