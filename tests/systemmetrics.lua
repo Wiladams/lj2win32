@@ -127,6 +127,29 @@ exports.names = {
     SM_SYSTEMDOCKED = {value = 0x2004, converter = SM_toBool};
 }
 
+local SM_ARRANGE_VALUES = {
+    ARW_BOTTOMLEFT  = 0x0000,
+    ARW_BOTTOMRIGHT = 0x0001,
+    ARW_TOPLEFT     = 0x0002, 
+    ARW_TOPRIGHT    = 0x0003,
+
+    ARW_DOWN    = 0x0004,
+    ARW_HIDE    = 0x0008,
+    ARW_LEFT    = 0x0000,
+    ARW_RIGHT   = 0x0000,
+    ARW_UP      = 0x0004,
+}
+
+local SM_DIGITIZER_VALUES = {
+    NID_INTEGRATED_TOUCH = 0x01,
+    NID_EXTERNAL_TOUCH = 0x02,
+    NID_INTEGRATED_PEN = 0x04,
+    NID_EXTERNAL_PEN = 0x08,
+    NID_MULTI_INPUT = 0x40, 
+    NID_READY = 0x80,
+}
+
+
 local function lookupByNumber(num)
 	for key, entry in pairs(exports.names) do
 		if entry.value == num then
