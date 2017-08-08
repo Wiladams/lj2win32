@@ -38,7 +38,7 @@ function NativeWindow.RegisterClass(self, classname, msgproc, style)
 	msgproc = msgproc or User32.Lib.DefWindowProcA;
 	style = style or bor(ffi.C.CS_HREDRAW, ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
 
-	local winclass = user32.RegisterWindowClass(classname)
+	local winclass = User32.RegisterWindowClass(classname)
 
 	return winclass;
 end

@@ -33,7 +33,7 @@ local function testCdefgen()
     print("CDEF, SM_MAXIMUMTOUCHES: ", ffi.C.SM_MAXIMUMTOUCHES)
 end
 
---testAll();
+testAll();
 --testSome();
 --testCdefgen();
-testLookup();
+--testLookup();
