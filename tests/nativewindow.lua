@@ -34,6 +34,7 @@ local NativeWindow_mt = {
 	__index = NativeWindow,
 }
 
+--[[
 function NativeWindow.RegisterClass(self, classname, msgproc, style)
 	msgproc = msgproc or User32.Lib.DefWindowProcA;
 	style = style or bor(ffi.C.CS_HREDRAW, ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
@@ -42,6 +43,7 @@ function NativeWindow.RegisterClass(self, classname, msgproc, style)
 
 	return winclass;
 end
+--]]
 
 function NativeWindow.init(self, rawhandle)
 	local obj = {
@@ -88,11 +90,11 @@ end
 --]]
 
 -- Attributes
-NativeWindow.getNativeHandle = function(self)
+function NativeWindow.getNativeHandle(self)
 	return self.Handle.Handle;
 end
 
-NativeWindow.getDeviceContext = function(self)
+function NativeWindow.getDeviceContext(self)
 	if not self.ClientContext then
 		self.ClientContext = DeviceContext(User32.GetDC(self:getNativeHandle()))
 	end
@@ -101,17 +103,17 @@ NativeWindow.getDeviceContext = function(self)
 end
 
 -- Functions
-NativeWindow.hide = function(self, kind)
+function NativeWindow.hide(self, kind)
 	kind = kind or User32.SW_HIDE;
 	self:Show(kind);
 end
 		
-NativeWindow.maximize = function(self)
+function NativeWindow.maximize(self)
 	--print("NativeWinow:MAXIMIZE: ", ffi.C.SW_MAXIMIZE);
 	return self:Show(ffi.C.SW_MAXIMIZE);
 end
 
-NativeWindow.redraw = function(self, flags)
+function NativeWindow.redraw(self, flags)
 	local lprcUpdate = nil;	-- const RECT *
 	local hrgnUpdate = nil; -- HRGN
 	flags = flags or ffi.C.RDW_UPDATENOW;
