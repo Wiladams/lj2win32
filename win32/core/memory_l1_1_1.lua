@@ -51,6 +51,15 @@ CreateFileMappingNumaW(
         DWORD nndPreferred
     );
 
+HANDLE CreateFileMappingA(
+		HANDLE hFile,
+		LPSECURITY_ATTRIBUTES lpAttributes,
+		DWORD flProtect,
+		DWORD dwMaximumSizeHigh,
+		DWORD dwMaximumSizeLow,
+		const char* lpName
+	);
+
 HANDLE
 CreateFileMappingW(
         HANDLE hFile,
@@ -302,8 +311,8 @@ static const int WRITE_WATCH_FLAG_RESET = 0x01;
 ]]
 
 
-local Lib = ffi.load("kernel32");
-
+--local Lib = ffi.load("kernel32");
+local Lib = ffi.load("api-ms-win-core-memory-l1-1-1")
 return {
     Lib = Lib,
     

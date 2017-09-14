@@ -1,0 +1,136 @@
+local ffi = require "ffi"
+local C = ffi.C
+local bit = require "bit"
+
+local memory = require("win32.core.memory_l1_1_1")
+local file = require("win32.core.file_l1_2_0")
+local errorhandling = require("win32.core.errorhandling_l1_1_1");
+
+local mmap = {}
+mmap.__index = mmap
+local new_map
+
+
+
+ffi.cdef[[
+	long WriteFile(
+		void* hFile,
+		void* lpBuffer,
+		unsigned long nNumberOfBytesToWrite,
+		unsigned long* lpNumberOfBytesWritten,
+		void* lpOverlapped
+	);
+	unsigned long SetFilePointer(
+		void* hFile,
+		long lDistanceToMove,
+		long* lpDistanceToMoveHigh,
+		unsigned long dwMoveMethod
+	);
+
+
+	long UnmapViewOfFile(void* lpBaseAddress);
+	long CloseHandle(void* hObject);
+	long DeleteFileA(const char* lpFileName);
+]]
+
+
+local ERROR_ALREADY_EXISTS = 183
+local GENERIC_READ  = 0x80000000
+local GENERIC_WRITE = 0x40000000
+local OPEN_ALWAYS   = 4
+local FILE_ATTRIBUTE_ARCHIVE = 0x20
+local FILE_FLAG_RANDOM_ACCESS = 0x10000000
+local FILE_BEGIN = 0
+local PAGE_READWRITE = 0x4
+local FILE_MAP_ALL_ACCESS = 0xf001f
+
+function mmap:__new(filename, newsize)
+	local m = ffi.new(self, #filename+1)
+	
+	-- Open file
+	m.filehandle = file.CreateFileA(filename, bit.bor(GENERIC_READ, GENERIC_WRITE), 0, nil,
+		OPEN_ALWAYS, bit.bor(FILE_ATTRIBUTE_ARCHIVE, FILE_FLAG_RANDOM_ACCESS), nil)
+	
+    if m.filehandle == nil then
+		error("Could not create/open file for mmap: "..tostring(errorhandling.GetLastError()))
+	end
+	
+	-- Set file size if new
+	local exists = C.GetLastError() == ERROR_ALREADY_EXISTS
+	if exists then
+		local fsize = file.GetFileSize(m.filehandle, nil)
+		if fsize == 0 then
+			-- Windows will error if mapping a 0-length file, fake a new one
+			exists = false
+			m.size = newsize
+		else
+			m.size = fsize
+		end
+	else
+		m.size = newsize
+	end
+	m.existed = exists
+	
+	-- Open mapping
+	m.maphandle = memory.CreateFileMappingW(m.filehandle, nil, PAGE_READWRITE, 0, m.size, nil)
+	if m.maphandle == nil then
+		error("Could not create file map: "..tostring(C.GetLastError()))
+	end
+	
+	-- Open view
+	m.map = memory.MapViewOfFile(m.maphandle, FILE_MAP_ALL_ACCESS, 0, 0, 0)
+	if m.map == nil then
+		error("Could not map: "..tostring(errorhandling.GetLastError()))
+	end
+	
+	-- Copy filename (for delete)
+	ffi.copy(m.filename, filename)
+	
+	return m
+end
+
+function mmap:getMap()
+	return self.map
+end
+
+function mmap:__len()
+	return self.size
+end
+
+function mmap:close(no_ungc)
+	if self.map ~= nil then
+		memory.UnmapViewOfFile(self.map)
+		self.map = nil
+	end
+	if self.maphandle ~= nil then
+		C.CloseHandle(self.maphandle)
+		self.maphandle = nil
+	end
+	if self.filehandle ~= nil then
+		C.CloseHandle(self.filehandle)
+		self.filehandle = nil
+	end
+	
+	if not no_ungc then ffi.gc(self, nil) end
+end
+
+function mmap:__gc()
+	self:close(true)
+end
+
+function mmap:delete()
+	self:close()
+	C.DeleteFileA(self.filename)
+end
+
+local new_map = ffi.metatype([[struct {
+	short existed;
+	void* filehandle;
+	void* maphandle;
+	void* map;
+	int size;
+	char filename[?];
+}]], mmap)
+
+return new_map
+
