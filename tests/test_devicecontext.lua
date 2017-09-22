@@ -7,7 +7,7 @@ local ffi = require("ffi")
 
 local DC = require("DeviceContext")
 
--- Create a device context, default is the device context of the whole screen
+-- Create a device context, default is the device context of the primary screen
 local screenDC = DC();
 
 
