@@ -1,3 +1,16 @@
+--[[
+	mmap is the rough equivalent of the mmap() function on Linux
+	This basically allows you to memory map a file, which means you 
+	can access a pointer to the file's contents without having to 
+	go through IO routines.
+
+	Usage:
+	local m = mmap(filename)
+	local ptr = m:getMap()
+
+	print(ffi.string(ptr, #m))
+--]]
+
 local ffi = require "ffi"
 local C = ffi.C
 local bit = require "bit"
@@ -5,58 +18,33 @@ local bit = require "bit"
 local memory = require("win32.core.memory_l1_1_1")
 local file = require("win32.core.file_l1_2_0")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local handle = require("win32.core.handle_l1_1_0")
+
+
+local FILE_BEGIN = 0
+local PAGE_READWRITE = 0x4
+local FILE_MAP_ALL_ACCESS = 0xf001f
+
 
 local mmap = {}
 mmap.__index = mmap
 local new_map
 
 
-
-ffi.cdef[[
-	long WriteFile(
-		void* hFile,
-		void* lpBuffer,
-		unsigned long nNumberOfBytesToWrite,
-		unsigned long* lpNumberOfBytesWritten,
-		void* lpOverlapped
-	);
-	unsigned long SetFilePointer(
-		void* hFile,
-		long lDistanceToMove,
-		long* lpDistanceToMoveHigh,
-		unsigned long dwMoveMethod
-	);
-
-
-	long UnmapViewOfFile(void* lpBaseAddress);
-	long CloseHandle(void* hObject);
-	long DeleteFileA(const char* lpFileName);
-]]
-
-
-local ERROR_ALREADY_EXISTS = 183
-local GENERIC_READ  = 0x80000000
-local GENERIC_WRITE = 0x40000000
-local OPEN_ALWAYS   = 4
-local FILE_ATTRIBUTE_ARCHIVE = 0x20
-local FILE_FLAG_RANDOM_ACCESS = 0x10000000
-local FILE_BEGIN = 0
-local PAGE_READWRITE = 0x4
-local FILE_MAP_ALL_ACCESS = 0xf001f
-
 function mmap:__new(filename, newsize)
+	newsize = newsize or 0
 	local m = ffi.new(self, #filename+1)
 	
 	-- Open file
-	m.filehandle = file.CreateFileA(filename, bit.bor(GENERIC_READ, GENERIC_WRITE), 0, nil,
-		OPEN_ALWAYS, bit.bor(FILE_ATTRIBUTE_ARCHIVE, FILE_FLAG_RANDOM_ACCESS), nil)
+	m.filehandle = file.CreateFileA(filename, bit.bor(C.GENERIC_READ, C.GENERIC_WRITE), 0, nil,
+		C.OPEN_ALWAYS, bit.bor(C.FILE_ATTRIBUTE_ARCHIVE, C.FILE_FLAG_RANDOM_ACCESS), nil)
 	
     if m.filehandle == nil then
 		error("Could not create/open file for mmap: "..tostring(errorhandling.GetLastError()))
 	end
 	
 	-- Set file size if new
-	local exists = C.GetLastError() == ERROR_ALREADY_EXISTS
+	local exists = errorhandling.GetLastError() == ffi.C.ERROR_ALREADY_EXISTS
 	if exists then
 		local fsize = file.GetFileSize(m.filehandle, nil)
 		if fsize == 0 then
@@ -74,7 +62,7 @@ function mmap:__new(filename, newsize)
 	-- Open mapping
 	m.maphandle = memory.CreateFileMappingW(m.filehandle, nil, PAGE_READWRITE, 0, m.size, nil)
 	if m.maphandle == nil then
-		error("Could not create file map: "..tostring(C.GetLastError()))
+		error("Could not create file map: "..tostring(errorhandling.GetLastError()))
 	end
 	
 	-- Open view
@@ -103,11 +91,11 @@ function mmap:close(no_ungc)
 		self.map = nil
 	end
 	if self.maphandle ~= nil then
-		C.CloseHandle(self.maphandle)
+		handle.CloseHandle(self.maphandle)
 		self.maphandle = nil
 	end
 	if self.filehandle ~= nil then
-		C.CloseHandle(self.filehandle)
+		handle.CloseHandle(self.filehandle)
 		self.filehandle = nil
 	end
 	
@@ -120,7 +108,7 @@ end
 
 function mmap:delete()
 	self:close()
-	C.DeleteFileA(self.filename)
+	file.DeleteFileA(self.filename)
 end
 
 local new_map = ffi.metatype([[struct {

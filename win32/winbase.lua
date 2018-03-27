@@ -74,10 +74,6 @@ static const int PURGE_TXCLEAR = 0x04;
 static const int PURGE_RXCLEAR = 0x08;
 
 
-
-
-static const int ERROR_IO_PENDING = 0x03E5; // 997
-
 static const int INFINITE = 0xFFFFFFFF;
 ]]
 

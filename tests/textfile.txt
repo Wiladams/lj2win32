@@ -120,7 +120,7 @@ end
 
 function mmap:delete()
 	self:close()
-	C.DeleteFileA(self.filename)
+	file.DeleteFileA(self.filename)
 end
 
 local new_map = ffi.metatype([[struct {

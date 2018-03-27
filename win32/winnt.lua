@@ -1849,6 +1849,11 @@ static const int FILE_ATTRIBUTE_VIRTUAL              = 0x00010000;
 ]]
 
 ffi.cdef[[
+static const int FILE_FLAG_RANDOM_ACCESS = 0x10000000
+
+]]
+
+ffi.cdef[[
 static const int MAXIMUM_ALLOWED                 = 0x02000000;
 ]]
 

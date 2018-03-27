@@ -63,6 +63,14 @@ UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 
 ]]
 
+ffi.cdef[[
+static const int ERROR_ALREADY_EXISTS = 183;
+
+static const int ERROR_IO_PENDING 	= 0x03E5;	// 997
+static const int ERROR_NOACCESS 	= 0x03E6;	// 998
+static const int ERROR_SWAPERROR 	= 0x03E7;	// 999
+]]
+
 --local k32Lib = ffi.load("kernel32");
 local Lib = ffi.load("api-ms-win-core-errorhandling-l1-1-1");
 
