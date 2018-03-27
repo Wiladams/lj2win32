@@ -7,6 +7,6 @@ mmap = require("mmap")
 local afile = mmap("textfile.txt")
 
 
-local map = afile:getMap();
+local map = afile:getPointer();
 print("FILE")
 print(ffi.string(map, #afile))

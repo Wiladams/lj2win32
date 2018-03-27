@@ -77,7 +77,7 @@ function mmap:__new(filename, newsize)
 	return m
 end
 
-function mmap:getMap()
+function mmap:getPointer()
 	return self.map
 end
 
