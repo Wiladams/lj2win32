@@ -26,6 +26,24 @@ function arch.pointerToString(instance)
 	return nil;
 end
 
+--[=[
+	Return a pointer to a specific field within a structure.
+
+	Given:
+	ffi.cdef[[
+	struct POINT {
+		int x;
+		int y;
+	}
+	]]
+
+	local aPoint = ffi.new("struct POINT");
+
+	local addr = arch.fieldAddress(aPoint, "y")
+
+	'addr' now contains the same result as the C equivalent: &aPoint->y;
+]=]
+
 function arch.fieldAddress(astruct, fieldname)
 	local structtype = ffi.typeof(astruct);
 	local offset = ffi.offsetof(structtype, fieldname);
