@@ -1,9 +1,13 @@
 package.path = "../?.lua;"..package.path;
 
-local ffi = require("ffi")
-local WindowKind = require("WindowKind")
-local User32 = require("win32.user32")
 local os = require("os")
+local ffi = require("ffi")
+
+
+local User32 = require("win32.user32")
+local WindowKind = require("WindowKind")
+local wmmsgs = require("wmmsgs")
+--local wmmsgs = require("wm_reserved")
 
 local continueRunning = true;
 
@@ -18,10 +22,10 @@ local continueRunning = true;
 ]]
 jit.off(WindowProc)
 function WindowProc(hwnd, msg, wparam, lparam)
-    print(string.format("WindowProc, msg: 0x%x", msg))
+    print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs:lookup(msg)))
+    --print(string.format("WindowProc, msg: 0x%x", msg))
     if msg == ffi.C.WM_CLOSE then
         --User32.PostQuitMessage(0);
-        print("WM_CLOSE")
         os.exit();
     end
 
@@ -43,7 +47,7 @@ end
 
 -- Create an actual instance of a window
 local win1 = winkind:createWindow(320, 240, "Native Window");
-print("win1: ", win1)
+--print("win1: ", win1)
 win1:show();
 win1:update();
 

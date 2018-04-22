@@ -11,6 +11,15 @@ local gdi_ffi = require("win32.gdi32")
 	DeviceContext
 
 	The Drawing Context for good ol' GDI drawing
+
+	You can easily create a device context using a simple constructor mechanism
+	
+	local dc = DeviceContext(Driver, Device, Output, InitData)
+
+	This is similar to the CreateDC() function call within Win32, but a Lua object
+	is returned, or "nil, error" if it fails for some reason.
+
+	If you don't specify any parameters, the device will be the default screen
 --]]
 local DeviceContext = {}
 setmetatable(DeviceContext, {
@@ -51,10 +60,18 @@ function DeviceContext.create(self, lpszDriver, lpszDevice, lpszOutput, lpInitDa
 	return self:init(rawhandle)
 end
 
+--[[
+	DeviceContext:CreateForMemory()
+
+	By default will create a DeviceContext tied to memory, compatible with the screen
+]]
 function DeviceContext.CreateForMemory(self, hDC)
 	hDC = hDC or gdi_ffi.CreateDCA("DISPLAY", nil, nil, nil)
 	local rawhandle = gdi_ffi.CreateCompatibleDC(hDC) 
 	
+	-- need to delete original DC
+	-- gdi_ffi.DeleteDC(hDC)
+
 	return self:init(rawhandle)
 end
 
@@ -75,30 +92,30 @@ end
 --]]
 
 -- Coordinates and Transforms
-DeviceContext.setGraphicsMode = function(self, mode)
+function DeviceContext.setGraphicsMode(self, mode)
 	gdi_ffi.SetGraphicsMode(self.Handle, mode)
 
 	return true;
 end
 
-DeviceContext.setMapMode = function(self, mode)
+function DeviceContext.setMapMode(self, mode)
 	gdi_ffi.SetMapMode(self.Handle, mode)
 
 	return true;
 end
 
 -- Device Context State
-DeviceContext.flush = function(self)
+function DeviceContext.flush(self)
 	return gdi_ffi.GdiFlush()
 end
 
-DeviceContext.restore = function(self, nSavedDC)
+function DeviceContext.restore(self, nSavedDC)
 	nSavedDC = nSavedDC or -1;
 	
 	return gdi_ffi.RestoreDC(self.Handle, nSavedDC);
 end
 
-DeviceContext.save = function(self)
+function DeviceContext.save(self)
 	local stateIndex = gdi_ffi.SaveDC(self.Handle);
 	if stateIndex == 0 then
 		return false, "failed to save GDI state"
@@ -108,8 +125,10 @@ DeviceContext.save = function(self)
 end
 
 -- Object Management
-DeviceContext.SelectObject = function(self, gdiobj)
+function DeviceContext.SelectObject(self, gdiobj)
 	gdi_ffi.SelectObject(self.Handle, gdiobj.Handle)
+	
+	return true;
 end
 
 DeviceContext.SelectStockObject = function(self, objectIndex)

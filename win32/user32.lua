@@ -404,8 +404,9 @@ static const int	CS_BYTEALIGNCLIENT	= 0x1000;
 static const int	CS_BYTEALIGNWINDOW	= 0x2000;
 static const int	CS_GLOBALCLASS		= 0x4000;
 static const int	CS_DROPSHADOW		= 0x00020000;
+]]
 
-
+ffi.cdef[[
 static const int	WS_POPUP			= 0x80000000;
 static const int	WS_MAXIMIZEBOX 		= 0x00010000;
 static const int	WS_SIZEBOX 			= 0x00040000;
@@ -419,7 +420,9 @@ static const int	WS_MINIMIZE 		= 0x20000000;
 
 static const int	WS_EX_WINDOWEDGE	= 0x00000100;
 static const int	WS_EX_APPWINDOW		= 0x00040000;
+]]
 
+ffi.cdef[[
 	// Standard User32 Messages
 static const int	WM_CREATE 			= 0x0001;
 static const int	WM_DESTROY 			= 0x0002;
@@ -511,14 +514,15 @@ static const int	WM_MOUSEHOVER 		= 0x02A1;
 static const int	WM_NCMOUSELEAVE		= 0x02A2;
 static const int	WM_MOUSELEAVE		= 0x02A3;
 
-static const int	WM_PRINT = 0x0317;
+static const int	WM_PRINT            = 0x0317;
 
 static const int	WM_DWMCOMPOSITIONCHANGED  =      0x031E;
 static const int	WM_DWMNCRENDERINGCHANGED  =      0x031F;
 static const int	WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
 static const int	WM_DWMWINDOWMAXIMIZEDCHANGE    = 0x0321;
+]]
 
-
+ffi.cdef[[
 static const int	SW_HIDE = 0;
 static const int	SW_SHOWNORMAL = 1;
 static const int	SW_SHOWMINIMIZED = 2;
