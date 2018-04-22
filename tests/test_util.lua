@@ -10,7 +10,7 @@ local function main()
 
     -- ascending pitch beep
     for i=37, 32768 do
-        util.Beep (i,10);
+        util.Beep (i,100);
     end
 
     -- descending pitch beep
