@@ -30,15 +30,15 @@ _WIN64 = (ffi.os == "Windows") and ffi.abi("64bit");
 ffi.cdef[[
 typedef char          	CHAR;
 typedef unsigned char	UCHAR;
-typedef unsigned char 	BYTE;
+typedef uint8_t         BYTE;
 typedef int16_t     	SHORT;
-typedef unsigned short  USHORT;
+typedef uint16_t        USHORT;
 typedef uint16_t		WORD;
 typedef int         	INT;
 typedef unsigned int	UINT;
-typedef long        	LONG;
-typedef unsigned long	ULONG;
-typedef unsigned long 	DWORD;
+typedef int32_t        	LONG;
+typedef uint32_t        ULONG;
+typedef uint32_t        DWORD;
 typedef int64_t     	LONGLONG;
 typedef uint64_t		ULONGLONG;
 typedef uint64_t    	DWORDLONG;
@@ -78,22 +78,22 @@ if _WIN64 then
 ffi.cdef[[
 typedef int64_t   INT_PTR, *PINT_PTR;
 typedef uint64_t  UINT_PTR, *PUINT_PTR;
-typedef intptr_t   LONG_PTR, *PLONG_PTR, *PLONG_PTR;
+typedef int64_t   LONG_PTR, *PLONG_PTR;
 typedef uint64_t  ULONG_PTR, *PULONG_PTR;
 ]]
 else
 ffi.cdef[[
 typedef int             INT_PTR, *PINT_PTR;
 typedef unsigned int    UINT_PTR, *PUINT_PTR;
-typedef intptr_t            LONG_PTR, *PLONG_PTR;
+typedef long            LONG_PTR, *PLONG_PTR;
 typedef unsigned long   ULONG_PTR, *PULONG_PTR;
 ]]
 
 end
 
 ffi.cdef[[
-typedef ULONG_PTR			SIZE_T, *PSIZE_T;
-typedef LONG_PTR SSIZE_T, *PSSIZE_T;
+typedef ULONG_PTR		SIZE_T, *PSIZE_T;
+typedef LONG_PTR        SSIZE_T, *PSSIZE_T;
 ]]
 
 
