@@ -18,6 +18,8 @@ end
 
 local function testSome()
     print(sysmetrics.SM_MAXIMUMTOUCHES)
+    print(sysmetrics.SM_MOUSEHORIZONTALWHEELPRESENT)
+    print(sysmetrics.SM_TABLETPC);
 end
 
 local function testLookup()
@@ -33,7 +35,26 @@ local function testCdefgen()
     print("CDEF, SM_MAXIMUMTOUCHES: ", ffi.C.SM_MAXIMUMTOUCHES)
 end
 
-testAll();
+local function testScreen()
+    print(string.format("Monitors: %d", sysmetrics.SM_CMONITORS))
+    print(string.format("Virtual Display"));
+    print(string.format("    Size: %dx%d", sysmetrics.SM_CXVIRTUALSCREEN, sysmetrics.SM_CYVIRTUALSCREEN))
+    print(string.format("  Origin: %dx%d", sysmetrics.SM_XVIRTUALSCREEN, sysmetrics.SM_YVIRTUALSCREEN))
+    print(string.format("Primary Display"));
+    print(string.format("    Size: %dx%d", sysmetrics.SM_CXSCREEN, sysmetrics.SM_CYSCREEN))
+
+    -- Mouse
+    if sysmetrics.SM_MOUSEPRESENT then
+        print();
+
+        print("   Mouse: ", sysmetrics.SM_MOUSEPRESENT)
+        print(string.format(" Buttons: %d", sysmetrics.SM_CMOUSEBUTTONS))
+    end
+end
+
+--testAll();
 --testSome();
 --testCdefgen();
 --testLookup();
+testScreen();
+

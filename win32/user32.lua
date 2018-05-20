@@ -5,6 +5,7 @@ local bit = require("bit")
 local bor = bit.bor;
 local band = bit.band;
 
+require "win32.gdi32"
 require "win32.wtypes"
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local core_library = require("win32.core.libraryloader_l1_1_1");
@@ -286,6 +287,14 @@ ffi.cdef[[
 int GetSystemMetrics(int nIndex);
 ]]
 
+ffi.cdef[[
+BOOL SystemParametersInfoA(
+  UINT  uiAction,
+  UINT  uiParam,
+  PVOID pvParam,
+  UINT  fWinIni
+);
+]]
 
 -- WINDOW DRAWING
 ffi.cdef[[
@@ -293,10 +302,10 @@ HDC GetDC(HWND hWnd);
 
 HDC GetWindowDC(HWND hWnd);
 BOOL InvalidateRect(HWND hWnd, const RECT* lpRect, BOOL bErase);
+]]
 
-
-// WINDOW UTILITIES
-
+-- Window utilities
+ffi.cdef[[
 
 typedef BOOL (__stdcall *WNDENUMPROC)(HWND hwnd, LPARAM l);
 
@@ -326,16 +335,18 @@ HWINSTA  CreateWindowStation(
 
 
 // Callback function for EnumWindowStations
-typedef BOOL (__stdcall *WINSTAENUMPROC) (LPTSTR lpszWindowStation,LPARAM lParam);
+typedef BOOL (__stdcall *WINSTAENUMPROCW) (LPTSTR lpszWindowStation, LPARAM lParam);
+typedef BOOL (__stdcall *WINSTAENUMPROCA) (LPCSTR lpszWindowStation, LPARAM lParam);
 
-BOOL  EnumWindowStations(WINSTAENUMPROC lpEnumFunc, LPARAM lParam);
+BOOL  EnumWindowStationsA(WINSTAENUMPROCA lpEnumFunc, LPARAM lParam);
 
 HWINSTA  GetProcessWindowStation(void);
 
-HWINSTA  OpenWindowStationA(LPTSTR lpszWinSta, BOOL fInherit, ACCESS_MASK dwDesiredAccess);
+HWINSTA  OpenWindowStationA(LPCSTR lpszWinSta, BOOL fInherit, ACCESS_MASK dwDesiredAccess);
 HWINSTA  OpenWindowStationW(LPTSTR lpszWinSta, BOOL fInherit, ACCESS_MASK dwDesiredAccess);
 
 BOOL  SetProcessWindowStation(HWINSTA hWinSta);
+HWINSTA GetProcessWindowStation();
 
 BOOL  GetUserObjectInformation(HANDLE hObj,
     int nIndex,
@@ -343,6 +354,8 @@ BOOL  GetUserObjectInformation(HANDLE hObj,
     DWORD nLength,
 	LPDWORD lpnLengthNeeded
 );
+
+BOOL LockWorkStation(void);
 
 /*
 BOOL  GetUserObjectSecurity(HANDLE hObj,
@@ -364,6 +377,74 @@ BOOL  SetUserObjectSecurity(HANDLE hObj,
   PSECURITY_DESCRIPTOR pSID
 );
 */
+]]
+
+-- Window Station Access attributes
+ffi.cdef[[
+static const int WINSTA_ENUMDESKTOPS        = 0x0001;
+static const int WINSTA_READATTRIBUTES      = 0x0002;
+static const int WINSTA_ACCESSCLIPBOARD     = 0x0004;
+static const int WINSTA_CREATEDESKTOP       = 0x0008;
+static const int WINSTA_WRITEATTRIBUTES     = 0x0010;
+static const int WINSTA_ACCESSGLOBALATOMS   = 0x0020;
+static const int WINSTA_EXITWINDOWS         = 0x0040;
+static const int WINSTA_ENUMERATE           = 0x0100;
+static const int WINSTA_READSCREEN          = 0x0200;
+
+static const int WINSTA_ALL_ACCESS          = (WINSTA_ENUMDESKTOPS  | WINSTA_READATTRIBUTES  | WINSTA_ACCESSCLIPBOARD | \
+                                     WINSTA_CREATEDESKTOP | WINSTA_WRITEATTRIBUTES | WINSTA_ACCESSGLOBALATOMS | \
+                                     WINSTA_EXITWINDOWS   | WINSTA_ENUMERATE       | WINSTA_READSCREEN);
+
+]]
+
+
+-- Desktop management
+ffi.cdef[[
+typedef BOOL (__stdcall *DESKTOPENUMPROCA)(LPTSTR lpszDesktop, LPARAM lParam);
+typedef BOOL (__stdcall *WINSTAENUMPROCA)(LPTSTR stationname, LPARAM lParam);
+
+// CloseDesktop
+BOOL CloseDesktop(HDESK hDesktop);
+
+// CreateDesktop
+HDESK CreateDesktopA(LPCTSTR lpszDesktop, 
+    LPCTSTR lpszDevice,
+    PDEVMODE pDevmode,
+    DWORD dwFlags,
+    ACCESS_MASK dwDesiredAccess, 
+    LPSECURITY_ATTRIBUTES lpsa);
+
+
+// EnumDesktops
+BOOL EnumDesktopsA(HWINSTA hwinsta, DESKTOPENUMPROCA lpEnumFunc, LPARAM lParam);
+
+// EnumDesktopWindows
+BOOL EnumDesktopWindows(HDESK hDesktop, WNDENUMPROC lpfn, LPARAM lParam);
+
+
+// GetThreadDesktop
+HDESK GetThreadDesktop(DWORD dwThreadId);
+
+// OpenDesktop
+HDESK
+OpenDesktopA(
+    LPCSTR lpszDesktop,
+    DWORD dwFlags,
+    BOOL fInherit,
+    ACCESS_MASK dwDesiredAccess);
+
+
+// OpenInputDesktop
+HDESK OpenInputDesktop(DWORD dwFlags, BOOL fInherit, ACCESS_MASK dwDesiredAccess);
+
+// SetThreadDesktop
+BOOL SetThreadDesktop(HDESK hDesktop);
+
+// SwitchDesktop
+BOOL SwitchDesktop(HDESK hDesktop);
+
+// PaintDesktop
+BOOL PaintDesktop(HDC hdc);
 ]]
 
 ffi.cdef[[
@@ -573,8 +654,8 @@ static const int	HWND_NOTOPMOST  	= (-2);
 static const int	HWND_MESSAGE 		= (-3);
 ]]
 
+-- Used for GetSystemMetrics
 ffi.cdef[[
-	// Used for GetSystemMetrics
 static const int	SM_CXSCREEN = 0;
 static const int	SM_CYSCREEN = 1;
 static const int	SM_CXVSCROLL = 2;
@@ -682,15 +763,20 @@ local Lib = ffi.load("user32");
 local exports = {
 	Lib = Lib,
 
-	CloseWindowStation = Lib.CloseWindowStation,
+    -- WindowStation
+    CloseWindowStation = Lib.CloseWindowStation,
+    EnumWindowStationsA = Lib.EnumWindowStationsA,
+    OpenWindowStationA = Lib.OpenWindowStationA,
+
 	CreateWindowExA = Lib.CreateWindowExA,
 	DefWindowProcA = Lib.DefWindowProcA,
-	DispatchMessageA = Lib.DispatchMessageA,
+    DispatchMessageA = Lib.DispatchMessageA,
 	GetClientRect = Lib.GetClientRect,
 	GetDC = Lib.GetDC,
 	GetDesktopWindow = Lib.GetDesktopWindow,
 	GetMessageA = Lib.GetMessageA,
-	GetSystemMetrics = Lib.GetSystemMetrics,
+    GetSystemMetrics = Lib.GetSystemMetrics,
+    SystemParametersInfo = Lib.SystemParametersInfoA,
 	LoadCursor = Lib.LoadCursorA,
 	PeekMessageA = Lib.PeekMessageA,
 	RegisterClassExA = Lib.RegisterClassExA,

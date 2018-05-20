@@ -1,21 +1,12 @@
 local ffi = require("ffi")
 
-local wtypes = require("win32.wtypes")
-local errorhandling = require("win32.core.errorhandling_l1_1_1");
-local Lib = ffi.load("User32")
+--local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local user32 = require("win32.user32")
 
-ffi.cdef[[
-BOOL SystemParametersInfo(
-  UINT  uiAction,
-  UINT  uiParam,
-  PVOID pvParam,
-  UINT  fWinIni
-);
-]]
 
 local function getBool(what)
     local pBool = ffi.new("BOOL",0)
-    local value = ffi.C.SystemParametersInfo(what, 0, pBool, 0)
+    local value = user32.SystemParametersInfo(what, 0, pBool, 0)
 
     print(value, pBool)
 
@@ -317,7 +308,7 @@ print("entry: ", entry)
         return entry.converter()
     end
 
-    local value = Lib.SystemParametersInfo(entry.value, 0, pBool, 0)
+    local value = user32.SystemParametersInfo(entry.value, 0, pBool, 0)
 
     return value;    
 end
@@ -325,13 +316,19 @@ end
 local function setSystemParameterInfo()
 end
 
+--[[
 local function SystemParametersInfo()
 end
+]]
 
 setmetatable(exports, {
 	__index = function(self, what)
 		return getSystemParameterInfo(what)
-	end,
+    end,
+    
+    __newindex = function(self, name, val)
+        return false;
+    end,
 })
 
 return exports

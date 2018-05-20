@@ -21,5 +21,5 @@ local function main()
 
 end
 
---util.Beep(750, 300)
-main();
+util.Beep(16384, 1000)
+--main();

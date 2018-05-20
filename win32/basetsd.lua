@@ -1,11 +1,32 @@
+--[[
+    Some core types have been defined since the earliest days
+    of Windows.  Types such as BYTE, SHORT, CHAR, WORD, DWORD, etc
 
+    Why do such definitions even exist?  Because Windows predates
+    the invention of things like int8_t, uint32_t and the like.
+    So, those early APIs defined these, and they've stuck around
+    ever since.
+    
+    You will find these types littered throughout the various
+    Windows APIs, so they are defined here.  The definitions 
+    here follow those in the Windows sdk basetsd.h file.  A more
+    typical way of including these types is to require the
+    win32.wtypes.lua file in your project, but really, requiring
+    one of the higher leve API files will automatically pull
+    these in, so you're not likely to require it directly.
+
+    Reference
+    https://msdn.microsoft.com/en-us/library/windows/desktop/aa383751(v=vs.85).aspx
+]]
 local ffi = require("ffi");
 
+-- Define _WIN64 from the very beginning because various
+-- other data structures are dependent on it. 
+-- Make it global for ease.
 _WIN64 = (ffi.os == "Windows") and ffi.abi("64bit");
 
 -- intsafe.h contains many of these base
 -- definitions as well.
-
 ffi.cdef[[
 typedef char          	CHAR;
 typedef unsigned char	UCHAR;

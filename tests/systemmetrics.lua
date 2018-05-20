@@ -16,10 +16,12 @@ local ffi = require("ffi")
 
 local ffi = require("ffi")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
-
+require("win32.user32")
+--[=[
 ffi.cdef[[
 int GetSystemMetrics(int nIndex);
 ]]
+]=]
 
 local exports = {}
 
@@ -165,7 +167,8 @@ local function getSystemMetrics(what)
 	local idx = nil;
 
 	if type(what) == "string" then
-		entry = exports.names[what]
+        entry = exports.names[what]
+        if not entry then return nil end
 		idx = entry.value;
 	else
 		idx = tonumber(what)
