@@ -22,7 +22,7 @@ local continueRunning = true;
 ]]
 jit.off(WindowProc)
 function WindowProc(hwnd, msg, wparam, lparam)
-    print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs:lookup(msg)))
+    print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
     --print(string.format("WindowProc, msg: 0x%x", msg))
     if msg == ffi.C.WM_CLOSE then
         --User32.PostQuitMessage(0);

@@ -18,8 +18,9 @@
 -- WinUser.h
 ]]
 
+local enum = require("enum")
 
-local export = {
+local export = enum {
 	WM_NULL 			= 0x0000;
 	WM_CREATE 			= 0x0001;
 	WM_DESTROY 			= 0x0002;
@@ -191,15 +192,5 @@ local export = {
 
 	WM_APP 				= 0x8000;
 }
-
-function export.lookup(self, num)
-	for k, v in pairs(self) do 
-		if v == num then
-			return k
-		end
-	end 
-
-	return tostring(num)
-end 
 
 return export
