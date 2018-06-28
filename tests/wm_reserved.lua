@@ -1,3 +1,13 @@
+--[[
+	This file is similar to the 'wmmsgs.lua' file.
+	The difference is, this file has a 'WM_' for every
+	value from 0x0000 all the way up to 0x4000, filling
+	in the gaps from the wmmsgs file with WM_RESERVED_XXX
+	That way, if we ever see a message that we don't already
+	know, we'll at least see the 'RESERVED' and can investigate.
+]]
+local enum = require("enum")
+
 local export = {
     WM_NULL = 0x0000;
     WM_CREATE = 0x01;
@@ -1025,14 +1035,5 @@ WM_CBT_RESERVED__reserved_3fe = 0x3fe;
 WM_CBT_RESERVED_LAST = 0x3ff
 }
 
-function export.lookup(self, num)
-	for k, v in pairs(self) do 
-		if v == num then
-			return k
-		end
-	end 
-
-	return tostring(num)
-end 
 
 return export

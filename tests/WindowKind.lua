@@ -1,5 +1,20 @@
 -- WindowKind.lua
+--[[
+    A WindowKind is a class of Window.  This is a convenience
+    for getting a particular kind of window registered.
+    The primary working interface is the constructor, which 
+    looks like this:
+        function WindowKind.create(self, classname, msgproc, style)
 
+    Parameters:
+            classname - The name of the window class
+            msgproc - A 'WindowProc', which will receive all the messages
+            style - a style for the window class
+    
+    The real benefit is that once you construct a Window class, you 
+    can use this as a class factory, to generate instances of 
+    that kind of Window.
+]]
 local ffi = require("ffi");
 local bit = require("bit");
 local bor = bit.bor;
