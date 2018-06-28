@@ -7,8 +7,12 @@
 	For the most part the messages are taken from WinUser.h, which 
 	defines them.  The ones in this file cover all Windows releases.
 
-	The database has a 'lookup' function, which can be used to turn
-	code into a string.
+	The database has a 'reverse lookup' feature, which can be used to turn
+	code into a string.  simply use:
+		local msgs = require("wmmsgs")
+		local name = msgs[0x0007];
+		
+		-- name == 'WM_SETFOCUS'
 
 -- Standard Windows Messages
 -- References 

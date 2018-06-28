@@ -45,11 +45,9 @@ end
 ]=]
 
 function arch.fieldAddress(astruct, fieldname)
-	local structtype = ffi.typeof(astruct);
-	local offset = ffi.offsetof(structtype, fieldname);
-	local structptr = ffi.cast("uint8_t *", astruct); 
+	local offset = ffi.offsetof(ffi.typeof(astruct), fieldname);
 	
-	return structptr + offset;
+	return ffi.cast("uint8_t *", astruct) + offset;
 end
 
 return arch;

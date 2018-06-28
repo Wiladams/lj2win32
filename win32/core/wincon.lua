@@ -17,7 +17,9 @@ typedef struct _SMALL_RECT {
     SHORT Right;
     SHORT Bottom;
 } SMALL_RECT, *PSMALL_RECT;
+]]
 
+ffi.cdef[[
 typedef struct _KEY_EVENT_RECORD {
     BOOL bKeyDown;
     WORD wRepeatCount;
@@ -50,7 +52,9 @@ static const int NLS_HIRAGANA          = 0x00040000; // DBCS for JPN: Hiragana m
 static const int NLS_ROMAN             = 0x00400000; // DBCS for JPN: Roman/Noroman mode.
 static const int NLS_IME_CONVERSION    = 0x00800000; // DBCS for JPN: IME conversion.
 static const int NLS_IME_DISABLE       = 0x20000000; // DBCS for JPN: IME enable/disable.
+]]
 
+ffi.cdef[[
 typedef struct _MOUSE_EVENT_RECORD {
     COORD dwMousePosition;
     DWORD dwButtonState;
@@ -76,8 +80,9 @@ static const int MOUSE_MOVED   =0x0001;
 static const int DOUBLE_CLICK  =0x0002;
 static const int MOUSE_WHEELED =0x0004;
 static const int MOUSE_HWHEELED =0x0008;
+]]
 
-
+ffi.cdef[[
 typedef struct _WINDOW_BUFFER_SIZE_RECORD {
     COORD dwSize;
 } WINDOW_BUFFER_SIZE_RECORD, *PWINDOW_BUFFER_SIZE_RECORD;
