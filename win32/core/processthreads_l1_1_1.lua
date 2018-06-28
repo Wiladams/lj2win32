@@ -2,8 +2,8 @@
 -- api-ms-win-core-processthreads-l1-1-1.dll	
 local ffi = require("ffi");
 
-local WinBase = require("WinBase");
-local WinNT = require("WinNT");
+local WinBase = require("win32.winbase");
+local WinNT = require("win32.winnt");
 
 
 -- Win8
