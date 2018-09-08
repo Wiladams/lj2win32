@@ -532,6 +532,8 @@ typedef struct WSAData {
 ]]
 end
 
+require("win32.inaddr")
+
 -- Basic socket definitions
 --[[
  s_addr  S_un.S_addr /* can be used for most tcp & ip code */

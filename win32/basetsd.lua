@@ -20,29 +20,9 @@
 ]]
 local ffi = require("ffi");
 
--- Define _WIN64 from the very beginning because various
--- other data structures are dependent on it. 
--- Make it global for ease.
-_WIN64 = (ffi.os == "Windows") and ffi.abi("64bit");
+-- start with core definitions found in intsafe
+require ("win32.intsafe")
 
--- intsafe.h contains many of these base
--- definitions as well.
-ffi.cdef[[
-typedef char          	CHAR;
-typedef unsigned char	UCHAR;
-typedef uint8_t         BYTE;
-typedef int16_t     	SHORT;
-typedef uint16_t        USHORT;
-typedef uint16_t		WORD;
-typedef int         	INT;
-typedef unsigned int	UINT;
-typedef int32_t        	LONG;
-typedef uint32_t        ULONG;
-typedef uint32_t        DWORD;
-typedef int64_t     	LONGLONG;
-typedef uint64_t		ULONGLONG;
-typedef uint64_t    	DWORDLONG;
-]]
 
 ffi.cdef[[
 typedef uint64_t        *PDWORDLONG;
@@ -74,26 +54,18 @@ typedef uint32_t  ULONG32, *PULONG32;
 typedef uint32_t  DWORD32, *PDWORD32;
 ]]
 
-if _WIN64 then
-ffi.cdef[[
-typedef int64_t   INT_PTR, *PINT_PTR;
-typedef uint64_t  UINT_PTR, *PUINT_PTR;
-typedef int64_t   LONG_PTR, *PLONG_PTR;
-typedef uint64_t  ULONG_PTR, *PULONG_PTR;
-]]
-else
-ffi.cdef[[
-typedef int             INT_PTR, *PINT_PTR;
-typedef unsigned int    UINT_PTR, *PUINT_PTR;
-typedef long            LONG_PTR, *PLONG_PTR;
-typedef unsigned long   ULONG_PTR, *PULONG_PTR;
-]]
 
-end
 
 ffi.cdef[[
-typedef ULONG_PTR		SIZE_T, *PSIZE_T;
-typedef LONG_PTR        SSIZE_T, *PSSIZE_T;
+typedef INT_PTR     *PINT_PTR;
+typedef UINT_PTR    *PUINT_PTR;
+typedef LONG_PTR    *PLONG_PTR;
+typedef ULONG_PTR   *PULONG_PTR;
+]]
+
+ffi.cdef[[
+typedef SIZE_T *PSIZE_T;
+typedef SSIZE_T *PSSIZE_T;
 ]]
 
 
@@ -102,20 +74,20 @@ ffi.cdef[[
 // Add Windows flavor DWORD_PTR types
 //
 
-typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
+typedef DWORD_PTR *PDWORD_PTR;
 
 //
 // The following types are guaranteed to be signed and 64 bits wide.
 //
 
-typedef int64_t LONG64, *PLONG64;
+typedef LONG64 *PLONG64;
 
 //
 // The following types are guaranteed to be unsigned and 64 bits wide.
 //
 
-typedef uint64_t ULONG64, *PULONG64;
-typedef uint64_t DWORD64, *PDWORD64;
+typedef ULONG64 *PULONG64;
+typedef DWORD64 *PDWORD64;
 
 //
 // Structure to represent a group-specific affinity, such as that of a
