@@ -461,6 +461,13 @@ QueryDosDeviceW(
          DWORD ucchMax
     );
 
+    DWORD
+QueryDosDeviceA(
+     LPCSTR lpDeviceName,
+    LPSTR lpTargetPath,
+         DWORD ucchMax
+    );
+
 BOOL
 ReadFile(
             HANDLE hFile,
@@ -668,8 +675,9 @@ return {
 	LocalFileTimeToFileTime = Lib.LocalFileTimeToFileTime,
 	LockFile = Lib.LockFile,
 	LockFileEx = Lib.LockFileEx,
-	QueryDosDeviceW = Lib.QueryDosDeviceW,
-	ReadFile = Lib.ReadFile,
+	QueryDosDeviceA = Lib.QueryDosDeviceA,
+    QueryDosDeviceW = Lib.QueryDosDeviceW,
+    ReadFile = Lib.ReadFile,
 	ReadFileEx = Lib.ReadFileEx,
 	ReadFileScatter = Lib.ReadFileScatter,
 	RemoveDirectoryA = Lib.RemoveDirectoryA,
