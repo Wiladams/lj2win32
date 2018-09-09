@@ -2,15 +2,11 @@
     This is the include file that defines all constants and types for
     accessing the keyboard device.
 --]]
+local ffi = require("ffi")
 
 local devioctl = require("win32.devioctl")
-
---[[
-#include <winapifamily.h>
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
---]]
-
+local core_string = require("win32.core.string_l1_1_0");
+local L = core_string.toUnicode;
 
 --[[
 //
@@ -23,7 +19,7 @@ local devioctl = require("win32.devioctl")
 --]]
 
 local DD_KEYBOARD_DEVICE_NAME   = "\\Device\\KeyboardClass";
---local DD_KEYBOARD_DEVICE_NAME_U = L"\\Device\\KeyboardClass";
+local DD_KEYBOARD_DEVICE_NAME_U = L"\\Device\\KeyboardClass";
 
 --[[
 //
@@ -38,31 +34,28 @@ local CTL_CODE = devioctl.CTL_CODE;
 local METHOD_BUFFERED = ffi.C.METHOD_BUFFERED;
 local FILE_ANY_ACCESS = ffi.C.FILE_ANY_ACCESS;
 
+local exports = {}
 
-#define IOCTL_KEYBOARD_QUERY_ATTRIBUTES      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_TYPEMATIC         CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0001, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_INDICATORS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0002, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_TYPEMATIC       CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0008, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_INDICATORS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0010, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_INDICATOR_TRANSLATION   CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0020, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_INSERT_DATA           CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0040, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_QUERY_EXTENDED_ATTRIBUTES     CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0080, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_QUERY_ATTRIBUTES      = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_SET_TYPEMATIC         = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0001, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_SET_INDICATORS        = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0002, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_QUERY_TYPEMATIC       = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0008, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_QUERY_INDICATORS      = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0010, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_QUERY_INDICATOR_TRANSLATION  = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0020, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_INSERT_DATA           = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0040, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_QUERY_EXTENDED_ATTRIBUTES    = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0080, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
-//
-// These Device IO control query/set IME status to keyboard hardware.
-//
-#define IOCTL_KEYBOARD_QUERY_IME_STATUS      CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0400, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#define IOCTL_KEYBOARD_SET_IME_STATUS        CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0401, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
-//
-// Declare the GUID that represents the device interface for keyboards.
-//
-#ifndef FAR
-#define FAR
-#endif
+-- These Device IO control query/set IME status to keyboard hardware.
 
+exports.IOCTL_KEYBOARD_QUERY_IME_STATUS      = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0400, METHOD_BUFFERED, FILE_ANY_ACCESS)
+exports.IOCTL_KEYBOARD_SET_IME_STATUS        = CTL_CODE(FILE_DEVICE_KEYBOARD, 0x0401, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+-- Declare the GUID that represents the device interface for keyboards.
+--[[
 DEFINE_GUID( GUID_DEVINTERFACE_KEYBOARD, 0x884b96c3, 0x56ef, 0x11d1, \
              0xbc, 0x8c, 0x00, 0xa0, 0xc9, 0x14, 0x05, 0xdd);
+--]]
 
 --[[
 //
@@ -111,25 +104,28 @@ typedef struct _KEYBOARD_INPUT_DATA {
 } KEYBOARD_INPUT_DATA, *PKEYBOARD_INPUT_DATA;
 ]]
 
+ffi.cdef[[
 //
 // Define the keyboard overrun MakeCode.
 //
 
-#define KEYBOARD_OVERRUN_MAKE_CODE    0xFF
+static const int KEYBOARD_OVERRUN_MAKE_CODE  =  0xFF;
 
 //
 // Define the keyboard input data Flags.
 //
 
-#define KEY_MAKE  0
-#define KEY_BREAK 1
-#define KEY_E0    2
-#define KEY_E1    4
-#define KEY_TERMSRV_SET_LED 8
-#define KEY_TERMSRV_SHADOW  0x10
-#define KEY_TERMSRV_VKPACKET 0x20
-#define KEY_RIM_VKEY 0x40
+static const int KEY_MAKE  = 0;
+static const int KEY_BREAK = 1;
+static const int KEY_E0    = 2;
+static const int KEY_E1    = 4;
+static const int KEY_TERMSRV_SET_LED = 8;
+static const int KEY_TERMSRV_SHADOW  = 0x10;
+static const int KEY_TERMSRV_VKPACKET = 0x20;
+static const int KEY_RIM_VKEY = 0x40;
+]]
 
+ffi.cdef[[
 //
 // NtDeviceIoControlFile Input/Output Buffer record structures for
 // IOCTL_KEYBOARD_QUERY_TYPEMATIC/IOCTL_KEYBOARD_SET_TYPEMATIC.
@@ -157,7 +153,9 @@ typedef struct _KEYBOARD_TYPEMATIC_PARAMETERS {
     USHORT  Delay;
 
 } KEYBOARD_TYPEMATIC_PARAMETERS, *PKEYBOARD_TYPEMATIC_PARAMETERS;
+]]
 
+ffi.cdef[[
 //
 // NtDeviceIoControlFile OutputBuffer record structures for
 // IOCTL_KEYBOARD_QUERY_ATTRIBUTES.
@@ -219,13 +217,14 @@ typedef struct _KEYBOARD_ATTRIBUTES {
     KEYBOARD_TYPEMATIC_PARAMETERS KeyRepeatMaximum;
 
 } KEYBOARD_ATTRIBUTES, *PKEYBOARD_ATTRIBUTES;
+]]
 
-
+ffi.cdef[[
 //
 // The structure used by IOCTL_KEYBOARD_QUERY_EXTENDED_ATTRIBUTES
 //
 
-#define KEYBOARD_EXTENDED_ATTRIBUTES_STRUCT_VERSION_1  (1)
+static const int KEYBOARD_EXTENDED_ATTRIBUTES_STRUCT_VERSION_1  = 1;
 
 typedef struct _KEYBOARD_EXTENDED_ATTRIBUTES {
     //
@@ -265,19 +264,29 @@ typedef struct _KEYBOARD_EXTENDED_ATTRIBUTES {
     UCHAR ImplementedInputAssistControls;
 
 } KEYBOARD_EXTENDED_ATTRIBUTES, *PKEYBOARD_EXTENDED_ATTRIBUTES;
+]]
 
+--[[
 //
 // ENHANCED_KEYBOARD() is TRUE if the value for keyboard type indicates an
 // Enhanced (101- or 102-key) or compatible keyboard.  The result is FALSE
 // if the keyboard is an old-style AT keyboard (83- or 84- or 86-key keyboard).
 //
-#define ENHANCED_KEYBOARD(Id) ((Id).Type == 2 || (Id).Type == 4 || FAREAST_KEYBOARD(Id))
-//
-// Japanese keyboard(7) and Korean keyboard(8) are also Enhanced (101-)
-// or compatible keyboard.
-//
-#define FAREAST_KEYBOARD(Id)  ((Id).Type == 7 || (Id).Type == 8)
+--]]
+function exports.ENHANCED_KEYBOARD(Id) 
+    return Id.Type == 2 or Id.Type == 4 or exports.FAREAST_KEYBOARD(Id)
+end
 
+--[[
+ Japanese keyboard(7) and Korean keyboard(8) are also Enhanced (101-)
+ or compatible keyboard.
+--]]
+
+function exports.FAREAST_KEYBOARD(Id)  
+    return Id.Type == 7 or Id.Type == 8
+end
+
+ffi.cdef[[
 //
 // NtDeviceIoControlFile Input/Output Buffer record structures for
 // IOCTL_KEYBOARD_QUERY_INDICATORS/IOCTL_KEYBOARD_SET_INDICATORS.
@@ -299,7 +308,9 @@ typedef struct _KEYBOARD_INDICATOR_PARAMETERS {
     USHORT    LedFlags;
 
 } KEYBOARD_INDICATOR_PARAMETERS, *PKEYBOARD_INDICATOR_PARAMETERS;
+]]
 
+ffi.cdef[[
 //
 // NtDeviceIoControlFile Output Buffer record structures for
 // IOCTL_KEYBOARD_QUERY_INDICATOR_TRANSLATION.
@@ -336,20 +347,21 @@ typedef struct _KEYBOARD_INDICATOR_TRANSLATION {
     INDICATOR_LIST IndicatorList[1];
 
 } KEYBOARD_INDICATOR_TRANSLATION, *PKEYBOARD_INDICATOR_TRANSLATION;
+]]
 
+ffi.cdef[[
 //
 // Define the keyboard indicators.
 //
+static const int KEYBOARD_LED_INJECTED     = 0x8000; //Used by Terminal Server
+static const int KEYBOARD_SHADOW           = 0x4000; //Used by Terminal Server
+static const int KEYBOARD_KANA_LOCK_ON     = 8; // Japanese keyboard
+static const int KEYBOARD_CAPS_LOCK_ON     = 4;
+static const int KEYBOARD_NUM_LOCK_ON      = 2;
+static const int KEYBOARD_SCROLL_LOCK_ON   = 1;
+]]
 
-#define KEYBOARD_LED_INJECTED     0x8000 //Used by Terminal Server
-#define KEYBOARD_SHADOW           0x4000 //Used by Terminal Server
-//#if defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
-#define KEYBOARD_KANA_LOCK_ON     8 // Japanese keyboard
-//#endif // defined(FE_SB) || defined(WINDOWS_FE) || defined(DBCS)
-#define KEYBOARD_CAPS_LOCK_ON     4
-#define KEYBOARD_NUM_LOCK_ON      2
-#define KEYBOARD_SCROLL_LOCK_ON   1
-
+ffi.cdef[[
 //
 // Generic NtDeviceIoControlFile Input Buffer record structure for
 // various keyboard IOCTLs.
@@ -365,14 +377,19 @@ typedef struct _KEYBOARD_UNIT_ID_PARAMETER {
     USHORT UnitId;
 
 } KEYBOARD_UNIT_ID_PARAMETER, *PKEYBOARD_UNIT_ID_PARAMETER;
+]]
 
+--[[
 //
 // Define the base values for the keyboard error log packet's
 // UniqueErrorValue field.
 //
 
 #define KEYBOARD_ERROR_VALUE_BASE        10000
+--]]
 
+
+ffi.cdef[[
 //
 // NtDeviceIoControlFile Input/Output Buffer record structures for
 // IOCTL_KEYBOARD_QUERY_IME_STATUS/IOCTL_KEYBOARD_SET_IME_STATUS.
@@ -398,17 +415,9 @@ typedef struct _KEYBOARD_IME_STATUS {
     ULONG ImeConvMode;
 
 } KEYBOARD_IME_STATUS, *PKEYBOARD_IME_STATUS;
-
-#ifdef __cplusplus
-}
-#endif
+]]
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if _MSC_VER >= 1200
-#pragma warning(pop)
-#endif
 
 

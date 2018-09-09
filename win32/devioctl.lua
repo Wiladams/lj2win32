@@ -1,6 +1,9 @@
 local ffi = require("ffi")
 local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift;
+local bor, band = bit.bor, bit.band;
+
+require("win32.intsafe")
 
 local exports = {}
 
@@ -104,27 +107,24 @@ static const int FILE_DEVICE_UCMTCPCI            = 0x00000058;
 //
 --]]
 
-exports.CTL_CODE( DeviceType, Function, Method, Access ) 
-    return bor(lshift(DeviceType, 16) | lshift(Access, 14) | lshift(Function, 2) | (Method))
+function exports.CTL_CODE( DeviceType, Function, Method, Access ) 
+    return bor(lshift(DeviceType, 16) , lshift(Access, 14) , lshift(Function, 2) , Method)
 end 
 
---[[
-//
-// Macro to extract device type out of the device io control code
-//
-#define DEVICE_TYPE_FROM_CTL_CODE(ctrlCode)     (((ULONG)(ctrlCode & 0xffff0000)) >> 16)
+-- Macro to extract device type out of the device io control code
+function exports.DEVICE_TYPE_FROM_CTL_CODE(ctrlCode)     
+    return rshift(band(ctrlCode, 0xffff0000), 16)
+end
 
-//
-// Macro to extract buffering method out of the device io control code
-//
-#define METHOD_FROM_CTL_CODE(ctrlCode)          ((ULONG)(ctrlCode & 3))
---]]
+-- Macro to extract buffering method out of the device io control code
+function exports.METHOD_FROM_CTL_CODE(ctrlCode)          
+    return band(ctrlCode, 3)
+end
 
 ffi.cdef[[
 //
 // Define the method codes for how buffers are passed for I/O and FS controls
 //
-
 static const int METHOD_BUFFERED   =              0;
 static const int METHOD_IN_DIRECT  =              1;
 static const int METHOD_OUT_DIRECT =              2;
@@ -137,10 +137,10 @@ static const int METHOD_NEITHER    =              3;
 //   METHOD_DIRECT_TO_HARDWARE (writes, aka METHOD_IN_DIRECT)
 //   METHOD_DIRECT_FROM_HARDWARE (reads, aka METHOD_OUT_DIRECT)
 //
-
-#define METHOD_DIRECT_TO_HARDWARE       METHOD_IN_DIRECT
-#define METHOD_DIRECT_FROM_HARDWARE     METHOD_OUT_DIRECT
 --]]
+exports.METHOD_DIRECT_TO_HARDWARE =      exports.METHOD_IN_DIRECT;
+exports.METHOD_DIRECT_FROM_HARDWARE = exports.METHOD_OUT_DIRECT;
+
 
 --[[
 //
@@ -165,7 +165,4 @@ static const int FILE_READ_ACCESS     =     0x0001;    // file & pipe
 static const int FILE_WRITE_ACCESS    =     0x0002;    // file & pipe
 ]]
 
-local exports = {
-
-}
 return exports

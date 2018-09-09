@@ -56,7 +56,7 @@ local function getDevicePath(deviceName)
         return false, ffi.errno();
     end
 
-    return lpTargetPath, res
+    return core_string.toAnsi(lpTargetPath, res), res
 end
 
 
