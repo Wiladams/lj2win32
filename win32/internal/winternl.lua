@@ -30,9 +30,9 @@
 --]]
 
 
---#include <windef.h>
+require("win32.internal.windef")
 
-
+ffi.cdef[[
 
 //
 // These data structures and type definitions are needed for compilation and
@@ -65,7 +65,9 @@ typedef struct _UNICODE_STRING {
 } UNICODE_STRING;
 typedef UNICODE_STRING *PUNICODE_STRING;
 typedef const UNICODE_STRING *PCUNICODE_STRING;
+]]
 
+--[[
 //
 // The PEB_LDR_DATA, LDR_DATA_TABLE_ENTRY, RTL_USER_PROCESS_PARAMETERS, PEB
 // and TEB structures are subject to changes between Windows releases; thus,
@@ -145,7 +147,9 @@ typedef struct _LDR_DATA_TABLE_ENTRY {
 #pragma warning(pop)
     ULONG TimeDateStamp;
 } LDR_DATA_TABLE_ENTRY, *PLDR_DATA_TABLE_ENTRY;
+--]]
 
+ffi.cdef[[
 typedef struct _RTL_USER_PROCESS_PARAMETERS {
     BYTE Reserved1[16];
     PVOID Reserved2[10];
@@ -153,11 +157,7 @@ typedef struct _RTL_USER_PROCESS_PARAMETERS {
     UNICODE_STRING CommandLine;
 } RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
 
-typedef
-VOID
-(NTAPI *PPS_POST_PROCESS_INIT_ROUTINE) (
-    VOID
-    );
+typedef VOID (__stdcall *PPS_POST_PROCESS_INIT_ROUTINE) (VOID);
 
 typedef struct _PEB {
     BYTE Reserved1[2];
@@ -203,7 +203,9 @@ typedef struct _OBJECT_ATTRIBUTES {
     PVOID SecurityQualityOfService;
 } OBJECT_ATTRIBUTES;
 typedef OBJECT_ATTRIBUTES *POBJECT_ATTRIBUTES;
+]]
 
+--[[
 typedef struct _IO_STATUS_BLOCK {
 #pragma warning(push)
 #pragma warning(disable: 4201) // we'll always use the Microsoft compiler
@@ -215,10 +217,12 @@ typedef struct _IO_STATUS_BLOCK {
 
     ULONG_PTR Information;
 } IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
+--]]
 
+ffi.cdef[[
 typedef
 VOID
-(NTAPI *PIO_APC_ROUTINE) (
+(__stdcall *PIO_APC_ROUTINE) (
     IN PVOID ApcContext,
     IN PIO_STATUS_BLOCK IoStatusBlock,
     IN ULONG Reserved
@@ -320,7 +324,9 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemLookasideInformation = 45,
     SystemPolicyInformation = 134,
 } SYSTEM_INFORMATION_CLASS;
+]]
 
+ffi.cdef[[
 //
 // Object Information Classes
 //
@@ -351,7 +357,9 @@ typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
     ULONG Reserved [22];    // reserved for internal use
 
 } PUBLIC_OBJECT_TYPE_INFORMATION, *PPUBLIC_OBJECT_TYPE_INFORMATION;
+]]
 
+--[[
 #if (_WIN32_WINNT >= 0x0501)
 //
 // use the WTS API instead
@@ -363,7 +371,9 @@ typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
 //
 #define INTERNAL_TS_ACTIVE_CONSOLE_ID ( *((volatile ULONG*)(0x7ffe02d8)) )
 #endif // (_WIN32_WINNT >= 0x0501)
+--]]
 
+--[[
 //
 // These functions are intended for use by internal core Windows components
 // since these functions may change between Windows releases.
@@ -372,13 +382,14 @@ typedef struct __PUBLIC_OBJECT_TYPE_INFORMATION {
 #define RtlMoveMemory(Destination,Source,Length) memmove((Destination),(Source),(Length))
 #define RtlFillMemory(Destination,Length,Fill) memset((Destination),(Fill),(Length))
 #define RtlZeroMemory(Destination,Length) memset((Destination),0,(Length))
+--]]
 
 //
 // use the Win32 API instead
 //     CloseHandle
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtClose (
     IN HANDLE Handle
     );
@@ -388,7 +399,7 @@ NtClose (
 //     CreateFile
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtCreateFile (
     OUT PHANDLE FileHandle,
     IN ACCESS_MASK DesiredAccess,
@@ -408,7 +419,7 @@ NtCreateFile (
 //     CreateFile
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtOpenFile (
     OUT PHANDLE FileHandle,
     IN ACCESS_MASK DesiredAccess,
@@ -423,7 +434,7 @@ NtOpenFile (
 //     N/A
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtRenameKey (
     _In_ HANDLE KeyHandle,
     _In_ PUNICODE_STRING NewName
@@ -435,7 +446,7 @@ NtRenameKey (
 //
 
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtNotifyChangeMultipleKeys (
     _In_ HANDLE MasterKeyHandle,
     _In_opt_ ULONG Count,
@@ -464,7 +475,7 @@ typedef struct _KEY_VALUE_ENTRY {
 } KEY_VALUE_ENTRY, *PKEY_VALUE_ENTRY;
 
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtQueryMultipleValueKey (
     _In_ HANDLE KeyHandle,
     _Inout_updates_(EntryCount) PKEY_VALUE_ENTRY ValueEntries,
@@ -490,7 +501,7 @@ typedef enum _KEY_SET_INFORMATION_CLASS {
 } KEY_SET_INFORMATION_CLASS;
 
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtSetInformationKey (
     _In_ HANDLE KeyHandle,
     _In_ _Strict_type_match_
@@ -504,7 +515,7 @@ NtSetInformationKey (
 //     DeviceIoControl
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtDeviceIoControlFile (
     IN HANDLE FileHandle,
     IN HANDLE Event OPTIONAL,
@@ -523,7 +534,7 @@ NtDeviceIoControlFile (
 //     WaitForSingleObjectEx
 //
 NTSTATUS
-NTAPI
+__stdcall
 NtWaitForSingleObject (
     IN HANDLE Handle,
     IN BOOLEAN Alertable,
@@ -535,7 +546,7 @@ NtWaitForSingleObject (
 //     CheckNameLegalDOS8Dot3
 //
 BOOLEAN
-NTAPI
+__stdcall
 RtlIsNameLegalDOS8Dot3 (
     IN PUNICODE_STRING Name,
     IN OUT POEM_STRING OemName OPTIONAL,
@@ -549,7 +560,7 @@ RtlIsNameLegalDOS8Dot3 (
 _When_(Status < 0, _Out_range_(>, 0))
 _When_(Status >= 0, _Out_range_(==, 0))
 ULONG
-NTAPI
+__stdcall
 RtlNtStatusToDosError (
    NTSTATUS Status
    );
@@ -560,7 +571,7 @@ RtlNtStatusToDosError (
 //     GetProcessId
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtQueryInformationProcess (
     IN HANDLE ProcessHandle,
     IN PROCESSINFOCLASS ProcessInformationClass,
@@ -574,7 +585,7 @@ NtQueryInformationProcess (
 //     GetThreadIOPendingFlag
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtQueryInformationThread (
     IN HANDLE ThreadHandle,
     IN THREADINFOCLASS ThreadInformationClass,
@@ -593,7 +604,7 @@ NtQueryInformationThread (
 
 __kernel_entry NTSYSCALLAPI
 NTSTATUS
-NTAPI
+__stdcall
 NtQueryObject (
     _In_opt_ HANDLE Handle,
     _In_ OBJECT_INFORMATION_CLASS ObjectInformationClass,
@@ -610,7 +621,7 @@ NtQueryObject (
 //     CryptGenRandom
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtQuerySystemInformation (
     IN SYSTEM_INFORMATION_CLASS SystemInformationClass,
     OUT PVOID SystemInformation,
@@ -623,7 +634,7 @@ NtQuerySystemInformation (
 //     GetSystemTimeAsFileTime
 //
 __kernel_entry NTSTATUS
-NTAPI
+__stdcall
 NtQuerySystemTime (
     OUT PLARGE_INTEGER SystemTime
     );
@@ -633,7 +644,7 @@ NtQuerySystemTime (
 //     LocalFileTimeToFileTime
 //
 NTSTATUS
-NTAPI
+__stdcall
 RtlLocalTimeToSystemTime (
     IN PLARGE_INTEGER LocalTime,
     OUT PLARGE_INTEGER SystemTime
@@ -646,7 +657,7 @@ RtlLocalTimeToSystemTime (
 //     perform the calculation
 //
 BOOLEAN
-NTAPI
+__stdcall
 RtlTimeToSecondsSince1970 (
     PLARGE_INTEGER Time,
     PULONG ElapsedSeconds
@@ -657,60 +668,60 @@ RtlTimeToSecondsSince1970 (
 // defined in this header file.
 //
 VOID
-NTAPI
+__stdcall
 RtlFreeAnsiString (
     PANSI_STRING AnsiString
     );
 
 VOID
-NTAPI
+__stdcall
 RtlFreeUnicodeString (
     PUNICODE_STRING UnicodeString
     );
 
 VOID
-NTAPI
+__stdcall
 RtlFreeOemString(
     POEM_STRING OemString
     );
 
 VOID
-NTAPI
+__stdcall
 RtlInitString (
     PSTRING DestinationString,
     PCSZ SourceString
     );
 
 NTSTATUS
-NTAPI
+__stdcall
 RtlInitStringEx (
     PSTRING DestinationString,
     PCSZ SourceString
     );
 
 VOID
-NTAPI
+__stdcall
 RtlInitAnsiString (
     PANSI_STRING DestinationString,
     PCSZ SourceString
     );
 
 NTSTATUS
-NTAPI
+__stdcall
 RtlInitAnsiStringEx (
     PANSI_STRING DestinationString,
     PCSZ SourceString
     );
 
 VOID
-NTAPI
+__stdcall
 RtlInitUnicodeString (
     PUNICODE_STRING DestinationString,
     PCWSTR SourceString
     );
 
 NTSTATUS
-NTAPI
+__stdcall
 RtlAnsiStringToUnicodeString (
     PUNICODE_STRING DestinationString,
     PCANSI_STRING SourceString,
@@ -718,7 +729,7 @@ RtlAnsiStringToUnicodeString (
     );
 
 NTSTATUS
-NTAPI
+__stdcall
 RtlUnicodeStringToAnsiString (
     PANSI_STRING DestinationString,
     PCUNICODE_STRING SourceString,
@@ -726,7 +737,7 @@ RtlUnicodeStringToAnsiString (
     );
 
 NTSTATUS
-NTAPI
+__stdcall
 RtlUnicodeStringToOemString(
     POEM_STRING DestinationString,
     PCUNICODE_STRING SourceString,
@@ -740,7 +751,7 @@ RtlUnicodeStringToOemString(
 //     set cbMultiByte to 0
 //
 NTSTATUS
-NTAPI
+__stdcall
 RtlUnicodeToMultiByteSize(
     _Out_ PULONG BytesInMultiByteString,
     _In_reads_bytes_(BytesInUnicodeString) PWCH UnicodeString,
@@ -752,7 +763,7 @@ RtlUnicodeToMultiByteSize(
 //     strtol
 //
 NTSTATUS
-NTAPI
+__stdcall
 RtlCharToInteger (
     PCSZ String,
     ULONG Base,
@@ -764,7 +775,7 @@ RtlCharToInteger (
 //     ConvertSidToStringSid
 //
 NTSTATUS
-NTAPI
+__stdcall
 RtlConvertSidToUnicodeString (
     PUNICODE_STRING UnicodeString,
     PSID Sid,
@@ -776,7 +787,7 @@ RtlConvertSidToUnicodeString (
 //     CryptGenRandom
 //
 ULONG
-NTAPI
+__stdcall
 RtlUniform (
     PULONG Seed
     );
