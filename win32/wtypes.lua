@@ -210,22 +210,26 @@ typedef struct tagCLIPDATA
 typedef unsigned short VARTYPE;
 ]]
 
+local DECLARE_HANDLE = function(name)
+    return nil;
+end
+
 if STRICT then
     ffi.cdef[[
         typedef void *HANDLE;
     ]]
 
-    local function DECLARE_HANDLE(name) 
+DECLARE_HANDLE = function(name) 
         ffi.cdef(string.format("struct %s__{int unused;}; typedef struct %s__ *%s", name, name, name));
-    end
+end
 else
     ffi.cdef[[
         typedef PVOID HANDLE;
     ]]
     
-    local function DECLARE_HANDLE(name) 
+DECLARE_HANDLE = function(name) 
         ffi.cdef(string.format("typedef HANDLE %s",name));
-    end
+end
 end
 
 ffi.cdef[[
