@@ -39,7 +39,7 @@ ffi.cdef[[
 // use of the internal Windows APIs defined in this header.
 //
 
-typedef _Return_type_success_(return >= 0) LONG NTSTATUS;
+typedef LONG NTSTATUS;
 
 typedef CONST char *PCSZ;
 
