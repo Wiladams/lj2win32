@@ -1,16 +1,6 @@
 --[[
 /************************************************************************
 *                                                                       *
-*   winternl.h -- This module defines the internal NT APIs and data     *
-*       structures that are intended for the use only by internal core  *
-*       Windows components.  These APIs and data structures may change  *
-*       at any time.                                                    *
-*                                                                       *
-*   These APIs and data structures are subject to changes from one      *
-*       Windows release to another Windows release.  To maintain the    *
-*       compatiblity of your application, avoid using these APIs and    *
-*       data structures.                                                *
-*                                                                       *
 *   The appropriate mechanism for accessing the functions defined in    *
 *       this header is to use LoadLibrary() for ntdll.dll and           *
 *       GetProcAddress() for the particular function.  By using this    *
@@ -30,7 +20,7 @@
 --]]
 
 
-require("win32.internal.windef")
+require("win32.windef")
 
 ffi.cdef[[
 
@@ -40,8 +30,7 @@ ffi.cdef[[
 //
 
 typedef LONG NTSTATUS;
-
-typedef CONST char *PCSZ;
+typedef const char *PCSZ;
 
 typedef struct _STRING {
     USHORT Length;
@@ -67,62 +56,9 @@ typedef UNICODE_STRING *PUNICODE_STRING;
 typedef const UNICODE_STRING *PCUNICODE_STRING;
 ]]
 
---[[
-//
-// The PEB_LDR_DATA, LDR_DATA_TABLE_ENTRY, RTL_USER_PROCESS_PARAMETERS, PEB
-// and TEB structures are subject to changes between Windows releases; thus,
-// the field offsets and reserved fields may change. The reserved fields are
-// reserved for use only by the Windows operating systems. Do not assume a
-// maximum size for these structures.
-//
-// Instead of using the InMemoryOrderModuleList field of the
-//     LDR_DATA_TABLE_ENTRY structure, use the Win32 API EnumProcessModules
-//
-// Instead of using the IsBeingDebugged field of the PEB structure, use the
-//     Win32 APIs IsDebuggerPresent or CheckRemoteDebuggerPresent
-//
-// Instead of using the SessionId field of the PEB structure, use the Win32
-//     APIs GetCurrentProcessId and ProcessIdToSessionId
-//
-// Instead of using the Tls fields of the TEB structure, use the Win32 APIs
-//     TlsAlloc, TlsGetValue, TlsSetValue and TlsFree
-//
-// Instead of using the ReservedForOle field, use the COM API
-//     CoGetContextToken
-//
-// Sample x86 assembly code that gets the SessionId (subject to change
-//     between Windows releases, use the Win32 APIs to make your application
-//     resilient to changes)
-//     mov     eax,fs:[00000018]
-//     mov     eax,[eax+0x30]
-//     mov     eax,[eax+0x1d4]
-//
 
-//
-// N.B. Fields marked as reserved do not necessarily reflect the structure
-//      of the real struct. They may simply guarantee that the offets of
-//      the exposed fields are correct. When code matches this pattern,
-//
-//          TYPE1 ExposedField1;
-//          BYTE ReservedBytes[b];
-//          PVOID ReservedPtrs[p];
-//          TYPE2 ExposedField2;
-//
-//      or that pattern with ReservedBytes and ReservedPtrs swapped, it is
-//      likely that 'b' and 'p' are derived from the following system:
-//
-//          GapThirtyTwo = 4p + b
-//          GapSixtyFour = 8p + b
-//
-//      where GapThirtyTwo is the number of bytes between the two exposed
-//      fields in the 32-bit version of the real struct and GapSixtyFour
-//      is the number of bytes between the two exposed fields in the 64-bit
-//      version of the real struct.
-//
-//      Also note that such code must take into account the alignment of
-//      the ReservedPtrs field.
-//
 
+ffi.cdef[[
 typedef struct _PEB_LDR_DATA {
     BYTE Reserved1[8];
     PVOID Reserved2[3];
@@ -138,16 +74,15 @@ typedef struct _LDR_DATA_TABLE_ENTRY {
     UNICODE_STRING FullDllName;
     BYTE Reserved4[8];
     PVOID Reserved5[3];
-#pragma warning(push)
-#pragma warning(disable: 4201) // we'll always use the Microsoft compiler
+
     union {
         ULONG CheckSum;
         PVOID Reserved6;
     } DUMMYUNIONNAME;
-#pragma warning(pop)
+
     ULONG TimeDateStamp;
 } LDR_DATA_TABLE_ENTRY, *PLDR_DATA_TABLE_ENTRY;
---]]
+]]
 
 ffi.cdef[[
 typedef struct _RTL_USER_PROCESS_PARAMETERS {
@@ -205,27 +140,25 @@ typedef struct _OBJECT_ATTRIBUTES {
 typedef OBJECT_ATTRIBUTES *POBJECT_ATTRIBUTES;
 ]]
 
---[[
+ffi.cdef[[
 typedef struct _IO_STATUS_BLOCK {
-#pragma warning(push)
-#pragma warning(disable: 4201) // we'll always use the Microsoft compiler
+
     union {
         NTSTATUS Status;
         PVOID Pointer;
     } DUMMYUNIONNAME;
-#pragma warning(pop)
 
     ULONG_PTR Information;
 } IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
---]]
+]]
 
 ffi.cdef[[
 typedef
-VOID
+void
 (__stdcall *PIO_APC_ROUTINE) (
-    IN PVOID ApcContext,
-    IN PIO_STATUS_BLOCK IoStatusBlock,
-    IN ULONG Reserved
+    PVOID ApcContext,
+    PIO_STATUS_BLOCK IoStatusBlock,
+    ULONG Reserved
     );
 
 typedef struct _PROCESS_BASIC_INFORMATION {

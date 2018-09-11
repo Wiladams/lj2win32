@@ -11,8 +11,8 @@ require ("win32.arch");
 local wtypes = require ("win32.wtypes");
 
 local function test_DECLARE_HANDLE()
-    print("DECLARE_HANDLE: ", wtypes.DECLARE_HANDLE)
-    local moof = wtypes.DECLARE_HANDLE("MOOF")
+    print("DECLARE_HANDLE: ", DECLARE_HANDLE)
+    local moof = DECLARE_HANDLE("MOOF")
 end
 
 local function test_sizeof()

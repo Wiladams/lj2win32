@@ -7,8 +7,10 @@ local bor = bit.bor
 local lshift = bit.lshift
 local rshift = bit.rshift
 
+local minwindef = require("win32.minwindef")
 local basetsd = require("win32.basetsd");
 local arch = require("win32.arch");
+
 
 ffi.cdef[[
 typedef uint32_t *  PDWORD;
@@ -24,25 +26,18 @@ ffi.cdef[[
 typedef unsigned char *PBYTE;
 
 typedef BYTE			BOOLEAN;
-
 typedef wchar_t			WCHAR;
 
 
-typedef long      BOOL;
+
 typedef long *    PBOOL;
 
 
-typedef int *        LPINT;
-typedef int *        PINT;
 
-
-
-
-typedef float 			FLOAT;
 typedef double          DOUBLE;
 
 typedef uint8_t			BCHAR;
-typedef unsigned int	UINT32;
+//typedef unsigned int	UINT32;
 
 
 // Some pointer types
@@ -64,7 +59,7 @@ typedef LONGLONG 		*PLONGLONG;
 typedef ULONGLONG 		*PULONGLONG;
 
 
-typedef void        VOID;
+typedef void            VOID;
 typedef void *			PVOID;
 ]]
 
@@ -210,32 +205,9 @@ typedef struct tagCLIPDATA
 typedef unsigned short VARTYPE;
 ]]
 
-local DECLARE_HANDLE = function(name)
-    return nil;
-end
 
-if STRICT then
-    ffi.cdef[[
-        typedef void *HANDLE;
-    ]]
 
-DECLARE_HANDLE = function(name) 
-        ffi.cdef(string.format("struct %s__{int unused;}; typedef struct %s__ *%s", name, name, name));
-end
-else
-    ffi.cdef[[
-        typedef PVOID HANDLE;
-    ]]
-    
-DECLARE_HANDLE = function(name) 
-        ffi.cdef(string.format("typedef HANDLE %s",name));
-end
-end
-
-ffi.cdef[[
-typedef HANDLE *PHANDLE;
-]]
-
+--[[
 ffi.cdef[[
 // Various Handles
 typedef HANDLE       *  LPHANDLE;
@@ -276,7 +248,7 @@ typedef void *          HTASK;
 typedef void *          HWINSTA;
 typedef HANDLE          HWND;
 ]]
-
+--]]
 require "win32.guiddef"
 
 
