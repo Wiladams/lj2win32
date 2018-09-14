@@ -467,7 +467,7 @@ local function globalizeKernel(tbl)
 	rawset(tbl, "Kernel", Kernel);
 
 	-- task management
-	rawset(tbl, "halt", halt);
+	rawset(tbl,"halt", halt);
 	rawset(tbl,"run", run);
 	rawset(tbl,"coop", coop);
 	rawset(tbl,"spawn", spawn);

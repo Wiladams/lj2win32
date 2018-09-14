@@ -28,9 +28,10 @@ static const int ANYSIZE_ARRAY = 1;
 
 ffi.cdef[[
 static const int IMAGE_NUMBEROF_DIRECTORY_ENTRIES   = 16;
+//static const int MAX_PATH = 260;
+]]
 
-static const int MAX_PATH = 260;
-
+ffi.cdef[[
 typedef struct _IMAGE_FILE_HEADER {
     WORD    Machine;
     WORD    NumberOfSections;

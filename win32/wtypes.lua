@@ -7,7 +7,7 @@ local bor = bit.bor
 local lshift = bit.lshift
 local rshift = bit.rshift
 
-local minwindef = require("win32.minwindef")
+local minwindef = require("win32.windef")
 local basetsd = require("win32.basetsd");
 local arch = require("win32.arch");
 
@@ -206,6 +206,9 @@ typedef unsigned short VARTYPE;
 ]]
 
 
+ffi.cdef[[
+    typedef HANDLE          HDC;
+]]
 
 --[[
 ffi.cdef[[
@@ -215,7 +218,7 @@ typedef void *          HBITMAP;
 typedef void *          HBRUSH;
 typedef void *          HICON;
 typedef HICON           HCURSOR;
-typedef HANDLE          HDC;
+
 typedef void *          HDESK;
 typedef HANDLE          HDROP;
 typedef HANDLE          HDWP;
@@ -592,39 +595,10 @@ enum {
 ]]
 
 
-ffi.cdef[[
 
-typedef struct tagSIZE {
-  LONG cx;
-  LONG cy;
-} SIZE, *PSIZE, *LPSIZE;
-
-typedef struct tagPOINT {
-  int32_t x;
-  int32_t y;
-} POINT, *PPOINT, *LPPOINT;
-
-typedef struct tagPOINTS
-{
-    SHORT   x;
-    SHORT   y;
-} POINTS, *PPOINTS, *LPPOINTS;
-
-typedef struct _POINTL {
-  LONG x;
-  LONG y;
-} POINTL, *PPOINTL;
-]]
 
 ffi.cdef[[
-typedef struct tagRECT {
-	int32_t left;
-	int32_t top;
-	int32_t right;
-	int32_t bottom;
-} RECT, *PRECT, *LPRECT;
-
-typedef const RECT * LPCRECT;
+//typedef const RECT * LPCRECT;
 ]]
 
 
