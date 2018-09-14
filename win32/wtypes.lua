@@ -626,7 +626,7 @@ local exports = {
     SIZE = ffi.typeof("SIZE");
 
     -- Functions
-    DECLARE_HANDLE = DECLARE_HANDLE,
+
 }
 
 return exports

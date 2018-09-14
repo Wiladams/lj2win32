@@ -1,5 +1,18 @@
-local ffi = require("ffi")
+--[[
+	This is a pure lua scheduler.  It is used
+	to coordinate multiple lua coroutines.
 
+	require("scheduler")
+
+	It will automatically polute your global
+	namespace with new keywords:
+	Kernel
+	halt, run, coop, spawn, suspend, yield
+	onSignal, signalAll, signalAllImmediate, signalOne, waitForSignal
+
+	With this base of spawning, and signaling, fairly complex
+	cooperative multi-tasking can be constructed.
+]]
 local floor = math.floor;
 local insert = table.insert;
 
