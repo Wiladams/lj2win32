@@ -8,7 +8,7 @@
 ]]
 local enum = require("enum")
 
-local export = {
+local export = enum {
     WM_NULL = 0x0000;
     WM_CREATE = 0x01;
     WM_DESTROY = 0x02;

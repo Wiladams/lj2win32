@@ -9,8 +9,9 @@ local WindowKind = require("WindowKind")
 local wmmsgs = require("wmmsgs")
 --local wmmsgs = require("wm_reserved")
 local scheduler = require("scheduler")
+local msgloop = require("msgloop")
 
-local continueRunning = true;
+local exports = {}
 
 --[[
     A simple Windows message handler.
@@ -24,16 +25,15 @@ local continueRunning = true;
 jit.off(WindowProc)
 function WindowProc(hwnd, msg, wparam, lparam)
     print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
-    --print(string.format("WindowProc, msg: 0x%x", msg))
-    if msg == ffi.C.WM_CLOSE then
-        return User32.PostQuitMessage(0);
+
+    if msg == ffi.C.WM_DESTROY then
+        User32.PostQuitMessage(0);
         --halt();
     end
 
     if msg == ffi.C.WM_QUIT then
         print("WM_QUIT")
-    --    error("QUIT")
-        halt();
+        --halt();
     end
 
 	return User32.DefWindowProcA(hwnd, msg, wparam, lparam);
@@ -47,38 +47,8 @@ if not winkind then
     return false, err;
 end
 
+exports.winkind = winkind;
 
-local function mainLoop()
-    -- Create an actual instance of a window
-    local win1 = winkind:createWindow(320, 240, "Native Window");
-    --print("win1: ", win1)
-    -- get it to display on the screen
-    win1:show();
-    win1:update();
-
-
-    --  create some a loop to process window messages
-    local msg = ffi.new("MSG")
-    local res = 0;
-    while (continueRunning) do
-        -- we use peekmessage, so we don't stall on a GetMessage
-        while (User32.Lib.PeekMessageA(msg, nil, 0, 0, ffi.C.PM_REMOVE) ~= 0) do
-            
-            res = User32.Lib.TranslateMessage(msg)
-            print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg])
-
-            res = User32.Lib.DispatchMessageA(msg)
-
-
-
-			if msg.message == ffi.C.WM_QUIT then
-                --continueRunning = false;
-			end
-        end
-        
-        yield();
-    end
-end
 
 local function counter()
     local counter = 0;
@@ -88,13 +58,22 @@ local function counter()
         print("COUNTER")
         yield();
     end
-
-
 end
 
+
 local function main()
-    spawn(mainLoop)
-    spawn(counter)
+    -- Create an actual instance of a window
+    exports.win1 = winkind:createWindow(320, 240, "Native Window");
+    --print("win1: ", win1)
+    
+    -- get it to display on the screen
+    exports.win1:show();
+    exports.win1:update();
+    
+    spawn(msgloop)
+    --spawn(counter)
 end
 
 run(main)
+
+return exports

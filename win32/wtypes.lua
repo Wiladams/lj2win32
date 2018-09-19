@@ -596,11 +596,26 @@ enum {
 
 
 
-
+if not _WINDEF_ then
 ffi.cdef[[
-//typedef const RECT * LPCRECT;
-]]
+typedef const RECTL *LPCRECTL;
 
+typedef struct tagRECT
+    {
+    LONG left;
+    LONG top;
+    LONG right;
+    LONG bottom;
+    } 	RECT;
+
+typedef struct tagRECT *PRECT;
+
+typedef struct tagRECT *LPRECT;
+    
+typedef const RECT *LPCRECT;
+
+]]
+end
 
 local RECT = ffi.typeof("RECT")
 local RECT_mt = {
@@ -608,9 +623,6 @@ local RECT_mt = {
 		local str = string.format("%d %d %d %d", self.left, self.top, self.right, self.bottom)
 		return str
 	end,
-
-	__index = {
-	}
 }
 ffi.metatype(RECT, RECT_mt)
 

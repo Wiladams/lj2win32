@@ -1,7 +1,12 @@
 
 -- windef.h -- Basic Windows Type Definitions                                *
-local ffi = require("ffi")
+if _WINDEF_ then
+    return;
+end
 
+_WINDEF_ = true;
+
+local ffi = require("ffi")
 
 
 local minwindef = require("win32.minwindef")
