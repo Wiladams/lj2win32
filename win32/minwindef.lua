@@ -70,9 +70,9 @@ typedef const void          *LPCVOID;
 typedef unsigned int        *PUINT;
 ]]
 
---#ifndef NT_INCLUDED
---#include <winnt.h>
---#endif /* NT_INCLUDED */
+if not NT_INCLUDED then
+require "win_nt"
+end
 
 ffi.cdef[[
 /* Types use for passing & returning polymorphic values */

@@ -17,6 +17,7 @@ Revision History:
 local ffi = require("ffi")
 
 --local _WIN64 = ffi.os == "Windows" and ffi.abi("64bit");
+NT_INCLUDED = true;
 
 --[[
 #include <ctype.h>  
@@ -85,7 +86,7 @@ require("win32.basetsd")
 
 ffi.cdef[[
 typedef void *PVOID;
-typedef void * POINTER_64 PVOID64;
+typedef void *  PVOID64;
 ]]
 
 --#define NTAPI __stdcall
@@ -183,7 +184,7 @@ typedef  const CHAR *PCNZCH;
 
 if  UNICODE  then
 
-    if not _TCHAR_DEFINED
+    if not _TCHAR_DEFINED then
         ffi.cdef[[
             typedef WCHAR TCHAR, *PTCHAR;
             typedef WCHAR TBYTE , *PTBYTE ;
@@ -257,7 +258,7 @@ typedef struct _GROUP_AFFINITY {
 ]]
 
 
-if _WIN64
+if _WIN64 then
 ffi.cdef[[
 static const int MAXIMUM_PROC_PER_GROUP = 64;
 ]]
@@ -271,11 +272,6 @@ ffi.cdef[[
 static const int MAXIMUM_PROCESSORS =   MAXIMUM_PROC_PER_GROUP;
 ]]
 
-// begin_ntoshvp
-
-//
-// Handle to an Object
-//
 
 
 ffi.cdef[[
@@ -408,26 +404,12 @@ typedef FLOAT128 *PFLOAT128;
 
 ffi.cdef[[
 typedef int64_t LONGLONG;
-typedef uint ULONGLONG;
+typedef uint64_t ULONGLONG;
+]]
 
-#define MAXLONGLONG                         (0x7fffffffffffffff)
+local MAXLONGLONG = 0x7fffffffffffffffLL;
 
-
-#else
-
-#if defined(_MAC) && defined(_MAC_INT_64)
-typedef __int64 LONGLONG;
-typedef unsigned __int64 ULONGLONG;
-
-#define MAXLONGLONG                      (0x7fffffffffffffff)
-
-
-#else
-typedef double LONGLONG;
-typedef double ULONGLONG;
-#endif //_MAC and int64
-
-#endif
+ffi.cdef[[
 
 typedef LONGLONG *PLONGLONG;
 typedef ULONGLONG *PULONGLONG;
@@ -435,25 +417,27 @@ typedef ULONGLONG *PULONGLONG;
 // Update Sequence Number
 
 typedef LONGLONG USN;
+]]
 
-#if defined(MIDL_PASS)
-typedef struct _LARGE_INTEGER {
-#else // MIDL_PASS
+
+ffi.cdef[[
 typedef union _LARGE_INTEGER {
     struct {
         DWORD LowPart;
         LONG HighPart;
-    } DUMMYSTRUCTNAME;
+    } ;
     struct {
         DWORD LowPart;
         LONG HighPart;
     } u;
-#endif //MIDL_PASS
+
     LONGLONG QuadPart;
 } LARGE_INTEGER;
 
 typedef LARGE_INTEGER *PLARGE_INTEGER;
+]]
 
+--[==[
 #if defined(MIDL_PASS)
 typedef struct _ULARGE_INTEGER {
 #else // MIDL_PASS
