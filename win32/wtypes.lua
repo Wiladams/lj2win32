@@ -260,8 +260,10 @@ ffi.cdef[[
 // Update Sequence Number
 
 typedef LONGLONG USN;
+]]
 
-
+--[=[
+ffi.cdef[[
 typedef union _LARGE_INTEGER {
 	struct {
 		DWORD LowPart;
@@ -282,7 +284,7 @@ typedef struct _ULARGE_INTEGER
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
 
 ]]
-
+--]=]
 
 ffi.cdef[[
 typedef struct _FILETIME
