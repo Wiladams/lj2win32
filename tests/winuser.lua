@@ -1133,12 +1133,12 @@ UnloadKeyboardLayout(
 BOOL
 __stdcall
 GetKeyboardLayoutNameA(
-    _Out_writes_(KL_NAMELENGTH) LPSTR pwszKLID);
+    LPSTR pwszKLID);
 
 BOOL
 __stdcall
 GetKeyboardLayoutNameW(
-    _Out_writes_(KL_NAMELENGTH) LPWSTR pwszKLID);
+    LPWSTR pwszKLID);
 #ifdef UNICODE
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameW
 #else
@@ -1151,7 +1151,7 @@ int
 __stdcall
 GetKeyboardLayoutList(
      int nBuff,
-    _Out_writes_to_opt_(nBuff, return) HKL *lpList);
+    HKL *lpList);
 
 
 HKL
@@ -1159,16 +1159,7 @@ __stdcall
 GetKeyboardLayout(
      DWORD idThread);
 
-#endif /* WINVER >= 0x0400 */
 
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#if(WINVER >= 0x0500)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagMOUSEMOVEPOINT {
     int   x;
@@ -1177,8 +1168,6 @@ typedef struct tagMOUSEMOVEPOINT {
     ULONG_PTR dwExtraInfo;
 } MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, FAR* LPMOUSEMOVEPOINT;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 /*
  * Values for resolution parameter of GetMouseMovePointsEx
@@ -1186,23 +1175,16 @@ typedef struct tagMOUSEMOVEPOINT {
 #define GMMP_USE_DISPLAY_POINTS          1
 #define GMMP_USE_HIGH_RESOLUTION_POINTS  2
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 int
 __stdcall
 GetMouseMovePointsEx(
      UINT cbSize,
      LPMOUSEMOVEPOINT lppt,
-    _Out_writes_(nBufPoints) LPMOUSEMOVEPOINT lpptBuf,
+    LPMOUSEMOVEPOINT lpptBuf,
      int nBufPoints,
      DWORD resolution);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0500 */
 
 #ifndef NODESKTOP
 /*
@@ -1226,16 +1208,13 @@ GetMouseMovePointsEx(
 #ifdef _WINGDI_
 #ifndef NOGDI
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 HDESK
 __stdcall
 CreateDesktopA(
      LPCSTR lpszDesktop,
-    _Reserved_ LPCSTR lpszDevice,
-    _Reserved_ DEVMODEA* pDevmode,
+    LPCSTR lpszDevice,
+    DEVMODEA* pDevmode,
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa);
@@ -1244,8 +1223,8 @@ HDESK
 __stdcall
 CreateDesktopW(
      LPCWSTR lpszDesktop,
-    _Reserved_ LPCWSTR lpszDevice,
-    _Reserved_ DEVMODEW* pDevmode,
+    LPCWSTR lpszDevice,
+    DEVMODEW* pDevmode,
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa);
@@ -1260,39 +1239,34 @@ HDESK
 __stdcall
 CreateDesktopExA(
      LPCSTR lpszDesktop,
-    _Reserved_ LPCSTR lpszDevice,
-    _Reserved_ DEVMODEA* pDevmode,
+    LPCSTR lpszDevice,
+    DEVMODEA* pDevmode,
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa,
      ULONG ulHeapSize,
-    _Reserved_ PVOID pvoid);
+    PVOID pvoid);
 
 HDESK
 __stdcall
 CreateDesktopExW(
      LPCWSTR lpszDesktop,
-    _Reserved_ LPCWSTR lpszDevice,
-    _Reserved_ DEVMODEW* pDevmode,
+    LPCWSTR lpszDevice,
+    DEVMODEW* pDevmode,
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa,
      ULONG ulHeapSize,
-    _Reserved_ PVOID pvoid);
+    PVOID pvoid);
 #ifdef UNICODE
 #define CreateDesktopEx  CreateDesktopExW
 #else
 #define CreateDesktopEx  CreateDesktopExA
 #endif // !UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 #endif /* NOGDI */
 #endif /* _WINGDI_ */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 HDESK
@@ -1493,15 +1467,6 @@ __stdcall
 GetProcessWindowStation(
     VOID);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif  /* !NOWINDOWSTATION */
-
-#ifndef NOSECURITY
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 BOOL
@@ -1521,8 +1486,7 @@ GetUserObjectSecurity(
      DWORD nLength,
      LPDWORD lpnLengthNeeded);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #define UOI_FLAGS       1
 #define UOI_NAME        2
@@ -1534,8 +1498,6 @@ GetUserObjectSecurity(
 #endif /* WINVER >= 0x0600 */
 #define UOI_TIMERPROC_EXCEPTION_SUPPRESSION       7
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagUSEROBJECTFLAGS {
     BOOL fInherit;
@@ -1588,16 +1550,9 @@ SetUserObjectInformationW(
 #else
 #define SetUserObjectInformation  SetUserObjectInformationA
 #endif // !UNICODE
+--]=]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif  /* !NOSECURITY */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if(WINVER >= 0x0400)
+ffi.cdef[[
 typedef struct tagWNDCLASSEXA {
     UINT        cbSize;
     /* Win 3.x */
@@ -1614,6 +1569,7 @@ typedef struct tagWNDCLASSEXA {
     /* Win 4.0 */
     HICON       hIconSm;
 } WNDCLASSEXA, *PWNDCLASSEXA, *NPWNDCLASSEXA, *LPWNDCLASSEXA;
+
 typedef struct tagWNDCLASSEXW {
     UINT        cbSize;
     /* Win 3.x */
@@ -1630,19 +1586,25 @@ typedef struct tagWNDCLASSEXW {
     /* Win 4.0 */
     HICON       hIconSm;
 } WNDCLASSEXW, *PWNDCLASSEXW, *NPWNDCLASSEXW, *LPWNDCLASSEXW;
-#ifdef UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef WNDCLASSEXW WNDCLASSEX;
 typedef PWNDCLASSEXW PWNDCLASSEX;
 typedef NPWNDCLASSEXW NPWNDCLASSEX;
 typedef LPWNDCLASSEXW LPWNDCLASSEX;
-#else
+]]
+else
+ffi.cdef[[
 typedef WNDCLASSEXA WNDCLASSEX;
 typedef PWNDCLASSEXA PWNDCLASSEX;
 typedef NPWNDCLASSEXA NPWNDCLASSEX;
 typedef LPWNDCLASSEXA LPWNDCLASSEX;
-#endif // UNICODE
-#endif /* WINVER >= 0x0400 */
+]]
+end -- UNICODE
 
+ffi.cdef[[
 typedef struct tagWNDCLASSA {
     UINT        style;
     WNDPROC     lpfnWndProc;
@@ -1655,6 +1617,7 @@ typedef struct tagWNDCLASSA {
     LPCSTR      lpszMenuName;
     LPCSTR      lpszClassName;
 } WNDCLASSA, *PWNDCLASSA, *NPWNDCLASSA, *LPWNDCLASSA;
+
 typedef struct tagWNDCLASSW {
     UINT        style;
     WNDPROC     lpfnWndProc;
@@ -1667,42 +1630,32 @@ typedef struct tagWNDCLASSW {
     LPCWSTR     lpszMenuName;
     LPCWSTR     lpszClassName;
 } WNDCLASSW, *PWNDCLASSW, *NPWNDCLASSW, *LPWNDCLASSW;
-#ifdef UNICODE
+]]
+
+
+if UNICODE then
+ffi.cdef[[
 typedef WNDCLASSW WNDCLASS;
 typedef PWNDCLASSW PWNDCLASS;
 typedef NPWNDCLASSW NPWNDCLASS;
 typedef LPWNDCLASSW LPWNDCLASS;
-#else
+]]
+else
+ffi.cdef[[
 typedef WNDCLASSA WNDCLASS;
 typedef PWNDCLASSA PWNDCLASS;
 typedef NPWNDCLASSA NPWNDCLASS;
 typedef LPWNDCLASSA LPWNDCLASS;
-#endif // UNICODE
+]]
+end -- UNICODE
 
+ffi.cdef[[
+BOOL __stdcall IsHungAppWindow(HWND hwnd);
 
-BOOL
-__stdcall
-IsHungAppWindow(
-     HWND hwnd);
+void __stdcall DisableProcessWindowsGhosting();
+]]
 
-
-#if(WINVER >= 0x0501)
-
-VOID
-__stdcall
-DisableProcessWindowsGhosting(
-    VOID);
-#endif /* WINVER >= 0x0501 */
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-
-#ifndef NOMSG
-
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 /*
  * Message structure
  */
@@ -1713,14 +1666,13 @@ typedef struct tagMSG {
     LPARAM      lParam;
     DWORD       time;
     POINT       pt;
-#ifdef _MAC
-    DWORD       lPrivate;
-#endif
+//#ifdef _MAC
+//    DWORD       lPrivate;
+//#endif
 } MSG, *PMSG, *NPMSG, *LPMSG;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
+--[[
 #define POINTSTOPOINT(pt, pts)                          \
         { (pt).x = (LONG)(SHORT)LOWORD(*(LONG*)&pts);   \
           (pt).y = (LONG)(SHORT)HIWORD(*(LONG*)&pts); }
@@ -1729,12 +1681,9 @@ typedef struct tagMSG {
 #define MAKEWPARAM(l, h)      ((WPARAM)(DWORD)MAKELONG(l, h))
 #define MAKELPARAM(l, h)      ((LPARAM)(DWORD)MAKELONG(l, h))
 #define MAKELRESULT(l, h)     ((LRESULT)(DWORD)MAKELONG(l, h))
+--]]
 
-
-#endif /* !NOMSG */
-
-#ifndef NOWINOFFSETS
-
+--[[
 /*
  * Window field offsets for GetWindowLong()
  */
@@ -1755,12 +1704,16 @@ typedef struct tagMSG {
 
 #endif /* _WIN64 */
 
+
+
 #define GWLP_WNDPROC        (-4)
 #define GWLP_HINSTANCE      (-6)
 #define GWLP_HWNDPARENT     (-8)
 #define GWLP_USERDATA       (-21)
 #define GWLP_ID             (-12)
+--]]
 
+--[=[
 /*
  * Class field offsets for GetClassLong()
  */
@@ -1775,9 +1728,9 @@ typedef struct tagMSG {
 #define GCL_STYLE           (-26)
 #define GCW_ATOM            (-32)
 
-#if(WINVER >= 0x0400)
+
 #define GCL_HICONSM         (-34)
-#endif /* WINVER >= 0x0400 */
+
 
 #ifdef _WIN64
 
@@ -1798,69 +1751,65 @@ typedef struct tagMSG {
 #define GCLP_HMODULE        (-16)
 #define GCLP_WNDPROC        (-24)
 #define GCLP_HICONSM        (-34)
+--]=]
 
-#endif /* !NOWINOFFSETS */
-
-#ifndef NOWINMESSAGES
-
-
+ffi.cdef[[
 /*
  * Window Messages
  */
 
-#define WM_NULL                         0x0000
-#define WM_CREATE                       0x0001
-#define WM_DESTROY                      0x0002
-#define WM_MOVE                         0x0003
-#define WM_SIZE                         0x0005
+static const int WM_NULL                        = 0x0000;
+static const int WM_CREATE                      = 0x0001;
+static const int WM_DESTROY                     = 0x0002;
+static const int WM_MOVE                        = 0x0003;
+static const int WM_SIZE                        = 0x0005;
 
-#define WM_ACTIVATE                     0x0006
+static const int WM_ACTIVATE                    = 0x0006;
 /*
  * WM_ACTIVATE state values
  */
-#define     WA_INACTIVE     0
-#define     WA_ACTIVE       1
-#define     WA_CLICKACTIVE  2
+static const int    WA_INACTIVE    = 0;
+static const int    WA_ACTIVE      = 1;
+static const int    WA_CLICKACTIVE = 2;
 
-#define WM_SETFOCUS                     0x0007
-#define WM_KILLFOCUS                    0x0008
-#define WM_ENABLE                       0x000A
-#define WM_SETREDRAW                    0x000B
-#define WM_SETTEXT                      0x000C
-#define WM_GETTEXT                      0x000D
-#define WM_GETTEXTLENGTH                0x000E
-#define WM_PAINT                        0x000F
-#define WM_CLOSE                        0x0010
-#ifndef _WIN32_WCE
-#define WM_QUERYENDSESSION              0x0011
-#define WM_QUERYOPEN                    0x0013
-#define WM_ENDSESSION                   0x0016
-#endif
-#define WM_QUIT                         0x0012
-#define WM_ERASEBKGND                   0x0014
-#define WM_SYSCOLORCHANGE               0x0015
-#define WM_SHOWWINDOW                   0x0018
-#define WM_WININICHANGE                 0x001A
-#if(WINVER >= 0x0400)
-#define WM_SETTINGCHANGE                WM_WININICHANGE
-#endif /* WINVER >= 0x0400 */
+static const int WM_SETFOCUS                   =  0x0007;
+static const int WM_KILLFOCUS                  =  0x0008;
+static const int WM_ENABLE                     =  0x000A;
+static const int WM_SETREDRAW                  =  0x000B;
+static const int WM_SETTEXT                    =  0x000C;
+static const int WM_GETTEXT                    =  0x000D;
+static const int WM_GETTEXTLENGTH              =  0x000E;
+static const int WM_PAINT                      =  0x000F;
+static const int WM_CLOSE                      =  0x0010;
+
+static const int WM_QUERYENDSESSION            =  0x0011;
+static const int WM_QUERYOPEN                  =  0x0013;
+static const int WM_ENDSESSION                 =  0x0016;
+
+static const int WM_QUIT                       =  0x0012;
+static const int WM_ERASEBKGND                 =  0x0014;
+static const int WM_SYSCOLORCHANGE             =  0x0015;
+static const int WM_SHOWWINDOW                 =  0x0018;
+static const int WM_WININICHANGE               =  0x001A;
+
+static const int WM_SETTINGCHANGE              =  WM_WININICHANGE;
 
 
-#define WM_DEVMODECHANGE                0x001B
-#define WM_ACTIVATEAPP                  0x001C
-#define WM_FONTCHANGE                   0x001D
-#define WM_TIMECHANGE                   0x001E
-#define WM_CANCELMODE                   0x001F
-#define WM_SETCURSOR                    0x0020
-#define WM_MOUSEACTIVATE                0x0021
-#define WM_CHILDACTIVATE                0x0022
-#define WM_QUEUESYNC                    0x0023
 
-#define WM_GETMINMAXINFO                0x0024
+static const int WM_DEVMODECHANGE              =  0x001B;
+static const int WM_ACTIVATEAPP                =  0x001C;
+static const int WM_FONTCHANGE                 =  0x001D;
+static const int WM_TIMECHANGE                 =  0x001E;
+static const int WM_CANCELMODE                 =  0x001F;
+static const int WM_SETCURSOR                  =  0x0020;
+static const int WM_MOUSEACTIVATE              =  0x0021;
+static const int WM_CHILDACTIVATE              =  0x0022;
+static const int WM_QUEUESYNC                  =  0x0023;
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int WM_GETMINMAXINFO              =  0x0024;
+]]
 
+ffi.cdef[[
 /*
  * Struct pointed to by WM_GETMINMAXINFO lParam
  */
@@ -1871,51 +1820,48 @@ typedef struct tagMINMAXINFO {
     POINT ptMinTrackSize;
     POINT ptMaxTrackSize;
 } MINMAXINFO, *PMINMAXINFO, *LPMINMAXINFO;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+ffi.cdef[[
+static const int WM_PAINTICON                   = 0x0026;
+static const int WM_ICONERASEBKGND              = 0x0027;
+static const int WM_NEXTDLGCTL                  = 0x0028;
+static const int WM_SPOOLERSTATUS               = 0x002A;
+static const int WM_DRAWITEM                    = 0x002B;
+static const int WM_MEASUREITEM                 = 0x002C;
+static const int WM_DELETEITEM                  = 0x002D;
+static const int WM_VKEYTOITEM                  = 0x002E;
+static const int WM_CHARTOITEM                  = 0x002F;
+static const int WM_SETFONT                     = 0x0030;
+static const int WM_GETFONT                     = 0x0031;
+static const int WM_SETHOTKEY                   = 0x0032;
+static const int WM_GETHOTKEY                   = 0x0033;
+static const int WM_QUERYDRAGICON               = 0x0037;
+static const int WM_COMPAREITEM                 = 0x0039;
 
-#define WM_PAINTICON                    0x0026
-#define WM_ICONERASEBKGND               0x0027
-#define WM_NEXTDLGCTL                   0x0028
-#define WM_SPOOLERSTATUS                0x002A
-#define WM_DRAWITEM                     0x002B
-#define WM_MEASUREITEM                  0x002C
-#define WM_DELETEITEM                   0x002D
-#define WM_VKEYTOITEM                   0x002E
-#define WM_CHARTOITEM                   0x002F
-#define WM_SETFONT                      0x0030
-#define WM_GETFONT                      0x0031
-#define WM_SETHOTKEY                    0x0032
-#define WM_GETHOTKEY                    0x0033
-#define WM_QUERYDRAGICON                0x0037
-#define WM_COMPAREITEM                  0x0039
-#if(WINVER >= 0x0500)
-#ifndef _WIN32_WCE
-#define WM_GETOBJECT                    0x003D
-#endif
-#endif /* WINVER >= 0x0500 */
-#define WM_COMPACTING                   0x0041
-#define WM_COMMNOTIFY                   0x0044  /* no longer suported */
-#define WM_WINDOWPOSCHANGING            0x0046
-#define WM_WINDOWPOSCHANGED             0x0047
+static const int WM_GETOBJECT                   = 0x003D;
 
-#define WM_POWER                        0x0048
+static const int WM_COMPACTING                  = 0x0041;
+static const int WM_COMMNOTIFY                  = 0x0044;  /* no longer suported */
+static const int WM_WINDOWPOSCHANGING           = 0x0046;
+static const int WM_WINDOWPOSCHANGED            = 0x0047;
+
+static const int WM_POWER                       = 0x0048;
+]]
+
+ffi.cdef[[
 /*
  * wParam for WM_POWER window message and DRV_POWER driver notification
  */
-#define PWR_OK              1
-#define PWR_FAIL            (-1)
-#define PWR_SUSPENDREQUEST  1
-#define PWR_SUSPENDRESUME   2
-#define PWR_CRITICALRESUME  3
+static const int PWR_OK             = 1;
+static const int PWR_FAIL           = (-1);
+static const int PWR_SUSPENDREQUEST = 1;
+static const int PWR_SUSPENDRESUME  = 2;
+static const int PWR_CRITICALRESUME = 3;
 
-#define WM_COPYDATA                     0x004A
-#define WM_CANCELJOURNAL                0x004B
+static const int WM_COPYDATA                     = 0x004A;
+static const int WM_CANCELJOURNAL                = 0x004B;
 
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * lParam of WM_COPYDATA message points to...
@@ -1923,156 +1869,144 @@ typedef struct tagMINMAXINFO {
 typedef struct tagCOPYDATASTRUCT {
     ULONG_PTR dwData;
     DWORD cbData;
-    _Field_size_bytes_(cbData) PVOID lpData;
+    PVOID lpData;
 } COPYDATASTRUCT, *PCOPYDATASTRUCT;
 
-#if(WINVER >= 0x0400)
+
 typedef struct tagMDINEXTMENU
 {
     HMENU   hmenuIn;
     HMENU   hmenuNext;
     HWND    hwndNext;
 } MDINEXTMENU, * PMDINEXTMENU, * LPMDINEXTMENU;
-#endif /* WINVER >= 0x0400 */
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 
-#if(WINVER >= 0x0400)
-#define WM_NOTIFY                       0x004E
-#define WM_INPUTLANGCHANGEREQUEST       0x0050
-#define WM_INPUTLANGCHANGE              0x0051
-#define WM_TCARD                        0x0052
-#define WM_HELP                         0x0053
-#define WM_USERCHANGED                  0x0054
-#define WM_NOTIFYFORMAT                 0x0055
+static const int WM_NOTIFY                       = 0x004E;
+static const int WM_INPUTLANGCHANGEREQUEST       = 0x0050;
+static const int WM_INPUTLANGCHANGE              = 0x0051;
+static const int WM_TCARD                        = 0x0052;
+static const int WM_HELP                         = 0x0053;
+static const int WM_USERCHANGED                  = 0x0054;
+static const int WM_NOTIFYFORMAT                 = 0x0055;
 
-#define NFR_ANSI                             1
-#define NFR_UNICODE                          2
-#define NF_QUERY                             3
-#define NF_REQUERY                           4
+static const int NFR_ANSI                        =     1;
+static const int NFR_UNICODE                     =     2;
+static const int NF_QUERY                        =     3;
+static const int NF_REQUERY                      =     4;
 
-#define WM_CONTEXTMENU                  0x007B
-#define WM_STYLECHANGING                0x007C
-#define WM_STYLECHANGED                 0x007D
-#define WM_DISPLAYCHANGE                0x007E
-#define WM_GETICON                      0x007F
-#define WM_SETICON                      0x0080
-#endif /* WINVER >= 0x0400 */
-
-#define WM_NCCREATE                     0x0081
-#define WM_NCDESTROY                    0x0082
-#define WM_NCCALCSIZE                   0x0083
-#define WM_NCHITTEST                    0x0084
-#define WM_NCPAINT                      0x0085
-#define WM_NCACTIVATE                   0x0086
-#define WM_GETDLGCODE                   0x0087
-#ifndef _WIN32_WCE
-#define WM_SYNCPAINT                    0x0088
-#endif
-#define WM_NCMOUSEMOVE                  0x00A0
-#define WM_NCLBUTTONDOWN                0x00A1
-#define WM_NCLBUTTONUP                  0x00A2
-#define WM_NCLBUTTONDBLCLK              0x00A3
-#define WM_NCRBUTTONDOWN                0x00A4
-#define WM_NCRBUTTONUP                  0x00A5
-#define WM_NCRBUTTONDBLCLK              0x00A6
-#define WM_NCMBUTTONDOWN                0x00A7
-#define WM_NCMBUTTONUP                  0x00A8
-#define WM_NCMBUTTONDBLCLK              0x00A9
+static const int WM_CONTEXTMENU                  = 0x007B;
+static const int WM_STYLECHANGING                = 0x007C;
+static const int WM_STYLECHANGED                 = 0x007D;
+static const int WM_DISPLAYCHANGE                = 0x007E;
+static const int WM_GETICON                      = 0x007F;
+static const int WM_SETICON                      = 0x0080;
 
 
+static const int WM_NCCREATE                     = 0x0081;
+static const int WM_NCDESTROY                    = 0x0082;
+static const int WM_NCCALCSIZE                   = 0x0083;
+static const int WM_NCHITTEST                    = 0x0084;
+static const int WM_NCPAINT                      = 0x0085;
+static const int WM_NCACTIVATE                   = 0x0086;
+static const int WM_GETDLGCODE                   = 0x0087;
 
-#if(_WIN32_WINNT >= 0x0500)
-#define WM_NCXBUTTONDOWN                0x00AB
-#define WM_NCXBUTTONUP                  0x00AC
-#define WM_NCXBUTTONDBLCLK              0x00AD
-#endif /* _WIN32_WINNT >= 0x0500 */
+static const int WM_SYNCPAINT                    = 0x0088;
+
+static const int WM_NCMOUSEMOVE                  = 0x00A0;
+static const int WM_NCLBUTTONDOWN                = 0x00A1;
+static const int WM_NCLBUTTONUP                  = 0x00A2;
+static const int WM_NCLBUTTONDBLCLK              = 0x00A3;
+static const int WM_NCRBUTTONDOWN                = 0x00A4;
+static const int WM_NCRBUTTONUP                  = 0x00A5;
+static const int WM_NCRBUTTONDBLCLK              = 0x00A6;
+static const int WM_NCMBUTTONDOWN                = 0x00A7;
+static const int WM_NCMBUTTONUP                  = 0x00A8;
+static const int WM_NCMBUTTONDBLCLK              = 0x00A9;
+
+static const int WM_NCXBUTTONDOWN                = 0x00AB;
+static const int WM_NCXBUTTONUP                  = 0x00AC;
+static const int WM_NCXBUTTONDBLCLK              = 0x00AD;
 
 
-#if(_WIN32_WINNT >= 0x0501)
-#define WM_INPUT_DEVICE_CHANGE          0x00FE
-#endif /* _WIN32_WINNT >= 0x0501 */
 
-#if(_WIN32_WINNT >= 0x0501)
-#define WM_INPUT                        0x00FF
-#endif /* _WIN32_WINNT >= 0x0501 */
 
-#define WM_KEYFIRST                     0x0100
-#define WM_KEYDOWN                      0x0100
-#define WM_KEYUP                        0x0101
-#define WM_CHAR                         0x0102
-#define WM_DEADCHAR                     0x0103
-#define WM_SYSKEYDOWN                   0x0104
-#define WM_SYSKEYUP                     0x0105
-#define WM_SYSCHAR                      0x0106
-#define WM_SYSDEADCHAR                  0x0107
-#if(_WIN32_WINNT >= 0x0501)
-#define WM_UNICHAR                      0x0109
-#define WM_KEYLAST                      0x0109
-#define UNICODE_NOCHAR                  0xFFFF
-#else
-#define WM_KEYLAST                      0x0108
-#endif /* _WIN32_WINNT >= 0x0501 */
+static const int WM_INPUT_DEVICE_CHANGE          = 0x00FE;
 
-#if(WINVER >= 0x0400)
-#define WM_IME_STARTCOMPOSITION         0x010D
-#define WM_IME_ENDCOMPOSITION           0x010E
-#define WM_IME_COMPOSITION              0x010F
-#define WM_IME_KEYLAST                  0x010F
-#endif /* WINVER >= 0x0400 */
 
-#define WM_INITDIALOG                   0x0110
-#define WM_COMMAND                      0x0111
-#define WM_SYSCOMMAND                   0x0112
-#define WM_TIMER                        0x0113
-#define WM_HSCROLL                      0x0114
-#define WM_VSCROLL                      0x0115
-#define WM_INITMENU                     0x0116
-#define WM_INITMENUPOPUP                0x0117
-#if(WINVER >= 0x0601)
-#define WM_GESTURE                      0x0119
-#define WM_GESTURENOTIFY                0x011A
-#endif /* WINVER >= 0x0601 */
-#define WM_MENUSELECT                   0x011F
-#define WM_MENUCHAR                     0x0120
-#define WM_ENTERIDLE                    0x0121
-#if(WINVER >= 0x0500)
-#ifndef _WIN32_WCE
-#define WM_MENURBUTTONUP                0x0122
-#define WM_MENUDRAG                     0x0123
-#define WM_MENUGETOBJECT                0x0124
-#define WM_UNINITMENUPOPUP              0x0125
-#define WM_MENUCOMMAND                  0x0126
 
-#ifndef _WIN32_WCE
-#if(_WIN32_WINNT >= 0x0500)
-#define WM_CHANGEUISTATE                0x0127
-#define WM_UPDATEUISTATE                0x0128
-#define WM_QUERYUISTATE                 0x0129
+static const int WM_INPUT                        = 0x00FF;
+
+
+static const int WM_KEYFIRST                     = 0x0100;
+static const int WM_KEYDOWN                      = 0x0100;
+static const int WM_KEYUP                        = 0x0101;
+static const int WM_CHAR                         = 0x0102;
+static const int WM_DEADCHAR                     = 0x0103;
+static const int WM_SYSKEYDOWN                   = 0x0104;
+static const int WM_SYSKEYUP                     = 0x0105;
+static const int WM_SYSCHAR                      = 0x0106;
+static const int WM_SYSDEADCHAR                  = 0x0107;
+
+static const int WM_UNICHAR                      = 0x0109;
+static const int WM_KEYLAST                      = 0x0109;
+static const int UNICODE_NOCHAR                  = 0xFFFF;
+
+//static const int WM_KEYLAST                      = 0x0108;
+
+
+
+static const int WM_IME_STARTCOMPOSITION         = 0x010D;
+static const int WM_IME_ENDCOMPOSITION           = 0x010E;
+static const int WM_IME_COMPOSITION              = 0x010F;
+static const int WM_IME_KEYLAST                  = 0x010F;
+
+
+static const int WM_INITDIALOG                   = 0x0110;
+static const int WM_COMMAND                      = 0x0111;
+static const int WM_SYSCOMMAND                   = 0x0112;
+static const int WM_TIMER                        = 0x0113;
+static const int WM_HSCROLL                      = 0x0114;
+static const int WM_VSCROLL                      = 0x0115;
+static const int WM_INITMENU                     = 0x0116;
+static const int WM_INITMENUPOPUP                = 0x0117;
+
+static const int WM_GESTURE                      = 0x0119;
+static const int WM_GESTURENOTIFY                = 0x011A;
+
+static const int WM_MENUSELECT                   = 0x011F;
+static const int WM_MENUCHAR                     = 0x0120;
+static const int WM_ENTERIDLE                    = 0x0121;
+
+static const int WM_MENURBUTTONUP                = 0x0122;
+static const int WM_MENUDRAG                     = 0x0123;
+static const int WM_MENUGETOBJECT                = 0x0124;
+static const int WM_UNINITMENUPOPUP              = 0x0125;
+static const int WM_MENUCOMMAND                  = 0x0126;
+
+
+static const int WM_CHANGEUISTATE                = 0x0127;
+static const int WM_UPDATEUISTATE                = 0x0128;
+static const int WM_QUERYUISTATE                 = 0x0129;
+
+
 
 /*
  * LOWORD(wParam) values in WM_*UISTATE*
  */
-#define UIS_SET                         1
-#define UIS_CLEAR                       2
-#define UIS_INITIALIZE                  3
+static const int UIS_SET                        = 1;
+static const int UIS_CLEAR                      = 2;
+static const int UIS_INITIALIZE                 = 3;
 
 /*
  * HIWORD(wParam) values in WM_*UISTATE*
  */
-#define UISF_HIDEFOCUS                  0x1
-#define UISF_HIDEACCEL                  0x2
-#if(_WIN32_WINNT >= 0x0501)
-#define UISF_ACTIVE                     0x4
-#endif /* _WIN32_WINNT >= 0x0501 */
-#endif /* _WIN32_WINNT >= 0x0500 */
-#endif
+ static const int UISF_HIDEFOCUS                 = 0x1;
+ static const int UISF_HIDEACCEL                 = 0x2;
 
-#endif
-#endif /* WINVER >= 0x0500 */
+ static const int UISF_ACTIVE                    = 0x4;
+]]
 
+--[=[
 #define WM_CTLCOLORMSGBOX               0x0132
 #define WM_CTLCOLOREDIT                 0x0133
 #define WM_CTLCOLORLISTBOX              0x0134
@@ -4019,7 +3953,7 @@ InSendMessage(
 DWORD
 __stdcall
 InSendMessageEx(
-    _Reserved_ LPVOID lpReserved);
+    LPVOID lpReserved);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 #pragma endregion
@@ -7293,9 +7227,9 @@ TrackPopupMenu(
      UINT uFlags,
      int x,
      int y,
-    _Reserved_ int nReserved,
+    int nReserved,
      HWND hWnd,
-    _Reserved_ CONST RECT *prcRect);
+    CONST RECT *prcRect);
 
 #if(WINVER >= 0x0400)
 /* return codes for WM_MENUCHAR */
@@ -12472,7 +12406,7 @@ __stdcall
 ChangeDisplaySettingsExA(
      LPCSTR lpszDeviceName,
      DEVMODEA* lpDevMode,
-    _Reserved_ HWND hwnd,
+    HWND hwnd,
      DWORD dwflags,
      LPVOID lParam);
 
@@ -12481,7 +12415,7 @@ __stdcall
 ChangeDisplaySettingsExW(
      LPCWSTR lpszDeviceName,
      DEVMODEW* lpDevMode,
-    _Reserved_ HWND hwnd,
+    HWND hwnd,
      DWORD dwflags,
      LPVOID lParam);
 #ifdef UNICODE

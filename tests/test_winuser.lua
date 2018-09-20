@@ -99,6 +99,7 @@ local function getListOfInputDevices()
     return devices, puiNumDevices[0];
 end
 
+local function test_deviceinfo()
 local function printDeviceInfo(dinfo)
     print("==== Device Info ====")
     for k,v in pairs(dinfo) do
@@ -112,5 +113,8 @@ local devices, count = getListOfInputDevices()
 for idx, dinfo in ipairs(devices) do
     printDeviceInfo(dinfo)
 end
+end
+
+--test_deviceinfo();
 
 
