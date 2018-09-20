@@ -12784,20 +12784,14 @@ typedef LPSOUNDSENTRYA LPSOUNDSENTRY;
 BOOL
 __stdcall
 SoundSentry(VOID);
-#endif /* _WIN32_WINNT >= 0x0600 */
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
 typedef struct tagTOGGLEKEYS
 {
     UINT cbSize;
     DWORD dwFlags;
 } TOGGLEKEYS, *LPTOGGLEKEYS;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 /*
  * TOGGLEKEYS dwFlags field
@@ -12809,16 +12803,14 @@ typedef struct tagTOGGLEKEYS
 #define TKF_HOTKEYSOUND     0x00000010
 #define TKF_INDICATOR       0x00000020
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-#if(_WIN32_WINNT >= 0x0600)
+
 typedef struct tagAUDIODESCRIPTION {
     UINT cbSize;   // sizeof(AudioDescriptionType)
     BOOL Enabled;  // On/Off
     LCID Locale;   // locale ID for language
 } AUDIODESCRIPTION, *LPAUDIODESCRIPTION;
-#endif /* _WIN32_WINNT >= 0x0600 */
+
 
 
 /*
@@ -12831,8 +12823,7 @@ __stdcall
 SetDebugErrorLevel(
      DWORD dwLevel);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /*
  * SetLastErrorEx() types.
@@ -12841,9 +12832,6 @@ SetDebugErrorLevel(
 #define SLE_ERROR       0x00000001
 #define SLE_MINORERROR  0x00000002
 #define SLE_WARNING     0x00000003
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 VOID
@@ -12857,7 +12845,7 @@ int
 __stdcall
 InternalGetWindowText(
      HWND hWnd,
-    _Out_writes_to_(cchMaxCount, return + 1) LPWSTR pString,
+    LPWSTR pString,
      int cchMaxCount);
 
 
@@ -12877,11 +12865,7 @@ __stdcall
 CancelShutdown(
     VOID);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-
-#if(WINVER >= 0x0500)
 
 /*
  * Multimonitor API.
@@ -12890,9 +12874,6 @@ CancelShutdown(
 #define MONITOR_DEFAULTTONULL       0x00000000
 #define MONITOR_DEFAULTTOPRIMARY    0x00000001
 #define MONITOR_DEFAULTTONEAREST    0x00000002
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 HMONITOR
@@ -12915,17 +12896,12 @@ MonitorFromWindow(
      HWND hwnd,
      DWORD dwFlags);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 #define MONITORINFOF_PRIMARY        0x00000001
 
 #ifndef CCHDEVICENAME
 #define CCHDEVICENAME 32
 #endif
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagMONITORINFO
 {
@@ -14642,17 +14618,12 @@ GetRawPointerDeviceData(
 ]]
 
 --[=[
-#if(WINVER >= 0x0600)
-
 /*
  * Message Filter
  */
 
 #define MSGFLT_ADD 1
 #define MSGFLT_REMOVE 2
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 BOOL
@@ -14661,12 +14632,6 @@ ChangeWindowMessageFilter(
      UINT message,
      DWORD dwFlag);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0600 */
-
-#if(WINVER >= 0x0601)
 
 /*
  * Message filter info values (CHANGEFILTERSTRUCT.ExtStatus)
@@ -14676,16 +14641,12 @@ ChangeWindowMessageFilter(
 #define MSGFLTINFO_ALREADYDISALLOWED_FORWND     (2)
 #define MSGFLTINFO_ALLOWED_HIGHER               (3)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagCHANGEFILTERSTRUCT {
     DWORD cbSize;
     DWORD ExtStatus;
 } CHANGEFILTERSTRUCT, *PCHANGEFILTERSTRUCT;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 /*
  * Message filter action values (action parameter to ChangeWindowMessageFilterEx)
@@ -14694,8 +14655,6 @@ typedef struct tagCHANGEFILTERSTRUCT {
 #define MSGFLT_ALLOW                            (1)
 #define MSGFLT_DISALLOW                         (2)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 BOOL
@@ -14704,32 +14663,20 @@ ChangeWindowMessageFilterEx(
      HWND hwnd,                                         // Window
      UINT message,                                      // WM_ message
      DWORD action,                                      // Message filter action value
-    _Inout_opt_ PCHANGEFILTERSTRUCT pChangeFilterStruct);   // Optional
+    PCHANGEFILTERSTRUCT pChangeFilterStruct);   // Optional
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0601 */
-
-#if(WINVER >= 0x0601)
-#endif /* WINVER >= 0x0601 */
-
-#if(WINVER >= 0x0601)
 
 /*
  * Gesture defines and functions
  */
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * Gesture information handle
  */
 DECLARE_HANDLE(HGESTUREINFO);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /*
  * Gesture flags - GESTUREINFO.dwFlags
@@ -14750,8 +14697,6 @@ DECLARE_HANDLE(HGESTUREINFO);
 #define GID_PRESSANDTAP                 7
 #define GID_ROLLOVER                    GID_PRESSANDTAP
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * Gesture information structure
