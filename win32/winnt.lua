@@ -23,7 +23,7 @@ static const int MAXIMUM_WAIT_OBJECTS = 64;
 ]]
 
 ffi.cdef[[
-static const int ANYSIZE_ARRAY = 1;       
+//static const int ANYSIZE_ARRAY = 1;       
 ]]
 
 ffi.cdef[[

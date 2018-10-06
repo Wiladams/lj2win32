@@ -3,9 +3,8 @@
 
 local ffi = require("ffi");
 
-local WinNT = require("win32.winnt");
 
-
+require("win32.wtypes")
 
 ffi.cdef[[
 static const int MAX_COMPUTERNAME_LENGTH = 31;

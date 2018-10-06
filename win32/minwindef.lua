@@ -15,7 +15,7 @@ ffi.cdef[[
     typedef HANDLE *PHANDLE;
 ]]
 
-DECLARE_HANDLE = function(name) 
+function DECLARE_HANDLE(name) 
     ffi.cdef(string.format("typedef HANDLE %s",name));
 end
 
@@ -47,6 +47,7 @@ static const int MAX_PATH = 260;
 
 
 ffi.cdef[[
+typedef BYTE			BOOLEAN;
 typedef int                 BOOL;
 typedef float               FLOAT;
 ]]
@@ -70,8 +71,14 @@ typedef const void          *LPCVOID;
 typedef unsigned int        *PUINT;
 ]]
 
+ffi.cdef[[
+typedef void            VOID;
+typedef void *			PVOID;
+]]
+
+
 if not NT_INCLUDED then
-require "win_nt"
+require "win32.win_nt"
 end
 
 ffi.cdef[[

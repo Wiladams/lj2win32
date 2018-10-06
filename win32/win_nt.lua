@@ -15,6 +15,7 @@ Abstract:
 Revision History:
 --]]
 local ffi = require("ffi")
+--require("win32.wtypes")
 
 --local _WIN64 = ffi.os == "Windows" and ffi.abi("64bit");
 NT_INCLUDED = true;
@@ -3514,7 +3515,9 @@ typedef struct _DISPATCHER_CONTEXT {
     DWORD ScopeIndex;
     DWORD Fill0;
 } DISPATCHER_CONTEXT, *PDISPATCHER_CONTEXT;
+--]==]
 
+ffi.cdef[[
 //
 // Define exception filter and termination handler function types.
 //
@@ -3528,13 +3531,14 @@ LONG
     );
 
 typedef
-VOID
+void
 (*PTERMINATION_HANDLER) (
     BOOLEAN AbnormalTermination,
     PVOID EstablisherFrame
     );
+]]
 
-
+--[==[
 //
 // Nonvolatile context pointer record.
 //
@@ -11429,7 +11433,9 @@ typedef enum _FIRMWARE_TYPE {
 #define TIME_ZONE_ID_DAYLIGHT 2
 
 // end_nthal
+--]==]
 
+ffi.cdef[[
 typedef enum _LOGICAL_PROCESSOR_RELATIONSHIP {
     RelationProcessorCore,
     RelationNumaNode,
@@ -11439,7 +11445,7 @@ typedef enum _LOGICAL_PROCESSOR_RELATIONSHIP {
     RelationAll = 0xffff
 } LOGICAL_PROCESSOR_RELATIONSHIP;
 
-#define LTP_PC_SMT 0x1
+static const int LTP_PC_SMT = 0x1;
 
 typedef enum _PROCESSOR_CACHE_TYPE {
     CacheUnified,
@@ -11448,7 +11454,7 @@ typedef enum _PROCESSOR_CACHE_TYPE {
     CacheTrace
 } PROCESSOR_CACHE_TYPE;
 
-#define CACHE_FULLY_ASSOCIATIVE 0xFF
+static const int CACHE_FULLY_ASSOCIATIVE = 0xFF;
 
 typedef struct _CACHE_DESCRIPTOR {
     BYTE   Level;
@@ -11470,7 +11476,7 @@ typedef struct _SYSTEM_LOGICAL_PROCESSOR_INFORMATION {
         } NumaNode;
         CACHE_DESCRIPTOR Cache;
         ULONGLONG  Reserved[2];
-    } DUMMYUNIONNAME;
+    } ;
 } SYSTEM_LOGICAL_PROCESSOR_INFORMATION, *PSYSTEM_LOGICAL_PROCESSOR_INFORMATION;
 
 typedef struct _PROCESSOR_RELATIONSHIP {
@@ -11478,7 +11484,7 @@ typedef struct _PROCESSOR_RELATIONSHIP {
     BYTE  EfficiencyClass;
     BYTE  Reserved[20];
     WORD   GroupCount;
-    _Field_size_(GroupCount) GROUP_AFFINITY GroupMask[ANYSIZE_ARRAY];
+    GROUP_AFFINITY GroupMask[ANYSIZE_ARRAY];
 } PROCESSOR_RELATIONSHIP, *PPROCESSOR_RELATIONSHIP;
 
 typedef struct _NUMA_NODE_RELATIONSHIP {
@@ -11511,7 +11517,7 @@ typedef struct _GROUP_RELATIONSHIP {
     PROCESSOR_GROUP_INFO GroupInfo[ANYSIZE_ARRAY];
 } GROUP_RELATIONSHIP, *PGROUP_RELATIONSHIP;
 
-_Struct_size_bytes_(Size) struct _SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX {
+struct _SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX {
     LOGICAL_PROCESSOR_RELATIONSHIP Relationship;
     DWORD Size;
     union {
@@ -11528,7 +11534,13 @@ typedef enum _CPU_SET_INFORMATION_TYPE {
     CpuSetInformation
 } CPU_SET_INFORMATION_TYPE, *PCPU_SET_INFORMATION_TYPE;
 
-_Struct_size_bytes_(Size) struct _SYSTEM_CPU_SET_INFORMATION {
+// For AllFlags below
+static const int SYSTEM_CPU_SET_INFORMATION_PARKED =0x1;
+static const int SYSTEM_CPU_SET_INFORMATION_ALLOCATED =0x2;
+static const int SYSTEM_CPU_SET_INFORMATION_ALLOCATED_TO_TARGET_PROCESS =0x4;
+static const int SYSTEM_CPU_SET_INFORMATION_REALTIME =0x8;
+
+struct _SYSTEM_CPU_SET_INFORMATION {
     DWORD Size;
     CPU_SET_INFORMATION_TYPE Type;
     union {
@@ -11542,11 +11554,6 @@ _Struct_size_bytes_(Size) struct _SYSTEM_CPU_SET_INFORMATION {
             BYTE  EfficiencyClass;
             union {
 
-#define SYSTEM_CPU_SET_INFORMATION_PARKED 0x1
-#define SYSTEM_CPU_SET_INFORMATION_ALLOCATED 0x2
-#define SYSTEM_CPU_SET_INFORMATION_ALLOCATED_TO_TARGET_PROCESS 0x4
-#define SYSTEM_CPU_SET_INFORMATION_REALTIME 0x8
-
                 BYTE  AllFlags;
                 struct {
                     BYTE  Parked : 1;
@@ -11554,16 +11561,18 @@ _Struct_size_bytes_(Size) struct _SYSTEM_CPU_SET_INFORMATION {
                     BYTE  AllocatedToTargetProcess : 1;
                     BYTE  RealTime : 1;
                     BYTE  ReservedFlags : 4;
-                } DUMMYSTRUCTNAME;
-            } DUMMYUNIONNAME2;
+                } ;
+            } ;
             DWORD Reserved;
             DWORD64 AllocationTag;
         } CpuSet;
-    } DUMMYUNIONNAME;
+    } ;
 };
 
 typedef struct _SYSTEM_CPU_SET_INFORMATION SYSTEM_CPU_SET_INFORMATION, *PSYSTEM_CPU_SET_INFORMATION;
+]]
 
+--[==[
 // end_wdm end_ntminiport
 
 typedef struct _SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION {
@@ -18791,10 +18800,16 @@ VOID
 (NTAPI *PAPCFUNC)(
     _In_ ULONG_PTR Parameter
     );
-typedef LONG (NTAPI *PVECTORED_EXCEPTION_HANDLER)(
+--]==]
+
+
+ffi.cdef[[
+typedef LONG (__stdcall *PVECTORED_EXCEPTION_HANDLER)(
     struct _EXCEPTION_POINTERS *ExceptionInfo
     );
+]]
 
+--[==[
 typedef enum _HEAP_INFORMATION_CLASS {
 
     HeapCompatibilityInformation = 0,

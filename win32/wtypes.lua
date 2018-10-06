@@ -25,17 +25,10 @@ ffi.cdef[[
 // Basic Data types
 typedef unsigned char *PBYTE;
 
-typedef BYTE			BOOLEAN;
+
 typedef wchar_t			WCHAR;
-
-
-
-typedef long *    PBOOL;
-
-
-
+//typedef long *    PBOOL;
 typedef double          DOUBLE;
-
 typedef uint8_t			BCHAR;
 //typedef unsigned int	UINT32;
 
@@ -59,8 +52,7 @@ typedef LONGLONG 		*PLONGLONG;
 typedef ULONGLONG 		*PULONGLONG;
 
 
-typedef void            VOID;
-typedef void *			PVOID;
+
 ]]
 
 

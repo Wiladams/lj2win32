@@ -196,141 +196,134 @@ if UNICODE then
 exports.wvsprintf  = ffi.C.wvsprintfW;
 end -- !UNICODE
 
---[=[
 
+ffi.cdef[[
 int
-WINAPIV
+__cdecl
 wsprintfA(
      LPSTR,
       LPCSTR,
     ...);
 
 int
-WINAPIV
+__cdecl
 wsprintfW(
      LPWSTR,
       LPCWSTR,
     ...);
-#ifdef UNICODE
-#define wsprintf  wsprintfW
-#else
-#define wsprintf  wsprintfA
-#endif // !UNICODE
+]]
 
-#if defined(DEPRECATE_SUPPORTED)
-#pragma warning(pop)
-#endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+if UNICODE then
+exports.wsprintf  = ffi.C.wsprintfW;
+else
+exports.wsprintf  = ffi.C.wsprintfA;
+end
 
 
+ffi.cdef[[
 /*
  * SPI_SETDESKWALLPAPER defined constants
  */
-#define SETWALLPAPER_DEFAULT    ((LPWSTR)-1)
+static const int SETWALLPAPER_DEFAULT    = ((LPWSTR)-1);
+]]
 
-#ifndef NOSCROLL
-
+ffi.cdef[[
 /*
  * Scroll Bar Constants
  */
-#define SB_HORZ             0
-#define SB_VERT             1
-#define SB_CTL              2
-#define SB_BOTH             3
+static const int SB_HORZ           =  0;
+static const int SB_VERT           =  1;
+static const int SB_CTL            =  2;
+static const int SB_BOTH           =  3;
 
 /*
  * Scroll Bar Commands
  */
-#define SB_LINEUP           0
-#define SB_LINELEFT         0
-#define SB_LINEDOWN         1
-#define SB_LINERIGHT        1
-#define SB_PAGEUP           2
-#define SB_PAGELEFT         2
-#define SB_PAGEDOWN         3
-#define SB_PAGERIGHT        3
-#define SB_THUMBPOSITION    4
-#define SB_THUMBTRACK       5
-#define SB_TOP              6
-#define SB_LEFT             6
-#define SB_BOTTOM           7
-#define SB_RIGHT            7
-#define SB_ENDSCROLL        8
-
-#endif /* !NOSCROLL */
-
-#ifndef NOSHOWWINDOW
+static const int SB_LINEUP          = 0;
+static const int SB_LINELEFT        = 0;
+static const int SB_LINEDOWN        = 1;
+static const int SB_LINERIGHT       = 1;
+static const int SB_PAGEUP          = 2;
+static const int SB_PAGELEFT        = 2;
+static const int SB_PAGEDOWN        = 3;
+static const int SB_PAGERIGHT       = 3;
+static const int SB_THUMBPOSITION   = 4;
+static const int SB_THUMBTRACK      = 5;
+static const int SB_TOP             = 6;
+static const int SB_LEFT            = 6;
+static const int SB_BOTTOM          = 7;
+static const int SB_RIGHT           = 7;
+static const int SB_ENDSCROLL       = 8;
+]]
 
 
+ffi.cdef[[
 /*
  * ShowWindow() Commands
  */
-#define SW_HIDE             0
-#define SW_SHOWNORMAL       1
-#define SW_NORMAL           1
-#define SW_SHOWMINIMIZED    2
-#define SW_SHOWMAXIMIZED    3
-#define SW_MAXIMIZE         3
-#define SW_SHOWNOACTIVATE   4
-#define SW_SHOW             5
-#define SW_MINIMIZE         6
-#define SW_SHOWMINNOACTIVE  7
-#define SW_SHOWNA           8
-#define SW_RESTORE          9
-#define SW_SHOWDEFAULT      10
-#define SW_FORCEMINIMIZE    11
-#define SW_MAX              11
+static const int SW_HIDE            = 0;
+static const int SW_SHOWNORMAL      = 1;
+static const int SW_NORMAL          = 1;
+static const int SW_SHOWMINIMIZED   = 2;
+static const int SW_SHOWMAXIMIZED   = 3;
+static const int SW_MAXIMIZE        = 3;
+static const int SW_SHOWNOACTIVATE  = 4;
+static const int SW_SHOW            = 5;
+static const int SW_MINIMIZE        = 6;
+static const int SW_SHOWMINNOACTIVE = 7;
+static const int SW_SHOWNA          = 8;
+static const int SW_RESTORE         = 9;
+static const int SW_SHOWDEFAULT     = 10;
+static const int SW_FORCEMINIMIZE   = 11;
+static const int SW_MAX             = 11;
+]]
 
-
+ffi.cdef[[
 /*
  * Old ShowWindow() Commands
  */
-#define HIDE_WINDOW         0
-#define SHOW_OPENWINDOW     1
-#define SHOW_ICONWINDOW     2
-#define SHOW_FULLSCREEN     3
-#define SHOW_OPENNOACTIVATE 4
+static const int HIDE_WINDOW         =0;
+static const int SHOW_OPENWINDOW     =1;
+static const int SHOW_ICONWINDOW     =2;
+static const int SHOW_FULLSCREEN     =3;
+static const int SHOW_OPENNOACTIVATE =4;
 
 /*
  * Identifiers for the WM_SHOWWINDOW message
  */
-#define SW_PARENTCLOSING    1
-#define SW_OTHERZOOM        2
-#define SW_PARENTOPENING    3
-#define SW_OTHERUNZOOM      4
+static const int SW_PARENTCLOSING    =1;
+static const int SW_OTHERZOOM        =2;
+static const int SW_PARENTOPENING    =3;
+static const int SW_OTHERUNZOOM      =4;
+]]
 
 
-#endif /* !NOSHOWWINDOW */
-
-#if(WINVER >= 0x0500)
+ffi.cdef[[
 /*
  * AnimateWindow() Commands
  */
-#define AW_HOR_POSITIVE             0x00000001
-#define AW_HOR_NEGATIVE             0x00000002
-#define AW_VER_POSITIVE             0x00000004
-#define AW_VER_NEGATIVE             0x00000008
-#define AW_CENTER                   0x00000010
-#define AW_HIDE                     0x00010000
-#define AW_ACTIVATE                 0x00020000
-#define AW_SLIDE                    0x00040000
-#define AW_BLEND                    0x00080000
+static const int AW_HOR_POSITIVE            = 0x00000001;
+static const int AW_HOR_NEGATIVE            = 0x00000002;
+static const int AW_VER_POSITIVE            = 0x00000004;
+static const int AW_VER_NEGATIVE            = 0x00000008;
+static const int AW_CENTER                  = 0x00000010;
+static const int AW_HIDE                    = 0x00010000;
+static const int AW_ACTIVATE                = 0x00020000;
+static const int AW_SLIDE                   = 0x00040000;
+static const int AW_BLEND                   = 0x00080000;
+]]
 
-#endif /* WINVER >= 0x0500 */
-
-
+ffi.cdef[[
 /*
  * WM_KEYUP/DOWN/CHAR HIWORD(lParam) flags
  */
-#define KF_EXTENDED       0x0100
-#define KF_DLGMODE        0x0800
-#define KF_MENUMODE       0x1000
-#define KF_ALTDOWN        0x2000
-#define KF_REPEAT         0x4000
-#define KF_UP             0x8000
---]=]
+static const int KF_EXTENDED      = 0x0100;
+static const int KF_DLGMODE       = 0x0800;
+static const int KF_MENUMODE      = 0x1000;
+static const int KF_ALTDOWN       = 0x2000;
+static const int KF_REPEAT        = 0x4000;
+static const int KF_UP            = 0x8000;
+]]
 
 if not NOVIRTUALKEYCODES then
 ffi.cdef[[
@@ -641,75 +634,73 @@ static const int VK_OEM_CLEAR      = 0xFE;
 
 end -- !NOVIRTUALKEYCODES
 
---[=[
-#ifndef NOWH
 
+ffi.cdef[[
 /*
  * SetWindowsHook() codes
  */
-#define WH_MIN              (-1)
-#define WH_MSGFILTER        (-1)
-#define WH_JOURNALRECORD    0
-#define WH_JOURNALPLAYBACK  1
-#define WH_KEYBOARD         2
-#define WH_GETMESSAGE       3
-#define WH_CALLWNDPROC      4
-#define WH_CBT              5
-#define WH_SYSMSGFILTER     6
-#define WH_MOUSE            7
-#if defined(_WIN32_WINDOWS)
-#define WH_HARDWARE         8
-#endif
-#define WH_DEBUG            9
-#define WH_SHELL           10
-#define WH_FOREGROUNDIDLE  11
-#if(WINVER >= 0x0400)
-#define WH_CALLWNDPROCRET  12
-#endif /* WINVER >= 0x0400 */
+static const int WH_MIN              =(-1);
+static const int WH_MSGFILTER        =(-1);
+static const int WH_JOURNALRECORD    =0;
+static const int WH_JOURNALPLAYBACK  =1;
+static const int WH_KEYBOARD         =2;
+static const int WH_GETMESSAGE       =3;
+static const int WH_CALLWNDPROC      =4;
+static const int WH_CBT              =5;
+static const int WH_SYSMSGFILTER     =6;
+static const int WH_MOUSE            =7;
 
-#if (_WIN32_WINNT >= 0x0400)
-#define WH_KEYBOARD_LL     13
-#define WH_MOUSE_LL        14
-#endif // (_WIN32_WINNT >= 0x0400)
+static const int WH_HARDWARE         =8;
 
-#if(WINVER >= 0x0400)
-#if (_WIN32_WINNT >= 0x0400)
-#define WH_MAX             14
-#else
-#define WH_MAX             12
-#endif // (_WIN32_WINNT >= 0x0400)
-#else
-#define WH_MAX             11
-#endif
+static const int WH_DEBUG            =9;
+static const int WH_SHELL           =10;
+static const int WH_FOREGROUNDIDLE  =11;
 
-#define WH_MINHOOK         WH_MIN
-#define WH_MAXHOOK         WH_MAX
+static const int WH_CALLWNDPROCRET  =12;
 
+
+
+static const int WH_KEYBOARD_LL     =13;
+static const int WH_MOUSE_LL        =14;
+
+
+
+
+static const int WH_MAX             =14;
+
+
+static const int WH_MINHOOK         = WH_MIN;
+static const int WH_MAXHOOK         = WH_MAX;
+]]
+
+ffi.cdef[[
 /*
  * Hook Codes
  */
-#define HC_ACTION           0
-#define HC_GETNEXT          1
-#define HC_SKIP             2
-#define HC_NOREMOVE         3
-#define HC_NOREM            HC_NOREMOVE
-#define HC_SYSMODALON       4
-#define HC_SYSMODALOFF      5
+static const int HC_ACTION          = 0;
+static const int HC_GETNEXT         = 1;
+static const int HC_SKIP            = 2;
+static const int HC_NOREMOVE        = 3;
+static const int HC_NOREM           = HC_NOREMOVE;
+static const int HC_SYSMODALON      = 4;
+static const int HC_SYSMODALOFF     = 5;
 
 /*
  * CBT Hook Codes
  */
-#define HCBT_MOVESIZE       0
-#define HCBT_MINMAX         1
-#define HCBT_QS             2
-#define HCBT_CREATEWND      3
-#define HCBT_DESTROYWND     4
-#define HCBT_ACTIVATE       5
-#define HCBT_CLICKSKIPPED   6
-#define HCBT_KEYSKIPPED     7
-#define HCBT_SYSCOMMAND     8
-#define HCBT_SETFOCUS       9
+static const int HCBT_MOVESIZE      = 0;
+static const int HCBT_MINMAX        = 1;
+static const int HCBT_QS            = 2;
+static const int HCBT_CREATEWND     = 3;
+static const int HCBT_DESTROYWND    = 4;
+static const int HCBT_ACTIVATE      = 5;
+static const int HCBT_CLICKSKIPPED  = 6;
+static const int HCBT_KEYSKIPPED    = 7;
+static const int HCBT_SYSCOMMAND    = 8;
+static const int HCBT_SETFOCUS      = 9;
+]]
 
+ffi.cdef[[
 /*
  * HCBT_CREATEWND parameters pointed to by lParam
  */
@@ -726,14 +717,21 @@ typedef struct tagCBT_CREATEWNDW
     struct tagCREATESTRUCTW *lpcs;
     HWND           hwndInsertAfter;
 } CBT_CREATEWNDW, *LPCBT_CREATEWNDW;
-#ifdef UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef CBT_CREATEWNDW CBT_CREATEWND;
 typedef LPCBT_CREATEWNDW LPCBT_CREATEWND;
-#else
+]]
+else
+ffi.cdef[[
 typedef CBT_CREATEWNDA CBT_CREATEWND;
 typedef LPCBT_CREATEWNDA LPCBT_CREATEWND;
-#endif // UNICODE
+]]
+end
 
+ffi.cdef[[
 /*
  * HCBT_ACTIVATE structure pointed to by lParam
  */
@@ -753,8 +751,9 @@ typedef struct tagWTSSESSION_NOTIFICATION
     DWORD dwSessionId;
 
 } WTSSESSION_NOTIFICATION, *PWTSSESSION_NOTIFICATION;
+]]
 
-
+--[=[
 /*
  * codes passed in WPARAM for WM_WTSSESSION_CHANGE
  */
@@ -942,7 +941,7 @@ typedef struct tagCWPRETSTRUCT {
 
 
 
---[=[
+--[[
 /*
  * Low level hook flags
  */
@@ -955,7 +954,9 @@ typedef struct tagCWPRETSTRUCT {
 
 #define LLMHF_INJECTED       0x00000001
 #define LLMHF_LOWER_IL_INJECTED        0x00000002
+--]]
 
+ffi.cdef[[
 /*
  * Structure used by WH_KEYBOARD_LL
  */
@@ -966,7 +967,9 @@ typedef struct tagKBDLLHOOKSTRUCT {
     DWORD   time;
     ULONG_PTR dwExtraInfo;
 } KBDLLHOOKSTRUCT, *LPKBDLLHOOKSTRUCT, *PKBDLLHOOKSTRUCT;
+]]
 
+ffi.cdef[[
 /*
  * Structure used by WH_MOUSE_LL
  */
@@ -977,11 +980,9 @@ typedef struct tagMSLLHOOKSTRUCT {
     DWORD   time;
     ULONG_PTR dwExtraInfo;
 } MSLLHOOKSTRUCT, *LPMSLLHOOKSTRUCT, *PMSLLHOOKSTRUCT;
+]]
 
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 /*
  * Structure used by WH_DEBUG
  */
@@ -992,8 +993,10 @@ typedef struct tagDEBUGHOOKINFO
     LPARAM  lParam;
     WPARAM  wParam;
     int     code;
-} DEBUGHOOKINFO, *PDEBUGHOOKINFO, *NPDEBUGHOOKINFO, FAR* LPDEBUGHOOKINFO;
+} DEBUGHOOKINFO, *PDEBUGHOOKINFO, *NPDEBUGHOOKINFO, * LPDEBUGHOOKINFO;
+]]
 
+ffi.cdef[[
 /*
  * Structure used by WH_MOUSE
  */
@@ -1003,23 +1006,19 @@ typedef struct tagMOUSEHOOKSTRUCT {
     UINT    wHitTestCode;
     ULONG_PTR dwExtraInfo;
 } MOUSEHOOKSTRUCT, *LPMOUSEHOOKSTRUCT, *PMOUSEHOOKSTRUCT;
+]]
 
-#if(_WIN32_WINNT >= 0x0500)
-#ifdef __cplusplus
-typedef struct tagMOUSEHOOKSTRUCTEX : public tagMOUSEHOOKSTRUCT
-{
-    DWORD   mouseData;
-} MOUSEHOOKSTRUCTEX, *LPMOUSEHOOKSTRUCTEX, *PMOUSEHOOKSTRUCTEX;
-#else // ndef __cplusplus
+
+ffi.cdef[[
 typedef struct tagMOUSEHOOKSTRUCTEX
 {
     MOUSEHOOKSTRUCT DUMMYSTRUCTNAME;
     DWORD   mouseData;
 } MOUSEHOOKSTRUCTEX, *LPMOUSEHOOKSTRUCTEX, *PMOUSEHOOKSTRUCTEX;
-#endif
-#endif /* _WIN32_WINNT >= 0x0500 */
+]]
 
-#if(WINVER >= 0x0400)
+
+ffi.cdef[[
 /*
  * Structure used by WH_HARDWARE
  */
@@ -1029,13 +1028,9 @@ typedef struct tagHARDWAREHOOKSTRUCT {
     WPARAM  wParam;
     LPARAM  lParam;
 } HARDWAREHOOKSTRUCT, *LPHARDWAREHOOKSTRUCT, *PHARDWAREHOOKSTRUCT;
-#endif /* WINVER >= 0x0400 */
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* !NOWH */
-
+--[=[
 /*
  * Keyboard Layout API
  */
@@ -1065,14 +1060,13 @@ typedef struct tagHARDWAREHOOKSTRUCT {
 #define INPUTLANGCHANGE_FORWARD    0x0002
 #define INPUTLANGCHANGE_BACKWARD   0x0004
 #endif /* WINVER >= 0x0500 */
+--]=]
 
+ffi.cdef[[
 /*
  * Size of KeyboardLayoutName (number of characters), including nul terminator
  */
-#define KL_NAMELENGTH 9
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int KL_NAMELENGTH = 9;
 
 
 HKL
@@ -1086,42 +1080,34 @@ __stdcall
 LoadKeyboardLayoutW(
      LPCWSTR pwszKLID,
      UINT Flags);
-#ifdef UNICODE
-#define LoadKeyboardLayout  LoadKeyboardLayoutW
-#else
-#define LoadKeyboardLayout  LoadKeyboardLayoutA
-#endif // !UNICODE
+]]
+
+if UNICODE then
+exports.LoadKeyboardLayout  = ffi.C.LoadKeyboardLayoutW;
+else
+exports.LoadKeyboardLayout  = ffi.C.LoadKeyboardLayoutA;
+end
 
 
-#if(WINVER >= 0x0400)
 
+ffi.cdef[[
 HKL
 __stdcall
 ActivateKeyboardLayout(
      HKL hkl,
      UINT Flags);
-#else
-
-BOOL
-__stdcall
-ActivateKeyboardLayout(
-     HKL hkl,
-     UINT Flags);
-#endif /* WINVER >= 0x0400 */
-
-#if(WINVER >= 0x0400)
 
 int
 __stdcall
 ToUnicodeEx(
      UINT wVirtKey,
      UINT wScanCode,
-    _In_reads_bytes_(256) CONST BYTE *lpKeyState,
-    _Out_writes_(cchBuff) LPWSTR pwszBuff,
+    const BYTE *lpKeyState,
+    LPWSTR pwszBuff,
      int cchBuff,
      UINT wFlags,
      HKL dwhkl);
-#endif /* WINVER >= 0x0400 */
+
 
 
 BOOL
@@ -1139,6 +1125,9 @@ BOOL
 __stdcall
 GetKeyboardLayoutNameW(
     LPWSTR pwszKLID);
+]]
+
+--[=[
 #ifdef UNICODE
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameW
 #else
@@ -5468,8 +5457,9 @@ IsCharLowerW(
 
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]=]
 
-
+ffi.cdef[[
 HWND
 __stdcall
 SetFocus(
@@ -5478,20 +5468,19 @@ SetFocus(
 
 HWND
 __stdcall
-GetActiveWindow(
-    VOID);
+GetActiveWindow(void);
 
 
 HWND
 __stdcall
 GetFocus(
-    VOID);
+    void);
 
 
 UINT
 __stdcall
 GetKBCodePage(
-    VOID);
+    void);
 
 
 SHORT
@@ -5506,53 +5495,42 @@ GetAsyncKeyState(
      int vKey);
 
 
-_Check_return_
-BOOL
-__stdcall
-GetKeyboardState(
-    _Out_writes_(256) PBYTE lpKeyState);
-
 
 BOOL
 __stdcall
-SetKeyboardState(
-    _In_reads_(256) LPBYTE lpKeyState);
+GetKeyboardState(PBYTE lpKeyState);
 
-	  	
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
+BOOL
+__stdcall
+SetKeyboardState(LPBYTE lpKeyState);
+]]
 	
-#pragma region  Desktop or PC Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP)
-
-
+ffi.cdef[[
 int
 __stdcall
 GetKeyNameTextA(
      LONG lParam,
-    _Out_writes_(cchSize) LPSTR lpString,
+    LPSTR lpString,
      int cchSize);
 
 int
 __stdcall
 GetKeyNameTextW(
      LONG lParam,
-    _Out_writes_(cchSize) LPWSTR lpString,
+    LPWSTR lpString,
      int cchSize);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetKeyNameText  GetKeyNameTextW
 #else
 #define GetKeyNameText  GetKeyNameTextA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
-
+ffi.cdef[[
 int
 __stdcall
 GetKeyboardType(
@@ -5564,31 +5542,29 @@ __stdcall
 ToAscii(
      UINT uVirtKey,
      UINT uScanCode,
-    _In_reads_opt_(256) CONST BYTE *lpKeyState,
+    const BYTE *lpKeyState,
      LPWORD lpChar,
      UINT uFlags);
-
-#if(WINVER >= 0x0400)
 
 int
 __stdcall
 ToAsciiEx(
      UINT uVirtKey,
      UINT uScanCode,
-    _In_reads_opt_(256) CONST BYTE *lpKeyState,
+    const BYTE *lpKeyState,
      LPWORD lpChar,
      UINT uFlags,
      HKL dwhkl);
-#endif /* WINVER >= 0x0400 */
+]]
 
-
+ffi.cdef[[
 int
 __stdcall
 ToUnicode(
      UINT wVirtKey,
      UINT wScanCode,
-    _In_reads_bytes_opt_(256) CONST BYTE *lpKeyState,
-    _Out_writes_(cchBuff) LPWSTR pwszBuff,
+    const BYTE *lpKeyState,
+    LPWSTR pwszBuff,
      int cchBuff,
      UINT wFlags);
 
@@ -5608,14 +5584,17 @@ SHORT
 __stdcall
 VkKeyScanW(
      WCHAR ch);
+]]
+
+--[[
 #ifdef UNICODE
 #define VkKeyScan  VkKeyScanW
 #else
 #define VkKeyScan  VkKeyScanA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
-
+ffi.cdef[[
 SHORT
 __stdcall
 VkKeyScanExA(
@@ -5627,32 +5606,36 @@ __stdcall
 VkKeyScanExW(
      WCHAR ch,
      HKL dwhkl);
+]]
+
+--[[
 #ifdef UNICODE
 #define VkKeyScanEx  VkKeyScanExW
 #else
 #define VkKeyScanEx  VkKeyScanExA
 #endif // !UNICODE
-#endif /* WINVER >= 0x0400 */
-#define KEYEVENTF_EXTENDEDKEY 0x0001
-#define KEYEVENTF_KEYUP       0x0002
-#if(_WIN32_WINNT >= 0x0500)
-#define KEYEVENTF_UNICODE     0x0004
-#define KEYEVENTF_SCANCODE    0x0008
-#endif /* _WIN32_WINNT >= 0x0500 */
+--]]
 
+ffi.cdef[[
+static const int KEYEVENTF_EXTENDEDKEY =0x0001;
+static const int KEYEVENTF_KEYUP       =0x0002;
+static const int KEYEVENTF_UNICODE     =0x0004;
+static const int KEYEVENTF_SCANCODE    =0x0008;
+]]
 
-VOID
+ffi.cdef[[
+void
 __stdcall
 keybd_event(
      BYTE bVk,
      BYTE bScan,
      DWORD dwFlags,
      ULONG_PTR dwExtraInfo);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#define MOUSEEVENTF_MOVE        0x0001 /* mouse move */
+--[=[
+static const int MOUSEEVENTF_MOVE      =  0x0001; /* mouse move */
 #define MOUSEEVENTF_LEFTDOWN    0x0002 /* left button down */
 #define MOUSEEVENTF_LEFTUP      0x0004 /* left button up */
 #define MOUSEEVENTF_RIGHTDOWN   0x0008 /* right button down */
@@ -5662,17 +5645,16 @@ keybd_event(
 #define MOUSEEVENTF_XDOWN       0x0080 /* x button down */
 #define MOUSEEVENTF_XUP         0x0100 /* x button down */
 #define MOUSEEVENTF_WHEEL                0x0800 /* wheel button rolled */
-#if (_WIN32_WINNT >= 0x0600)
+
 #define MOUSEEVENTF_HWHEEL              0x01000 /* hwheel button rolled */
-#endif
-#if(WINVER >= 0x0600)
+
+
 #define MOUSEEVENTF_MOVE_NOCOALESCE      0x2000 /* do not coalesce mouse moves */
-#endif /* WINVER >= 0x0600 */
+
 #define MOUSEEVENTF_VIRTUALDESK          0x4000 /* map to entire virtual desktop */
 #define MOUSEEVENTF_ABSOLUTE             0x8000 /* absolute move */
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
 
 
 VOID
@@ -5684,10 +5666,6 @@ mouse_event(
      DWORD dwData,
      ULONG_PTR dwExtraInfo);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#if (_WIN32_WINNT > 0x0400)
 
 typedef struct tagMOUSEINPUT {
     LONG    dx;
@@ -5706,8 +5684,6 @@ typedef struct tagKEYBDINPUT {
     ULONG_PTR dwExtraInfo;
 } KEYBDINPUT, *PKEYBDINPUT, FAR* LPKEYBDINPUT;
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagHARDWAREINPUT {
     DWORD   uMsg;
@@ -5738,15 +5714,6 @@ SendInput(
     _In_reads_(cInputs) LPINPUT pInputs,  // array of inputs
      int cbSize);                      // sizeof(INPUT)
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif // (_WIN32_WINNT > 0x0400)
-
-#if(WINVER >= 0x0601)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * Touch Input defines and functions
@@ -5772,9 +5739,6 @@ typedef struct tagTOUCHINPUT {
 typedef TOUCHINPUT const * PCTOUCHINPUT;
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
 /*
  * Conversion of touch input coordinates to pixels
  */
@@ -5799,16 +5763,12 @@ typedef TOUCHINPUT const * PCTOUCHINPUT;
 #define TOUCHINPUTMASKF_EXTRAINFO       0x0002  // the dwExtraInfo field is valid
 #define TOUCHINPUTMASKF_CONTACTAREA     0x0004  // the cxContact and cyContact fields are valid
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
 BOOL
 __stdcall
 GetTouchInputInfo(
      HTOUCHINPUT hTouchInput,               // input event handle; from touch message lParam
      UINT cInputs,                          // number of elements in the array
-    _Out_writes_(cInputs) PTOUCHINPUT pInputs,  // array of touch inputs
+    PTOUCHINPUT pInputs,  // array of touch inputs
      int cbSize);                           // sizeof(TOUCHINPUT)
 
 
@@ -5818,19 +5778,12 @@ CloseTouchInputHandle(
      HTOUCHINPUT hTouchInput);                   // input event handle; from touch message lParam
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
 
 /*
  * RegisterTouchWindow flag values
  */
 #define TWF_FINETOUCH       (0x00000001)
 #define TWF_WANTPALM        (0x00000002)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 BOOL
 __stdcall
@@ -5851,15 +5804,6 @@ IsTouchWindow(
      HWND hwnd,
     _Out_opt_ PULONG pulFlags);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0601 */
-
-#if(WINVER >= 0x0602)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 #define POINTER_STRUCTURES
 
@@ -5868,9 +5812,9 @@ enum tagPOINTER_INPUT_TYPE {
     PT_TOUCH    = 0x00000002,   // Touch
     PT_PEN      = 0x00000003,   // Pen
     PT_MOUSE    = 0x00000004,   // Mouse
-#if(WINVER >= 0x0603)
+
     PT_TOUCHPAD = 0x00000005,   // Touchpad
-#endif /* WINVER >= 0x0603 */
+
 };
 
 
@@ -5878,8 +5822,6 @@ typedef DWORD POINTER_INPUT_TYPE;
 
 typedef UINT32 POINTER_FLAGS;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 #define POINTER_FLAG_NONE               0x00000000 // Default
 #define POINTER_FLAG_NEW                0x00000001 // New pointer
@@ -5907,9 +5849,6 @@ typedef UINT32 POINTER_FLAGS;
  */
 #define POINTER_MOD_SHIFT   (0x0004)    // Shift key is held down.
 #define POINTER_MOD_CTRL    (0x0008)    // Ctrl key is held down.
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef enum tagPOINTER_BUTTON_CHANGE_TYPE {
     POINTER_CHANGE_NONE,
@@ -14617,13 +14556,13 @@ GetRawPointerDeviceData(
     LONG* pValues);
 ]]
 
---[=[
+ffi.cdef[[
 /*
  * Message Filter
  */
 
-#define MSGFLT_ADD 1
-#define MSGFLT_REMOVE 2
+static const int MSGFLT_ADD = 1;
+static const int MSGFLT_REMOVE = 2;
 
 
 BOOL
@@ -14636,27 +14575,29 @@ ChangeWindowMessageFilter(
 /*
  * Message filter info values (CHANGEFILTERSTRUCT.ExtStatus)
  */
-#define MSGFLTINFO_NONE                         (0)
-#define MSGFLTINFO_ALREADYALLOWED_FORWND        (1)
-#define MSGFLTINFO_ALREADYDISALLOWED_FORWND     (2)
-#define MSGFLTINFO_ALLOWED_HIGHER               (3)
+static const int MSGFLTINFO_NONE                        = 0;
+static const int MSGFLTINFO_ALREADYALLOWED_FORWND       = 1;
+static const int MSGFLTINFO_ALREADYDISALLOWED_FORWND    = 2;
+static const int MSGFLTINFO_ALLOWED_HIGHER              = 3;
+]]
 
-
+ffi.cdef[[
 typedef struct tagCHANGEFILTERSTRUCT {
     DWORD cbSize;
     DWORD ExtStatus;
 } CHANGEFILTERSTRUCT, *PCHANGEFILTERSTRUCT;
+]]
 
-
+ffi.cdef[[
 /*
  * Message filter action values (action parameter to ChangeWindowMessageFilterEx)
  */
-#define MSGFLT_RESET                            (0)
-#define MSGFLT_ALLOW                            (1)
-#define MSGFLT_DISALLOW                         (2)
+static const int MSGFLT_RESET                           = 0;
+static const int MSGFLT_ALLOW                           = 1;
+static const int MSGFLT_DISALLOW                        = 2;
+]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 ChangeWindowMessageFilterEx(
@@ -14664,8 +14605,9 @@ ChangeWindowMessageFilterEx(
      UINT message,                                      // WM_ message
      DWORD action,                                      // Message filter action value
     PCHANGEFILTERSTRUCT pChangeFilterStruct);   // Optional
+]]
 
-
+--[=[
 /*
  * Gesture defines and functions
  */
@@ -15053,5 +14995,6 @@ SetProcessRestrictionExemption(
 
 
 exports.GetRawInputDeviceList = exports.Lib.GetRawInputDeviceList;
+exports.GetPointerDevices = exports.Lib.GetPointerDevices;
 
 return exports
