@@ -15,18 +15,19 @@ local function wmstrziter(data, datalength)
 	local maxLen = 255;
 	local idx = -1;
 
-	local nameBuff = ffi.new("char[256]")
+	local nameBuff = ffi.new("char[?]", maxLen+1)
 
 	local function closure()
 		idx = idx + 1;
-		local len = 0;
-
+        local len = 0;
+        
+--print("closure: ", idx, datalength)
 		while len < maxLen do 
 			--print("char: ", string.char(lpBuffer[idx]))
 			if data[idx] == 0 then
 				break
 			end
-		
+--print("LEN, IDX: ", len, idx, data[idx])
 			nameBuff[len] = data[idx];
 			len = len + 1;
 			idx = idx + 1;
@@ -56,7 +57,8 @@ local function getDevicePath(deviceName)
         return false, ffi.errno();
     end
 
-    return core_string.toAnsi(lpTargetPath, res), res
+    return lpTargetPath, res
+    --return core_string.toAnsi(lpTargetPath, res), res
 end
 
 
@@ -80,6 +82,8 @@ local function test_enumerate()
 
     -- first get all devices
     local targetPath, err = getDevicePath(nil);
+
+    --print("targetPath: ",targetPath)
 
     if not targetPath then
         print("Error: ", err)

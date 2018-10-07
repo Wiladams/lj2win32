@@ -438,25 +438,15 @@ typedef union _LARGE_INTEGER {
 typedef LARGE_INTEGER *PLARGE_INTEGER;
 ]]
 
---[==[
-#if defined(MIDL_PASS)
+ffi.cdef[[
 typedef struct _ULARGE_INTEGER {
-#else // MIDL_PASS
-typedef union _ULARGE_INTEGER {
-    struct {
-        DWORD LowPart;
-        DWORD HighPart;
-    } DUMMYSTRUCTNAME;
-    struct {
-        DWORD LowPart;
-        DWORD HighPart;
-    } u;
-#endif //MIDL_PASS
     ULONGLONG QuadPart;
 } ULARGE_INTEGER;
 
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
+]]
 
+--[==[
 //
 // Reference count.
 //
@@ -12077,8 +12067,9 @@ typedef struct _FILE_NOTIFY_INFORMATION {
     DWORD FileNameLength;
     WCHAR FileName[1];
 } FILE_NOTIFY_INFORMATION, *PFILE_NOTIFY_INFORMATION;
+--]==]
 
-
+ffi.cdef[[
 //
 // Define segement buffer structure for scatter/gather read/write.
 //
@@ -12087,7 +12078,9 @@ typedef union _FILE_SEGMENT_ELEMENT {
     PVOID64 Buffer;
     ULONGLONG Alignment;
 }FILE_SEGMENT_ELEMENT, *PFILE_SEGMENT_ELEMENT;
+]]
 
+--[==[
 #if (NTDDI_VERSION >= NTDDI_WIN8)
 
 //
