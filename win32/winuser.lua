@@ -10217,9 +10217,9 @@ CopyImage(
 #define DI_NORMAL       0x0003
 #define DI_COMPAT       0x0004
 #define DI_DEFAULTSIZE  0x0008
-#if(_WIN32_WINNT >= 0x0501)
+
 #define DI_NOMIRROR     0x0010
-#endif /* _WIN32_WINNT >= 0x0501 */
+
 
  BOOL __stdcall DrawIconEx(
      HDC hdc,
@@ -10231,15 +10231,6 @@ CopyImage(
      UINT istepIfAniCur,
      HBRUSH hbrFlickerFreeDraw,
      UINT diFlags);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0400 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 HICON
 __stdcall
@@ -10259,7 +10250,7 @@ GetIconInfo(
      HICON hIcon,
      PICONINFO piconinfo);
 
-#if(_WIN32_WINNT >= 0x0600)
+
 typedef struct _ICONINFOEXA {
     DWORD   cbSize;
     BOOL    fIcon;
@@ -10282,6 +10273,7 @@ typedef struct _ICONINFOEXW {
     WCHAR   szModName[MAX_PATH];
     WCHAR   szResName[MAX_PATH];
 } ICONINFOEXW, *PICONINFOEXW;
+
 #ifdef UNICODE
 typedef ICONINFOEXW ICONINFOEX;
 typedef PICONINFOEXW PICONINFOEX;
@@ -10302,20 +10294,19 @@ __stdcall
 GetIconInfoExW(
      HICON hicon,
      PICONINFOEXW piconinfo);
+
 #ifdef UNICODE
 #define GetIconInfoEx  GetIconInfoExW
 #else
 #define GetIconInfoEx  GetIconInfoExA
 #endif // !UNICODE
-#endif /* _WIN32_WINNT >= 0x0600 */
 
-#if(WINVER >= 0x0400)
+
+
 #define RES_ICON    1
 #define RES_CURSOR  2
-#endif /* WINVER >= 0x0400 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #ifdef OEMRESOURCE
 

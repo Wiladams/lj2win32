@@ -3,7 +3,7 @@
 local ffi = require("ffi");
 
 local WinBase = require("win32.winbase");
-local WinNT = require("win32.winnt");
+local WinNT = require("win32.win_nt");
 
 
 -- Win8

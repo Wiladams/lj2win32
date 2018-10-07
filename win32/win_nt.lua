@@ -1997,57 +1997,78 @@ inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) throw() { return (ENUMTYP
 #define MAXIMUM_WAIT_OBJECTS 64     // Maximum number of wait objects
 
 #define MAXIMUM_SUSPEND_COUNT MAXCHAR // Maximum times thread can be suspended
+--]==]
 
+ffi.cdef[[
 typedef ULONG_PTR KSPIN_LOCK;
 typedef KSPIN_LOCK *PKSPIN_LOCK;
+]]
 
+ffi.cdef[[
 // begin_ntoshvp
 
 //
 // Define 128-bit 16-byte aligned xmm register type.
 //
 
-typedef struct DECLSPEC_ALIGN(16) _M128A {
+typedef struct _M128A {
     ULONGLONG Low;
     LONGLONG High;
 } M128A, *PM128A;
+]]
 
-//
-// Format of data for (F)XSAVE/(F)XRSTOR instruction
-//
 
-typedef struct DECLSPEC_ALIGN(16) _XSAVE_FORMAT {
-    WORD   ControlWord;
-    WORD   StatusWord;
-    BYTE  TagWord;
-    BYTE  Reserved1;
-    WORD   ErrorOpcode;
-    DWORD ErrorOffset;
-    WORD   ErrorSelector;
-    WORD   Reserved2;
-    DWORD DataOffset;
-    WORD   DataSelector;
-    WORD   Reserved3;
-    DWORD MxCsr;
-    DWORD MxCsr_Mask;
-    M128A FloatRegisters[8];
-
-#if defined(_WIN64)
-
-    M128A XmmRegisters[16];
-    BYTE  Reserved4[96];
-
-#else
-
-    M128A XmmRegisters[8];
-    BYTE  Reserved4[224];
-
-#endif
-
+if _WIN64 then
+    ffi.cdef[[
+    //
+    // Format of data for (F)XSAVE/(F)XRSTOR instruction
+    //
+    typedef struct _XSAVE_FORMAT {
+        WORD   ControlWord;
+        WORD   StatusWord;
+        BYTE  TagWord;
+        BYTE  Reserved1;
+        WORD   ErrorOpcode;
+        DWORD ErrorOffset;
+        WORD   ErrorSelector;
+        WORD   Reserved2;
+        DWORD DataOffset;
+        WORD   DataSelector;
+        WORD   Reserved3;
+        DWORD MxCsr;
+        DWORD MxCsr_Mask;
+        M128A FloatRegisters[8];
+        M128A XmmRegisters[16];
+        BYTE  Reserved4[96];
+    } XSAVE_FORMAT, *PXSAVE_FORMAT;
+]]
+else
+ffi.cdef[[
+        typedef struct _XSAVE_FORMAT {
+        WORD   ControlWord;
+        WORD   StatusWord;
+        BYTE  TagWord;
+        BYTE  Reserved1;
+        WORD   ErrorOpcode;
+        DWORD ErrorOffset;
+        WORD   ErrorSelector;
+        WORD   Reserved2;
+        DWORD DataOffset;
+        WORD   DataSelector;
+        WORD   Reserved3;
+        DWORD MxCsr;
+        DWORD MxCsr_Mask;
+        M128A FloatRegisters[8];
+        M128A XmmRegisters[8];
+        BYTE  Reserved4[192];
+    
+        DWORD   StackControl[7];
+        DWORD   Cr0NpxState;
 } XSAVE_FORMAT, *PXSAVE_FORMAT;
+]]
+end
 
-// end_ntoshvp
-
+--[==[
 typedef struct DECLSPEC_ALIGN(8) _XSAVE_AREA_HEADER {
     DWORD64 Mask;
     DWORD64 CompactionMask;
@@ -3260,11 +3281,15 @@ __addgsqword (
 
 // end_ntddk
 // begin_wdm begin_ntosp
-// begin_ntoshvp
+--]==]
 
+
+ffi.cdef[[
 typedef XSAVE_FORMAT XMM_SAVE_AREA32, *PXMM_SAVE_AREA32;
+]]
 
-// end_wdm end_ntosp
+
+ffi.cdef[[
 // begin_ntddk
 
 //
@@ -3299,7 +3324,7 @@ typedef XSAVE_FORMAT XMM_SAVE_AREA32, *PXMM_SAVE_AREA32;
 // CONTEXT_DEBUG_REGISTERS specifies Dr0-Dr3 and Dr6-Dr7.
 //
 
-typedef struct DECLSPEC_ALIGN(16) _CONTEXT {
+typedef struct _CONTEXT {
 
     //
     // Register parameter home addresses.
@@ -3397,8 +3422,8 @@ typedef struct DECLSPEC_ALIGN(16) _CONTEXT {
             M128A Xmm13;
             M128A Xmm14;
             M128A Xmm15;
-        } DUMMYSTRUCTNAME;
-    } DUMMYUNIONNAME;
+        } ;
+    } ;
 
     //
     // Vector registers.
@@ -3419,6 +3444,9 @@ typedef struct DECLSPEC_ALIGN(16) _CONTEXT {
 } CONTEXT, *PCONTEXT;
 
 // end_ntoshvp
+]]
+
+--[==[
 //
 // Select platform-specific definitions
 //

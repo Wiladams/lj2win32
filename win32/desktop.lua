@@ -3,7 +3,9 @@ local ffi = require "ffi"
 
 local WTypes = require "win32.wtypes"
 local gdi32 = require "win32.gdi32"     -- for DEVMODE
-local user32 = require("win32.user32")  -- for WNDENUMPROC
+--local user32 = require("win32.user32")  -- for WNDENUMPROC
+local winuser = require("win32.winuser")
+
 ffi.cdef[[
 
 typedef BOOL (__stdcall *DESKTOPENUMPROCA)(LPTSTR lpszDesktop, LPARAM lParam);
