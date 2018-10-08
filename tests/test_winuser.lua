@@ -2,7 +2,7 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
-local winuser = require("winuser")
+local winuser = require("win32.winuser")
 
 local function getDeviceName(self)
     --print("==== getDeviceInfo ====")

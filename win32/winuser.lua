@@ -3720,18 +3720,11 @@ __stdcall
 UnregisterSuspendResumeNotification (
     IN HPOWERNOTIFY Handle
     );
+--]=]
 
 
-#endif // (_WIN32_WINNT >= 0x0502)
-#endif /* WINVER >= 0x0500 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 PostMessageA(
@@ -3747,13 +3740,17 @@ PostMessageW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define PostMessage  PostMessageW
 #else
 #define PostMessage  PostMessageA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 PostThreadMessageA(
@@ -3769,15 +3766,18 @@ PostThreadMessageW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define PostThreadMessage  PostThreadMessageW
 #else
 #define PostThreadMessage  PostThreadMessageA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[[
 #define PostAppMessageA(idThread, wMsg, wParam, lParam)\
         PostThreadMessageA((DWORD)idThread, wMsg, wParam, lParam)
 #define PostAppMessageW(idThread, wMsg, wParam, lParam)\
@@ -3787,20 +3787,18 @@ PostThreadMessageW(
 #else
 #define PostAppMessage  PostAppMessageA
 #endif // !UNICODE
+--]]
 
+--[[
 /*
  * Special HWND value for use with PostMessage() and SendMessage()
  */
 #define HWND_BROADCAST  ((HWND)0xffff)
 
-#if(WINVER >= 0x0500)
 #define HWND_MESSAGE     ((HWND)-3)
-#endif /* WINVER >= 0x0500 */
+--]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 AttachThreadInput(
@@ -3819,11 +3817,7 @@ ReplyMessage(
 BOOL
 __stdcall
 WaitMessage(
-    VOID);
-
-#if (_WIN32_WINNT >= 0x602)
-#endif
-
+    void);
 
 
 DWORD
@@ -3831,8 +3825,9 @@ __stdcall
 WaitForInputIdle(
      HANDLE hProcess,
      DWORD dwMilliseconds);
+]]
 
-
+--[=[
 #ifndef _MAC
 LRESULT
 __stdcall
@@ -5634,29 +5629,29 @@ keybd_event(
 ]]
 
 
---[=[
-static const int MOUSEEVENTF_MOVE      =  0x0001; /* mouse move */
-#define MOUSEEVENTF_LEFTDOWN    0x0002 /* left button down */
-#define MOUSEEVENTF_LEFTUP      0x0004 /* left button up */
-#define MOUSEEVENTF_RIGHTDOWN   0x0008 /* right button down */
-#define MOUSEEVENTF_RIGHTUP     0x0010 /* right button up */
-#define MOUSEEVENTF_MIDDLEDOWN  0x0020 /* middle button down */
-#define MOUSEEVENTF_MIDDLEUP    0x0040 /* middle button up */
-#define MOUSEEVENTF_XDOWN       0x0080 /* x button down */
-#define MOUSEEVENTF_XUP         0x0100 /* x button down */
-#define MOUSEEVENTF_WHEEL                0x0800 /* wheel button rolled */
+ffi.cdef[[
+static const int MOUSEEVENTF_MOVE        =  0x0001; /* mouse move */
+static const int MOUSEEVENTF_LEFTDOWN    = 0x0002; /* left button down */
+static const int MOUSEEVENTF_LEFTUP      = 0x0004; /* left button up */
+static const int MOUSEEVENTF_RIGHTDOWN   = 0x0008; /* right button down */
+static const int MOUSEEVENTF_RIGHTUP     = 0x0010; /* right button up */
+static const int MOUSEEVENTF_MIDDLEDOWN  = 0x0020; /* middle button down */
+static const int MOUSEEVENTF_MIDDLEUP    = 0x0040; /* middle button up */
+static const int MOUSEEVENTF_XDOWN       = 0x0080; /* x button down */
+static const int MOUSEEVENTF_XUP         = 0x0100; /* x button down */
+static const int MOUSEEVENTF_WHEEL       = 0x0800; /* wheel button rolled */
 
-#define MOUSEEVENTF_HWHEEL              0x01000 /* hwheel button rolled */
-
-
-#define MOUSEEVENTF_MOVE_NOCOALESCE      0x2000 /* do not coalesce mouse moves */
-
-#define MOUSEEVENTF_VIRTUALDESK          0x4000 /* map to entire virtual desktop */
-#define MOUSEEVENTF_ABSOLUTE             0x8000 /* absolute move */
+static const int MOUSEEVENTF_HWHEEL              = 0x01000; /* hwheel button rolled */
 
 
+static const int MOUSEEVENTF_MOVE_NOCOALESCE      = 0x2000; /* do not coalesce mouse moves */
+
+static const int MOUSEEVENTF_VIRTUALDESK          = 0x4000; /* map to entire virtual desktop */
+static const int MOUSEEVENTF_ABSOLUTE             = 0x8000; /* absolute move */
+]]
 
 
+ffi.cdef[[
 VOID
 __stdcall
 mouse_event(
@@ -5674,7 +5669,7 @@ typedef struct tagMOUSEINPUT {
     DWORD   dwFlags;
     DWORD   time;
     ULONG_PTR dwExtraInfo;
-} MOUSEINPUT, *PMOUSEINPUT, FAR* LPMOUSEINPUT;
+} MOUSEINPUT, *PMOUSEINPUT, * LPMOUSEINPUT;
 
 typedef struct tagKEYBDINPUT {
     WORD    wVk;
@@ -5682,18 +5677,18 @@ typedef struct tagKEYBDINPUT {
     DWORD   dwFlags;
     DWORD   time;
     ULONG_PTR dwExtraInfo;
-} KEYBDINPUT, *PKEYBDINPUT, FAR* LPKEYBDINPUT;
+} KEYBDINPUT, *PKEYBDINPUT, * LPKEYBDINPUT;
 
 
 typedef struct tagHARDWAREINPUT {
     DWORD   uMsg;
     WORD    wParamL;
     WORD    wParamH;
-} HARDWAREINPUT, *PHARDWAREINPUT, FAR* LPHARDWAREINPUT;
+} HARDWAREINPUT, *PHARDWAREINPUT, * LPHARDWAREINPUT;
 
-#define INPUT_MOUSE     0
-#define INPUT_KEYBOARD  1
-#define INPUT_HARDWARE  2
+static const int INPUT_MOUSE     =0;
+static const int INPUT_KEYBOARD  =1;
+static const int INPUT_HARDWARE  =2;
 
 typedef struct tagINPUT {
     DWORD   type;
@@ -5704,26 +5699,24 @@ typedef struct tagINPUT {
         KEYBDINPUT      ki;
         HARDWAREINPUT   hi;
     } DUMMYUNIONNAME;
-} INPUT, *PINPUT, FAR* LPINPUT;
+} INPUT, *PINPUT, * LPINPUT;
 
 
 UINT
 __stdcall
 SendInput(
      UINT cInputs,                     // number of input in the array
-    _In_reads_(cInputs) LPINPUT pInputs,  // array of inputs
+    LPINPUT pInputs,  // array of inputs
      int cbSize);                      // sizeof(INPUT)
+]]
 
 
-/*
- * Touch Input defines and functions
- */
+-- Touch Input defines and functions
 
-/*
- * Touch input handle
- */
-DECLARE_HANDLE(HTOUCHINPUT);
+-- Touch input handle
+DECLARE_HANDLE("HTOUCHINPUT");
 
+ffi.cdef[[
 typedef struct tagTOUCHINPUT {
     LONG x;
     LONG y;
@@ -5737,31 +5730,31 @@ typedef struct tagTOUCHINPUT {
     DWORD cyContact;
 } TOUCHINPUT, *PTOUCHINPUT;
 typedef TOUCHINPUT const * PCTOUCHINPUT;
+]]
 
+-- Conversion of touch input coordinates to pixels
 
-/*
- * Conversion of touch input coordinates to pixels
- */
-#define TOUCH_COORD_TO_PIXEL(l)         ((l) / 100)
+function exports.TOUCH_COORD_TO_PIXEL(l) return ((l) / 100) end
 
+ffi.cdef[[
 /*
  * Touch input flag values (TOUCHINPUT.dwFlags)
  */
-#define TOUCHEVENTF_MOVE            0x0001
-#define TOUCHEVENTF_DOWN            0x0002
-#define TOUCHEVENTF_UP              0x0004
-#define TOUCHEVENTF_INRANGE         0x0008
-#define TOUCHEVENTF_PRIMARY         0x0010
-#define TOUCHEVENTF_NOCOALESCE      0x0020
-#define TOUCHEVENTF_PEN             0x0040
-#define TOUCHEVENTF_PALM            0x0080
+static const int TOUCHEVENTF_MOVE            = 0x0001;
+static const int TOUCHEVENTF_DOWN            = 0x0002;
+static const int TOUCHEVENTF_UP              = 0x0004;
+static const int TOUCHEVENTF_INRANGE         = 0x0008;
+static const int TOUCHEVENTF_PRIMARY         = 0x0010;
+static const int TOUCHEVENTF_NOCOALESCE      = 0x0020;
+static const int TOUCHEVENTF_PEN             = 0x0040;
+static const int TOUCHEVENTF_PALM            = 0x0080;
 
 /*
  * Touch input mask values (TOUCHINPUT.dwMask)
  */
-#define TOUCHINPUTMASKF_TIMEFROMSYSTEM  0x0001  // the dwTime field contains a system generated value
-#define TOUCHINPUTMASKF_EXTRAINFO       0x0002  // the dwExtraInfo field is valid
-#define TOUCHINPUTMASKF_CONTACTAREA     0x0004  // the cxContact and cyContact fields are valid
+static const int TOUCHINPUTMASKF_TIMEFROMSYSTEM  = 0x0001;  // the dwTime field contains a system generated value
+static const int TOUCHINPUTMASKF_EXTRAINFO       = 0x0002;  // the dwExtraInfo field is valid
+static const int TOUCHINPUTMASKF_CONTACTAREA     = 0x0004;  // the cxContact and cyContact fields are valid
 
 BOOL
 __stdcall
@@ -5782,15 +5775,14 @@ CloseTouchInputHandle(
 /*
  * RegisterTouchWindow flag values
  */
-#define TWF_FINETOUCH       (0x00000001)
-#define TWF_WANTPALM        (0x00000002)
+static const int TWF_FINETOUCH      = (0x00000001);
+static const int TWF_WANTPALM       = (0x00000002);
 
 BOOL
 __stdcall
 RegisterTouchWindow(
      HWND hwnd,
      ULONG ulFlags);
-
 
 BOOL
 __stdcall
@@ -5802,19 +5794,16 @@ BOOL
 __stdcall
 IsTouchWindow(
      HWND hwnd,
-    _Out_opt_ PULONG pulFlags);
+    PULONG pulFlags);
+]]
 
-
-#define POINTER_STRUCTURES
-
+ffi.cdef[[
 enum tagPOINTER_INPUT_TYPE {
     PT_POINTER  = 0x00000001,   // Generic pointer
     PT_TOUCH    = 0x00000002,   // Touch
     PT_PEN      = 0x00000003,   // Pen
     PT_MOUSE    = 0x00000004,   // Mouse
-
     PT_TOUCHPAD = 0x00000005,   // Touchpad
-
 };
 
 
@@ -5823,32 +5812,32 @@ typedef DWORD POINTER_INPUT_TYPE;
 typedef UINT32 POINTER_FLAGS;
 
 
-#define POINTER_FLAG_NONE               0x00000000 // Default
-#define POINTER_FLAG_NEW                0x00000001 // New pointer
-#define POINTER_FLAG_INRANGE            0x00000002 // Pointer has not departed
-#define POINTER_FLAG_INCONTACT          0x00000004 // Pointer is in contact
-#define POINTER_FLAG_FIRSTBUTTON        0x00000010 // Primary action
-#define POINTER_FLAG_SECONDBUTTON       0x00000020 // Secondary action
-#define POINTER_FLAG_THIRDBUTTON        0x00000040 // Third button
-#define POINTER_FLAG_FOURTHBUTTON       0x00000080 // Fourth button
-#define POINTER_FLAG_FIFTHBUTTON        0x00000100 // Fifth button
-#define POINTER_FLAG_PRIMARY            0x00002000 // Pointer is primary
-#define POINTER_FLAG_CONFIDENCE         0x00004000 // Pointer is considered unlikely to be accidental
-#define POINTER_FLAG_CANCELED           0x00008000 // Pointer is departing in an abnormal manner
-#define POINTER_FLAG_DOWN               0x00010000 // Pointer transitioned to down state (made contact)
-#define POINTER_FLAG_UPDATE             0x00020000 // Pointer update
-#define POINTER_FLAG_UP                 0x00040000 // Pointer transitioned from down state (broke contact)
-#define POINTER_FLAG_WHEEL              0x00080000 // Vertical wheel
-#define POINTER_FLAG_HWHEEL             0x00100000 // Horizontal wheel
-#define POINTER_FLAG_CAPTURECHANGED     0x00200000 // Lost capture
-#define POINTER_FLAG_HASTRANSFORM       0x00400000 // Input has a transform associated with it
+static const int POINTER_FLAG_NONE               = 0x00000000; // Default
+static const int POINTER_FLAG_NEW                = 0x00000001; // New pointer
+static const int POINTER_FLAG_INRANGE            = 0x00000002; // Pointer has not departed
+static const int POINTER_FLAG_INCONTACT          = 0x00000004; // Pointer is in contact
+static const int POINTER_FLAG_FIRSTBUTTON        = 0x00000010; // Primary action
+static const int POINTER_FLAG_SECONDBUTTON       = 0x00000020; // Secondary action
+static const int POINTER_FLAG_THIRDBUTTON        = 0x00000040; // Third button
+static const int POINTER_FLAG_FOURTHBUTTON       = 0x00000080; // Fourth button
+static const int POINTER_FLAG_FIFTHBUTTON        = 0x00000100; // Fifth button
+static const int POINTER_FLAG_PRIMARY            = 0x00002000; // Pointer is primary
+static const int POINTER_FLAG_CONFIDENCE         = 0x00004000; // Pointer is considered unlikely to be accidental
+static const int POINTER_FLAG_CANCELED           = 0x00008000; // Pointer is departing in an abnormal manner
+static const int POINTER_FLAG_DOWN               = 0x00010000; // Pointer transitioned to down state (made contact)
+static const int POINTER_FLAG_UPDATE             = 0x00020000; // Pointer update
+static const int POINTER_FLAG_UP                 = 0x00040000; // Pointer transitioned from down state (broke contact)
+static const int POINTER_FLAG_WHEEL              = 0x00080000; // Vertical wheel
+static const int POINTER_FLAG_HWHEEL             = 0x00100000; // Horizontal wheel
+static const int POINTER_FLAG_CAPTURECHANGED     = 0x00200000; // Lost capture
+static const int POINTER_FLAG_HASTRANSFORM       = 0x00400000; // Input has a transform associated with it
 
 
 /*
  * Pointer info key states defintions.
  */
-#define POINTER_MOD_SHIFT   (0x0004)    // Shift key is held down.
-#define POINTER_MOD_CTRL    (0x0008)    // Ctrl key is held down.
+static const int POINTER_MOD_SHIFT   = 0x0004;   // Shift key is held down.
+static const int POINTER_MOD_CTRL    = 0x0008;    // Ctrl key is held down.
 
 typedef enum tagPOINTER_BUTTON_CHANGE_TYPE {
     POINTER_CHANGE_NONE,
@@ -5882,8 +5871,9 @@ typedef struct tagPOINTER_INFO {
     UINT64          PerformanceCount;
     POINTER_BUTTON_CHANGE_TYPE ButtonChangeType;
 } POINTER_INFO;
+]]
 
-
+--[=[
 typedef UINT32 TOUCH_FLAGS;
 #define TOUCH_FLAG_NONE                 0x00000000 // Default
 
@@ -5973,9 +5963,6 @@ typedef struct tagPOINTER_PEN_INFO {
 #define TOUCH_FEEDBACK_DEFAULT 0x1
 #define TOUCH_FEEDBACK_INDIRECT 0x2
 #define TOUCH_FEEDBACK_NONE 0x3
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 BOOL
@@ -6127,9 +6114,10 @@ GetPointerFramePenInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*entriesCount * *pointerCount) POINTER_PEN_INFO *penInfo);
+    POINTER_PEN_INFO *penInfo);
+--]=]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SkipPointerFrameMessages(
@@ -6141,7 +6129,6 @@ __stdcall
 RegisterPointerInputTarget(
      HWND hwnd,
      POINTER_INPUT_TYPE pointerType);
-
 
 BOOL
 __stdcall
@@ -6164,20 +6151,18 @@ UnregisterPointerInputTargetEx(
      HWND hwnd,
      POINTER_INPUT_TYPE pointerType);
 
-
-
 BOOL
 __stdcall
 EnableMouseInPointer(
      BOOL fEnable);
 
-
 BOOL
 __stdcall
 IsMouseInPointerEnabled(
-    VOID);
+    void);
+]]
 
-
+--[=[
 #define TOUCH_HIT_TESTING_DEFAULT 0x0
 #define TOUCH_HIT_TESTING_CLIENT  0x1
 #define TOUCH_HIT_TESTING_NONE    0x2
@@ -6274,24 +6259,8 @@ SetWindowFeedbackSetting(
      FEEDBACK_TYPE feedback,
      DWORD dwFlags,
      UINT32 size,
-    _In_reads_bytes_opt_(size) CONST VOID* configuration);
+    _In_reads_bytes_opt_(size) const VOID* configuration);
 
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0602 */
-
-#if(WINVER >= 0x0603)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-//Disable warning C4201:nameless struct/union
-#if _MSC_VER >= 1200
-#pragma warning(push)
-#endif
-#pragma warning(disable : 4201)
 
 typedef struct tagINPUT_TRANSFORM {
     union {
@@ -6305,10 +6274,6 @@ typedef struct tagINPUT_TRANSFORM {
     } DUMMYUNIONNAME;
 } INPUT_TRANSFORM;
 
-#if _MSC_VER >= 1200
-#pragma warning(pop)
-#endif
-
 
 
 BOOL
@@ -6318,21 +6283,6 @@ GetPointerInputTransform(
      UINT32 historyCount,
     _Out_writes_(historyCount) INPUT_TRANSFORM *inputTransform);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0603 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if(_WIN32_WINNT >= 0x0500)
 typedef struct tagLASTINPUTINFO {
     UINT cbSize;
     DWORD dwTime;
@@ -6343,13 +6293,8 @@ BOOL
 __stdcall
 GetLastInputInfo(
      PLASTINPUTINFO plii);
-#endif /* _WIN32_WINNT >= 0x0500 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop or PC Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP)
 
 
 UINT
@@ -6363,13 +6308,15 @@ __stdcall
 MapVirtualKeyW(
      UINT uCode,
      UINT uMapType);
+
+
 #ifdef UNICODE
 #define MapVirtualKey  MapVirtualKeyW
 #else
 #define MapVirtualKey  MapVirtualKeyA
 #endif // !UNICODE
 
-#if(WINVER >= 0x0400)
+
 
 UINT
 __stdcall
@@ -6384,32 +6331,31 @@ MapVirtualKeyExW(
      UINT uCode,
      UINT uMapType,
      HKL dwhkl);
+
+
 #ifdef UNICODE
 #define MapVirtualKeyEx  MapVirtualKeyExW
 #else
 #define MapVirtualKeyEx  MapVirtualKeyExA
 #endif // !UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#define MAPVK_VK_TO_VSC     (0)
-#define MAPVK_VSC_TO_VK     (1)
-#define MAPVK_VK_TO_CHAR    (2)
-#define MAPVK_VSC_TO_VK_EX  (3)
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
-#define MAPVK_VK_TO_VSC_EX  (4)
-#endif /* WINVER >= 0x0600 */
 
 
+#define MAPVK_VK_TO_VSC     (0);
+#define MAPVK_VSC_TO_VK     (1);
+#define MAPVK_VK_TO_CHAR    (2);
+#define MAPVK_VSC_TO_VK_EX  (3);
+
+
+#define MAPVK_VK_TO_VSC_EX  (4);
+
+--]=]
+
+ffi.cdef[[
 BOOL
 __stdcall
 GetInputState(
-    VOID);
+    void);
 
 
 DWORD
@@ -6434,14 +6380,14 @@ SetCapture(
 BOOL
 __stdcall
 ReleaseCapture(
-    VOID);
+    void);
 
 
 DWORD
 __stdcall
 MsgWaitForMultipleObjects(
      DWORD nCount,
-    _In_reads_opt_(nCount) CONST HANDLE *pHandles,
+    const HANDLE *pHandles,
      BOOL fWaitAll,
      DWORD dwMilliseconds,
      DWORD dwWakeMask);
@@ -6451,15 +6397,13 @@ DWORD
 __stdcall
 MsgWaitForMultipleObjectsEx(
      DWORD nCount,
-    _In_reads_opt_(nCount) CONST HANDLE *pHandles,
+    const HANDLE *pHandles,
      DWORD dwMilliseconds,
      DWORD dwWakeMask,
      DWORD dwFlags);
+]]
 
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+--[=[
 #define MWMO_WAITALL        0x0001
 #define MWMO_ALERTABLE      0x0002
 #define MWMO_INPUTAVAILABLE 0x0004
