@@ -700,7 +700,10 @@ _rotr64 (
 #define UNICODE_STRING_MAX_BYTES ((WORD  ) 65534) 
 #define UNICODE_STRING_MAX_CHARS (32767) 
 typedef BYTE  BOOLEAN;           
-typedef BOOLEAN *PBOOLEAN;       
+typedef BOOLEAN *PBOOLEAN; 
+--]==]
+
+ffi.cdef[[
 //
 //  Doubly linked list structure.  Can be used as either a list head, or
 //  as link words.
@@ -709,7 +712,7 @@ typedef BOOLEAN *PBOOLEAN;
 typedef struct _LIST_ENTRY {
    struct _LIST_ENTRY *Flink;
    struct _LIST_ENTRY *Blink;
-} LIST_ENTRY, *PLIST_ENTRY, *RESTRICTED_POINTER PRLIST_ENTRY;
+} LIST_ENTRY, *PLIST_ENTRY, * PRLIST_ENTRY;
 
 //
 //  Singly linked list structure. Can be used as either a list head, or
@@ -719,10 +722,9 @@ typedef struct _LIST_ENTRY {
 typedef struct _SINGLE_LIST_ENTRY {
     struct _SINGLE_LIST_ENTRY *Next;
 } SINGLE_LIST_ENTRY, *PSINGLE_LIST_ENTRY;
+]]
 
-// end_ntoshvp
-// begin_ntoshvp
-
+ffi.cdef[[
 //
 // These are needed for portable debugger support.
 //
@@ -738,8 +740,9 @@ typedef struct LIST_ENTRY64 {
     ULONGLONG Blink;
 } LIST_ENTRY64;
 typedef LIST_ENTRY64 *PLIST_ENTRY64;
+]]
 
-
+--[==[
 #include <guiddef.h>
 
 #ifndef __OBJECTID_DEFINED
@@ -8218,7 +8221,10 @@ typedef DWORD ACCESS_MASK;
 typedef ACCESS_MASK *PACCESS_MASK;
 
 // end_ntoshvp
-// begin_access
+--]==]
+
+ffi.cdef[[
+
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                             ACCESS TYPES                           //
@@ -8231,14 +8237,16 @@ typedef ACCESS_MASK *PACCESS_MASK;
 //  The following are masks for the predefined standard access types
 //
 
-#define DELETE                           (0x00010000L)
-#define READ_CONTROL                     (0x00020000L)
-#define WRITE_DAC                        (0x00040000L)
-#define WRITE_OWNER                      (0x00080000L)
-#define SYNCHRONIZE                      (0x00100000L)
+static const int DELETE                        =   (0x00010000L);
+static const int READ_CONTROL                  =   (0x00020000L);
+static const int WRITE_DAC                     =   (0x00040000L);
+static const int WRITE_OWNER                   =   (0x00080000L);
+static const int SYNCHRONIZE                   =   (0x00100000L);
 
-#define STANDARD_RIGHTS_REQUIRED         (0x000F0000L)
+static const int STANDARD_RIGHTS_REQUIRED      =   (0x000F0000L);
+]]
 
+--[==[
 #define STANDARD_RIGHTS_READ             (READ_CONTROL)
 #define STANDARD_RIGHTS_WRITE            (READ_CONTROL)
 #define STANDARD_RIGHTS_EXECUTE          (READ_CONTROL)
@@ -11794,8 +11802,9 @@ typedef struct _XSTATE_CONFIGURATION {
     DWORD AllFeatures[MAXIMUM_XSTATE_FEATURES];
 
 } XSTATE_CONFIGURATION, *PXSTATE_CONFIGURATION;
+--]==]
 
-// begin_ntifs
+ffi.cdef[[
 
 typedef struct _MEMORY_BASIC_INFORMATION {
     PVOID BaseAddress;
@@ -11819,7 +11828,9 @@ typedef struct _MEMORY_BASIC_INFORMATION32 {
     DWORD Type;
 } MEMORY_BASIC_INFORMATION32, *PMEMORY_BASIC_INFORMATION32;
 
-typedef struct DECLSPEC_ALIGN(16) _MEMORY_BASIC_INFORMATION64 {
+
+
+typedef struct _MEMORY_BASIC_INFORMATION64 {
     ULONGLONG BaseAddress;
     ULONGLONG AllocationBase;
     DWORD     AllocationProtect;
@@ -11830,43 +11841,44 @@ typedef struct DECLSPEC_ALIGN(16) _MEMORY_BASIC_INFORMATION64 {
     DWORD     Type;
     DWORD     __alignment2;
 } MEMORY_BASIC_INFORMATION64, *PMEMORY_BASIC_INFORMATION64;
+]]
 
+ffi.cdef[[
 //
 // Define flags for setting process CFG valid call target entries.
 //
 
-//
-// Call target should be made valid.  If not set, the call target is made
-// invalid.  Input flag.
-//
-
-#define CFG_CALL_TARGET_VALID           (0x00000001) 
+static const int CFG_CALL_TARGET_VALID          = 0x00000001;
 
 //
 // Call target has been successfully processed.  Used to report to the caller
 // how much progress has been made.  Output flag.
 //
 
-#define CFG_CALL_TARGET_PROCESSED       (0x00000002)
+static const int CFG_CALL_TARGET_PROCESSED      = 0x00000002;
 
 typedef struct _CFG_CALL_TARGET_INFO {
     ULONG_PTR Offset;
     ULONG_PTR Flags;
 } CFG_CALL_TARGET_INFO, *PCFG_CALL_TARGET_INFO;
+]]
 
-#define SECTION_QUERY                0x0001
-#define SECTION_MAP_WRITE            0x0002
-#define SECTION_MAP_READ             0x0004
-#define SECTION_MAP_EXECUTE          0x0008
-#define SECTION_EXTEND_SIZE          0x0010
-#define SECTION_MAP_EXECUTE_EXPLICIT 0x0020 // not included in SECTION_ALL_ACCESS
+ffi.cdef[[
+static const int SECTION_QUERY              =  0x0001;
+static const int SECTION_MAP_WRITE          =  0x0002;
+static const int SECTION_MAP_READ           =  0x0004;
+static const int SECTION_MAP_EXECUTE        =  0x0008;
+static const int SECTION_EXTEND_SIZE        =  0x0010;
+static const int SECTION_MAP_EXECUTE_EXPLICIT =0x0020; // not included in SECTION_ALL_ACCESS
 
-#define SECTION_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|\
+static const int SECTION_ALL_ACCESS =(STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|\
                             SECTION_MAP_WRITE |      \
                             SECTION_MAP_READ |       \
                             SECTION_MAP_EXECUTE |    \
-                            SECTION_EXTEND_SIZE)
+                            SECTION_EXTEND_SIZE);
+]]
 
+--[==[
 //
 // Session Specific Access Rights.
 //
@@ -18758,8 +18770,9 @@ RtlOsDeploymentState(
 
 
 #endif // NTDDI_VERSION >= NTDDI_WINTHRESHOLD
+--]==]
 
-
+ffi.cdef[[
 typedef struct _RTL_CRITICAL_SECTION_DEBUG {
     WORD   Type;
     WORD   CreatorBackTraceIndex;
@@ -18771,7 +18784,9 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG {
     WORD   CreatorBackTraceIndexHigh;
     WORD   SpareWORD  ;
 } RTL_CRITICAL_SECTION_DEBUG, *PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, *PRTL_RESOURCE_DEBUG;
+]]
 
+--[==[
 //
 // These flags define the upper byte of the critical section SpinCount field
 //
