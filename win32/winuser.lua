@@ -12374,17 +12374,18 @@ EnumDisplayDevicesW(
 
 /* Flags for EnumDisplayDevices */
 #define EDD_GET_DEVICE_INTERFACE_NAME 0x00000001
+--]=]
 
-
-
+ffi.cdef[[
 LONG
 __stdcall
 GetDisplayConfigBufferSizes(
      UINT32 flags,
      UINT32* numPathArrayElements,
      UINT32* numModeInfoArrayElements);
+]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 SetDisplayConfig(
@@ -12393,8 +12394,9 @@ SetDisplayConfig(
      UINT32 numModeInfoArrayElements,
     DISPLAYCONFIG_MODE_INFO* modeInfoArray,
      UINT32 flags);
+]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 QueryDisplayConfig(
@@ -12404,19 +12406,21 @@ QueryDisplayConfig(
      UINT32* numModeInfoArrayElements,
     DISPLAYCONFIG_MODE_INFO* modeInfoArray,
     DISPLAYCONFIG_TOPOLOGY_ID* currentTopologyId);
+]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 DisplayConfigGetDeviceInfo(
      DISPLAYCONFIG_DEVICE_INFO_HEADER* requestPacket);
+]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 DisplayConfigSetDeviceInfo(
      DISPLAYCONFIG_DEVICE_INFO_HEADER* setPacket);
---]=]
+]]
 
 
 

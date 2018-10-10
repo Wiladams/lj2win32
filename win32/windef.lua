@@ -10,15 +10,10 @@ local ffi = require("ffi")
 
 
 local minwindef = require("win32.minwindef")
+local winnt = require("win32.win_nt")
 
 local DECLARE_HANDLE = DECLARE_HANDLE
 
---[[
-
-#ifndef NT_INCLUDED
-#include <winnt.h>
-#endif /* NT_INCLUDED */
---]]
 
 
 

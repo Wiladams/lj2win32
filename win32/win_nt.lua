@@ -446,31 +446,25 @@ typedef struct _ULARGE_INTEGER {
 typedef ULARGE_INTEGER *PULARGE_INTEGER;
 ]]
 
---[==[
+ffi.cdef[[
 //
 // Reference count.
 //
 
 typedef LONG_PTR RTL_REFERENCE_COUNT, *PRTL_REFERENCE_COUNT;
 
-// end_ntminiport end_ntndis end_ntminitape
-// end_ntoshvp
-
-
-//
-// Locally Unique Identifier
-//
 
 typedef struct _LUID {
     DWORD LowPart;
     LONG HighPart;
 } LUID, *PLUID;
+]]
 
-#define _DWORDLONG_
-typedef ULONGLONG  DWORDLONG;
-typedef DWORDLONG *PDWORDLONG;
+--#define _DWORDLONG_
+--typedef ULONGLONG  DWORDLONG;
+--typedef DWORDLONG *PDWORDLONG;
 
-
+--[==[
 //
 // Define operations to logically shift an int64 by 0..31 bits and to multiply
 // 32-bits by 32-bits to form a 64-bit product.
