@@ -5,42 +5,47 @@ local ffi = require("ffi")
 require("win32.windef")
 
 
---[=[
+ffi.cdef[[
 /* Binary raster ops */
-#define R2_BLACK            1   /*  0       */
-#define R2_NOTMERGEPEN      2   /* DPon     */
-#define R2_MASKNOTPEN       3   /* DPna     */
-#define R2_NOTCOPYPEN       4   /* PN       */
-#define R2_MASKPENNOT       5   /* PDna     */
-#define R2_NOT              6   /* Dn       */
-#define R2_XORPEN           7   /* DPx      */
-#define R2_NOTMASKPEN       8   /* DPan     */
-#define R2_MASKPEN          9   /* DPa      */
-#define R2_NOTXORPEN        10  /* DPxn     */
-#define R2_NOP              11  /* D        */
-#define R2_MERGENOTPEN      12  /* DPno     */
-#define R2_COPYPEN          13  /* P        */
-#define R2_MERGEPENNOT      14  /* PDno     */
-#define R2_MERGEPEN         15  /* DPo      */
-#define R2_WHITE            16  /*  1       */
-#define R2_LAST             16
+static const int R2_BLACK           = 1;   /*  0       */
+static const int R2_NOTMERGEPEN     = 2 ;  /* DPon     */
+static const int R2_MASKNOTPEN      = 3;   /* DPna     */
+static const int R2_NOTCOPYPEN      = 4;   /* PN       */
+static const int R2_MASKPENNOT      = 5;   /* PDna     */
+static const int R2_NOT             = 6;   /* Dn       */
+static const int R2_XORPEN          = 7;   /* DPx      */
+static const int R2_NOTMASKPEN      = 8;   /* DPan     */
+static const int R2_MASKPEN         = 9;   /* DPa      */
+static const int R2_NOTXORPEN       = 10;  /* DPxn     */
+static const int R2_NOP             = 11;  /* D        */
+static const int R2_MERGENOTPEN     = 12;  /* DPno     */
+static const int R2_COPYPEN         = 13;  /* P        */
+static const int R2_MERGEPENNOT     = 14;  /* PDno     */
+static const int R2_MERGEPEN        = 15;  /* DPo      */
+static const int R2_WHITE           = 16;  /*  1       */
+static const int R2_LAST            = 16;
+]]
 
+ffi.cdef[[
 /* Ternary raster operations */
-#define SRCCOPY             (DWORD)0x00CC0020 /* dest = source                   */
-#define SRCPAINT            (DWORD)0x00EE0086 /* dest = source OR dest           */
-#define SRCAND              (DWORD)0x008800C6 /* dest = source AND dest          */
-#define SRCINVERT           (DWORD)0x00660046 /* dest = source XOR dest          */
-#define SRCERASE            (DWORD)0x00440328 /* dest = source AND (NOT dest )   */
-#define NOTSRCCOPY          (DWORD)0x00330008 /* dest = (NOT source)             */
-#define NOTSRCERASE         (DWORD)0x001100A6 /* dest = (NOT src) AND (NOT dest) */
-#define MERGECOPY           (DWORD)0x00C000CA /* dest = (source AND pattern)     */
-#define MERGEPAINT          (DWORD)0x00BB0226 /* dest = (NOT source) OR dest     */
-#define PATCOPY             (DWORD)0x00F00021 /* dest = pattern                  */
-#define PATPAINT            (DWORD)0x00FB0A09 /* dest = DPSnoo                   */
-#define PATINVERT           (DWORD)0x005A0049 /* dest = pattern XOR dest         */
-#define DSTINVERT           (DWORD)0x00550009 /* dest = (NOT dest)               */
-#define BLACKNESS           (DWORD)0x00000042 /* dest = BLACK                    */
-#define WHITENESS           (DWORD)0x00FF0062 /* dest = WHITE                    */
+static const int SRCCOPY           =  (DWORD)0x00CC0020; /* dest = source                   */
+static const int SRCPAINT          =  (DWORD)0x00EE0086; /* dest = source OR dest           */
+static const int SRCAND            =  (DWORD)0x008800C6; /* dest = source AND dest          */
+static const int SRCINVERT         =  (DWORD)0x00660046; /* dest = source XOR dest          */
+static const int SRCERASE          =  (DWORD)0x00440328; /* dest = source AND (NOT dest )   */
+static const int NOTSRCCOPY        =  (DWORD)0x00330008; /* dest = (NOT source)             */
+static const int NOTSRCERASE       =  (DWORD)0x001100A6; /* dest = (NOT src) AND (NOT dest) */
+static const int MERGECOPY         =  (DWORD)0x00C000CA; /* dest = (source AND pattern)     */
+static const int MERGEPAINT        =  (DWORD)0x00BB0226; /* dest = (NOT source) OR dest     */
+static const int PATCOPY           =  (DWORD)0x00F00021; /* dest = pattern                  */
+static const int PATPAINT          =  (DWORD)0x00FB0A09; /* dest = DPSnoo                   */
+static const int PATINVERT         =  (DWORD)0x005A0049; /* dest = pattern XOR dest         */
+static const int DSTINVERT         =  (DWORD)0x00550009; /* dest = (NOT dest)               */
+static const int BLACKNESS         =  (DWORD)0x00000042; /* dest = BLACK                    */
+static const int WHITENESS         =  (DWORD)0x00FF0062; /* dest = WHITE                    */
+]]
+
+--[[
 #if(WINVER >= 0x0500)
 
 #define NOMIRRORBITMAP               (DWORD)0x80000000 /* Do not Mirror the bitmap in this call */
@@ -66,23 +71,29 @@ require("win32.windef")
 #define SIMPLEREGION        2
 #define COMPLEXREGION       3
 #define RGN_ERROR ERROR
+--]]
 
+ffi.cdef[[
 /* CombineRgn() Styles */
-#define RGN_AND             1
-#define RGN_OR              2
-#define RGN_XOR             3
-#define RGN_DIFF            4
-#define RGN_COPY            5
-#define RGN_MIN             RGN_AND
-#define RGN_MAX             RGN_COPY
+static const int RGN_AND           =  1;
+static const int RGN_OR            =  2;
+static const int RGN_XOR           =  3;
+static const int RGN_DIFF          =  4;
+static const int RGN_COPY          =  5;
+static const int RGN_MIN           =  RGN_AND;
+static const int RGN_MAX           =  RGN_COPY;
+]]
 
+ffi.cdef[[
 /* StretchBlt() Modes */
-#define BLACKONWHITE                 1
-#define WHITEONBLACK                 2
-#define COLORONCOLOR                 3
-#define HALFTONE                     4
-#define MAXSTRETCHBLTMODE            4
+static const int BLACKONWHITE       =          1;
+static const int WHITEONBLACK        =         2;
+static const int COLORONCOLOR        =         3;
+static const int HALFTONE            =         4;
+static const int MAXSTRETCHBLTMODE   =         4;
+]]
 
+--[=[
 #if(WINVER >= 0x0400)
 /* New StretchBlt() Modes */
 #define STRETCH_ANDSCANS    BLACKONWHITE
@@ -156,82 +167,85 @@ require("win32.windef")
 #define DCB_SET         (DCB_RESET | DCB_ACCUMULATE)
 #define DCB_ENABLE      0x0004
 #define DCB_DISABLE     0x0008
+--]=]
 
-#ifndef NOMETAFILE
 
+ffi.cdef[[
 /* Metafile Functions */
-#define META_SETBKCOLOR              0x0201
-#define META_SETBKMODE               0x0102
-#define META_SETMAPMODE              0x0103
-#define META_SETROP2                 0x0104
-#define META_SETRELABS               0x0105
-#define META_SETPOLYFILLMODE         0x0106
-#define META_SETSTRETCHBLTMODE       0x0107
-#define META_SETTEXTCHAREXTRA        0x0108
-#define META_SETTEXTCOLOR            0x0209
-#define META_SETTEXTJUSTIFICATION    0x020A
-#define META_SETWINDOWORG            0x020B
-#define META_SETWINDOWEXT            0x020C
-#define META_SETVIEWPORTORG          0x020D
-#define META_SETVIEWPORTEXT          0x020E
-#define META_OFFSETWINDOWORG         0x020F
-#define META_SCALEWINDOWEXT          0x0410
-#define META_OFFSETVIEWPORTORG       0x0211
-#define META_SCALEVIEWPORTEXT        0x0412
-#define META_LINETO                  0x0213
-#define META_MOVETO                  0x0214
-#define META_EXCLUDECLIPRECT         0x0415
-#define META_INTERSECTCLIPRECT       0x0416
-#define META_ARC                     0x0817
-#define META_ELLIPSE                 0x0418
-#define META_FLOODFILL               0x0419
-#define META_PIE                     0x081A
-#define META_RECTANGLE               0x041B
-#define META_ROUNDRECT               0x061C
-#define META_PATBLT                  0x061D
-#define META_SAVEDC                  0x001E
-#define META_SETPIXEL                0x041F
-#define META_OFFSETCLIPRGN           0x0220
-#define META_TEXTOUT                 0x0521
-#define META_BITBLT                  0x0922
-#define META_STRETCHBLT              0x0B23
-#define META_POLYGON                 0x0324
-#define META_POLYLINE                0x0325
-#define META_ESCAPE                  0x0626
-#define META_RESTOREDC               0x0127
-#define META_FILLREGION              0x0228
-#define META_FRAMEREGION             0x0429
-#define META_INVERTREGION            0x012A
-#define META_PAINTREGION             0x012B
-#define META_SELECTCLIPREGION        0x012C
-#define META_SELECTOBJECT            0x012D
-#define META_SETTEXTALIGN            0x012E
-#define META_CHORD                   0x0830
-#define META_SETMAPPERFLAGS          0x0231
-#define META_EXTTEXTOUT              0x0a32
-#define META_SETDIBTODEV             0x0d33
-#define META_SELECTPALETTE           0x0234
-#define META_REALIZEPALETTE          0x0035
-#define META_ANIMATEPALETTE          0x0436
-#define META_SETPALENTRIES           0x0037
-#define META_POLYPOLYGON             0x0538
-#define META_RESIZEPALETTE           0x0139
-#define META_DIBBITBLT               0x0940
-#define META_DIBSTRETCHBLT           0x0b41
-#define META_DIBCREATEPATTERNBRUSH   0x0142
-#define META_STRETCHDIB              0x0f43
-#define META_EXTFLOODFILL            0x0548
-#if(WINVER >= 0x0500)
-#define META_SETLAYOUT               0x0149
-#endif /* WINVER >= 0x0500 */
-#define META_DELETEOBJECT            0x01f0
-#define META_CREATEPALETTE           0x00f7
-#define META_CREATEPATTERNBRUSH      0x01F9
-#define META_CREATEPENINDIRECT       0x02FA
-#define META_CREATEFONTINDIRECT      0x02FB
-#define META_CREATEBRUSHINDIRECT     0x02FC
-#define META_CREATEREGION            0x06FF
+static const int META_SETBKCOLOR              = 0x0201;
+static const int META_SETBKMODE               = 0x0102;
+static const int META_SETMAPMODE              = 0x0103;
+static const int META_SETROP2                 = 0x0104;
+static const int META_SETRELABS               = 0x0105;
+static const int META_SETPOLYFILLMODE         = 0x0106;
+static const int META_SETSTRETCHBLTMODE       = 0x0107;
+static const int META_SETTEXTCHAREXTRA        = 0x0108;
+static const int META_SETTEXTCOLOR            = 0x0209;
+static const int META_SETTEXTJUSTIFICATION    = 0x020A;
+static const int META_SETWINDOWORG            = 0x020B;
+static const int META_SETWINDOWEXT            = 0x020C;
+static const int META_SETVIEWPORTORG          = 0x020D;
+static const int META_SETVIEWPORTEXT          = 0x020E;
+static const int META_OFFSETWINDOWORG         = 0x020F;
+static const int META_SCALEWINDOWEXT          = 0x0410;
+static const int META_OFFSETVIEWPORTORG       = 0x0211;
+static const int META_SCALEVIEWPORTEXT        = 0x0412;
+static const int META_LINETO                  = 0x0213;
+static const int META_MOVETO                  = 0x0214;
+static const int META_EXCLUDECLIPRECT         = 0x0415;
+static const int META_INTERSECTCLIPRECT       = 0x0416;
+static const int META_ARC                     = 0x0817;
+static const int META_ELLIPSE                 = 0x0418;
+static const int META_FLOODFILL               = 0x0419;
+static const int META_PIE                     = 0x081A;
+static const int META_RECTANGLE               = 0x041B;
+static const int META_ROUNDRECT               = 0x061C;
+static const int META_PATBLT                  = 0x061D;
+static const int META_SAVEDC                  = 0x001E;
+static const int META_SETPIXEL                = 0x041F;
+static const int META_OFFSETCLIPRGN           = 0x0220;
+static const int META_TEXTOUT                 = 0x0521;
+static const int META_BITBLT                  = 0x0922;
+static const int META_STRETCHBLT              = 0x0B23;
+static const int META_POLYGON                 = 0x0324;
+static const int META_POLYLINE                = 0x0325;
+static const int META_ESCAPE                  = 0x0626;
+static const int META_RESTOREDC               = 0x0127;
+static const int META_FILLREGION              = 0x0228;
+static const int META_FRAMEREGION             = 0x0429;
+static const int META_INVERTREGION            = 0x012A;
+static const int META_PAINTREGION             = 0x012B;
+static const int META_SELECTCLIPREGION        = 0x012C;
+static const int META_SELECTOBJECT            = 0x012D;
+static const int META_SETTEXTALIGN            = 0x012E;
+static const int META_CHORD                   = 0x0830;
+static const int META_SETMAPPERFLAGS          = 0x0231;
+static const int META_EXTTEXTOUT              = 0x0a32;
+static const int META_SETDIBTODEV             = 0x0d33;
+static const int META_SELECTPALETTE           = 0x0234;
+static const int META_REALIZEPALETTE          = 0x0035;
+static const int META_ANIMATEPALETTE          = 0x0436;
+static const int META_SETPALENTRIES           = 0x0037;
+static const int META_POLYPOLYGON             = 0x0538;
+static const int META_RESIZEPALETTE           = 0x0139;
+static const int META_DIBBITBLT               = 0x0940;
+static const int META_DIBSTRETCHBLT           = 0x0b41;
+static const int META_DIBCREATEPATTERNBRUSH   = 0x0142;
+static const int META_STRETCHDIB              = 0x0f43;
+static const int META_EXTFLOODFILL            = 0x0548;
 
+static const int META_SETLAYOUT               = 0x0149;
+
+static const int META_DELETEOBJECT            = 0x01f0;
+static const int META_CREATEPALETTE           = 0x00f7;
+static const int META_CREATEPATTERNBRUSH      = 0x01F9;
+static const int META_CREATEPENINDIRECT       = 0x02FA;
+static const int META_CREATEFONTINDIRECT      = 0x02FB;
+static const int META_CREATEBRUSHINDIRECT     = 0x02FC;
+static const int META_CREATEREGION            = 0x06FF;
+]]
+
+--[=[
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
@@ -1640,114 +1654,115 @@ typedef struct tagPANOSE
 } PANOSE, * LPPANOSE;
 ]]
 
+ffi.cdef[[
+static const int PAN_ANY                       =  0; /* Any                            */
+static const int PAN_NO_FIT                    =  1; /* No Fit                         */
+
+static const int PAN_FAMILY_TEXT_DISPLAY       =  2; /* Text and Display               */
+static const int PAN_FAMILY_SCRIPT             =  3; /* Script                         */
+static const int PAN_FAMILY_DECORATIVE         =  4; /* Decorative                     */
+static const int PAN_FAMILY_PICTORIAL          =  5; /* Pictorial                      */
+
+static const int PAN_SERIF_COVE                =  2; /* Cove                           */
+static const int PAN_SERIF_OBTUSE_COVE         =  3; /* Obtuse Cove                    */
+static const int PAN_SERIF_SQUARE_COVE         =  4; /* Square Cove                    */
+static const int PAN_SERIF_OBTUSE_SQUARE_COVE  =  5; /* Obtuse Square Cove             */
+static const int PAN_SERIF_SQUARE              =  6; /* Square                         */
+static const int PAN_SERIF_THIN                =  7; /* Thin                           */
+static const int PAN_SERIF_BONE                =  8; /* Bone                           */
+static const int PAN_SERIF_EXAGGERATED         =  9; /* Exaggerated                    */
+static const int PAN_SERIF_TRIANGLE            = 10; /* Triangle                       */
+static const int PAN_SERIF_NORMAL_SANS         = 11; /* Normal Sans                    */
+static const int PAN_SERIF_OBTUSE_SANS         = 12; /* Obtuse Sans                    */
+static const int PAN_SERIF_PERP_SANS           = 13; /* Prep Sans                      */
+static const int PAN_SERIF_FLARED              = 14; /* Flared                         */
+static const int PAN_SERIF_ROUNDED             = 15; /* Rounded                        */
+
+static const int PAN_WEIGHT_VERY_LIGHT         =  2; /* Very Light                     */
+static const int PAN_WEIGHT_LIGHT              =  3; /* Light                          */
+static const int PAN_WEIGHT_THIN               =  4; /* Thin                           */
+static const int PAN_WEIGHT_BOOK               =  5; /* Book                           */
+static const int PAN_WEIGHT_MEDIUM             =  6; /* Medium                         */
+static const int PAN_WEIGHT_DEMI               =  7; /* Demi                           */
+static const int PAN_WEIGHT_BOLD               =  8; /* Bold                           */
+static const int PAN_WEIGHT_HEAVY              =  9; /* Heavy                          */
+static const int PAN_WEIGHT_BLACK              = 10; /* Black                          */
+static const int PAN_WEIGHT_NORD               = 11; /* Nord                           */
+
+static const int PAN_PROP_OLD_STYLE            =  2; /* Old Style                      */
+static const int PAN_PROP_MODERN               =  3; /* Modern                         */
+static const int PAN_PROP_EVEN_WIDTH           =  4; /* Even Width                     */
+static const int PAN_PROP_EXPANDED             =  5; /* Expanded                       */
+static const int PAN_PROP_CONDENSED            =  6; /* Condensed                      */
+static const int PAN_PROP_VERY_EXPANDED        =  7; /* Very Expanded                  */
+static const int PAN_PROP_VERY_CONDENSED       =  8; /* Very Condensed                 */
+static const int PAN_PROP_MONOSPACED           =  9; /* Monospaced                     */
+
+static const int PAN_CONTRAST_NONE             =  2; /* None                           */
+static const int PAN_CONTRAST_VERY_LOW         =  3; /* Very Low                       */
+static const int PAN_CONTRAST_LOW              =  4; /* Low                            */
+static const int PAN_CONTRAST_MEDIUM_LOW       =  5; /* Medium Low                     */
+static const int PAN_CONTRAST_MEDIUM           =  6; /* Medium                         */
+static const int PAN_CONTRAST_MEDIUM_HIGH      =  7; /* Mediim High                    */
+static const int PAN_CONTRAST_HIGH             =  8; /* High                           */
+static const int PAN_CONTRAST_VERY_HIGH        =  9; /* Very High                      */
+
+static const int PAN_STROKE_GRADUAL_DIAG       =  2; /* Gradual/Diagonal               */
+static const int PAN_STROKE_GRADUAL_TRAN       =  3; /* Gradual/Transitional           */
+static const int PAN_STROKE_GRADUAL_VERT       =  4; /* Gradual/Vertical               */
+static const int PAN_STROKE_GRADUAL_HORZ       =  5; /* Gradual/Horizontal             */
+static const int PAN_STROKE_RAPID_VERT         =  6; /* Rapid/Vertical                 */
+static const int PAN_STROKE_RAPID_HORZ         =  7; /* Rapid/Horizontal               */
+static const int PAN_STROKE_INSTANT_VERT       =  8; /* Instant/Vertical               */
+
+static const int PAN_STRAIGHT_ARMS_HORZ         = 2; /* Straight Arms/Horizontal       */
+static const int PAN_STRAIGHT_ARMS_WEDGE        = 3; /* Straight Arms/Wedge            */
+static const int PAN_STRAIGHT_ARMS_VERT         = 4; /* Straight Arms/Vertical         */
+static const int PAN_STRAIGHT_ARMS_SINGLE_SERIF = 5; /* Straight Arms/Single-Serif     */
+static const int PAN_STRAIGHT_ARMS_DOUBLE_SERIF = 6; /* Straight Arms/Double-Serif     */
+static const int PAN_BENT_ARMS_HORZ             = 7; /* Non-Straight Arms/Horizontal   */
+static const int PAN_BENT_ARMS_WEDGE            = 8; /* Non-Straight Arms/Wedge        */
+static const int PAN_BENT_ARMS_VERT             = 9; /* Non-Straight Arms/Vertical     */
+static const int PAN_BENT_ARMS_SINGLE_SERIF     =10; /* Non-Straight Arms/Single-Serif */
+static const int PAN_BENT_ARMS_DOUBLE_SERIF     =11; /* Non-Straight Arms/Double-Serif */
+
+static const int PAN_LETT_NORMAL_CONTACT        = 2; /* Normal/Contact                 */
+static const int PAN_LETT_NORMAL_WEIGHTED       = 3; /* Normal/Weighted                */
+static const int PAN_LETT_NORMAL_BOXED          = 4; /* Normal/Boxed                   */
+static const int PAN_LETT_NORMAL_FLATTENED      = 5; /* Normal/Flattened               */
+static const int PAN_LETT_NORMAL_ROUNDED        = 6; /* Normal/Rounded                 */
+static const int PAN_LETT_NORMAL_OFF_CENTER     = 7; /* Normal/Off Center              */
+static const int PAN_LETT_NORMAL_SQUARE         = 8; /* Normal/Square                  */
+static const int PAN_LETT_OBLIQUE_CONTACT       = 9; /* Oblique/Contact                */
+static const int PAN_LETT_OBLIQUE_WEIGHTED      =10; /* Oblique/Weighted               */
+static const int PAN_LETT_OBLIQUE_BOXED         =11; /* Oblique/Boxed                  */
+static const int PAN_LETT_OBLIQUE_FLATTENED     =12; /* Oblique/Flattened              */
+static const int PAN_LETT_OBLIQUE_ROUNDED       =13; /* Oblique/Rounded                */
+static const int PAN_LETT_OBLIQUE_OFF_CENTER    =14; /* Oblique/Off Center             */
+static const int PAN_LETT_OBLIQUE_SQUARE        =15; /* Oblique/Square                 */
+
+static const int PAN_MIDLINE_STANDARD_TRIMMED    =2; /* Standard/Trimmed               */
+static const int PAN_MIDLINE_STANDARD_POINTED    =3; /* Standard/Pointed               */
+static const int PAN_MIDLINE_STANDARD_SERIFED    =4; /* Standard/Serifed               */
+static const int PAN_MIDLINE_HIGH_TRIMMED        =5; /* High/Trimmed                   */
+static const int PAN_MIDLINE_HIGH_POINTED        =6; /* High/Pointed                   */
+static const int PAN_MIDLINE_HIGH_SERIFED        =7; /* High/Serifed                   */
+static const int PAN_MIDLINE_CONSTANT_TRIMMED    =8; /* Constant/Trimmed               */
+static const int PAN_MIDLINE_CONSTANT_POINTED    =9; /* Constant/Pointed               */
+static const int PAN_MIDLINE_CONSTANT_SERIFED   =10; /* Constant/Serifed               */
+static const int PAN_MIDLINE_LOW_TRIMMED        =11; /* Low/Trimmed                    */
+static const int PAN_MIDLINE_LOW_POINTED        =12; /* Low/Pointed                    */
+static const int PAN_MIDLINE_LOW_SERIFED        =13; /* Low/Serifed                    */
+
+static const int PAN_XHEIGHT_CONSTANT_SMALL     = 2; /* Constant/Small                 */
+static const int PAN_XHEIGHT_CONSTANT_STD       = 3; /* Constant/Standard              */
+static const int PAN_XHEIGHT_CONSTANT_LARGE     = 4; /* Constant/Large                 */
+static const int PAN_XHEIGHT_DUCKING_SMALL      = 5; /* Ducking/Small                  */
+static const int PAN_XHEIGHT_DUCKING_STD        = 6; /* Ducking/Standard               */
+static const int PAN_XHEIGHT_DUCKING_LARGE      = 7; /* Ducking/Large                  */
+]]
+
 --[=[
-#define PAN_ANY                         0 /* Any                            */
-#define PAN_NO_FIT                      1 /* No Fit                         */
-
-#define PAN_FAMILY_TEXT_DISPLAY         2 /* Text and Display               */
-#define PAN_FAMILY_SCRIPT               3 /* Script                         */
-#define PAN_FAMILY_DECORATIVE           4 /* Decorative                     */
-#define PAN_FAMILY_PICTORIAL            5 /* Pictorial                      */
-
-#define PAN_SERIF_COVE                  2 /* Cove                           */
-#define PAN_SERIF_OBTUSE_COVE           3 /* Obtuse Cove                    */
-#define PAN_SERIF_SQUARE_COVE           4 /* Square Cove                    */
-#define PAN_SERIF_OBTUSE_SQUARE_COVE    5 /* Obtuse Square Cove             */
-#define PAN_SERIF_SQUARE                6 /* Square                         */
-#define PAN_SERIF_THIN                  7 /* Thin                           */
-#define PAN_SERIF_BONE                  8 /* Bone                           */
-#define PAN_SERIF_EXAGGERATED           9 /* Exaggerated                    */
-#define PAN_SERIF_TRIANGLE             10 /* Triangle                       */
-#define PAN_SERIF_NORMAL_SANS          11 /* Normal Sans                    */
-#define PAN_SERIF_OBTUSE_SANS          12 /* Obtuse Sans                    */
-#define PAN_SERIF_PERP_SANS            13 /* Prep Sans                      */
-#define PAN_SERIF_FLARED               14 /* Flared                         */
-#define PAN_SERIF_ROUNDED              15 /* Rounded                        */
-
-#define PAN_WEIGHT_VERY_LIGHT           2 /* Very Light                     */
-#define PAN_WEIGHT_LIGHT                3 /* Light                          */
-#define PAN_WEIGHT_THIN                 4 /* Thin                           */
-#define PAN_WEIGHT_BOOK                 5 /* Book                           */
-#define PAN_WEIGHT_MEDIUM               6 /* Medium                         */
-#define PAN_WEIGHT_DEMI                 7 /* Demi                           */
-#define PAN_WEIGHT_BOLD                 8 /* Bold                           */
-#define PAN_WEIGHT_HEAVY                9 /* Heavy                          */
-#define PAN_WEIGHT_BLACK               10 /* Black                          */
-#define PAN_WEIGHT_NORD                11 /* Nord                           */
-
-#define PAN_PROP_OLD_STYLE              2 /* Old Style                      */
-#define PAN_PROP_MODERN                 3 /* Modern                         */
-#define PAN_PROP_EVEN_WIDTH             4 /* Even Width                     */
-#define PAN_PROP_EXPANDED               5 /* Expanded                       */
-#define PAN_PROP_CONDENSED              6 /* Condensed                      */
-#define PAN_PROP_VERY_EXPANDED          7 /* Very Expanded                  */
-#define PAN_PROP_VERY_CONDENSED         8 /* Very Condensed                 */
-#define PAN_PROP_MONOSPACED             9 /* Monospaced                     */
-
-#define PAN_CONTRAST_NONE               2 /* None                           */
-#define PAN_CONTRAST_VERY_LOW           3 /* Very Low                       */
-#define PAN_CONTRAST_LOW                4 /* Low                            */
-#define PAN_CONTRAST_MEDIUM_LOW         5 /* Medium Low                     */
-#define PAN_CONTRAST_MEDIUM             6 /* Medium                         */
-#define PAN_CONTRAST_MEDIUM_HIGH        7 /* Mediim High                    */
-#define PAN_CONTRAST_HIGH               8 /* High                           */
-#define PAN_CONTRAST_VERY_HIGH          9 /* Very High                      */
-
-#define PAN_STROKE_GRADUAL_DIAG         2 /* Gradual/Diagonal               */
-#define PAN_STROKE_GRADUAL_TRAN         3 /* Gradual/Transitional           */
-#define PAN_STROKE_GRADUAL_VERT         4 /* Gradual/Vertical               */
-#define PAN_STROKE_GRADUAL_HORZ         5 /* Gradual/Horizontal             */
-#define PAN_STROKE_RAPID_VERT           6 /* Rapid/Vertical                 */
-#define PAN_STROKE_RAPID_HORZ           7 /* Rapid/Horizontal               */
-#define PAN_STROKE_INSTANT_VERT         8 /* Instant/Vertical               */
-
-#define PAN_STRAIGHT_ARMS_HORZ          2 /* Straight Arms/Horizontal       */
-#define PAN_STRAIGHT_ARMS_WEDGE         3 /* Straight Arms/Wedge            */
-#define PAN_STRAIGHT_ARMS_VERT          4 /* Straight Arms/Vertical         */
-#define PAN_STRAIGHT_ARMS_SINGLE_SERIF  5 /* Straight Arms/Single-Serif     */
-#define PAN_STRAIGHT_ARMS_DOUBLE_SERIF  6 /* Straight Arms/Double-Serif     */
-#define PAN_BENT_ARMS_HORZ              7 /* Non-Straight Arms/Horizontal   */
-#define PAN_BENT_ARMS_WEDGE             8 /* Non-Straight Arms/Wedge        */
-#define PAN_BENT_ARMS_VERT              9 /* Non-Straight Arms/Vertical     */
-#define PAN_BENT_ARMS_SINGLE_SERIF     10 /* Non-Straight Arms/Single-Serif */
-#define PAN_BENT_ARMS_DOUBLE_SERIF     11 /* Non-Straight Arms/Double-Serif */
-
-#define PAN_LETT_NORMAL_CONTACT         2 /* Normal/Contact                 */
-#define PAN_LETT_NORMAL_WEIGHTED        3 /* Normal/Weighted                */
-#define PAN_LETT_NORMAL_BOXED           4 /* Normal/Boxed                   */
-#define PAN_LETT_NORMAL_FLATTENED       5 /* Normal/Flattened               */
-#define PAN_LETT_NORMAL_ROUNDED         6 /* Normal/Rounded                 */
-#define PAN_LETT_NORMAL_OFF_CENTER      7 /* Normal/Off Center              */
-#define PAN_LETT_NORMAL_SQUARE          8 /* Normal/Square                  */
-#define PAN_LETT_OBLIQUE_CONTACT        9 /* Oblique/Contact                */
-#define PAN_LETT_OBLIQUE_WEIGHTED      10 /* Oblique/Weighted               */
-#define PAN_LETT_OBLIQUE_BOXED         11 /* Oblique/Boxed                  */
-#define PAN_LETT_OBLIQUE_FLATTENED     12 /* Oblique/Flattened              */
-#define PAN_LETT_OBLIQUE_ROUNDED       13 /* Oblique/Rounded                */
-#define PAN_LETT_OBLIQUE_OFF_CENTER    14 /* Oblique/Off Center             */
-#define PAN_LETT_OBLIQUE_SQUARE        15 /* Oblique/Square                 */
-
-#define PAN_MIDLINE_STANDARD_TRIMMED    2 /* Standard/Trimmed               */
-#define PAN_MIDLINE_STANDARD_POINTED    3 /* Standard/Pointed               */
-#define PAN_MIDLINE_STANDARD_SERIFED    4 /* Standard/Serifed               */
-#define PAN_MIDLINE_HIGH_TRIMMED        5 /* High/Trimmed                   */
-#define PAN_MIDLINE_HIGH_POINTED        6 /* High/Pointed                   */
-#define PAN_MIDLINE_HIGH_SERIFED        7 /* High/Serifed                   */
-#define PAN_MIDLINE_CONSTANT_TRIMMED    8 /* Constant/Trimmed               */
-#define PAN_MIDLINE_CONSTANT_POINTED    9 /* Constant/Pointed               */
-#define PAN_MIDLINE_CONSTANT_SERIFED   10 /* Constant/Serifed               */
-#define PAN_MIDLINE_LOW_TRIMMED        11 /* Low/Trimmed                    */
-#define PAN_MIDLINE_LOW_POINTED        12 /* Low/Pointed                    */
-#define PAN_MIDLINE_LOW_SERIFED        13 /* Low/Serifed                    */
-
-#define PAN_XHEIGHT_CONSTANT_SMALL      2 /* Constant/Small                 */
-#define PAN_XHEIGHT_CONSTANT_STD        3 /* Constant/Standard              */
-#define PAN_XHEIGHT_CONSTANT_LARGE      4 /* Constant/Large                 */
-#define PAN_XHEIGHT_DUCKING_SMALL       5 /* Ducking/Small                  */
-#define PAN_XHEIGHT_DUCKING_STD         6 /* Ducking/Standard               */
-#define PAN_XHEIGHT_DUCKING_LARGE       7 /* Ducking/Large                  */
-
-
 #define ELF_VENDOR_SIZE     4
 
 /* The extended logical font       */
@@ -3119,29 +3134,29 @@ static const int QDC_DATABASE_CURRENT                       =   0x00000004;
 static const int QDC_VIRTUAL_MODE_AWARE                     =   0x00000010;
 ]]
 
---[=[
+ffi.cdef[[
 //
 // Definitions used by SetDisplayConfig.
 //
 
-#define SDC_TOPOLOGY_INTERNAL            0x00000001
-#define SDC_TOPOLOGY_CLONE               0x00000002
-#define SDC_TOPOLOGY_EXTEND              0x00000004
-#define SDC_TOPOLOGY_EXTERNAL            0x00000008
-#define SDC_TOPOLOGY_SUPPLIED            0x00000010
-#define SDC_USE_DATABASE_CURRENT         (SDC_TOPOLOGY_INTERNAL | SDC_TOPOLOGY_CLONE | SDC_TOPOLOGY_EXTEND | SDC_TOPOLOGY_EXTERNAL)
+static const int SDC_TOPOLOGY_INTERNAL            = 0x00000001;
+static const int SDC_TOPOLOGY_CLONE               = 0x00000002;
+static const int SDC_TOPOLOGY_EXTEND              = 0x00000004;
+static const int SDC_TOPOLOGY_EXTERNAL            = 0x00000008;
+static const int SDC_TOPOLOGY_SUPPLIED            = 0x00000010;
+static const int SDC_USE_DATABASE_CURRENT         = (SDC_TOPOLOGY_INTERNAL | SDC_TOPOLOGY_CLONE | SDC_TOPOLOGY_EXTEND | SDC_TOPOLOGY_EXTERNAL);
 
-#define SDC_USE_SUPPLIED_DISPLAY_CONFIG  0x00000020
-#define SDC_VALIDATE                     0x00000040
-#define SDC_APPLY                        0x00000080
-#define SDC_NO_OPTIMIZATION              0x00000100
-#define SDC_SAVE_TO_DATABASE             0x00000200
-#define SDC_ALLOW_CHANGES                0x00000400
-#define SDC_PATH_PERSIST_IF_REQUIRED     0x00000800
-#define SDC_FORCE_MODE_ENUMERATION       0x00001000
-#define SDC_ALLOW_PATH_ORDER_CHANGES     0x00002000
-#define SDC_VIRTUAL_MODE_AWARE           0x00008000
---]=]
+static const int SDC_USE_SUPPLIED_DISPLAY_CONFIG  = 0x00000020;
+static const int SDC_VALIDATE                     = 0x00000040;
+static const int SDC_APPLY                        = 0x00000080;
+static const int SDC_NO_OPTIMIZATION              = 0x00000100;
+static const int SDC_SAVE_TO_DATABASE             = 0x00000200;
+static const int SDC_ALLOW_CHANGES                = 0x00000400;
+static const int SDC_PATH_PERSIST_IF_REQUIRED     = 0x00000800;
+static const int SDC_FORCE_MODE_ENUMERATION       = 0x00001000;
+static const int SDC_ALLOW_PATH_ORDER_CHANGES     = 0x00002000;
+static const int SDC_VIRTUAL_MODE_AWARE           = 0x00008000;
+]]
 
 ffi.cdef[[
 /* GetRegionData/ExtCreateRegion */
