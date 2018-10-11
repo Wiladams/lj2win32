@@ -12236,7 +12236,7 @@ typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
 #define CDS_RESET_EX                 0x20000000
 #define CDS_NORESET                  0x10000000
 
-#include <tvout.h>
+require ("win32.tvout")
 
 /* Return values for ChangeDisplaySettings */
 #define DISP_CHANGE_SUCCESSFUL       0
@@ -12246,17 +12246,13 @@ typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
 #define DISP_CHANGE_NOTUPDATED      -3
 #define DISP_CHANGE_BADFLAGS        -4
 #define DISP_CHANGE_BADPARAM        -5
-#if(_WIN32_WINNT >= 0x0501)
+
 #define DISP_CHANGE_BADDUALVIEW     -6
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#ifdef _WINGDI_
-#ifndef NOGDI
+--]=]
 
 
+
+ffi.cdef[[
 LONG
 __stdcall
 ChangeDisplaySettingsA(
@@ -12268,13 +12264,17 @@ __stdcall
 ChangeDisplaySettingsW(
      DEVMODEW* lpDevMode,
      DWORD dwFlags);
+]]
+
+--[[
 #ifdef UNICODE
 #define ChangeDisplaySettings  ChangeDisplaySettingsW
 #else
 #define ChangeDisplaySettings  ChangeDisplaySettingsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 ChangeDisplaySettingsExA(
@@ -12292,17 +12292,22 @@ ChangeDisplaySettingsExW(
     HWND hwnd,
      DWORD dwflags,
      LPVOID lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define ChangeDisplaySettingsEx  ChangeDisplaySettingsExW
 #else
 #define ChangeDisplaySettingsEx  ChangeDisplaySettingsExA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
+static const int ENUM_CURRENT_SETTINGS     =  ((DWORD)-1);
+static const int ENUM_REGISTRY_SETTINGS    =  ((DWORD)-2);
+]]
 
-#define ENUM_CURRENT_SETTINGS       ((DWORD)-1)
-#define ENUM_REGISTRY_SETTINGS      ((DWORD)-2)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumDisplaySettingsA(
@@ -12316,15 +12321,18 @@ EnumDisplaySettingsW(
      LPCWSTR lpszDeviceName,
      DWORD iModeNum,
      DEVMODEW* lpDevMode);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumDisplaySettings  EnumDisplaySettingsW
 #else
 #define EnumDisplaySettings  EnumDisplaySettingsA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0500)
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumDisplaySettingsExA(
@@ -12340,17 +12348,23 @@ EnumDisplaySettingsExW(
      DWORD iModeNum,
      DEVMODEW* lpDevMode,
      DWORD dwFlags);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumDisplaySettingsEx  EnumDisplaySettingsExW
 #else
 #define EnumDisplaySettingsEx  EnumDisplaySettingsExA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /* Flags for EnumDisplaySettingsEx */
-#define EDS_RAWMODE                   0x00000002
-#define EDS_ROTATEDMODE               0x00000004
+static const int EDS_RAWMODE                 =  0x00000002;
+static const int EDS_ROTATEDMODE             =  0x00000004;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumDisplayDevicesA(
@@ -12366,15 +12380,20 @@ EnumDisplayDevicesW(
      DWORD iDevNum,
      PDISPLAY_DEVICEW lpDisplayDevice,
      DWORD dwFlags);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumDisplayDevices  EnumDisplayDevicesW
 #else
 #define EnumDisplayDevices  EnumDisplayDevicesA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /* Flags for EnumDisplayDevices */
-#define EDD_GET_DEVICE_INTERFACE_NAME 0x00000001
---]=]
+static const int EDD_GET_DEVICE_INTERFACE_NAME = 0x00000001;
+]]
 
 ffi.cdef[[
 LONG
