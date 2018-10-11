@@ -12236,7 +12236,7 @@ typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
 #define CDS_RESET_EX                 0x20000000
 #define CDS_NORESET                  0x10000000
 
-#include <tvout.h>
+require ("win32.tvout")
 
 /* Return values for ChangeDisplaySettings */
 #define DISP_CHANGE_SUCCESSFUL       0
