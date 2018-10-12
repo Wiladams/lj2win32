@@ -541,11 +541,10 @@ typedef struct _PSFEATURE_CUSTPAPER {
 
 #define MWT_MIN             MWT_IDENTITY
 #define MWT_MAX             MWT_RIGHTMULTIPLY
+--]=]
 
-#define _XFORM_
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+_XFORM_ = true;
+ffi.cdef[[
 
 typedef struct  tagXFORM
   {
@@ -556,7 +555,9 @@ typedef struct  tagXFORM
     FLOAT   eDx;
     FLOAT   eDy;
   } XFORM, *PXFORM, *LPXFORM;
+]]
 
+ffi.cdef[[
 /* Bitmap Header Definition */
 typedef struct tagBITMAP
   {
@@ -568,29 +569,22 @@ typedef struct tagBITMAP
     WORD        bmBitsPixel;
     LPVOID      bmBits;
   } BITMAP, *PBITMAP,  *NPBITMAP, *LPBITMAP;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#include <pshpack1.h>
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+--#include <pshpack1.h>
+ffi.cdef[[
 
 typedef struct tagRGBTRIPLE {
         BYTE    rgbtBlue;
         BYTE    rgbtGreen;
         BYTE    rgbtRed;
 } RGBTRIPLE, *PRGBTRIPLE,  *NPRGBTRIPLE, *LPRGBTRIPLE;
+]]
+--#include <poppack.h>
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#include <poppack.h>
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef struct tagRGBQUAD {
         BYTE    rgbBlue;
         BYTE    rgbGreen;
@@ -600,11 +594,11 @@ typedef struct tagRGBQUAD {
 
 
 typedef RGBQUAD * LPRGBQUAD;
+]]
 
 
-
-#if(WINVER >= 0x0400)
-
+--[=[
+ffi.cdef[[
 /* Image Color Matching color definitions */
 
 #define CS_ENABLE                       0x00000001L
@@ -654,10 +648,14 @@ typedef LONG    LCSGAMUTMATCH;
 #define GetCValue(cmyk)      ((BYTE)((cmyk)>>24))
 
 #define CMYK(c,m,y,k)       ((COLORREF)((((BYTE)(k)|((WORD)((BYTE)(y))<<8))|(((DWORD)(BYTE)(m))<<16))|(((DWORD)(BYTE)(c))<<24)))
+--]=]
 
+ffi.cdef[[
 typedef long            FXPT16DOT16, *LPFXPT16DOT16;
 typedef long            FXPT2DOT30, *LPFXPT2DOT30;
+]]
 
+ffi.cdef[[
 /* ICM Color Definitions */
 // The following two structures are used for defining RGB's in terms of CIEXYZ.
 
@@ -668,19 +666,10 @@ typedef struct tagCIEXYZ
         FXPT2DOT30 ciexyzZ;
 } CIEXYZ;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef CIEXYZ   *LPCIEXYZ;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 typedef struct tagICEXYZTRIPLE
 {
@@ -689,20 +678,11 @@ typedef struct tagICEXYZTRIPLE
         CIEXYZ  ciexyzBlue;
 } CIEXYZTRIPLE;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef CIEXYZTRIPLE     *LPCIEXYZTRIPLE;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 // The next structures the logical color space. Unlike pens and brushes,
 // but like palettes, there is only one way to create a LogColorSpace.
 // A pointer to it must be passed, its elements can't be pushed as
@@ -720,6 +700,7 @@ typedef struct tagLOGCOLORSPACEA {
     DWORD lcsGammaBlue;
     CHAR   lcsFilename[MAX_PATH];
 } LOGCOLORSPACEA, *LPLOGCOLORSPACEA;
+
 typedef struct tagLOGCOLORSPACEW {
     DWORD lcsSignature;
     DWORD lcsVersion;
@@ -732,6 +713,9 @@ typedef struct tagLOGCOLORSPACEW {
     DWORD lcsGammaBlue;
     WCHAR  lcsFilename[MAX_PATH];
 } LOGCOLORSPACEW, *LPLOGCOLORSPACEW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef LOGCOLORSPACEW LOGCOLORSPACE;
 typedef LPLOGCOLORSPACEW LPLOGCOLORSPACE;
@@ -739,15 +723,10 @@ typedef LPLOGCOLORSPACEW LPLOGCOLORSPACE;
 typedef LOGCOLORSPACEA LOGCOLORSPACE;
 typedef LPLOGCOLORSPACEA LPLOGCOLORSPACE;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#endif /* WINVER >= 0x0400 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 /* structures for defining DIBs */
 typedef struct tagBITMAPCOREHEADER {
         DWORD   bcSize;                 /* used to get to color table */
@@ -756,13 +735,9 @@ typedef struct tagBITMAPCOREHEADER {
         WORD    bcPlanes;
         WORD    bcBitCount;
 } BITMAPCOREHEADER,  *LPBITMAPCOREHEADER, *PBITMAPCOREHEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef struct tagBITMAPINFOHEADER{
         DWORD      biSize;
         LONG       biWidth;
@@ -776,15 +751,10 @@ typedef struct tagBITMAPINFOHEADER{
         DWORD      biClrUsed;
         DWORD      biClrImportant;
 } BITMAPINFOHEADER,  *LPBITMAPINFOHEADER, *PBITMAPINFOHEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if(WINVER >= 0x0400)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct {
         DWORD        bV4Size;
         LONG         bV4Width;
@@ -807,15 +777,9 @@ typedef struct {
         DWORD        bV4GammaGreen;
         DWORD        bV4GammaBlue;
 } BITMAPV4HEADER,  *LPBITMAPV4HEADER, *PBITMAPV4HEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-#endif /* WINVER >= 0x0400 */
-
-#if (WINVER >= 0x0500)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+ffi.cdef[[
 typedef struct {
         DWORD        bV5Size;
         LONG         bV5Width;
@@ -842,15 +806,16 @@ typedef struct {
         DWORD        bV5ProfileSize;
         DWORD        bV5Reserved;
 } BITMAPV5HEADER,  *LPBITMAPV5HEADER, *PBITMAPV5HEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+ffi.cdef[[
 // Values for bV5CSType
-#define PROFILE_LINKED          'LINK'
-#define PROFILE_EMBEDDED        'MBED'
-#endif
+static const int PROFILE_LINKED     =     'LINK';
+static const int PROFILE_EMBEDDED   =     'MBED';
+]]
 
+--[=[
 /* constants for the biCompression field */
 #define BI_RGB        0L
 #define BI_RLE8       1L
@@ -4423,15 +4388,12 @@ typedef struct {
 #endif // (_WIN32_WINNT >= 0x0600)
 
 #endif  // COMBOX_SANDBOX
+--]=]
 
-#if (WINVER >= 0x0400)
-
+ffi.cdef[[
 //
 // image blt
 //
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 typedef USHORT COLOR16;
 
@@ -4444,13 +4406,11 @@ typedef struct _TRIVERTEX
     COLOR16 Blue;
     COLOR16 Alpha;
 }TRIVERTEX,*PTRIVERTEX,*LPTRIVERTEX;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+ffi.cdef[[
 typedef struct _GRADIENT_TRIANGLE
 {
     ULONG Vertex1;
@@ -4463,13 +4423,10 @@ typedef struct _GRADIENT_RECT
     ULONG UpperLeft;
     ULONG LowerRight;
 }GRADIENT_RECT,*PGRADIENT_RECT,*LPGRADIENT_RECT;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef struct _BLENDFUNCTION
 {
     BYTE   BlendOp;
@@ -4477,25 +4434,13 @@ typedef struct _BLENDFUNCTION
     BYTE   SourceConstantAlpha;
     BYTE   AlphaFormat;
 }BLENDFUNCTION,*PBLENDFUNCTION;
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+]]
 
 
-//
-// currentlly defined blend function
-//
 
-#define AC_SRC_OVER                 0x00
-
-//
-// alpha format flags
-//
-
-#define AC_SRC_ALPHA                0x01
+ffi.cdef[[
+static const int AC_SRC_OVER                = 0x00;
+static const int AC_SRC_ALPHA               = 0x01;
 
  BOOL __stdcall AlphaBlend(
      HDC hdcDest,
@@ -4522,8 +4467,9 @@ typedef struct _BLENDFUNCTION
      int wSrc,
      int hSrc,
      UINT crTransparent);
+]]
 
-
+--[=[
 //
 // gradient drawing modes
 //
@@ -4569,11 +4515,9 @@ GradientFill(
                                          ULONG ulMode);
 
 #endif
+--]=]
 
-
-
-#ifndef NOMETAFILE
-
+--[=[
  BOOL  __stdcall PlayMetaFileRecord(   HDC hdc,
                                             _In_reads_(noObjs) LPHANDLETABLE lpHandleTable,
                                              LPMETARECORD lpMR,
@@ -4656,39 +4600,22 @@ typedef int (CALLBACK* ENHMFENUMPROC)( HDC hdc, _In_reads_(nHandles) HANDLETABLE
  BOOL  __stdcall GdiComment( HDC hdc,  UINT nSize, _In_reads_bytes_(nSize) const BYTE *lpData);
 
 #endif  /* NOMETAFILE */
+--]=]
 
-#ifndef NOTEXTMETRIC
+ffi.cdef[[
+ BOOL __stdcall GetTextMetricsA(  HDC hdc, LPTEXTMETRICA lptm);
+ BOOL __stdcall GetTextMetricsW(  HDC hdc, LPTEXTMETRICW lptm);
+]]
 
- BOOL __stdcall GetTextMetricsA(  HDC hdc, _Out_ LPTEXTMETRICA lptm);
- BOOL __stdcall GetTextMetricsW(  HDC hdc, _Out_ LPTEXTMETRICW lptm);
-#ifdef UNICODE
+ --[[
+ #ifdef UNICODE
 #define GetTextMetrics  GetTextMetricsW
 #else
 #define GetTextMetrics  GetTextMetricsA
 #endif // !UNICODE
+--]]
 
-#if defined(_M_CEE)
-#undef GetTextMetrics
-__inline
-BOOL
-GetTextMetrics(
-    HDC hdc,
-    LPTEXTMETRIC lptm
-    )
-{
-#ifdef UNICODE
-    return GetTextMetricsW(
-#else
-    return GetTextMetricsA(
-#endif
-        hdc,
-        lptm
-        );
-}
-#endif  /* _M_CEE */
-
-#endif
-
+ffi.cdef[[
 /* new GDI */
 
 typedef struct tagDIBSECTION {
@@ -4698,7 +4625,9 @@ typedef struct tagDIBSECTION {
     HANDLE              dshSection;
     DWORD               dsOffset;
 } DIBSECTION,  *LPDIBSECTION, *PDIBSECTION;
+]]
 
+ffi.cdef[[
 
  BOOL __stdcall AngleArc(  HDC hdc,  int x,  int y,  DWORD r,  FLOAT StartAngle,  FLOAT SweepAngle);
  BOOL __stdcall PolyPolyline( HDC hdc,  const POINT *apt, _In_reads_(csz) const DWORD *asz,  DWORD csz);
@@ -4706,12 +4635,16 @@ typedef struct tagDIBSECTION {
  BOOL __stdcall SetWorldTransform(  HDC hdc,  const XFORM * lpxf);
  BOOL __stdcall ModifyWorldTransform(  HDC hdc,  const XFORM * lpxf,  DWORD mode);
  BOOL __stdcall CombineTransform( _Out_ LPXFORM lpxfOut,  const XFORM *lpxf1,  const XFORM *lpxf2);
+]]
 
+--[[
 #define GDI_WIDTHBYTES(bits) ((DWORD)(((bits)+31) & (~31)) / 8)
 #define GDI_DIBWIDTHBYTES(bi) (DWORD)GDI_WIDTHBYTES((DWORD)(bi).biWidth * (DWORD)(bi).biBitCount)
 #define GDI__DIBSIZE(bi) (GDI_DIBWIDTHBYTES(bi) * (DWORD)(bi).biHeight)
 #define GDI_DIBSIZE(bi) ((bi).biHeight < 0 ? (-1)*(GDI__DIBSIZE(bi)) : GDI__DIBSIZE(bi))
+--]]
 
+--[=[
  _Success_(return != NULL) HBITMAP __stdcall CreateDIBSection(
             HDC               hdc,
                 const BITMAPINFO *pbmi,
@@ -5054,187 +4987,173 @@ typedef int (CALLBACK* ICMENUMPROCW)(LPWSTR, LPARAM);
 #else
 #define EnumICMProfiles  EnumICMProfilesA
 #endif // !UNICODE
-// The Win95 update API UpdateICMRegKeyA is deprecated to set last error to ERROR_NOT_SUPPORTED and return FALSE
- BOOL        __stdcall UpdateICMRegKeyA( _Reserved_ DWORD reserved,  LPSTR lpszCMID,  LPSTR lpszFileName,  UINT command);
-// The Win95 update API UpdateICMRegKeyW is deprecated to set last error to ERROR_NOT_SUPPORTED and return FALSE
- BOOL        __stdcall UpdateICMRegKeyW( _Reserved_ DWORD reserved,  LPWSTR lpszCMID,  LPWSTR lpszFileName,  UINT command);
-#ifdef UNICODE
-#define UpdateICMRegKey  UpdateICMRegKeyW
-#else
-#define UpdateICMRegKey  UpdateICMRegKeyA
-#endif // !UNICODE
 
-#ifndef _CONTRACT_GEN
-#pragma deprecated (UpdateICMRegKeyW)
-#pragma deprecated (UpdateICMRegKeyA)
-#endif // _CONTRACT_GEN
+
 
 #endif /* WINVER >= 0x0400 */
 
 #if (WINVER >= 0x0500)
  BOOL        __stdcall ColorCorrectPalette(  HDC hdc,  HPALETTE hPal,  DWORD deFirst,  DWORD num);
 #endif
+--]=]
 
-#ifndef NOMETAFILE
 
-// Enhanced metafile constants.
+--if not NOMETAFILE
+ffi.cdef[[
+static const int ENHMETA_SIGNATURE     =  0x464D4520;   // ' ELF'
+]]
 
-#ifndef _MAC
-#define ENHMETA_SIGNATURE       0x464D4520
-#else
-#define ENHMETA_SIGNATURE       0x20454D46
-#endif
 
+ffi.cdef[[
 // Stock object flag used in the object handle index in the enhanced
 // metafile records.
 // E.g. The object handle index (META_STOCK_OBJECT | BLACK_BRUSH)
 // represents the stock object BLACK_BRUSH.
 
-#define ENHMETA_STOCK_OBJECT    0x80000000
+static const int ENHMETA_STOCK_OBJECT    = 0x80000000;
+]]
 
+ffi.cdef[[
 // Enhanced metafile record types.
 
-#define EMR_HEADER                      1
-#define EMR_POLYBEZIER                  2
-#define EMR_POLYGON                     3
-#define EMR_POLYLINE                    4
-#define EMR_POLYBEZIERTO                5
-#define EMR_POLYLINETO                  6
-#define EMR_POLYPOLYLINE                7
-#define EMR_POLYPOLYGON                 8
-#define EMR_SETWINDOWEXTEX              9
-#define EMR_SETWINDOWORGEX              10
-#define EMR_SETVIEWPORTEXTEX            11
-#define EMR_SETVIEWPORTORGEX            12
-#define EMR_SETBRUSHORGEX               13
-#define EMR_EOF                         14
-#define EMR_SETPIXELV                   15
-#define EMR_SETMAPPERFLAGS              16
-#define EMR_SETMAPMODE                  17
-#define EMR_SETBKMODE                   18
-#define EMR_SETPOLYFILLMODE             19
-#define EMR_SETROP2                     20
-#define EMR_SETSTRETCHBLTMODE           21
-#define EMR_SETTEXTALIGN                22
-#define EMR_SETCOLORADJUSTMENT          23
-#define EMR_SETTEXTCOLOR                24
-#define EMR_SETBKCOLOR                  25
-#define EMR_OFFSETCLIPRGN               26
-#define EMR_MOVETOEX                    27
-#define EMR_SETMETARGN                  28
-#define EMR_EXCLUDECLIPRECT             29
-#define EMR_INTERSECTCLIPRECT           30
-#define EMR_SCALEVIEWPORTEXTEX          31
-#define EMR_SCALEWINDOWEXTEX            32
-#define EMR_SAVEDC                      33
-#define EMR_RESTOREDC                   34
-#define EMR_SETWORLDTRANSFORM           35
-#define EMR_MODIFYWORLDTRANSFORM        36
-#define EMR_SELECTOBJECT                37
-#define EMR_CREATEPEN                   38
-#define EMR_CREATEBRUSHINDIRECT         39
-#define EMR_DELETEOBJECT                40
-#define EMR_ANGLEARC                    41
-#define EMR_ELLIPSE                     42
-#define EMR_RECTANGLE                   43
-#define EMR_ROUNDRECT                   44
-#define EMR_ARC                         45
-#define EMR_CHORD                       46
-#define EMR_PIE                         47
-#define EMR_SELECTPALETTE               48
-#define EMR_CREATEPALETTE               49
-#define EMR_SETPALETTEENTRIES           50
-#define EMR_RESIZEPALETTE               51
-#define EMR_REALIZEPALETTE              52
-#define EMR_EXTFLOODFILL                53
-#define EMR_LINETO                      54
-#define EMR_ARCTO                       55
-#define EMR_POLYDRAW                    56
-#define EMR_SETARCDIRECTION             57
-#define EMR_SETMITERLIMIT               58
-#define EMR_BEGINPATH                   59
-#define EMR_ENDPATH                     60
-#define EMR_CLOSEFIGURE                 61
-#define EMR_FILLPATH                    62
-#define EMR_STROKEANDFILLPATH           63
-#define EMR_STROKEPATH                  64
-#define EMR_FLATTENPATH                 65
-#define EMR_WIDENPATH                   66
-#define EMR_SELECTCLIPPATH              67
-#define EMR_ABORTPATH                   68
+static const int EMR_HEADER                    =  1;
+static const int EMR_POLYBEZIER                =  2;
+static const int EMR_POLYGON                   =  3;
+static const int EMR_POLYLINE                  =  4;
+static const int EMR_POLYBEZIERTO              =  5;
+static const int EMR_POLYLINETO                =  6;
+static const int EMR_POLYPOLYLINE              =  7;
+static const int EMR_POLYPOLYGON               =  8;
+static const int EMR_SETWINDOWEXTEX            =  9;
+static const int EMR_SETWINDOWORGEX            =  10;
+static const int EMR_SETVIEWPORTEXTEX          =  11;
+static const int EMR_SETVIEWPORTORGEX          =  12;
+static const int EMR_SETBRUSHORGEX             =  13;
+static const int EMR_EOF                       =  14;
+static const int EMR_SETPIXELV                 =  15;
+static const int EMR_SETMAPPERFLAGS            =  16;
+static const int EMR_SETMAPMODE                =  17;
+static const int EMR_SETBKMODE                 =  18;
+static const int EMR_SETPOLYFILLMODE           =  19;
+static const int EMR_SETROP2                   =  20;
+static const int EMR_SETSTRETCHBLTMODE         =  21;
+static const int EMR_SETTEXTALIGN              =  22;
+static const int EMR_SETCOLORADJUSTMENT        =  23;
+static const int EMR_SETTEXTCOLOR              =  24;
+static const int EMR_SETBKCOLOR                =  25;
+static const int EMR_OFFSETCLIPRGN             =  26;
+static const int EMR_MOVETOEX                  =  27;
+static const int EMR_SETMETARGN                =  28;
+static const int EMR_EXCLUDECLIPRECT           =  29;
+static const int EMR_INTERSECTCLIPRECT         =  30;
+static const int EMR_SCALEVIEWPORTEXTEX        =  31;
+static const int EMR_SCALEWINDOWEXTEX          =  32;
+static const int EMR_SAVEDC                    =  33;
+static const int EMR_RESTOREDC                 =  34;
+static const int EMR_SETWORLDTRANSFORM         =  35;
+static const int EMR_MODIFYWORLDTRANSFORM      =  36;
+static const int EMR_SELECTOBJECT              =  37;
+static const int EMR_CREATEPEN                 =  38;
+static const int EMR_CREATEBRUSHINDIRECT       =  39;
+static const int EMR_DELETEOBJECT              =  40;
+static const int EMR_ANGLEARC                  =  41;
+static const int EMR_ELLIPSE                   =  42;
+static const int EMR_RECTANGLE                 =  43;
+static const int EMR_ROUNDRECT                 =  44;
+static const int EMR_ARC                       =  45;
+static const int EMR_CHORD                     =  46;
+static const int EMR_PIE                       =  47;
+static const int EMR_SELECTPALETTE             =  48;
+static const int EMR_CREATEPALETTE             =  49;
+static const int EMR_SETPALETTEENTRIES         =  50;
+static const int EMR_RESIZEPALETTE             =  51;
+static const int EMR_REALIZEPALETTE            =  52;
+static const int EMR_EXTFLOODFILL              =  53;
+static const int EMR_LINETO                    =  54;
+static const int EMR_ARCTO                     =  55;
+static const int EMR_POLYDRAW                  =  56;
+static const int EMR_SETARCDIRECTION           =  57;
+static const int EMR_SETMITERLIMIT             =  58;
+static const int EMR_BEGINPATH                 =  59;
+static const int EMR_ENDPATH                   =  60;
+static const int EMR_CLOSEFIGURE               =  61;
+static const int EMR_FILLPATH                  =  62;
+static const int EMR_STROKEANDFILLPATH         =  63;
+static const int EMR_STROKEPATH                =  64;
+static const int EMR_FLATTENPATH               =  65;
+static const int EMR_WIDENPATH                 =  66;
+static const int EMR_SELECTCLIPPATH            =  67;
+static const int EMR_ABORTPATH                 =  68;
 
-#define EMR_GDICOMMENT                  70
-#define EMR_FILLRGN                     71
-#define EMR_FRAMERGN                    72
-#define EMR_INVERTRGN                   73
-#define EMR_PAINTRGN                    74
-#define EMR_EXTSELECTCLIPRGN            75
-#define EMR_BITBLT                      76
-#define EMR_STRETCHBLT                  77
-#define EMR_MASKBLT                     78
-#define EMR_PLGBLT                      79
-#define EMR_SETDIBITSTODEVICE           80
-#define EMR_STRETCHDIBITS               81
-#define EMR_EXTCREATEFONTINDIRECTW      82
-#define EMR_EXTTEXTOUTA                 83
-#define EMR_EXTTEXTOUTW                 84
-#define EMR_POLYBEZIER16                85
-#define EMR_POLYGON16                   86
-#define EMR_POLYLINE16                  87
-#define EMR_POLYBEZIERTO16              88
-#define EMR_POLYLINETO16                89
-#define EMR_POLYPOLYLINE16              90
-#define EMR_POLYPOLYGON16               91
-#define EMR_POLYDRAW16                  92
-#define EMR_CREATEMONOBRUSH             93
-#define EMR_CREATEDIBPATTERNBRUSHPT     94
-#define EMR_EXTCREATEPEN                95
-#define EMR_POLYTEXTOUTA                96
-#define EMR_POLYTEXTOUTW                97
+static const int EMR_GDICOMMENT                =  70;
+static const int EMR_FILLRGN                   =  71;
+static const int EMR_FRAMERGN                  =  72;
+static const int EMR_INVERTRGN                 =  73;
+static const int EMR_PAINTRGN                  =  74;
+static const int EMR_EXTSELECTCLIPRGN          =  75;
+static const int EMR_BITBLT                    =  76;
+static const int EMR_STRETCHBLT                =  77;
+static const int EMR_MASKBLT                   =  78;
+static const int EMR_PLGBLT                    =  79;
+static const int EMR_SETDIBITSTODEVICE         =  80;
+static const int EMR_STRETCHDIBITS             =  81;
+static const int EMR_EXTCREATEFONTINDIRECTW    =  82;
+static const int EMR_EXTTEXTOUTA               =  83;
+static const int EMR_EXTTEXTOUTW               =  84;
+static const int EMR_POLYBEZIER16              =  85;
+static const int EMR_POLYGON16                 =  86;
+static const int EMR_POLYLINE16                =  87;
+static const int EMR_POLYBEZIERTO16            =  88;
+static const int EMR_POLYLINETO16              =  89;
+static const int EMR_POLYPOLYLINE16            =  90;
+static const int EMR_POLYPOLYGON16             =  91;
+static const int EMR_POLYDRAW16                =  92;
+static const int EMR_CREATEMONOBRUSH           =  93;
+static const int EMR_CREATEDIBPATTERNBRUSHPT   =  94;
+static const int EMR_EXTCREATEPEN              =  95;
+static const int EMR_POLYTEXTOUTA              =  96;
+static const int EMR_POLYTEXTOUTW              =  97;
 
-#if(WINVER >= 0x0400)
-#define EMR_SETICMMODE                  98
-#define EMR_CREATECOLORSPACE            99
-#define EMR_SETCOLORSPACE              100
-#define EMR_DELETECOLORSPACE           101
-#define EMR_GLSRECORD                  102
-#define EMR_GLSBOUNDEDRECORD           103
-#define EMR_PIXELFORMAT                104
-#endif /* WINVER >= 0x0400 */
 
-#if(WINVER >= 0x0500)
-#define EMR_RESERVED_105               105
-#define EMR_RESERVED_106               106
-#define EMR_RESERVED_107               107
-#define EMR_RESERVED_108               108
-#define EMR_RESERVED_109               109
-#define EMR_RESERVED_110               110
-#define EMR_COLORCORRECTPALETTE        111
-#define EMR_SETICMPROFILEA             112
-#define EMR_SETICMPROFILEW             113
-#define EMR_ALPHABLEND                 114
-#define EMR_SETLAYOUT                  115
-#define EMR_TRANSPARENTBLT             116
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#define EMR_RESERVED_117               117
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#define EMR_GRADIENTFILL               118
-#define EMR_RESERVED_119               119
-#define EMR_RESERVED_120               120
-#define EMR_COLORMATCHTOTARGETW        121
-#define EMR_CREATECOLORSPACEW          122
-#endif /* WINVER >= 0x0500 */
+static const int EMR_SETICMMODE                =  98;
+static const int EMR_CREATECOLORSPACE          =  99;
+static const int EMR_SETCOLORSPACE             = 100;
+static const int EMR_DELETECOLORSPACE          = 101;
+static const int EMR_GLSRECORD                 = 102;
+static const int EMR_GLSBOUNDEDRECORD          = 103;
+static const int EMR_PIXELFORMAT               = 104;
 
-#define EMR_MIN                          1
 
-#if (WINVER >= 0x0500)
-#define EMR_MAX                        122
-#elif (WINVER >= 0x0400)
-#define EMR_MAX                        104
-#else
-#define EMR_MAX                         97
-#endif
 
+static const int EMR_RESERVED_105              = 105;
+static const int EMR_RESERVED_106              = 106;
+static const int EMR_RESERVED_107              = 107;
+static const int EMR_RESERVED_108              = 108;
+static const int EMR_RESERVED_109              = 109;
+static const int EMR_RESERVED_110              = 110;
+static const int EMR_COLORCORRECTPALETTE       = 111;
+static const int EMR_SETICMPROFILEA            = 112;
+static const int EMR_SETICMPROFILEW            = 113;
+static const int EMR_ALPHABLEND                = 114;
+static const int EMR_SETLAYOUT                 = 115;
+static const int EMR_TRANSPARENTBLT            = 116;
+
+static const int EMR_RESERVED_117              = 117;
+
+static const int EMR_GRADIENTFILL              = 118;
+static const int EMR_RESERVED_119              = 119;
+static const int EMR_RESERVED_120              = 120;
+static const int EMR_COLORMATCHTOTARGETW       = 121;
+static const int EMR_CREATECOLORSPACEW         = 122;
+]]
+
+ffi.cdef[[
+static const int EMR_MIN                        =  1;
+
+static const int EMR_MAX                        = 122;
+]]
+
+ffi.cdef[[
 // Base record type for the enhanced metafile.
 
 typedef struct tagEMR
@@ -5243,7 +5162,9 @@ typedef struct tagEMR
     DWORD   nSize;              // Length of the record in bytes.
                                 // This must be a multiple of 4.
 } EMR, *PEMR;
+]]
 
+ffi.cdef[[
 // Base text record type for the enhanced metafile.
 
 typedef struct tagEMRTEXT
@@ -5256,7 +5177,9 @@ typedef struct tagEMRTEXT
     DWORD   offDx;              // Offset to the inter-character spacing array.
                                 // This is always given.
 } EMRTEXT, *PEMRTEXT;
+]]
 
+ffi.cdef[[
 // Record structures for the enhanced metafile.
 
 typedef struct tagABORTPATH
@@ -5271,7 +5194,9 @@ typedef struct tagABORTPATH
   EMRSETMETARGN,     *PEMRSETMETARGN,
   EMRSAVEDC,         *PEMRSAVEDC,
   EMRREALIZEPALETTE, *PEMRREALIZEPALETTE;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRSELECTCLIPPATH
 {
     EMR     emr;
@@ -5279,21 +5204,23 @@ typedef struct tagEMRSELECTCLIPPATH
 } EMRSELECTCLIPPATH,    *PEMRSELECTCLIPPATH,
   EMRSETBKMODE,         *PEMRSETBKMODE,
   EMRSETMAPMODE,        *PEMRSETMAPMODE,
-#if(WINVER >= 0x0500)
   EMRSETLAYOUT,         *PEMRSETLAYOUT,
-#endif /* WINVER >= 0x0500 */
   EMRSETPOLYFILLMODE,   *PEMRSETPOLYFILLMODE,
   EMRSETROP2,           *PEMRSETROP2,
   EMRSETSTRETCHBLTMODE, *PEMRSETSTRETCHBLTMODE,
   EMRSETICMMODE,        *PEMRSETICMMODE,
   EMRSETTEXTALIGN,      *PEMRSETTEXTALIGN;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRSETMITERLIMIT
 {
     EMR     emr;
     FLOAT   eMiterLimit;
 } EMRSETMITERLIMIT, *PEMRSETMITERLIMIT;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRRESTOREDC
 {
     EMR     emr;
@@ -5319,7 +5246,9 @@ typedef struct tagEMRSETTEXTCOLOR
     COLORREF crColor;
 } EMRSETBKCOLOR,   *PEMRSETBKCOLOR,
   EMRSETTEXTCOLOR, *PEMRSETTEXTCOLOR;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRSELECTOBJECT
 {
     EMR     emr;
@@ -5339,7 +5268,9 @@ typedef struct tagEMRRESIZEPALETTE
     DWORD   ihPal;              // Palette handle index
     DWORD   cEntries;
 } EMRRESIZEPALETTE, *PEMRRESIZEPALETTE;
+]]
 
+--[=[
 typedef struct tagEMRSETPALETTEENTRIES
 {
     EMR     emr;
@@ -5910,8 +5841,10 @@ typedef struct tagEMRCREATECOLORSPACEW
     DWORD           cbData;     // size of raw source profile data if attached
     BYTE            Data[1];    // Array size is cbData
 } EMRCREATECOLORSPACEW, *PEMRCREATECOLORSPACEW;
+--]=]
 
-#define COLORMATCHTOTARGET_EMBEDED      0x00000001
+ffi.cdef[[
+static const int COLORMATCHTOTARGET_EMBEDED     = 0x00000001;
 
 typedef struct tagCOLORMATCHTOTARGET
 {
@@ -5922,7 +5855,9 @@ typedef struct tagCOLORMATCHTOTARGET
     DWORD   cbData;             // Size of raw target profile data if attached
     BYTE    Data[1];            // Array size is cbName + cbData
 } EMRCOLORMATCHTOTARGET, *PEMRCOLORMATCHTOTARGET;
+]]
 
+ffi.cdef[[
 typedef struct tagCOLORCORRECTPALETTE
 {
     EMR     emr;
@@ -5931,7 +5866,9 @@ typedef struct tagCOLORCORRECTPALETTE
     DWORD   nPalEntries;        // Number of palette entries to correct
     DWORD   nReserved;          // Reserved
 } EMRCOLORCORRECTPALETTE, *PEMRCOLORCORRECTPALETTE;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRALPHABLEND
 {
     EMR     emr;
@@ -5954,7 +5891,9 @@ typedef struct tagEMRALPHABLEND
     LONG    cxSrc;
     LONG    cySrc;
 } EMRALPHABLEND, *PEMRALPHABLEND;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRGRADIENTFILL
 {
     EMR       emr;
@@ -5964,7 +5903,9 @@ typedef struct tagEMRGRADIENTFILL
     ULONG     ulMode;
     TRIVERTEX Ver[1];
 }EMRGRADIENTFILL,*PEMRGRADIENTFILL;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRTRANSPARENTBLT
 {
     EMR     emr;
@@ -5987,21 +5928,18 @@ typedef struct tagEMRTRANSPARENTBLT
     LONG    cxSrc;
     LONG    cySrc;
 } EMRTRANSPARENTBLT, *PEMRTRANSPARENTBLT;
+]]
 
-
-#endif /* WINVER >= 0x0500 */
-
-#define GDICOMMENT_IDENTIFIER           0x43494447
-#define GDICOMMENT_WINDOWS_METAFILE     0x80000001
-#define GDICOMMENT_BEGINGROUP           0x00000002
-#define GDICOMMENT_ENDGROUP             0x00000003
-#define GDICOMMENT_MULTIFORMATS         0x40000004
-#define EPS_SIGNATURE                   0x46535045
-#define GDICOMMENT_UNICODE_STRING       0x00000040
-#define GDICOMMENT_UNICODE_END          0x00000080
-
-#endif  /* NOMETAFILE */
---]=]
+ffi.cdef[[
+static const int GDICOMMENT_IDENTIFIER          = 0x43494447;
+static const int GDICOMMENT_WINDOWS_METAFILE    = 0x80000001;
+static const int GDICOMMENT_BEGINGROUP          = 0x00000002;
+static const int GDICOMMENT_ENDGROUP            = 0x00000003;
+static const int GDICOMMENT_MULTIFORMATS        = 0x40000004;
+static const int EPS_SIGNATURE                  = 0x46535045;
+static const int GDICOMMENT_UNICODE_STRING      = 0x00000040;
+static const int GDICOMMENT_UNICODE_END         = 0x00000080;
+]]
 
 ffi.cdef[[
 // OpenGL wgl prototypes

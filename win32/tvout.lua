@@ -35,49 +35,49 @@ typedef struct _VIDEOPARAMETERS {
 ]]
 
 ffi.cdef[[
-#define VP_COMMAND_GET          0x0001  // size set, return caps.
+static const int VP_COMMAND_GET          = 0x0001;  // size set, return caps.
                                         // returned Flags = 0 if not supported.
-#define VP_COMMAND_SET          0x0002  // size and params set.
+static const int VP_COMMAND_SET          = 0x0002;  // size and params set.
 
-#define VP_FLAGS_TV_MODE        0x0001
-#define VP_FLAGS_TV_STANDARD    0x0002
-#define VP_FLAGS_FLICKER        0x0004
-#define VP_FLAGS_OVERSCAN       0x0008
-#define VP_FLAGS_MAX_UNSCALED   0x0010  // do not use on SET
-#define VP_FLAGS_POSITION       0x0020
-#define VP_FLAGS_BRIGHTNESS     0x0040
-#define VP_FLAGS_CONTRAST       0x0080
-#define VP_FLAGS_COPYPROTECT    0x0100
+static const int VP_FLAGS_TV_MODE        = 0x0001;
+static const int VP_FLAGS_TV_STANDARD    = 0x0002;
+static const int VP_FLAGS_FLICKER        = 0x0004;
+static const int VP_FLAGS_OVERSCAN       = 0x0008;
+static const int VP_FLAGS_MAX_UNSCALED   = 0x0010;  // do not use on SET
+static const int VP_FLAGS_POSITION       = 0x0020;
+static const int VP_FLAGS_BRIGHTNESS     = 0x0040;
+static const int VP_FLAGS_CONTRAST       = 0x0080;
+static const int VP_FLAGS_COPYPROTECT    = 0x0100;
 
-#define VP_MODE_WIN_GRAPHICS    0x0001
-#define VP_MODE_TV_PLAYBACK     0x0002  // optimize for TV video playback
+static const int VP_MODE_WIN_GRAPHICS    = 0x0001;
+static const int VP_MODE_TV_PLAYBACK     = 0x0002;  // optimize for TV video playback
 
-#define VP_TV_STANDARD_NTSC_M   0x0001  //        75 IRE Setup
-#define VP_TV_STANDARD_NTSC_M_J 0x0002  // Japan,  0 IRE Setup
-#define VP_TV_STANDARD_PAL_B    0x0004
-#define VP_TV_STANDARD_PAL_D    0x0008
-#define VP_TV_STANDARD_PAL_H    0x0010
-#define VP_TV_STANDARD_PAL_I    0x0020
-#define VP_TV_STANDARD_PAL_M    0x0040
-#define VP_TV_STANDARD_PAL_N    0x0080
-#define VP_TV_STANDARD_SECAM_B  0x0100
-#define VP_TV_STANDARD_SECAM_D  0x0200
-#define VP_TV_STANDARD_SECAM_G  0x0400
-#define VP_TV_STANDARD_SECAM_H  0x0800
-#define VP_TV_STANDARD_SECAM_K  0x1000
-#define VP_TV_STANDARD_SECAM_K1 0x2000
-#define VP_TV_STANDARD_SECAM_L  0x4000
-#define VP_TV_STANDARD_WIN_VGA  0x8000
+static const int VP_TV_STANDARD_NTSC_M   = 0x0001;  //        75 IRE Setup
+static const int VP_TV_STANDARD_NTSC_M_J = 0x0002;  // Japan,  0 IRE Setup
+static const int VP_TV_STANDARD_PAL_B    = 0x0004;
+static const int VP_TV_STANDARD_PAL_D    = 0x0008;
+static const int VP_TV_STANDARD_PAL_H    = 0x0010;
+static const int VP_TV_STANDARD_PAL_I    = 0x0020;
+static const int VP_TV_STANDARD_PAL_M    = 0x0040;
+static const int VP_TV_STANDARD_PAL_N    = 0x0080;
+static const int VP_TV_STANDARD_SECAM_B  = 0x0100;
+static const int VP_TV_STANDARD_SECAM_D  = 0x0200;
+static const int VP_TV_STANDARD_SECAM_G  = 0x0400;
+static const int VP_TV_STANDARD_SECAM_H  = 0x0800;
+static const int VP_TV_STANDARD_SECAM_K  = 0x1000;
+static const int VP_TV_STANDARD_SECAM_K1 = 0x2000;
+static const int VP_TV_STANDARD_SECAM_L  = 0x4000;
+static const int VP_TV_STANDARD_WIN_VGA  = 0x8000;
 // and the rest
-#define VP_TV_STANDARD_NTSC_433 0x00010000
-#define VP_TV_STANDARD_PAL_G    0x00020000
-#define VP_TV_STANDARD_PAL_60   0x00040000
-#define VP_TV_STANDARD_SECAM_L1 0x00080000
+static const int VP_TV_STANDARD_NTSC_433 = 0x00010000;
+static const int VP_TV_STANDARD_PAL_G    = 0x00020000;
+static const int VP_TV_STANDARD_PAL_60   = 0x00040000;
+static const int VP_TV_STANDARD_SECAM_L1 = 0x00080000;
 
-#define VP_CP_TYPE_APS_TRIGGER  0x0001  // DVD trigger bits only
-#define VP_CP_TYPE_MACROVISION  0x0002  // full macrovision data available
+static const int VP_CP_TYPE_APS_TRIGGER  = 0x0001;  // DVD trigger bits only
+static const int VP_CP_TYPE_MACROVISION  = 0x0002;  // full macrovision data available
 
-#define VP_CP_CMD_ACTIVATE      0x0001  // CP command type
-#define VP_CP_CMD_DEACTIVATE    0x0002
-#define VP_CP_CMD_CHANGE        0x0004
+static const int VP_CP_CMD_ACTIVATE      = 0x0001;  // CP command type
+static const int VP_CP_CMD_DEACTIVATE    = 0x0002;
+static const int VP_CP_CMD_CHANGE        = 0x0004;
 ]]
