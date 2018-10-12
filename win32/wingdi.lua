@@ -1,8 +1,12 @@
 
 
 local ffi = require("ffi")
+local bit = require("bit")
+local lshift, rshift = bit.lshift, bit.rshift
 
 require("win32.windef")
+
+local exports = {}
 
 
 ffi.cdef[[
@@ -597,58 +601,60 @@ typedef RGBQUAD * LPRGBQUAD;
 ]]
 
 
---[=[
+
 ffi.cdef[[
 /* Image Color Matching color definitions */
 
-#define CS_ENABLE                       0x00000001L
-#define CS_DISABLE                      0x00000002L
-#define CS_DELETE_TRANSFORM             0x00000003L
+static const int CS_ENABLE                      = 0x00000001L;
+static const int CS_DISABLE                     = 0x00000002L;
+static const int CS_DELETE_TRANSFORM            = 0x00000003L;
+]]
 
-/* Logcolorspace signature */
+ffi.cdef[[
+static const int LCS_SIGNATURE           = 0x434F5350;    // 'PSOC';
+static const int LCS_sRGB                = 0x42475273;    // 'sRGB';
+static const int LCS_WINDOWS_COLOR_SPACE = 0x206E6957;    // 'Win ';  // Windows default color space
+]]
 
-#define LCS_SIGNATURE           'PSOC'
-
-/* Logcolorspace lcsType values */
-
-#define LCS_sRGB                'sRGB'
-#define LCS_WINDOWS_COLOR_SPACE 'Win '  // Windows default color space
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef LONG   LCSCSTYPE;
 
-#define LCS_CALIBRATED_RGB              0x00000000L
+static const int LCS_CALIBRATED_RGB             = 0x00000000L;
 
 typedef LONG    LCSGAMUTMATCH;
 
-#define LCS_GM_BUSINESS                 0x00000001L
-#define LCS_GM_GRAPHICS                 0x00000002L
-#define LCS_GM_IMAGES                   0x00000004L
-#define LCS_GM_ABS_COLORIMETRIC         0x00000008L
+static const int LCS_GM_BUSINESS                = 0x00000001L;
+static const int LCS_GM_GRAPHICS                = 0x00000002L;
+static const int LCS_GM_IMAGES                  = 0x00000004L;
+static const int LCS_GM_ABS_COLORIMETRIC        = 0x00000008L;
+]]
 
+ffi.cdef[[
 /* ICM Defines for results from CheckColorInGamut() */
-#define CM_OUT_OF_GAMUT                 255
-#define CM_IN_GAMUT                     0
+static const int CM_OUT_OF_GAMUT                = 255;
+static const int CM_IN_GAMUT                    = 0;
+]]
 
+ffi.cdef[[
 /* UpdateICMRegKey Constants               */
-#define ICM_ADDPROFILE                  1
-#define ICM_DELETEPROFILE               2
-#define ICM_QUERYPROFILE                3
-#define ICM_SETDEFAULTPROFILE           4
-#define ICM_REGISTERICMATCHER           5
-#define ICM_UNREGISTERICMATCHER         6
-#define ICM_QUERYMATCH                  7
+static const int ICM_ADDPROFILE                 = 1;
+static const int ICM_DELETEPROFILE              = 2;
+static const int ICM_QUERYPROFILE               = 3;
+static const int ICM_SETDEFAULTPROFILE          = 4;
+static const int ICM_REGISTERICMATCHER          = 5;
+static const int ICM_UNREGISTERICMATCHER        = 6;
+static const int ICM_QUERYMATCH                 = 7;
+]]
 
-/* Macros to retrieve CMYK values from a COLORREF */
-#define GetKValue(cmyk)      ((BYTE)(cmyk))
-#define GetYValue(cmyk)      ((BYTE)((cmyk)>> 8))
-#define GetMValue(cmyk)      ((BYTE)((cmyk)>>16))
-#define GetCValue(cmyk)      ((BYTE)((cmyk)>>24))
 
-#define CMYK(c,m,y,k)       ((COLORREF)((((BYTE)(k)|((WORD)((BYTE)(y))<<8))|(((DWORD)(BYTE)(m))<<16))|(((DWORD)(BYTE)(c))<<24)))
---]=]
+
+function exports.GetKValue(cmyk)  return    ffi.cast("BYTE",(cmyk)) end
+function exports.GetYValue(cmyk)  return    ffi.cast("BYTE",rshift(cmyk, 8)) end
+function exports.GetMValue(cmyk)  return    ffi.cast("BYTE",rshift(cmyk,16)) end
+function exports.GetCValue(cmyk)  return    ffi.cast("BYTE",rshift(cmyk,24)) end
+
+--function exports.CMYK(c,m,y,k)    return    ffi.cast("COLORREF",((((BYTE)(k)|((WORD)((BYTE)(y))<<8))|(((DWORD)(BYTE)(m))<<16))|(((DWORD)(BYTE)(c))<<24)))
+
 
 ffi.cdef[[
 typedef long            FXPT16DOT16, *LPFXPT16DOT16;
@@ -811,48 +817,36 @@ typedef struct {
 
 ffi.cdef[[
 // Values for bV5CSType
-static const int PROFILE_LINKED     =     'LINK';
-static const int PROFILE_EMBEDDED   =     'MBED';
+static const int PROFILE_LINKED     =     0x4B4E494C;       // 'LINK';
+static const int PROFILE_EMBEDDED   =     0x4445424D;       // 'MBED';
 ]]
 
---[=[
+ffi.cdef[[
 /* constants for the biCompression field */
-#define BI_RGB        0L
-#define BI_RLE8       1L
-#define BI_RLE4       2L
-#define BI_BITFIELDS  3L
-#define BI_JPEG       4L
-#define BI_PNG        5L
-#if (_WIN32_WINNT >= _WIN32_WINNT_NT4)
-#endif
+static const int BI_RGB       = 0;
+static const int BI_RLE8      = 1;
+static const int BI_RLE4      = 2;
+static const int BI_BITFIELDS = 3;
+static const int BI_JPEG      = 4;
+static const int BI_PNG       = 5;
+]]
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef struct tagBITMAPINFO {
     BITMAPINFOHEADER    bmiHeader;
     RGBQUAD             bmiColors[1];
 } BITMAPINFO,  *LPBITMAPINFO, *PBITMAPINFO;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagBITMAPCOREINFO {
     BITMAPCOREHEADER    bmciHeader;
     RGBTRIPLE           bmciColors[1];
 } BITMAPCOREINFO,  *LPBITMAPCOREINFO, *PBITMAPCOREINFO;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#include <pshpack2.h>
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+--#include <pshpack2.h>
+ffi.cdef[[
 typedef struct tagBITMAPFILEHEADER {
         WORD    bfType;
         DWORD   bfSize;
@@ -860,12 +854,11 @@ typedef struct tagBITMAPFILEHEADER {
         WORD    bfReserved2;
         DWORD   bfOffBits;
 } BITMAPFILEHEADER,  *LPBITMAPFILEHEADER, *PBITMAPFILEHEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+--#include <poppack.h>
 
-#include <poppack.h>
-
+--[=[
 #define MAKEPOINTS(l)       (*((POINTS  *)&(l)))
 
 #if(WINVER >= 0x0400)
@@ -3754,7 +3747,7 @@ DeviceCapabilitiesW(
                                  int iEscape,
                                  int cjIn,
                                 _In_reads_bytes_opt_(cjIn) LPCSTR pvIn,
-                                _Out_opt_ LPVOID pvOut);
+                                 LPVOID pvOut);
  int  __stdcall ExtEscape(     HDC hdc,
                                      int iEscape,
                                      int cjInput,
@@ -3847,7 +3840,7 @@ GetBitmapBits(
  BOOL  __stdcall GetCurrentPositionEx(  HDC hdc,  _Out_ LPPOINT lppt);
  int   __stdcall GetDeviceCaps(  HDC hdc,  int index);
  int   __stdcall GetDIBits(  HDC hdc,  HBITMAP hbm,  UINT start,  UINT cLines,
-    _Out_opt_ LPVOID lpvBits, _At_((LPBITMAPINFOHEADER)lpbmi, _Inout_) LPBITMAPINFO lpbmi,  UINT usage);  // SAL actual size of lpbmi is computed from structure elements
+     LPVOID lpvBits, _At_((LPBITMAPINFOHEADER)lpbmi, _Inout_) LPBITMAPINFO lpbmi,  UINT usage);  // SAL actual size of lpbmi is computed from structure elements
 
 _Success_(return != GDI_ERROR)
  DWORD __stdcall GetFontData (     HDC     hdc,
@@ -3998,7 +3991,7 @@ GetTextExtentExPointA(
     _In_reads_(cchString) LPCSTR lpszString,
      int cchString,
      int nMaxExtent,
-    _Out_opt_ LPINT lpnFit,
+     LPINT lpnFit,
     _Out_writes_to_opt_ (cchString, *lpnFit) LPINT lpnDx,
     _Out_ LPSIZE lpSize
     );
@@ -4010,7 +4003,7 @@ GetTextExtentExPointW(
     _In_reads_(cchString) LPCWSTR lpszString,
      int cchString,
      int nMaxExtent,
-    _Out_opt_ LPINT lpnFit,
+     LPINT lpnFit,
     _Out_writes_to_opt_ (cchString, *lpnFit) LPINT lpnDx,
     _Out_ LPSIZE lpSize
     );
@@ -4022,7 +4015,7 @@ GetTextExtentExPointW(
 
 #if(WINVER >= 0x0400)
  int __stdcall GetTextCharset(  HDC hdc);
- int __stdcall GetTextCharsetInfo(  HDC hdc, _Out_opt_ LPFONTSIGNATURE lpSig,  DWORD dwFlags);
+ int __stdcall GetTextCharsetInfo(  HDC hdc,  LPFONTSIGNATURE lpSig,  DWORD dwFlags);
  BOOL __stdcall TranslateCharsetInfo( _Inout_ DWORD  *lpSrc,  _Out_ LPCHARSETINFO lpCs,  DWORD dwFlags);
  DWORD __stdcall GetFontLanguageInfo(  HDC hdc);
  DWORD __stdcall GetCharacterPlacementA(   HDC hdc, _In_reads_(nCount) LPCSTR lpString,  int nCount,  int nMexExtent, _Inout_ LPGCP_RESULTSA lpResults,  DWORD dwFlags);
@@ -4066,7 +4059,7 @@ typedef struct tagGLYPHSET
 
 #define GGI_MARK_NONEXISTING_GLYPHS  0X0001
 
- DWORD __stdcall GetFontUnicodeRanges(  HDC hdc, _Out_opt_ LPGLYPHSET lpgs);
+ DWORD __stdcall GetFontUnicodeRanges(  HDC hdc,  LPGLYPHSET lpgs);
  DWORD __stdcall GetGlyphIndicesA(  HDC hdc, _In_reads_(c) LPCSTR lpstr,  int c, _Out_writes_(c) LPWORD pgi,  DWORD fl);
  DWORD __stdcall GetGlyphIndicesW(  HDC hdc, _In_reads_(c) LPCWSTR lpstr,  int c, _Out_writes_(c) LPWORD pgi,  DWORD fl);
 #ifdef UNICODE
@@ -4079,7 +4072,7 @@ typedef struct tagGLYPHSET
                                                 _In_reads_(cwchString) LPWORD lpwszString,
                                                  int cwchString,
                                                  int nMaxExtent,
-                                                _Out_opt_ LPINT lpnFit,
+                                                 LPINT lpnFit,
                                                 _Out_writes_to_opt_(cwchString, *lpnFit) LPINT lpnDx,
                                                 _Out_ LPSIZE lpSize
                                                 );
@@ -4616,8 +4609,6 @@ ffi.cdef[[
 --]]
 
 ffi.cdef[[
-/* new GDI */
-
 typedef struct tagDIBSECTION {
     BITMAP       dsBm;
     BITMAPINFOHEADER    dsBmih;
@@ -4630,11 +4621,11 @@ typedef struct tagDIBSECTION {
 ffi.cdef[[
 
  BOOL __stdcall AngleArc(  HDC hdc,  int x,  int y,  DWORD r,  FLOAT StartAngle,  FLOAT SweepAngle);
- BOOL __stdcall PolyPolyline( HDC hdc,  const POINT *apt, _In_reads_(csz) const DWORD *asz,  DWORD csz);
- BOOL __stdcall GetWorldTransform(  HDC hdc, _Out_ LPXFORM lpxf);
+ BOOL __stdcall PolyPolyline( HDC hdc,  const POINT *apt, const DWORD *asz,  DWORD csz);
+ BOOL __stdcall GetWorldTransform(  HDC hdc, LPXFORM lpxf);
  BOOL __stdcall SetWorldTransform(  HDC hdc,  const XFORM * lpxf);
  BOOL __stdcall ModifyWorldTransform(  HDC hdc,  const XFORM * lpxf,  DWORD mode);
- BOOL __stdcall CombineTransform( _Out_ LPXFORM lpxfOut,  const XFORM *lpxf1,  const XFORM *lpxf2);
+ BOOL __stdcall CombineTransform(LPXFORM lpxfOut,  const XFORM *lpxf1,  const XFORM *lpxf2);
 ]]
 
 --[[
@@ -4644,18 +4635,17 @@ ffi.cdef[[
 #define GDI_DIBSIZE(bi) ((bi).biHeight < 0 ? (-1)*(GDI__DIBSIZE(bi)) : GDI__DIBSIZE(bi))
 --]]
 
---[=[
- _Success_(return != NULL) HBITMAP __stdcall CreateDIBSection(
+ffi.cdef[[
+HBITMAP __stdcall CreateDIBSection(
             HDC               hdc,
-                const BITMAPINFO *pbmi,
-                UINT              usage,
-    _When_((pbmi->bmiHeader.biBitCount != 0), _Outptr_result_bytebuffer_(_Inexpressible_(GDI_DIBSIZE((pbmi->bmiHeader)))))
-    _When_((pbmi->bmiHeader.biBitCount == 0), _Outptr_result_bytebuffer_((pbmi->bmiHeader).biSizeImage))
-                    VOID            **ppvBits,
+            const BITMAPINFO *pbmi,
+            UINT              usage,
+            VOID            **ppvBits,
             HANDLE            hSection,
-                DWORD             offset);
+            DWORD             offset);
+]]
 
-
+--[=[
 _Ret_range_(0,cEntries)
  UINT __stdcall GetDIBColorTable(  HDC  hdc,
                                          UINT iStart,
@@ -4719,13 +4709,13 @@ typedef struct  tagCOLORADJUSTMENT {
  BOOL __stdcall SetColorAdjustment(  HDC hdc,  const COLORADJUSTMENT *lpca);
  BOOL __stdcall GetColorAdjustment(  HDC hdc, _Out_ LPCOLORADJUSTMENT lpca);
  HPALETTE __stdcall CreateHalftonePalette(  HDC hdc);
+--]=]
 
-#ifdef STRICT
-typedef BOOL (CALLBACK* ABORTPROC)(  HDC,  int);
-#else
-typedef FARPROC ABORTPROC;
-#endif
+ffi.cdef[[
+typedef BOOL (__stdcall* ABORTPROC)(  HDC,  int);
+]]
 
+--[=[
 typedef struct _DOCINFOA {
     int     cbSize;
     LPCSTR   lpszDocName;
@@ -4735,6 +4725,7 @@ typedef struct _DOCINFOA {
     DWORD    fwType;
 #endif /* WINVER */
 } DOCINFOA, *LPDOCINFOA;
+
 typedef struct _DOCINFOW {
     int     cbSize;
     LPCWSTR  lpszDocName;
@@ -4744,6 +4735,8 @@ typedef struct _DOCINFOW {
     DWORD    fwType;
 #endif /* WINVER */
 } DOCINFOW, *LPDOCINFOW;
+
+--[[
 #ifdef UNICODE
 typedef DOCINFOW DOCINFO;
 typedef LPDOCINFOW LPDOCINFO;
@@ -4751,6 +4744,7 @@ typedef LPDOCINFOW LPDOCINFO;
 typedef DOCINFOA DOCINFO;
 typedef LPDOCINFOA LPDOCINFO;
 #endif // UNICODE
+--]]
 
 #if(WINVER >= 0x0400)
 #define DI_APPBANDING               0x00000001
@@ -4769,7 +4763,9 @@ typedef LPDOCINFOA LPDOCINFO;
   int __stdcall EndPage( HDC hdc);
   int __stdcall AbortDoc( HDC hdc);
  int __stdcall SetAbortProc( HDC hdc,  ABORTPROC proc);
+--]=]
 
+ffi.cdef[[
  BOOL __stdcall AbortPath( HDC hdc);
  BOOL __stdcall ArcTo( HDC hdc,  int left,  int top,  int right,  int bottom,  int xr1,  int yr1,  int xr2,  int yr2);
  BOOL __stdcall BeginPath( HDC hdc);
@@ -4777,12 +4773,12 @@ typedef LPDOCINFOA LPDOCINFO;
  BOOL __stdcall EndPath( HDC hdc);
  BOOL __stdcall FillPath( HDC hdc);
  BOOL __stdcall FlattenPath( HDC hdc);
- int  __stdcall GetPath( HDC hdc, _Out_writes_opt_(cpt) LPPOINT apt, _Out_writes_opt_(cpt) LPBYTE aj, int cpt);
+ int  __stdcall GetPath( HDC hdc,  LPPOINT apt,  LPBYTE aj, int cpt);
  HRGN __stdcall PathToRegion( HDC hdc);
- BOOL __stdcall PolyDraw( HDC hdc, _In_reads_(cpt) const POINT * apt, _In_reads_(cpt) const BYTE * aj,  int cpt);
+ BOOL __stdcall PolyDraw( HDC hdc,  const POINT * apt,  const BYTE * aj,  int cpt);
  BOOL __stdcall SelectClipPath( HDC hdc,  int mode);
  int  __stdcall SetArcDirection( HDC hdc,  int dir);
- BOOL __stdcall SetMiterLimit( HDC hdc,  FLOAT limit, _Out_opt_ PFLOAT old);
+ BOOL __stdcall SetMiterLimit( HDC hdc,  FLOAT limit,  PFLOAT old);
  BOOL __stdcall StrokeAndFillPath( HDC hdc);
  BOOL __stdcall StrokePath( HDC hdc);
  BOOL __stdcall WidenPath( HDC hdc);
@@ -4790,102 +4786,108 @@ typedef LPDOCINFOA LPDOCINFO;
                                      DWORD cWidth,
                                      const LOGBRUSH *plbrush,
                                      DWORD cStyle,
-                                    _In_reads_opt_(cStyle) const DWORD *pstyle);
- BOOL __stdcall GetMiterLimit( HDC hdc, _Out_ PFLOAT plimit);
+                                    const DWORD *pstyle);
+ BOOL __stdcall GetMiterLimit( HDC hdc, PFLOAT plimit);
  int  __stdcall GetArcDirection( HDC hdc);
 
- int   __stdcall GetObjectA( HANDLE h,  int c, _Out_writes_bytes_opt_(c) LPVOID pv);
- int   __stdcall GetObjectW( HANDLE h,  int c, _Out_writes_bytes_opt_(c) LPVOID pv);
+ int   __stdcall GetObjectA( HANDLE h,  int c, LPVOID pv);
+ int   __stdcall GetObjectW( HANDLE h,  int c, LPVOID pv);
+ ]]
+
+--[[ 
 #ifdef UNICODE
 #define GetObject  GetObjectW
 #else
 #define GetObject  GetObjectA
 #endif // !UNICODE
-#if defined(_M_CEE)
-#undef GetObject
-__inline
-int
-GetObject(
-    HANDLE h,
-    int c,
-    LPVOID pv
-    )
-{
-#ifdef UNICODE
-    return GetObjectW(
-#else
-    return GetObjectA(
-#endif
-        h,
-        c,
-        pv
-        );
-}
-#endif  /* _M_CEE */
+--]]
 
+ffi.cdef[[
+  BOOL  __stdcall MoveToEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
+  BOOL  __stdcall TextOutA(  HDC hdc,  int x,  int y,  LPCSTR lpString,  int c);
+  BOOL  __stdcall TextOutW(  HDC hdc,  int x,  int y, LPCWSTR lpString,  int c);
+]]
 
-  BOOL  __stdcall MoveToEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
-  BOOL  __stdcall TextOutA(  HDC hdc,  int x,  int y, _In_reads_(c) LPCSTR lpString,  int c);
-  BOOL  __stdcall TextOutW(  HDC hdc,  int x,  int y, _In_reads_(c) LPCWSTR lpString,  int c);
+--[[
 #ifdef UNICODE
 #define TextOut  TextOutW
 #else
 #define TextOut  TextOutA
 #endif // !UNICODE
-  BOOL  __stdcall ExtTextOutA(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect, _In_reads_opt_(c) LPCSTR lpString,  UINT c, _In_reads_opt_(c) const INT * lpDx);
-  BOOL  __stdcall ExtTextOutW(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect, _In_reads_opt_(c) LPCWSTR lpString,  UINT c, _In_reads_opt_(c) const INT * lpDx);
+--]]
+
+ffi.cdef[[
+BOOL  __stdcall ExtTextOutA(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect,  LPCSTR lpString,  UINT c,  const INT * lpDx);
+BOOL  __stdcall ExtTextOutW(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect,  LPCWSTR lpString,  UINT c,  const INT * lpDx);
+]]
+
+--[[
 #ifdef UNICODE
 #define ExtTextOut  ExtTextOutW
 #else
 #define ExtTextOut  ExtTextOutA
 #endif // !UNICODE
- BOOL  __stdcall PolyTextOutA( HDC hdc, _In_reads_(nstrings) const POLYTEXTA * ppt,  int nstrings);
- BOOL  __stdcall PolyTextOutW( HDC hdc, _In_reads_(nstrings) const POLYTEXTW * ppt,  int nstrings);
+--]]
+
+ffi.cdef[[
+BOOL  __stdcall PolyTextOutA( HDC hdc,  const POLYTEXTA * ppt,  int nstrings);
+BOOL  __stdcall PolyTextOutW( HDC hdc,  const POLYTEXTW * ppt,  int nstrings);
+]]
+
+--[[
 #ifdef UNICODE
 #define PolyTextOut  PolyTextOutW
 #else
 #define PolyTextOut  PolyTextOutA
 #endif // !UNICODE
+--]]
 
- HRGN  __stdcall CreatePolygonRgn(    _In_reads_(cPoint) const POINT *pptl,
+ffi.cdef[[
+ HRGN  __stdcall CreatePolygonRgn(     const POINT *pptl,
                                              int cPoint,
                                              int iMode);
- BOOL  __stdcall DPtoLP(  HDC hdc, _Inout_updates_(c) LPPOINT lppt,  int c);
- BOOL  __stdcall LPtoDP(  HDC hdc, _Inout_updates_(c) LPPOINT lppt,  int c);
-  BOOL  __stdcall Polygon( HDC hdc, _In_reads_(cpt) const POINT *apt,  int cpt);
-  BOOL  __stdcall Polyline( HDC hdc, _In_reads_(cpt) const POINT *apt,  int cpt);
+ BOOL  __stdcall DPtoLP(  HDC hdc,  LPPOINT lppt,  int c);
+ BOOL  __stdcall LPtoDP(  HDC hdc,  LPPOINT lppt,  int c);
+  BOOL  __stdcall Polygon( HDC hdc,  const POINT *apt,  int cpt);
+  BOOL  __stdcall Polyline( HDC hdc,  const POINT *apt,  int cpt);
 
- BOOL  __stdcall PolyBezier( HDC hdc, _In_reads_(cpt) const POINT * apt,  DWORD cpt);
- BOOL  __stdcall PolyBezierTo( HDC hdc, _In_reads_(cpt) const POINT * apt,  DWORD cpt);
- BOOL  __stdcall PolylineTo( HDC hdc, _In_reads_(cpt) const POINT * apt,  DWORD cpt);
+ BOOL  __stdcall PolyBezier( HDC hdc,  const POINT * apt,  DWORD cpt);
+ BOOL  __stdcall PolyBezierTo( HDC hdc,  const POINT * apt,  DWORD cpt);
+ BOOL  __stdcall PolylineTo( HDC hdc,  const POINT * apt,  DWORD cpt);
 
-  BOOL  __stdcall SetViewportExtEx(  HDC hdc,  int x,  int y, _Out_opt_ LPSIZE lpsz);
-  BOOL  __stdcall SetViewportOrgEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
-  BOOL  __stdcall SetWindowExtEx(  HDC hdc,  int x,  int y, _Out_opt_ LPSIZE lpsz);
-  BOOL  __stdcall SetWindowOrgEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
+  BOOL  __stdcall SetViewportExtEx(  HDC hdc,  int x,  int y,  LPSIZE lpsz);
+  BOOL  __stdcall SetViewportOrgEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
+  BOOL  __stdcall SetWindowExtEx(  HDC hdc,  int x,  int y,  LPSIZE lpsz);
+  BOOL  __stdcall SetWindowOrgEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
 
-  BOOL  __stdcall OffsetViewportOrgEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
-  BOOL  __stdcall OffsetWindowOrgEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
-  BOOL  __stdcall ScaleViewportExtEx(  HDC hdc,  int xn,  int dx,  int yn,  int yd, _Out_opt_ LPSIZE lpsz);
-  BOOL  __stdcall ScaleWindowExtEx(  HDC hdc,  int xn,  int xd,  int yn,  int yd, _Out_opt_ LPSIZE lpsz);
- BOOL  __stdcall SetBitmapDimensionEx(  HBITMAP hbm,  int w,  int h, _Out_opt_ LPSIZE lpsz);
- BOOL  __stdcall SetBrushOrgEx(  HDC hdc,  int x,  int y, _Out_opt_ LPPOINT lppt);
+  BOOL  __stdcall OffsetViewportOrgEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
+  BOOL  __stdcall OffsetWindowOrgEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
+  BOOL  __stdcall ScaleViewportExtEx(  HDC hdc,  int xn,  int dx,  int yn,  int yd,  LPSIZE lpsz);
+  BOOL  __stdcall ScaleWindowExtEx(  HDC hdc,  int xn,  int xd,  int yn,  int yd,  LPSIZE lpsz);
+ BOOL  __stdcall SetBitmapDimensionEx(  HBITMAP hbm,  int w,  int h,  LPSIZE lpsz);
+ BOOL  __stdcall SetBrushOrgEx(  HDC hdc,  int x,  int y,  LPPOINT lppt);
+]]
 
-#ifdef GDIDPISCALING
+ffi.cdef[[
 BOOL __stdcall ScaleRgn( HDC hdc,  HRGN hrgn);
-BOOL __stdcall ScaleValues( HDC hdc, __in_ecount(cl) LPLONG pl,  UINT cl);
+BOOL __stdcall ScaleValues( HDC hdc,  LPLONG pl,  UINT cl);
 LONG __stdcall GetDCDpiScaleValue( HDC hdc);
 LONG __stdcall GetBitmapDpiScaleValue( HBITMAP hsurf);
-#endif
 
- int   __stdcall GetTextFaceA(  HDC hdc,  int c, _Out_writes_to_opt_(c, return)  LPSTR lpName);
- int   __stdcall GetTextFaceW(  HDC hdc,  int c, _Out_writes_to_opt_(c, return)  LPWSTR lpName);
+
+ int   __stdcall GetTextFaceA(  HDC hdc,  int c,   LPSTR lpName);
+ int   __stdcall GetTextFaceW(  HDC hdc,  int c,   LPWSTR lpName);
+]]
+
+ --[[
 #ifdef UNICODE
 #define GetTextFace  GetTextFaceW
 #else
 #define GetTextFace  GetTextFaceA
 #endif // !UNICODE
+--]]
 
+--[=[
 #define FONTMAPPER_MAX 10
 
 typedef struct tagKERNINGPAIR {
@@ -4900,23 +4902,26 @@ typedef struct tagKERNINGPAIR {
  DWORD __stdcall GetKerningPairsW(     HDC hdc,
                                              DWORD nPairs,
                                             _Out_writes_to_opt_(nPairs, return) LPKERNINGPAIR   lpKernPair);
+--[[
 #ifdef UNICODE
 #define GetKerningPairs  GetKerningPairsW
 #else
 #define GetKerningPairs  GetKerningPairsA
 #endif // !UNICODE
+--]]
+--]=]
 
-
- BOOL  __stdcall GetDCOrgEx(  HDC hdc, _Out_ LPPOINT lppt);
+ffi.cdef[[
+ BOOL  __stdcall GetDCOrgEx(  HDC hdc,  LPPOINT lppt);
  BOOL  __stdcall FixBrushOrgEx(  HDC hdc,  int x,  int y,   LPPOINT ptl);
  BOOL  __stdcall UnrealizeObject(  HGDIOBJ h);
 
  BOOL  __stdcall GdiFlush(void);
  DWORD __stdcall GdiSetBatchLimit(  DWORD dw);
  DWORD __stdcall GdiGetBatchLimit(void);
+]]
 
-#if(WINVER >= 0x0400)
-
+--[=[
 #define ICM_OFF               1
 #define ICM_ON                2
 #define ICM_QUERY             3
@@ -4924,11 +4929,14 @@ typedef struct tagKERNINGPAIR {
 
 typedef int (CALLBACK* ICMENUMPROCA)(LPSTR, LPARAM);
 typedef int (CALLBACK* ICMENUMPROCW)(LPWSTR, LPARAM);
+
+--[[
 #ifdef UNICODE
 #define ICMENUMPROC  ICMENUMPROCW
 #else
 #define ICMENUMPROC  ICMENUMPROCA
 #endif // !UNICODE
+--]]
 
  int         __stdcall SetICMMode(  HDC hdc,  int mode);
  BOOL        __stdcall CheckColorsInGamut(     HDC hdc,
