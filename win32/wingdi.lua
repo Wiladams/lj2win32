@@ -1317,30 +1317,28 @@ typedef struct tagEXTLOGPEN32 {
 } EXTLOGPEN32, *PEXTLOGPEN32,  *NPEXTLOGPEN32,  *LPEXTLOGPEN32;
 ]]
 
---[=[
-#ifndef _PALETTEENTRY_DEFINED
-#define _PALETTEENTRY_DEFINED
+ffi.cdef[[
+
 typedef struct tagPALETTEENTRY {
     BYTE        peRed;
     BYTE        peGreen;
     BYTE        peBlue;
     BYTE        peFlags;
 } PALETTEENTRY, *PPALETTEENTRY,  *LPPALETTEENTRY;
-#endif // !_PALETTEENTRY_DEFINED
 
-#ifndef _LOGPALETTE_DEFINED
-#define _LOGPALETTE_DEFINED
+
+
 /* Logical Palette */
 typedef struct tagLOGPALETTE {
     WORD        palVersion;
     WORD        palNumEntries;
-    _Field_size_opt_(palNumEntries) PALETTEENTRY        palPalEntry[1];
+    PALETTEENTRY        palPalEntry[1];
 } LOGPALETTE, *PLOGPALETTE,  *NPLOGPALETTE,  *LPLOGPALETTE;
-#endif // !_LOGPALETTE_DEFINED
+]]
 
-
+ffi.cdef[[
 /* Logical Font */
-#define LF_FACESIZE         32
+static const int LF_FACESIZE    =     32;
 
 typedef struct tagLOGFONTA
 {
@@ -1359,6 +1357,9 @@ typedef struct tagLOGFONTA
     BYTE      lfPitchAndFamily;
     CHAR      lfFaceName[LF_FACESIZE];
 } LOGFONTA, *PLOGFONTA,  *NPLOGFONTA,  *LPLOGFONTA;
+]]
+
+ffi.cdef[[
 typedef struct tagLOGFONTW
 {
     LONG      lfHeight;
@@ -1376,6 +1377,9 @@ typedef struct tagLOGFONTW
     BYTE      lfPitchAndFamily;
     WCHAR     lfFaceName[LF_FACESIZE];
 } LOGFONTW, *PLOGFONTW,  *NPLOGFONTW,  *LPLOGFONTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef LOGFONTW LOGFONT;
 typedef PLOGFONTW PLOGFONT;
@@ -1387,14 +1391,12 @@ typedef PLOGFONTA PLOGFONT;
 typedef NPLOGFONTA NPLOGFONT;
 typedef LPLOGFONTA LPLOGFONT;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#define LF_FULLFACESIZE     64
+ffi.cdef[[
+static const int LF_FULLFACESIZE  =   64;
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /* Structure passed to FONTENUMPROC */
 typedef struct tagENUMLOGFONTA
@@ -1403,6 +1405,7 @@ typedef struct tagENUMLOGFONTA
     BYTE     elfFullName[LF_FULLFACESIZE];
     BYTE     elfStyle[LF_FACESIZE];
 } ENUMLOGFONTA, * LPENUMLOGFONTA;
+
 /* Structure passed to FONTENUMPROC */
 typedef struct tagENUMLOGFONTW
 {
@@ -1410,6 +1413,9 @@ typedef struct tagENUMLOGFONTW
     WCHAR    elfFullName[LF_FULLFACESIZE];
     WCHAR    elfStyle[LF_FACESIZE];
 } ENUMLOGFONTW, * LPENUMLOGFONTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef ENUMLOGFONTW ENUMLOGFONT;
 typedef LPENUMLOGFONTW LPENUMLOGFONT;
@@ -1417,8 +1423,9 @@ typedef LPENUMLOGFONTW LPENUMLOGFONT;
 typedef ENUMLOGFONTA ENUMLOGFONT;
 typedef LPENUMLOGFONTA LPENUMLOGFONT;
 #endif // UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
+ffi.cdef[[
 typedef struct tagENUMLOGFONTEXA
 {
     LOGFONTA    elfLogFont;
@@ -1426,6 +1433,7 @@ typedef struct tagENUMLOGFONTEXA
     BYTE        elfStyle[LF_FACESIZE];
     BYTE        elfScript[LF_FACESIZE];
 } ENUMLOGFONTEXA,  *LPENUMLOGFONTEXA;
+
 typedef struct tagENUMLOGFONTEXW
 {
     LOGFONTW    elfLogFont;
@@ -1433,6 +1441,9 @@ typedef struct tagENUMLOGFONTEXW
     WCHAR       elfStyle[LF_FACESIZE];
     WCHAR       elfScript[LF_FACESIZE];
 } ENUMLOGFONTEXW,  *LPENUMLOGFONTEXW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef ENUMLOGFONTEXW ENUMLOGFONTEX;
 typedef LPENUMLOGFONTEXW LPENUMLOGFONTEX;
@@ -1440,11 +1451,10 @@ typedef LPENUMLOGFONTEXW LPENUMLOGFONTEX;
 typedef ENUMLOGFONTEXA ENUMLOGFONTEX;
 typedef LPENUMLOGFONTEXA LPENUMLOGFONTEX;
 #endif // UNICODE
-#endif /* WINVER >= 0x0400 */
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #define OUT_DEFAULT_PRECIS          0
 #define OUT_STRING_PRECIS           1
 #define OUT_CHARACTER_PRECIS        2
@@ -2067,28 +2077,29 @@ static const int AD_CLOCKWISE        =2;
 #define CM_CMYK_COLOR       0x00000004
 
 #endif /* WINVER >= 0x0500 */
+--]=]
 
-
+ffi.cdef[[
 /* DIB color table identifiers */
 
-#define DIB_RGB_COLORS      0 /* color table in RGBs */
-#define DIB_PAL_COLORS      1 /* color table in palette indices */
+static const int DIB_RGB_COLORS     = 0; /* color table in RGBs */
+static const int DIB_PAL_COLORS     = 1; /* color table in palette indices */
 
 /* constants for Get/SetSystemPaletteUse() */
 
-#define SYSPAL_ERROR    0
-#define SYSPAL_STATIC   1
-#define SYSPAL_NOSTATIC 2
-#define SYSPAL_NOSTATIC256 3
+static const int SYSPAL_ERROR   = 0;
+static const int SYSPAL_STATIC  = 1;
+static const int SYSPAL_NOSTATIC =2;
+static const int SYSPAL_NOSTATIC256 =3;
 
 /* constants for CreateDIBitmap */
-#define CBM_INIT        0x04L   /* initialize bitmap */
+static const int CBM_INIT       = 0x04L;   /* initialize bitmap */
 
 
 /* ExtFloodFill style flags */
-#define  FLOODFILLBORDER   0
-#define  FLOODFILLSURFACE  1
---]=]
+static const int  FLOODFILLBORDER  = 0;
+static const int  FLOODFILLSURFACE = 1;
+]]
 
 ffi.cdef[[
 /* size of a device name string */
@@ -2571,36 +2582,34 @@ typedef LPDISPLAY_DEVICEA LPDISPLAY_DEVICE;
 --]]
 
 
---[=[
-#define DISPLAY_DEVICE_ATTACHED_TO_DESKTOP      0x00000001
-#define DISPLAY_DEVICE_MULTI_DRIVER             0x00000002
-#define DISPLAY_DEVICE_PRIMARY_DEVICE           0x00000004
-#define DISPLAY_DEVICE_MIRRORING_DRIVER         0x00000008
-#define DISPLAY_DEVICE_VGA_COMPATIBLE           0x00000010
+ffi.cdef[[
+static const int DISPLAY_DEVICE_ATTACHED_TO_DESKTOP      = 0x00000001;
+static const int DISPLAY_DEVICE_MULTI_DRIVER             = 0x00000002;
+static const int DISPLAY_DEVICE_PRIMARY_DEVICE           = 0x00000004;
+static const int DISPLAY_DEVICE_MIRRORING_DRIVER         = 0x00000008;
+static const int DISPLAY_DEVICE_VGA_COMPATIBLE           = 0x00000010;
 
-#define DISPLAY_DEVICE_REMOVABLE                0x00000020
+static const int DISPLAY_DEVICE_REMOVABLE                = 0x00000020;
 
 
-#define DISPLAY_DEVICE_ACC_DRIVER               0x00000040
+static const int DISPLAY_DEVICE_ACC_DRIVER               = 0x00000040;
 
-#define DISPLAY_DEVICE_MODESPRUNED              0x08000000
+static const int DISPLAY_DEVICE_MODESPRUNED              = 0x08000000;
 
-#define DISPLAY_DEVICE_RDPUDD                   0x01000000
-#define DISPLAY_DEVICE_REMOTE                   0x04000000
-#define DISPLAY_DEVICE_DISCONNECT               0x02000000
+static const int DISPLAY_DEVICE_RDPUDD                   = 0x01000000;
+static const int DISPLAY_DEVICE_REMOTE                   = 0x04000000;
+static const int DISPLAY_DEVICE_DISCONNECT               = 0x02000000;
 
-#define DISPLAY_DEVICE_TS_COMPATIBLE            0x00200000
+static const int DISPLAY_DEVICE_TS_COMPATIBLE            = 0x00200000;
 
-#define DISPLAY_DEVICE_UNSAFE_MODES_ON          0x00080000
+static const int DISPLAY_DEVICE_UNSAFE_MODES_ON          = 0x00080000;
 
 
 /* Child device state */
 
-#define DISPLAY_DEVICE_ACTIVE              0x00000001
-#define DISPLAY_DEVICE_ATTACHED            0x00000002
-
-
---]=]
+static const int DISPLAY_DEVICE_ACTIVE              = 0x00000001;
+static const int DISPLAY_DEVICE_ATTACHED            = 0x00000002;
+]]
 
 ffi.cdef[[
 static const int DISPLAYCONFIG_MAXPATH = 1024;        // Maximum display path in system.
@@ -3206,34 +3215,33 @@ typedef struct _GLYPHMETRICS {
 } GLYPHMETRICS,  *LPGLYPHMETRICS;
 ]]
 
---[=[
+ffi.cdef[[
 //  GetGlyphOutline constants
 
-#define GGO_METRICS        0
-#define GGO_BITMAP         1
-#define GGO_NATIVE         2
-#define GGO_BEZIER         3
+static const int GGO_METRICS        = 0;
+static const int GGO_BITMAP         = 1;
+static const int GGO_NATIVE         = 2;
+static const int GGO_BEZIER         = 3;
 
-#if(WINVER >= 0x0400)
-#define  GGO_GRAY2_BITMAP   4
-#define  GGO_GRAY4_BITMAP   5
-#define  GGO_GRAY8_BITMAP   6
-#define  GGO_GLYPH_INDEX    0x0080
-#endif /* WINVER >= 0x0400 */
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#define  GGO_UNHINTED       0x0100
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
+static const int  GGO_GRAY2_BITMAP   = 4;
+static const int  GGO_GRAY4_BITMAP   = 5;
+static const int  GGO_GRAY8_BITMAP   = 6;
+static const int  GGO_GLYPH_INDEX    = 0x0080;
 
-#define TT_POLYGON_TYPE   24
 
-#define TT_PRIM_LINE       1
-#define TT_PRIM_QSPLINE    2
-#define TT_PRIM_CSPLINE    3
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int  GGO_UNHINTED      = 0x0100;
 
+
+static const int TT_POLYGON_TYPE   = 24;
+
+static const int TT_PRIM_LINE      = 1;
+static const int TT_PRIM_QSPLINE   = 2;
+static const int TT_PRIM_CSPLINE   = 3;
+]]
+
+ffi.cdef[[
 typedef struct tagPOINTFX
 {
     FIXED x;
@@ -3253,11 +3261,10 @@ typedef struct tagTTPOLYGONHEADER
     DWORD   dwType;
     POINTFX pfxStart;
 } TTPOLYGONHEADER, * LPTTPOLYGONHEADER;
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+]]
 
 
+--[=[
 #if(WINVER >= 0x0400)
 #define GCP_DBCS           0x0001
 #define GCP_REORDER        0x0002
@@ -3299,11 +3306,9 @@ typedef struct tagTTPOLYGONHEADER
 
 #define GCPGLYPH_LINKBEFORE          0x8000
 #define GCPGLYPH_LINKAFTER           0x4000
+--]=]
 
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagGCP_RESULTSA
     {
     DWORD   lStructSize;
@@ -3316,6 +3321,7 @@ typedef struct tagGCP_RESULTSA
     UINT    nGlyphs;
     int     nMaxFit;
     } GCP_RESULTSA, * LPGCP_RESULTSA;
+
 typedef struct tagGCP_RESULTSW
     {
     DWORD   lStructSize;
@@ -3328,6 +3334,9 @@ typedef struct tagGCP_RESULTSW
     UINT    nGlyphs;
     int     nMaxFit;
     } GCP_RESULTSW, * LPGCP_RESULTSW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef GCP_RESULTSW GCP_RESULTS;
 typedef LPGCP_RESULTSW LPGCP_RESULTS;
@@ -3335,29 +3344,23 @@ typedef LPGCP_RESULTSW LPGCP_RESULTS;
 typedef GCP_RESULTSA GCP_RESULTS;
 typedef LPGCP_RESULTSA LPGCP_RESULTS;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-#endif /* WINVER >= 0x0400 */
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct _RASTERIZER_STATUS {
     short   nSize;
     short   wFlags;
     short   nLanguageID;
 } RASTERIZER_STATUS,  *LPRASTERIZER_STATUS;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /* bits defined in wFlags of RASTERIZER_STATUS */
-#define TT_AVAILABLE    0x0001
-#define TT_ENABLED      0x0002
+static const int TT_AVAILABLE   = 0x0001;
+static const int TT_ENABLED     = 0x0002;
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+
 
 /* Pixel format descriptor */
 typedef struct tagPIXELFORMATDESCRIPTOR
@@ -3389,10 +3392,10 @@ typedef struct tagPIXELFORMATDESCRIPTOR
     DWORD dwVisibleMask;
     DWORD dwDamageMask;
 } PIXELFORMATDESCRIPTOR, *PPIXELFORMATDESCRIPTOR,  *LPPIXELFORMATDESCRIPTOR;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
+--[=[
 /* pixel types */
 #define PFD_TYPE_RGBA        0
 #define PFD_TYPE_COLORINDEX  1
@@ -3424,71 +3427,59 @@ typedef struct tagPIXELFORMATDESCRIPTOR
 #define PFD_DEPTH_DONTCARE          0x20000000
 #define PFD_DOUBLEBUFFER_DONTCARE   0x40000000
 #define PFD_STEREO_DONTCARE         0x80000000
+--]=]
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-#ifdef STRICT
+ffi.cdef[[
+typedef int (__stdcall* OLDFONTENUMPROCA)(const LOGFONTA *, const TEXTMETRICA *, DWORD, LPARAM);
+typedef int (__stdcall* OLDFONTENUMPROCW)(const LOGFONTW *, const TEXTMETRICW *, DWORD, LPARAM);
+]]
 
-#if !defined(NOTEXTMETRIC)
-typedef int (CALLBACK* OLDFONTENUMPROCA)(const LOGFONTA *, const TEXTMETRICA *, DWORD, LPARAM);
-typedef int (CALLBACK* OLDFONTENUMPROCW)(const LOGFONTW *, const TEXTMETRICW *, DWORD, LPARAM);
+--[[
 #ifdef UNICODE
 #define OLDFONTENUMPROC  OLDFONTENUMPROCW
 #else
 #define OLDFONTENUMPROC  OLDFONTENUMPROCA
 #endif // !UNICODE
-#else
-typedef int (CALLBACK* OLDFONTENUMPROCA)(const LOGFONTA *, const VOID *, DWORD, LPARAM);
-typedef int (CALLBACK* OLDFONTENUMPROCW)(const LOGFONTW *, const VOID *, DWORD, LPARAM);
-#ifdef UNICODE
-#define OLDFONTENUMPROC  OLDFONTENUMPROCW
-#else
-#define OLDFONTENUMPROC  OLDFONTENUMPROCA
-#endif // !UNICODE
-#endif
+--]]
 
+
+ffi.cdef[[
 typedef OLDFONTENUMPROCA    FONTENUMPROCA;
 typedef OLDFONTENUMPROCW    FONTENUMPROCW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef FONTENUMPROCW FONTENUMPROC;
 #else
 typedef FONTENUMPROCA FONTENUMPROC;
 #endif // UNICODE
+--]]
 
-typedef int (CALLBACK* GOBJENUMPROC)(LPVOID, LPARAM);
-typedef VOID (CALLBACK* LINEDDAPROC)(int, int, LPARAM);
-#else
-typedef FARPROC OLDFONTENUMPROC;
-typedef FARPROC FONTENUMPROCA;
-typedef FARPROC FONTENUMPROCW;
-#ifdef UNICODE
-typedef FONTENUMPROCW FONTENUMPROC;
-#else
-typedef FONTENUMPROCA FONTENUMPROC;
-#endif // UNICODE
-typedef FARPROC GOBJENUMPROC;
-typedef FARPROC LINEDDAPROC;
-#endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+ffi.cdef[[
+typedef int (__stdcall* GOBJENUMPROC)(LPVOID, LPARAM);
+typedef VOID (__stdcall* LINEDDAPROC)(int, int, LPARAM);
+]]
 
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
  int __stdcall AddFontResourceA( LPCSTR);
  int __stdcall AddFontResourceW( LPCWSTR);
+]]
+
+ --[[
 #ifdef UNICODE
 #define AddFontResource  AddFontResourceW
 #else
 #define AddFontResource  AddFontResourceA
 #endif // !UNICODE
+--]]
 
-  BOOL  __stdcall AnimatePalette(  HPALETTE hPal,  UINT iStartIndex,   UINT cEntries, _In_reads_(cEntries) const PALETTEENTRY * ppe);
+ffi.cdef[[
+  BOOL  __stdcall AnimatePalette(  HPALETTE hPal,  UINT iStartIndex,   UINT cEntries, const PALETTEENTRY * ppe);
   BOOL  __stdcall Arc(  HDC hdc,  int x1,  int y1,  int x2,  int y2,  int x3,  int y3,  int x4,  int y4);
   BOOL  __stdcall BitBlt(  HDC hdc,  int x,  int y,  int cx,  int cy,  HDC hdcSrc,  int x1,  int y1,  DWORD rop);
  BOOL  __stdcall CancelDC(  HDC hdc);
@@ -3498,11 +3489,17 @@ typedef FARPROC LINEDDAPROC;
  int     __stdcall CombineRgn(  HRGN hrgnDst,  HRGN hrgnSrc1,  HRGN hrgnSrc2,  int iMode);
  HMETAFILE __stdcall CopyMetaFileA(  HMETAFILE,  LPCSTR);
  HMETAFILE __stdcall CopyMetaFileW(  HMETAFILE,  LPCWSTR);
+]]
+
+--[[
 #ifdef UNICODE
 #define CopyMetaFile  CopyMetaFileW
 #else
 #define CopyMetaFile  CopyMetaFileA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
   HBITMAP __stdcall CreateBitmap(  int nWidth,  int nHeight,  UINT nPlanes,  UINT nBitCount,  const VOID *lpBits);
   HBITMAP __stdcall CreateBitmapIndirect(  const BITMAP *pbm);
   HBRUSH  __stdcall CreateBrushIndirect(  const LOGBRUSH *plbrush);
@@ -3511,11 +3508,17 @@ typedef FARPROC LINEDDAPROC;
  HDC     __stdcall CreateCompatibleDC(  HDC hdc);
  HDC     __stdcall CreateDCA(  LPCSTR pwszDriver,  LPCSTR pwszDevice,  LPCSTR pszPort,  const DEVMODEA * pdm);
  HDC     __stdcall CreateDCW(  LPCWSTR pwszDriver,  LPCWSTR pwszDevice,  LPCWSTR pszPort,  const DEVMODEW * pdm);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateDC  CreateDCW
 #else
 #define CreateDC  CreateDCA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HBITMAP __stdcall CreateDIBitmap(  HDC hdc,  const BITMAPINFOHEADER *pbmih,  DWORD flInit,  const VOID *pjBits,  const BITMAPINFO *pbmi,  UINT iUsage);
  HBRUSH  __stdcall CreateDIBPatternBrush(  HGLOBAL h,  UINT iUsage);
   HBRUSH  __stdcall CreateDIBPatternBrushPt(  const VOID *lpPackedDIB,  UINT iUsage);
@@ -3523,43 +3526,66 @@ typedef FARPROC LINEDDAPROC;
  HRGN    __stdcall CreateEllipticRgnIndirect(  const RECT *lprect);
   HFONT   __stdcall CreateFontIndirectA(  const LOGFONTA *lplf);
   HFONT   __stdcall CreateFontIndirectW(  const LOGFONTW *lplf);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateFontIndirect  CreateFontIndirectW
 #else
 #define CreateFontIndirect  CreateFontIndirectA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HFONT   __stdcall CreateFontA(  int cHeight,  int cWidth,  int cEscapement,  int cOrientation,  int cWeight,  DWORD bItalic,
                               DWORD bUnderline,  DWORD bStrikeOut,  DWORD iCharSet,  DWORD iOutPrecision,  DWORD iClipPrecision,
                               DWORD iQuality,  DWORD iPitchAndFamily,  LPCSTR pszFaceName);
  HFONT   __stdcall CreateFontW(  int cHeight,  int cWidth,  int cEscapement,  int cOrientation,  int cWeight,  DWORD bItalic,
                               DWORD bUnderline,  DWORD bStrikeOut,  DWORD iCharSet,  DWORD iOutPrecision,  DWORD iClipPrecision,
                               DWORD iQuality,  DWORD iPitchAndFamily,  LPCWSTR pszFaceName);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateFont  CreateFontW
 #else
 #define CreateFont  CreateFontA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
  HBRUSH  __stdcall CreateHatchBrush(  int iHatch,  COLORREF color);
  HDC     __stdcall CreateICA(  LPCSTR pszDriver,  LPCSTR pszDevice,  LPCSTR pszPort,  const DEVMODEA * pdm);
  HDC     __stdcall CreateICW(  LPCWSTR pszDriver,  LPCWSTR pszDevice,  LPCWSTR pszPort,  const DEVMODEW * pdm);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateIC  CreateICW
 #else
 #define CreateIC  CreateICA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HDC     __stdcall CreateMetaFileA(  LPCSTR pszFile);
  HDC     __stdcall CreateMetaFileW(  LPCWSTR pszFile);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateMetaFile  CreateMetaFileW
 #else
 #define CreateMetaFile  CreateMetaFileA
 #endif // !UNICODE
-  HPALETTE __stdcall CreatePalette( _In_reads_(_Inexpressible_(2*sizeof(WORD) + plpal->palNumEntries * sizeof(PALETTEENTRY))) const LOGPALETTE * plpal);
+--]]
+
+ffi.cdef[[
+  HPALETTE __stdcall CreatePalette(const LOGPALETTE * plpal);
  HPEN    __stdcall CreatePen(  int iStyle,  int cWidth,  COLORREF color);
   HPEN    __stdcall CreatePenIndirect(  const LOGPEN *plpen);
  HRGN    __stdcall CreatePolyPolygonRgn(   const POINT *pptl,
-                                                _In_reads_(cPoly) const INT  *pc,
+                                                const INT  *pc,
                                                  int cPoly,
                                                  int iMode);
   HBRUSH  __stdcall CreatePatternBrush(  HBITMAP hbm);
@@ -3568,11 +3594,17 @@ typedef FARPROC LINEDDAPROC;
  HRGN    __stdcall CreateRoundRectRgn(  int x1,  int y1,  int x2,  int y2,  int w,  int h);
  BOOL    __stdcall CreateScalableFontResourceA(  DWORD fdwHidden,  LPCSTR lpszFont,  LPCSTR lpszFile,  LPCSTR lpszPath);
  BOOL    __stdcall CreateScalableFontResourceW(  DWORD fdwHidden,  LPCWSTR lpszFont,  LPCWSTR lpszFile,  LPCWSTR lpszPath);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateScalableFontResource  CreateScalableFontResourceW
 #else
 #define CreateScalableFontResource  CreateScalableFontResourceA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HBRUSH  __stdcall CreateSolidBrush(  COLORREF color);
 
  BOOL __stdcall DeleteDC(  HDC hdc);
@@ -3581,8 +3613,10 @@ typedef FARPROC LINEDDAPROC;
  int  __stdcall DescribePixelFormat(   HDC hdc,
                                              int iPixelFormat,
                                              UINT nBytes,
-                                            _Out_writes_bytes_opt_(nBytes) LPPIXELFORMATDESCRIPTOR ppfd);
+                                            LPPIXELFORMATDESCRIPTOR ppfd);
+]]
 
+--[=[
 /* define types of pointers to ExtDeviceMode() and DeviceCapabilities()
  * functions for Win 3.1 compatibility
  */
@@ -3591,8 +3625,7 @@ typedef UINT   (CALLBACK* LPFNDEVMODE)(HWND, HMODULE, LPDEVMODE, LPSTR, LPSTR, L
 
 typedef DWORD  (CALLBACK* LPFNDEVCAPS)(LPSTR, LPSTR, UINT, LPSTR, LPDEVMODE);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /* mode selections for the device mode function */
 #define DM_UPDATE           1
@@ -3647,17 +3680,16 @@ typedef DWORD  (CALLBACK* LPFNDEVCAPS)(LPSTR, LPSTR, UINT, LPSTR, LPDEVMODE);
 #define DC_PRINTRATEPPM         31
 #define DC_COLORDEVICE          32
 #define DC_NUP                  33
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
+
 #define DC_MEDIATYPENAMES       34
 #define DC_MEDIATYPES           35
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#endif /* WINVER >= 0x0500 */
+
 
 /* bit fields of the return value (DWORD) for DC_TRUETYPE */
 #define DCTT_BITMAP             0x0000001L
 #define DCTT_DOWNLOAD           0x0000002L
 #define DCTT_SUBDEV             0x0000004L
-#if(WINVER >= 0x0400)
+
 #define DCTT_DOWNLOAD_OUTLINE   0x0000008L
 
 /* return values for DC_BINADJUST */
@@ -3669,7 +3701,7 @@ typedef DWORD  (CALLBACK* LPFNDEVCAPS)(LPSTR, LPSTR, UINT, LPSTR, LPDEVMODE);
 #define DCBA_FACEDOWNCENTER   0x0101
 #define DCBA_FACEDOWNLEFT     0x0102
 #define DCBA_FACEDOWNRIGHT    0x0103
-#endif /* WINVER >= 0x0400 */
+
 --]=]
 
 ffi.cdef[[
@@ -3702,74 +3734,88 @@ DeviceCapabilitiesW(
 #endif // !UNICODE
 --]]
 
---[=[
+ffi.cdef[[
  int  __stdcall DrawEscape(    HDC    hdc,
                                      int    iEscape,
                                      int    cjIn,
-                                    _In_reads_bytes_opt_(cjIn) LPCSTR lpIn);
+                                    LPCSTR lpIn);
 
   BOOL __stdcall Ellipse(  HDC hdc,  int left,  int top,   int right,  int bottom);
 
-#if(WINVER >= 0x0400)
+
  int  __stdcall EnumFontFamiliesExA(  HDC hdc,  LPLOGFONTA lpLogfont,  FONTENUMPROCA lpProc,  LPARAM lParam,  DWORD dwFlags);
  int  __stdcall EnumFontFamiliesExW(  HDC hdc,  LPLOGFONTW lpLogfont,  FONTENUMPROCW lpProc,  LPARAM lParam,  DWORD dwFlags);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumFontFamiliesEx  EnumFontFamiliesExW
 #else
 #define EnumFontFamiliesEx  EnumFontFamiliesExA
 #endif // !UNICODE
-#endif /* WINVER >= 0x0400 */
+--]]
 
+
+ffi.cdef[[
  int  __stdcall EnumFontFamiliesA(  HDC hdc,  LPCSTR lpLogfont,  FONTENUMPROCA lpProc,  LPARAM lParam);
  int  __stdcall EnumFontFamiliesW(  HDC hdc,  LPCWSTR lpLogfont,  FONTENUMPROCW lpProc,  LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumFontFamilies  EnumFontFamiliesW
 #else
 #define EnumFontFamilies  EnumFontFamiliesA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  int  __stdcall EnumFontsA(  HDC hdc,  LPCSTR lpLogfont,   FONTENUMPROCA lpProc,  LPARAM lParam);
  int  __stdcall EnumFontsW(  HDC hdc,  LPCWSTR lpLogfont,   FONTENUMPROCW lpProc,  LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumFonts  EnumFontsW
 #else
 #define EnumFonts  EnumFontsA
 #endif // !UNICODE
+--]]
 
-#ifdef STRICT
- int  __stdcall EnumObjects(  HDC hdc,  int nType,  GOBJENUMPROC lpFunc,  LPARAM lParam);
-#else
- int  __stdcall EnumObjects(  HDC hdc,  int nType,  GOBJENUMPROC lpFunc,  LPVOID lParam);
-#endif
+ffi.cdef[[
+int  __stdcall EnumObjects(  HDC hdc,  int nType,  GOBJENUMPROC lpFunc,  LPARAM lParam);
+]]
 
 
+ffi.cdef[[
  BOOL __stdcall EqualRgn(  HRGN hrgn1,  HRGN hrgn2);
   int  __stdcall Escape(    HDC hdc,
                                  int iEscape,
                                  int cjIn,
-                                _In_reads_bytes_opt_(cjIn) LPCSTR pvIn,
+                                LPCSTR pvIn,
                                  LPVOID pvOut);
  int  __stdcall ExtEscape(     HDC hdc,
                                      int iEscape,
                                      int cjInput,
-                                    _In_reads_bytes_opt_(cjInput) LPCSTR lpInData,
+                                     LPCSTR lpInData,
                                      int cjOutput,
-                                    _Out_writes_bytes_opt_(cjOutput) LPSTR lpOutData);
-  int  __stdcall ExcludeClipRect(  HDC hdc,  int left,  int top,  int right,  int bottom);
-  HRGN __stdcall ExtCreateRegion(  const XFORM * lpx,  DWORD nCount, _In_reads_bytes_(nCount) const RGNDATA * lpData);
-  BOOL __stdcall ExtFloodFill(  HDC hdc,  int x,  int y,  COLORREF color,  UINT type);
-  BOOL __stdcall FillRgn(  HDC hdc,  HRGN hrgn,  HBRUSH hbr);
-  BOOL __stdcall FloodFill(  HDC hdc,  int x,  int y,  COLORREF color);
-  BOOL __stdcall FrameRgn(  HDC hdc,  HRGN hrgn,  HBRUSH hbr,  int w,  int h);
- int  __stdcall GetROP2(  HDC hdc);
- BOOL __stdcall GetAspectRatioFilterEx(  HDC hdc, _Out_ LPSIZE lpsize);
+                                     LPSTR lpOutData);
+  int  __stdcall ExcludeClipRect(HDC hdc,  int left,  int top,  int right,  int bottom);
+  HRGN __stdcall ExtCreateRegion(  const XFORM * lpx,  DWORD nCount, const RGNDATA * lpData);
+  BOOL __stdcall ExtFloodFill(HDC hdc,  int x,  int y,  COLORREF color,  UINT type);
+  BOOL __stdcall FillRgn(HDC hdc,  HRGN hrgn,  HBRUSH hbr);
+  BOOL __stdcall FloodFill(HDC hdc,  int x,  int y,  COLORREF color);
+  BOOL __stdcall FrameRgn(HDC hdc,  HRGN hrgn,  HBRUSH hbr,  int w,  int h);
+ int  __stdcall GetROP2(HDC hdc);
+ BOOL __stdcall GetAspectRatioFilterEx(  HDC hdc, LPSIZE lpsize);
  COLORREF __stdcall GetBkColor(  HDC hdc);
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
+
  COLORREF __stdcall GetDCBrushColor(  HDC hdc);
  COLORREF __stdcall GetDCPenColor(  HDC hdc);
-#endif
+]]
 
-
+ffi.cdef[[
 int
 __stdcall
 GetBkMode(
@@ -3782,71 +3828,100 @@ __stdcall
 GetBitmapBits(
      HBITMAP hbit,
      LONG cb,
-    _Out_writes_bytes_(cb) LPVOID lpvBits
+    LPVOID lpvBits
     );
 
- BOOL  __stdcall GetBitmapDimensionEx(  HBITMAP hbit, _Out_ LPSIZE lpsize);
- UINT  __stdcall GetBoundsRect(  HDC hdc, _Out_ LPRECT lprect,  UINT flags);
+ BOOL  __stdcall GetBitmapDimensionEx(  HBITMAP hbit,  LPSIZE lpsize);
+ UINT  __stdcall GetBoundsRect(  HDC hdc,  LPRECT lprect,  UINT flags);
 
- BOOL  __stdcall GetBrushOrgEx(  HDC hdc, _Out_ LPPOINT lppt);
+ BOOL  __stdcall GetBrushOrgEx(  HDC hdc,  LPPOINT lppt);
 
- BOOL  __stdcall GetCharWidthA(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) LPINT lpBuffer);
- BOOL  __stdcall GetCharWidthW(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) LPINT lpBuffer);
+ BOOL  __stdcall GetCharWidthA(  HDC hdc,  UINT iFirst,  UINT iLast, LPINT lpBuffer);
+ BOOL  __stdcall GetCharWidthW(  HDC hdc,  UINT iFirst,  UINT iLast,  LPINT lpBuffer);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetCharWidth  GetCharWidthW
 #else
 #define GetCharWidth  GetCharWidthA
 #endif // !UNICODE
- BOOL  __stdcall GetCharWidth32A(  HDC hdc,  UINT iFirst,  UINT iLast,  _Out_writes_(iLast + 1 - iFirst) LPINT lpBuffer);
- BOOL  __stdcall GetCharWidth32W(  HDC hdc,  UINT iFirst,  UINT iLast,  _Out_writes_(iLast + 1 - iFirst) LPINT lpBuffer);
+--]]
+
+ffi.cdef[[
+ BOOL  __stdcall GetCharWidth32A(  HDC hdc,  UINT iFirst,  UINT iLast,   LPINT lpBuffer);
+ BOOL  __stdcall GetCharWidth32W(  HDC hdc,  UINT iFirst,  UINT iLast,  LPINT lpBuffer);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetCharWidth32  GetCharWidth32W
 #else
 #define GetCharWidth32  GetCharWidth32A
 #endif // !UNICODE
- BOOL  APIENTRY GetCharWidthFloatA(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) PFLOAT lpBuffer);
- BOOL  APIENTRY GetCharWidthFloatW(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) PFLOAT lpBuffer);
+--]]
+
+ffi.cdef[[
+ BOOL  __stdcall GetCharWidthFloatA(  HDC hdc,  UINT iFirst,  UINT iLast, PFLOAT lpBuffer);
+ BOOL  __stdcall GetCharWidthFloatW(  HDC hdc,  UINT iFirst,  UINT iLast, PFLOAT lpBuffer);
+ ]]
+
+--[[
 #ifdef UNICODE
 #define GetCharWidthFloat  GetCharWidthFloatW
 #else
 #define GetCharWidthFloat  GetCharWidthFloatA
 #endif // !UNICODE
+--]]
 
- BOOL  APIENTRY GetCharABCWidthsA(  HDC hdc,
+ffi.cdef[[
+ BOOL  __stdcall GetCharABCWidthsA(  HDC hdc,
                                              UINT wFirst,
                                              UINT wLast,
-                                            _Out_writes_(wLast - wFirst + 1) LPABC lpABC);
- BOOL  APIENTRY GetCharABCWidthsW(  HDC hdc,
+                                             LPABC lpABC);
+ BOOL  __stdcall GetCharABCWidthsW(  HDC hdc,
                                              UINT wFirst,
                                              UINT wLast,
-                                            _Out_writes_(wLast - wFirst + 1) LPABC lpABC);
+                                            LPABC lpABC);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetCharABCWidths  GetCharABCWidthsW
 #else
 #define GetCharABCWidths  GetCharABCWidthsA
 #endif // !UNICODE
+--]]
 
- BOOL  APIENTRY GetCharABCWidthsFloatA(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) LPABCFLOAT lpABC);
- BOOL  APIENTRY GetCharABCWidthsFloatW(  HDC hdc,  UINT iFirst,  UINT iLast, _Out_writes_(iLast + 1 - iFirst) LPABCFLOAT lpABC);
+ffi.cdef[[
+ BOOL  __stdcall GetCharABCWidthsFloatA(  HDC hdc,  UINT iFirst,  UINT iLast, LPABCFLOAT lpABC);
+ BOOL  __stdcall GetCharABCWidthsFloatW(  HDC hdc,  UINT iFirst,  UINT iLast, LPABCFLOAT lpABC);
+]]
+
+ --[[
 #ifdef UNICODE
 #define GetCharABCWidthsFloat  GetCharABCWidthsFloatW
 #else
 #define GetCharABCWidthsFloat  GetCharABCWidthsFloatA
 #endif // !UNICODE
- int   __stdcall GetClipBox(  HDC hdc,  _Out_ LPRECT lprect);
+--]]
+
+ffi.cdef[[
+ int   __stdcall GetClipBox(  HDC hdc,   LPRECT lprect);
  int   __stdcall GetClipRgn(  HDC hdc,  HRGN hrgn);
  int   __stdcall GetMetaRgn(  HDC hdc,  HRGN hrgn);
  HGDIOBJ __stdcall GetCurrentObject(  HDC hdc,  UINT type);
- BOOL  __stdcall GetCurrentPositionEx(  HDC hdc,  _Out_ LPPOINT lppt);
+ BOOL  __stdcall GetCurrentPositionEx(  HDC hdc,   LPPOINT lppt);
  int   __stdcall GetDeviceCaps(  HDC hdc,  int index);
  int   __stdcall GetDIBits(  HDC hdc,  HBITMAP hbm,  UINT start,  UINT cLines,
-     LPVOID lpvBits, _At_((LPBITMAPINFOHEADER)lpbmi, _Inout_) LPBITMAPINFO lpbmi,  UINT usage);  // SAL actual size of lpbmi is computed from structure elements
+     LPVOID lpvBits,  LPBITMAPINFO lpbmi,  UINT usage);  // SAL actual size of lpbmi is computed from structure elements
+]]
 
-_Success_(return != GDI_ERROR)
+--[=[
  DWORD __stdcall GetFontData (     HDC     hdc,
                                          DWORD   dwTable,
                                          DWORD   dwOffset,
-                                        _Out_writes_bytes_to_opt_(cjBuffer, return) PVOID pvBuffer,
+                                         PVOID pvBuffer,
                                          DWORD   cjBuffer
                                         );
 
@@ -3888,10 +3963,10 @@ _Success_(return != GDI_ERROR)
 
 #ifndef NOTEXTMETRIC
 
- UINT APIENTRY GetOutlineTextMetricsA(  HDC hdc,
+ UINT __stdcall GetOutlineTextMetricsA(  HDC hdc,
                                                  UINT cjCopy,
                                                 _Out_writes_bytes_opt_(cjCopy) LPOUTLINETEXTMETRICA potm);
- UINT APIENTRY GetOutlineTextMetricsW(  HDC hdc,
+ UINT __stdcall GetOutlineTextMetricsW(  HDC hdc,
                                                  UINT cjCopy,
                                                 _Out_writes_bytes_opt_(cjCopy) LPOUTLINETEXTMETRICW potm);
 #ifdef UNICODE
@@ -3937,7 +4012,7 @@ GetSystemPaletteEntries(
 
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentPointA(
      HDC hdc,
     _In_reads_(c) LPCSTR lpString,
@@ -3946,7 +4021,7 @@ GetTextExtentPointA(
     );
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentPointW(
      HDC hdc,
     _In_reads_(c) LPCWSTR lpString,
@@ -3961,7 +4036,7 @@ GetTextExtentPointW(
 
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentPoint32A(
      HDC hdc,
     _In_reads_(c) LPCSTR lpString,
@@ -3970,7 +4045,7 @@ GetTextExtentPoint32A(
     );
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentPoint32W(
      HDC hdc,
     _In_reads_(c) LPCWSTR lpString,
@@ -3985,7 +4060,7 @@ GetTextExtentPoint32W(
 
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentExPointA(
      HDC hdc,
     _In_reads_(cchString) LPCSTR lpszString,
@@ -3997,7 +4072,7 @@ GetTextExtentExPointA(
     );
 
 BOOL
-APIENTRY
+__stdcall
 GetTextExtentExPointW(
      HDC hdc,
     _In_reads_(cchString) LPCWSTR lpszString,
