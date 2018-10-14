@@ -1,6 +1,7 @@
 local ffi = require("ffi")
 
-local User32 = require("win32.user32")
+local wingdi = require("win32.wingdi")
+local winuser = require("win32.winuser")
 local wmmsgs = require("wmmsgs")
 
 local function msgLoop()
@@ -10,20 +11,21 @@ local function msgLoop()
     local res = 0;
 
     while (true) do
-        --print("LOOP")
+        print("LOOP")
         -- we use peekmessage, so we don't stall on a GetMessage
-        while (User32.Lib.PeekMessageA(msg, nil, 0, 0, ffi.C.PM_REMOVE) ~= 0) do
+        --while (ffi.C.PeekMessageA(msg, nil, 0, 0, ffi.C.PM_REMOVE) ~= 0) do
+        while (ffi.C.GetMessageA(msg, nil,0,0) ~= 0) do
             print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg.message])            
-            res = User32.Lib.TranslateMessage(msg)
-            res = User32.Lib.DispatchMessageA(msg)
+            res = ffi.C..TranslateMessage(msg)
+            res = ffi.C..DispatchMessageA(msg)
+            yield();
         end
         
         if msg.message == ffi.C.WM_QUIT then
             print("msgLoop - QUIT")
             --continueRunning = false;
+            break;
         end
-
-        yield();
     end
 
     print("msgLoop - END")

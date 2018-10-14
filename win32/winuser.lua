@@ -1127,37 +1127,37 @@ GetKeyboardLayoutNameW(
     LPWSTR pwszKLID);
 ]]
 
---[=[
+--[[
 #ifdef UNICODE
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameW
 #else
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
-
+ffi.cdef[[
 int
 __stdcall
 GetKeyboardLayoutList(
      int nBuff,
     HKL *lpList);
 
-
 HKL
 __stdcall
 GetKeyboardLayout(
      DWORD idThread);
+]]
 
-
-
+ffi.cdef[[
 typedef struct tagMOUSEMOVEPOINT {
     int   x;
     int   y;
     DWORD time;
     ULONG_PTR dwExtraInfo;
-} MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, FAR* LPMOUSEMOVEPOINT;
+} MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, * LPMOUSEMOVEPOINT;
+]]
 
-
+--[=[
 /*
  * Values for resolution parameter of GetMouseMovePointsEx
  */
@@ -1188,15 +1188,13 @@ GetMouseMovePointsEx(
 #define DESKTOP_ENUMERATE           0x0040L
 #define DESKTOP_WRITEOBJECTS        0x0080L
 #define DESKTOP_SWITCHDESKTOP       0x0100L
+--]=]
 
+ffi.cdef[[
 /*
  * Desktop-specific control flags
  */
-#define DF_ALLOWOTHERACCOUNTHOOK    0x0001L
-
-#ifdef _WINGDI_
-#ifndef NOGDI
-
+static const int DF_ALLOWOTHERACCOUNTHOOK   = 0x0001L;
 
 HDESK
 __stdcall
@@ -1217,13 +1215,17 @@ CreateDesktopW(
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateDesktop  CreateDesktopW
 #else
 #define CreateDesktop  CreateDesktopA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HDESK
 __stdcall
 CreateDesktopExA(
@@ -1247,17 +1249,17 @@ CreateDesktopExW(
      LPSECURITY_ATTRIBUTES lpsa,
      ULONG ulHeapSize,
     PVOID pvoid);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateDesktopEx  CreateDesktopExW
 #else
 #define CreateDesktopEx  CreateDesktopExA
 #endif // !UNICODE
+--]]
 
-
-#endif /* NOGDI */
-#endif /* _WINGDI_ */
-
-
+ffi.cdef[[
 HDESK
 __stdcall
 OpenDesktopA(
@@ -1273,21 +1275,23 @@ OpenDesktopW(
      DWORD dwFlags,
      BOOL fInherit,
      ACCESS_MASK dwDesiredAccess);
+]]
+
+--[[
 #ifdef UNICODE
 #define OpenDesktop  OpenDesktopW
 #else
 #define OpenDesktop  OpenDesktopA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HDESK
 __stdcall
 OpenInputDesktop(
      DWORD dwFlags,
      BOOL fInherit,
      ACCESS_MASK dwDesiredAccess);
-
-
 
 BOOL
 __stdcall
@@ -1302,13 +1306,17 @@ EnumDesktopsW(
      HWINSTA hwinsta,
      DESKTOPENUMPROCW lpEnumFunc,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumDesktops  EnumDesktopsW
 #else
 #define EnumDesktops  EnumDesktopsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumDesktopWindows(
@@ -1341,12 +1349,9 @@ HDESK
 __stdcall
 GetThreadDesktop(
      DWORD dwThreadId);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif  /* !NODESKTOP */
-
+--[=[
 #ifndef NOWINDOWSTATION
 /*
  * Windowstation-specific access flags
@@ -3118,19 +3123,9 @@ typedef struct tagCOMPAREITEMSTRUCT {
     ULONG_PTR   itemData2;
     DWORD       dwLocaleId;
 } COMPAREITEMSTRUCT, *PCOMPAREITEMSTRUCT, *LPCOMPAREITEMSTRUCT;
+--]=]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#ifndef NOMSG
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-/*
- * Message Function Templates
- */
-
+ffi.cdef[[
 
 BOOL
 __stdcall
@@ -3147,83 +3142,50 @@ GetMessageW(
      HWND hWnd,
      UINT wMsgFilterMin,
      UINT wMsgFilterMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetMessage  GetMessageW
 #else
 #define GetMessage  GetMessageA
 #endif // !UNICODE
-
-#if defined(_M_CEE)
-#undef GetMessage
-__inline
-BOOL
-GetMessage(
-    LPMSG lpMsg,
-    HWND hWnd,
-    UINT wMsgFilterMin,
-    UINT wMsgFilterMax
-    )
-{
-#ifdef UNICODE
-    return GetMessageW(
-#else
-    return GetMessageA(
-#endif
-        lpMsg,
-        hWnd,
-        wMsgFilterMin,
-        wMsgFilterMax
-        );
-}
-#endif  /* _M_CEE */
+--]]
 
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 TranslateMessage(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
 
 
 LRESULT
 __stdcall
 DispatchMessageA(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
 
 LRESULT
 __stdcall
 DispatchMessageW(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
+]]
+
+--[[
 #ifdef UNICODE
 #define DispatchMessage  DispatchMessageW
 #else
 #define DispatchMessage  DispatchMessageA
 #endif // !UNICODE
-
-#if defined(_M_CEE)
-#undef DispatchMessage
-__inline
-LRESULT
-DispatchMessage(
-    CONST MSG *lpMsg
-    )
-{
-#ifdef UNICODE
-    return DispatchMessageW(
-#else
-    return DispatchMessageA(
-#endif
-        lpMsg
-        );
-}
-#endif  /* _M_CEE */
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetMessageQueue(
      int cMessagesMax);
-
 
 BOOL
 __stdcall
@@ -3242,35 +3204,33 @@ PeekMessageW(
      UINT wMsgFilterMin,
      UINT wMsgFilterMax,
      UINT wRemoveMsg);
+]]
+
+--[[
 #ifdef UNICODE
 #define PeekMessage  PeekMessageW
 #else
 #define PeekMessage  PeekMessageA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * PeekMessage() Options
  */
-#define PM_NOREMOVE         0x0000
-#define PM_REMOVE           0x0001
-#define PM_NOYIELD          0x0002
-#if(WINVER >= 0x0500)
-#define PM_QS_INPUT         (QS_INPUT << 16)
-#define PM_QS_POSTMESSAGE   ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16)
-#define PM_QS_PAINT         (QS_PAINT << 16)
-#define PM_QS_SENDMESSAGE   (QS_SENDMESSAGE << 16)
-#endif /* WINVER >= 0x0500 */
+static const int PM_NOREMOVE       =  0x0000;
+static const int PM_REMOVE         =  0x0001;
+static const int PM_NOYIELD        =  0x0002;
+]]
 
+--[[
+static const int PM_QS_INPUT       =  (QS_INPUT << 16);
+static const int PM_QS_POSTMESSAGE =  ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16);
+static const int PM_QS_PAINT       =  (QS_PAINT << 16);
+static const int PM_QS_SENDMESSAGE =  (QS_SENDMESSAGE << 16);
+--]]
 
-#endif /* !NOMSG */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 RegisterHotKey(
@@ -3285,10 +3245,10 @@ __stdcall
 UnregisterHotKey(
      HWND hWnd,
      int id);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #define MOD_ALT             0x0001
 #define MOD_CONTROL         0x0002
 #define MOD_SHIFT           0x0004
@@ -9582,13 +9542,10 @@ __stdcall
 GetWindow(
      HWND hWnd,
      UINT uCmd);
+--]=]
 
 
-#ifndef NOWH
-
-#ifdef STRICT
-
-
+ffi.cdef[[
 HHOOK
 __stdcall
 SetWindowsHookA(
@@ -9600,35 +9557,18 @@ __stdcall
 SetWindowsHookW(
      int nFilterType,
      HOOKPROC pfnFilterProc);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowsHook  SetWindowsHookW
 #else
 #define SetWindowsHook  SetWindowsHookA
 #endif // !UNICODE
-
-#else /* !STRICT */
-
-
-HOOKPROC
-__stdcall
-SetWindowsHookA(
-     int nFilterType,
-     HOOKPROC pfnFilterProc);
-
-HOOKPROC
-__stdcall
-SetWindowsHookW(
-     int nFilterType,
-     HOOKPROC pfnFilterProc);
-#ifdef UNICODE
-#define SetWindowsHook  SetWindowsHookW
-#else
-#define SetWindowsHook  SetWindowsHookA
-#endif // !UNICODE
-
-#endif /* !STRICT */
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 UnhookWindowsHook(
@@ -9651,13 +9591,17 @@ SetWindowsHookExW(
      HOOKPROC lpfn,
      HINSTANCE hmod,
      DWORD dwThreadId);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowsHookEx  SetWindowsHookExW
 #else
 #define SetWindowsHookEx  SetWindowsHookExA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 UnhookWindowsHookEx(
@@ -9671,7 +9615,9 @@ CallNextHookEx(
      int nCode,
      WPARAM wParam,
      LPARAM lParam);
+]]
 
+--[=[
 /*
  * Macros for source-level compatibility with old functions.
  */
@@ -13168,9 +13114,9 @@ IsProcessDPIAware(
     VOID);
 
 #endif /* _WIN32_WINNT >= 0x0600 */
+--]=]
 
-#if(WINVER >= 0x0605)
-
+ffi.cdef[[
 DPI_AWARENESS_CONTEXT
 __stdcall
 SetThreadDpiAwarenessContext(
@@ -13199,63 +13145,61 @@ __stdcall
 AreDpiAwarenessContextsEqual(
      DPI_AWARENESS_CONTEXT dpiContextA,
      DPI_AWARENESS_CONTEXT dpiContextB);
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 IsValidDpiAwarenessContext(
      DPI_AWARENESS_CONTEXT value);
-
 
 UINT
 __stdcall
 GetDpiForWindow(
      HWND hwnd);
 
-
 UINT
 __stdcall
 GetDpiForSystem();
-
 
 BOOL
 __stdcall
 EnableNonClientDpiScaling(
      HWND hwnd);
 
-
 BOOL
 __stdcall
 InheritWindowMonitor(
      HWND hwnd,
      HWND hwndInherit);
+]]
 
-#endif /* WINVER >= 0x0605 */
-
-
-
+ffi.cdef[[
 UINT
 __stdcall
 GetWindowModuleFileNameA(
      HWND hwnd,
-    _Out_writes_to_(cchFileNameMax, return) LPSTR pszFileName,
+    LPSTR pszFileName,
      UINT cchFileNameMax);
 
 UINT
 __stdcall
 GetWindowModuleFileNameW(
      HWND hwnd,
-    _Out_writes_to_(cchFileNameMax, return) LPWSTR pszFileName,
+    LPWSTR pszFileName,
      UINT cchFileNameMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowModuleFileName  GetWindowModuleFileNameW
 #else
 #define GetWindowModuleFileName  GetWindowModuleFileNameA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #ifndef NO_STATE_FLAGS
 #define STATE_SYSTEM_UNAVAILABLE        0x00000001  // Disabled
 #define STATE_SYSTEM_SELECTED           0x00000002
@@ -13290,13 +13234,14 @@ GetWindowModuleFileNameW(
 #define STATE_SYSTEM_PROTECTED          0x20000000  // access to this is restricted
 #define STATE_SYSTEM_VALID              0x3FFFFFFF
 #endif
+--]=]
 
-#define CCHILDREN_TITLEBAR              5
-#define CCHILDREN_SCROLLBAR             5
+ffi.cdef[[
+static const int CCHILDREN_TITLEBAR   =           5;
+static const int CCHILDREN_SCROLLBAR  =           5;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 /*
  * Information about the global cursor.
  */
@@ -13308,17 +13253,16 @@ typedef struct tagCURSORINFO
     POINT   ptScreenPos;
 } CURSORINFO, *PCURSORINFO, *LPCURSORINFO;
 
-#define CURSOR_SHOWING     0x00000001
-#if(WINVER >= 0x0602)
-#define CURSOR_SUPPRESSED  0x00000002
-#endif /* WINVER >= 0x0602 */
-
+static const int CURSOR_SHOWING     = 0x00000001;
+static const int CURSOR_SUPPRESSED  = 0x00000002;
 
 BOOL
 __stdcall
 GetCursorInfo(
      PCURSORINFO pci);
+]]
 
+ffi.cdef[[
 /*
  * Window information snapshot
  */
@@ -13336,15 +13280,16 @@ typedef struct tagWINDOWINFO
     WORD wCreatorVersion;
 } WINDOWINFO, *PWINDOWINFO, *LPWINDOWINFO;
 
-#define WS_ACTIVECAPTION    0x0001
-
+static const int WS_ACTIVECAPTION    = 0x0001;
 
 BOOL
 __stdcall
 GetWindowInfo(
      HWND hwnd,
      PWINDOWINFO pwi);
+]]
 
+ffi.cdef[[
 /*
  * Titlebar information.
  */
@@ -13361,8 +13306,9 @@ __stdcall
 GetTitleBarInfo(
      HWND hwnd,
      PTITLEBARINFO pti);
+]]
 
-#if(WINVER >= 0x0600)
+ffi.cdef[[
 typedef struct tagTITLEBARINFOEX
 {
     DWORD cbSize;
@@ -13370,8 +13316,9 @@ typedef struct tagTITLEBARINFOEX
     DWORD rgstate[CCHILDREN_TITLEBAR + 1];
     RECT rgrect[CCHILDREN_TITLEBAR + 1];
 } TITLEBARINFOEX, *PTITLEBARINFOEX, *LPTITLEBARINFOEX;
-#endif /* WINVER >= 0x0600 */
+]]
 
+ffi.cdef[[
 /*
  * Menubar information
  */
@@ -13384,8 +13331,9 @@ typedef struct tagMENUBARINFO
     BOOL fBarFocused:1;  // bar, popup has the focus
     BOOL fFocused:1;     // item has the focus
 } MENUBARINFO, *PMENUBARINFO, *LPMENUBARINFO;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetMenuBarInfo(
@@ -13393,7 +13341,9 @@ GetMenuBarInfo(
      LONG idObject,
      LONG idItem,
      PMENUBARINFO pmbi);
+]]
 
+ffi.cdef[[
 /*
  * Scrollbar information
  */
@@ -13408,14 +13358,15 @@ typedef struct tagSCROLLBARINFO
     DWORD rgstate[CCHILDREN_SCROLLBAR + 1];
 } SCROLLBARINFO, *PSCROLLBARINFO, *LPSCROLLBARINFO;
 
-
 BOOL
 __stdcall
 GetScrollBarInfo(
      HWND hwnd,
      LONG idObject,
      PSCROLLBARINFO psbi);
+]]
 
+ffi.cdef[[
 /*
  * Combobox information
  */
@@ -13436,20 +13387,15 @@ __stdcall
 GetComboBoxInfo(
      HWND hwndCombo,
      PCOMBOBOXINFO pcbi);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * The "real" ancestor window
  */
-#define     GA_PARENT       1
-#define     GA_ROOT         2
-#define     GA_ROOTOWNER    3
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+static const int     GA_PARENT      = 1;
+static const int     GA_ROOT        = 2;
+static const int     GA_ROOTOWNER   = 3;
 
 HWND
 __stdcall
@@ -13457,49 +13403,37 @@ GetAncestor(
      HWND hwnd,
      UINT gaFlags);
 
-
-/*
- * This gets the REAL child window at the point.  If it is in the dead
- * space of a group box, it will try a sibling behind it.  But static
- * fields will get returned.  In other words, it is kind of a cross between
- * ChildWindowFromPointEx and WindowFromPoint.
- */
-
 HWND
 __stdcall
 RealChildWindowFromPoint(
      HWND hwndParent,
      POINT ptParentClientCoords);
 
-
-/*
- * This gets the name of the window TYPE, not class.  This allows us to
- * recognize ThunderButton32 et al.
- */
-
 UINT
 __stdcall
 RealGetWindowClassA(
      HWND hwnd,
-    _Out_writes_to_(cchClassNameMax, return) LPSTR ptszClassName,
+    LPSTR ptszClassName,
      UINT cchClassNameMax);
-/*
- * This gets the name of the window TYPE, not class.  This allows us to
- * recognize ThunderButton32 et al.
- */
+
 
 UINT
 __stdcall
 RealGetWindowClassW(
      HWND hwnd,
-    _Out_writes_to_(cchClassNameMax, return) LPWSTR ptszClassName,
+    LPWSTR ptszClassName,
      UINT cchClassNameMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define RealGetWindowClass  RealGetWindowClassW
 #else
 #define RealGetWindowClass  RealGetWindowClassA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /*
  * Alt-Tab Switch window information.
  */
@@ -13523,7 +13457,7 @@ GetAltTabInfoA(
      HWND hwnd,
      int iItem,
      PALTTABINFO pati,
-    _Out_writes_opt_(cchItemText) LPSTR pszItemText,
+    LPSTR pszItemText,
      UINT cchItemText);
 
 BOOL
@@ -13532,14 +13466,19 @@ GetAltTabInfoW(
      HWND hwnd,
      int iItem,
      PALTTABINFO pati,
-    _Out_writes_opt_(cchItemText) LPWSTR pszItemText,
+    LPWSTR pszItemText,
      UINT cchItemText);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetAltTabInfo  GetAltTabInfoW
 #else
 #define GetAltTabInfo  GetAltTabInfoA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /*
  * Listbox information.
  * Returns the number of items per row.
@@ -13553,9 +13492,7 @@ GetListBoxInfo(
 BOOL
 __stdcall
 LockWorkStation(
-    VOID);
-
-
+    void);
 
 BOOL
 __stdcall
@@ -13563,7 +13500,7 @@ UserHandleGrantAccess(
      HANDLE hUserHandle,
      HANDLE hJob,
      BOOL   bGrant);
---]=]
+]]
 
 
 
