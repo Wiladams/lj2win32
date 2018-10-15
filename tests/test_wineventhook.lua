@@ -1,8 +1,9 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local bit = require("bit")
+local bor, band = bit.bor, bit.band
 
-local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
 
 local wmmsgs = require("wmmsgs")
@@ -66,7 +67,7 @@ local function setEvent()
         moveDelegate, 
         0,
         0,
-        ffi.C.WINEVENT_OUTOFCONTEXT);
+        bor(ffi.C.WINEVENT_OUTOFCONTEXT, ffi.C.WINEVENT_SKIPOWNPROCESS));
 
 --[[
     local hook = ffi.C.SetWinEventHook(
