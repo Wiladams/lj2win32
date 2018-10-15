@@ -4,40 +4,10 @@ local ffi = require("ffi")
 local bit = require("bit")
 local bor, band = bit.bor, bit.band
 
+local scheduler = require("scheduler")
 local winuser = require("win32.winuser")
-
 local wmmsgs = require("wmmsgs")
 
-local scheduler = require("scheduler")
-local msgloop = require("msgloop")
-
-local exports = {}
-
---[[
-    A simple Windows message handler.
-    The only interesting thing done here is to quit
-    the application when the window is closed.
-
-    There are more elegant solutions, such as doing
-    a PostQuitMessage(), but for this simple test, we 
-    just want the app to exit when we close the window.
-]]
-jit.off(WindowProc)
-function WindowProc(hwnd, msg, wparam, lparam)
-    print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
-
-    if msg == ffi.C.WM_DESTROY then
-        User32.PostQuitMessage(0);
-        --halt();
-    end
-
-    if msg == ffi.C.WM_QUIT then
-        print("WM_QUIT")
-        --halt();
-    end
-
-	return User32.DefWindowProcA(hwnd, msg, wparam, lparam);
-end
 
 --[[
     typedef VOID (__stdcall* WINEVENTPROC)(
@@ -51,7 +21,7 @@ end
 ]]
 jit.off(eventDelegate)
 local function eventDelegate(hWinEventHook, event, hwnd, idObject, idChild, idEventThread, dwmsEventTime)
-    print("eventDelegate: ", event)
+    print("eventDelegate: ", event, hwnd, idObject, idChild)
 end
 
 jit.off(moveDelegate)
@@ -82,10 +52,37 @@ local function setEvent()
     print("Hook: ", hook)
 end
 
+local function msgLoop()
+    --  create some a loop to process window messages
+    print("msgLoop - BEGIN")
+    local msg = ffi.new("MSG")
+    local res = 0;
+
+    while (true) do
+        --print("LOOP")
+        -- we use GetMessage, so we're sure to block here
+        -- until a message is receive
+        local res = ffi.C.GetMessageA(msg, nil,0,0)
+        print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg.message])            
+
+        if res == 0 then 
+            print("msgLoop - QUIT")
+                        -- message is to quit
+            yield();
+            break;
+        end
+
+        res = ffi.C.TranslateMessage(msg)
+        res = ffi.C.DispatchMessageA(msg)
+        yield();
+    end
+
+    print("msgLoop - END")
+end
 
 local function main()
     spawn(setEvent)
-    spawn(msgloop)
+    spawn(msgLoop)
 end
 
 run(main)

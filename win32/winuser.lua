@@ -12718,9 +12718,14 @@ MonitorFromWindow(
 static const int MONITORINFOF_PRIMARY       = 0x00000001;
 ]]
 
+if not CCHDEVICENAME then
+CCHDEVICENAME = true;
 ffi.cdef[[
 static const int CCHDEVICENAME = 32;
+]]
+end
 
+ffi.cdef[[
 typedef struct tagMONITORINFO
 {
     DWORD   cbSize;
@@ -12731,7 +12736,7 @@ typedef struct tagMONITORINFO
 
 typedef struct tagMONITORINFOEXA
 {
-    --MONITORINFO DUMMYSTRUCTNAME;
+    //MONITORINFO DUMMYSTRUCTNAME;
     DWORD   cbSize;
     RECT    rcMonitor;
     RECT    rcWork;
@@ -12742,7 +12747,7 @@ typedef struct tagMONITORINFOEXA
 
 typedef struct tagMONITORINFOEXW
 {
-    --MONITORINFO DUMMYSTRUCTNAME;
+    //MONITORINFO DUMMYSTRUCTNAME;
     DWORD   cbSize;
     RECT    rcMonitor;
     RECT    rcWork;

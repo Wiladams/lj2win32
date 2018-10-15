@@ -2101,10 +2101,15 @@ static const int  FLOODFILLBORDER  = 0;
 static const int  FLOODFILLSURFACE = 1;
 ]]
 
+if not CCHDEVICENAME then
+CCHDEVICENAME = true;
 ffi.cdef[[
 /* size of a device name string */
 static const int CCHDEVICENAME = 32;
+]]
+end
 
+ffi.cdef[[
 /* size of a form name string */
 static const int CCHFORMNAME = 32;
 ]]
