@@ -2,6 +2,8 @@ local ffi = require("ffi")
 local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift
 
+
+
 local exports = {}
 exports.Lib = ffi.load("user32");
 
@@ -12,7 +14,7 @@ exports.Lib = ffi.load("user32");
 #endif
 --]]
 require("win32.wtypes")
-
+local wingdi = require("win32.wingdi")
 
 ffi.cdef[[
 typedef HANDLE HDWP;
@@ -1127,37 +1129,37 @@ GetKeyboardLayoutNameW(
     LPWSTR pwszKLID);
 ]]
 
---[=[
+--[[
 #ifdef UNICODE
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameW
 #else
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
-
+ffi.cdef[[
 int
 __stdcall
 GetKeyboardLayoutList(
      int nBuff,
     HKL *lpList);
 
-
 HKL
 __stdcall
 GetKeyboardLayout(
      DWORD idThread);
+]]
 
-
-
+ffi.cdef[[
 typedef struct tagMOUSEMOVEPOINT {
     int   x;
     int   y;
     DWORD time;
     ULONG_PTR dwExtraInfo;
-} MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, FAR* LPMOUSEMOVEPOINT;
+} MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, * LPMOUSEMOVEPOINT;
+]]
 
-
+--[=[
 /*
  * Values for resolution parameter of GetMouseMovePointsEx
  */
@@ -1188,15 +1190,13 @@ GetMouseMovePointsEx(
 #define DESKTOP_ENUMERATE           0x0040L
 #define DESKTOP_WRITEOBJECTS        0x0080L
 #define DESKTOP_SWITCHDESKTOP       0x0100L
+--]=]
 
+ffi.cdef[[
 /*
  * Desktop-specific control flags
  */
-#define DF_ALLOWOTHERACCOUNTHOOK    0x0001L
-
-#ifdef _WINGDI_
-#ifndef NOGDI
-
+static const int DF_ALLOWOTHERACCOUNTHOOK   = 0x0001L;
 
 HDESK
 __stdcall
@@ -1217,13 +1217,17 @@ CreateDesktopW(
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateDesktop  CreateDesktopW
 #else
 #define CreateDesktop  CreateDesktopA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HDESK
 __stdcall
 CreateDesktopExA(
@@ -1247,17 +1251,17 @@ CreateDesktopExW(
      LPSECURITY_ATTRIBUTES lpsa,
      ULONG ulHeapSize,
     PVOID pvoid);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateDesktopEx  CreateDesktopExW
 #else
 #define CreateDesktopEx  CreateDesktopExA
 #endif // !UNICODE
+--]]
 
-
-#endif /* NOGDI */
-#endif /* _WINGDI_ */
-
-
+ffi.cdef[[
 HDESK
 __stdcall
 OpenDesktopA(
@@ -1273,21 +1277,23 @@ OpenDesktopW(
      DWORD dwFlags,
      BOOL fInherit,
      ACCESS_MASK dwDesiredAccess);
+]]
+
+--[[
 #ifdef UNICODE
 #define OpenDesktop  OpenDesktopW
 #else
 #define OpenDesktop  OpenDesktopA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HDESK
 __stdcall
 OpenInputDesktop(
      DWORD dwFlags,
      BOOL fInherit,
      ACCESS_MASK dwDesiredAccess);
-
-
 
 BOOL
 __stdcall
@@ -1302,13 +1308,17 @@ EnumDesktopsW(
      HWINSTA hwinsta,
      DESKTOPENUMPROCW lpEnumFunc,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumDesktops  EnumDesktopsW
 #else
 #define EnumDesktops  EnumDesktopsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumDesktopWindows(
@@ -1341,12 +1351,9 @@ HDESK
 __stdcall
 GetThreadDesktop(
      DWORD dwThreadId);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif  /* !NODESKTOP */
-
+--[=[
 #ifndef NOWINDOWSTATION
 /*
  * Windowstation-specific access flags
@@ -3118,19 +3125,9 @@ typedef struct tagCOMPAREITEMSTRUCT {
     ULONG_PTR   itemData2;
     DWORD       dwLocaleId;
 } COMPAREITEMSTRUCT, *PCOMPAREITEMSTRUCT, *LPCOMPAREITEMSTRUCT;
+--]=]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#ifndef NOMSG
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-/*
- * Message Function Templates
- */
-
+ffi.cdef[[
 
 BOOL
 __stdcall
@@ -3147,83 +3144,50 @@ GetMessageW(
      HWND hWnd,
      UINT wMsgFilterMin,
      UINT wMsgFilterMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetMessage  GetMessageW
 #else
 #define GetMessage  GetMessageA
 #endif // !UNICODE
-
-#if defined(_M_CEE)
-#undef GetMessage
-__inline
-BOOL
-GetMessage(
-    LPMSG lpMsg,
-    HWND hWnd,
-    UINT wMsgFilterMin,
-    UINT wMsgFilterMax
-    )
-{
-#ifdef UNICODE
-    return GetMessageW(
-#else
-    return GetMessageA(
-#endif
-        lpMsg,
-        hWnd,
-        wMsgFilterMin,
-        wMsgFilterMax
-        );
-}
-#endif  /* _M_CEE */
+--]]
 
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 TranslateMessage(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
 
 
 LRESULT
 __stdcall
 DispatchMessageA(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
 
 LRESULT
 __stdcall
 DispatchMessageW(
-     CONST MSG *lpMsg);
+     const MSG *lpMsg);
+]]
+
+--[[
 #ifdef UNICODE
 #define DispatchMessage  DispatchMessageW
 #else
 #define DispatchMessage  DispatchMessageA
 #endif // !UNICODE
-
-#if defined(_M_CEE)
-#undef DispatchMessage
-__inline
-LRESULT
-DispatchMessage(
-    CONST MSG *lpMsg
-    )
-{
-#ifdef UNICODE
-    return DispatchMessageW(
-#else
-    return DispatchMessageA(
-#endif
-        lpMsg
-        );
-}
-#endif  /* _M_CEE */
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetMessageQueue(
      int cMessagesMax);
-
 
 BOOL
 __stdcall
@@ -3242,35 +3206,33 @@ PeekMessageW(
      UINT wMsgFilterMin,
      UINT wMsgFilterMax,
      UINT wRemoveMsg);
+]]
+
+--[[
 #ifdef UNICODE
 #define PeekMessage  PeekMessageW
 #else
 #define PeekMessage  PeekMessageA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * PeekMessage() Options
  */
-#define PM_NOREMOVE         0x0000
-#define PM_REMOVE           0x0001
-#define PM_NOYIELD          0x0002
-#if(WINVER >= 0x0500)
-#define PM_QS_INPUT         (QS_INPUT << 16)
-#define PM_QS_POSTMESSAGE   ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16)
-#define PM_QS_PAINT         (QS_PAINT << 16)
-#define PM_QS_SENDMESSAGE   (QS_SENDMESSAGE << 16)
-#endif /* WINVER >= 0x0500 */
+static const int PM_NOREMOVE       =  0x0000;
+static const int PM_REMOVE         =  0x0001;
+static const int PM_NOYIELD        =  0x0002;
+]]
 
+--[[
+static const int PM_QS_INPUT       =  (QS_INPUT << 16);
+static const int PM_QS_POSTMESSAGE =  ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16);
+static const int PM_QS_PAINT       =  (QS_PAINT << 16);
+static const int PM_QS_SENDMESSAGE =  (QS_SENDMESSAGE << 16);
+--]]
 
-#endif /* !NOMSG */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 RegisterHotKey(
@@ -3285,10 +3247,10 @@ __stdcall
 UnregisterHotKey(
      HWND hWnd,
      int id);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #define MOD_ALT             0x0001
 #define MOD_CONTROL         0x0002
 #define MOD_SHIFT           0x0004
@@ -9582,13 +9544,10 @@ __stdcall
 GetWindow(
      HWND hWnd,
      UINT uCmd);
+--]=]
 
 
-#ifndef NOWH
-
-#ifdef STRICT
-
-
+ffi.cdef[[
 HHOOK
 __stdcall
 SetWindowsHookA(
@@ -9600,35 +9559,18 @@ __stdcall
 SetWindowsHookW(
      int nFilterType,
      HOOKPROC pfnFilterProc);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowsHook  SetWindowsHookW
 #else
 #define SetWindowsHook  SetWindowsHookA
 #endif // !UNICODE
-
-#else /* !STRICT */
-
-
-HOOKPROC
-__stdcall
-SetWindowsHookA(
-     int nFilterType,
-     HOOKPROC pfnFilterProc);
-
-HOOKPROC
-__stdcall
-SetWindowsHookW(
-     int nFilterType,
-     HOOKPROC pfnFilterProc);
-#ifdef UNICODE
-#define SetWindowsHook  SetWindowsHookW
-#else
-#define SetWindowsHook  SetWindowsHookA
-#endif // !UNICODE
-
-#endif /* !STRICT */
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 UnhookWindowsHook(
@@ -9651,13 +9593,17 @@ SetWindowsHookExW(
      HOOKPROC lpfn,
      HINSTANCE hmod,
      DWORD dwThreadId);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowsHookEx  SetWindowsHookExW
 #else
 #define SetWindowsHookEx  SetWindowsHookExA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 UnhookWindowsHookEx(
@@ -9671,7 +9617,9 @@ CallNextHookEx(
      int nCode,
      WPARAM wParam,
      LPARAM lParam);
+]]
 
+--[=[
 /*
  * Macros for source-level compatibility with old functions.
  */
@@ -12480,7 +12428,7 @@ SystemParametersInfoForDpi(
 ]]
 
 
---[=[
+ffi.cdef[[
 /*
  * Accessibility support
  */
@@ -12493,67 +12441,62 @@ typedef struct tagFILTERKEYS
     DWORD iRepeatMSec;          // Repeat Rate
     DWORD iBounceMSec;          // Debounce Time
 } FILTERKEYS, *LPFILTERKEYS;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * FILTERKEYS dwFlags field
  */
-#define FKF_FILTERKEYSON    0x00000001
-#define FKF_AVAILABLE       0x00000002
-#define FKF_HOTKEYACTIVE    0x00000004
-#define FKF_CONFIRMHOTKEY   0x00000008
-#define FKF_HOTKEYSOUND     0x00000010
-#define FKF_INDICATOR       0x00000020
-#define FKF_CLICKON         0x00000040
+static const int FKF_FILTERKEYSON   = 0x00000001;
+static const int FKF_AVAILABLE      = 0x00000002;
+static const int FKF_HOTKEYACTIVE   = 0x00000004;
+static const int FKF_CONFIRMHOTKEY  = 0x00000008;
+static const int FKF_HOTKEYSOUND    = 0x00000010;
+static const int FKF_INDICATOR      = 0x00000020;
+static const int FKF_CLICKON        = 0x00000040;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagSTICKYKEYS
 {
     UINT  cbSize;
     DWORD dwFlags;
 } STICKYKEYS, *LPSTICKYKEYS;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * STICKYKEYS dwFlags field
  */
-#define SKF_STICKYKEYSON    0x00000001
-#define SKF_AVAILABLE       0x00000002
-#define SKF_HOTKEYACTIVE    0x00000004
-#define SKF_CONFIRMHOTKEY   0x00000008
-#define SKF_HOTKEYSOUND     0x00000010
-#define SKF_INDICATOR       0x00000020
-#define SKF_AUDIBLEFEEDBACK 0x00000040
-#define SKF_TRISTATE        0x00000080
-#define SKF_TWOKEYSOFF      0x00000100
-#if(_WIN32_WINNT >= 0x0500)
-#define SKF_LALTLATCHED       0x10000000
-#define SKF_LCTLLATCHED       0x04000000
-#define SKF_LSHIFTLATCHED     0x01000000
-#define SKF_RALTLATCHED       0x20000000
-#define SKF_RCTLLATCHED       0x08000000
-#define SKF_RSHIFTLATCHED     0x02000000
-#define SKF_LWINLATCHED       0x40000000
-#define SKF_RWINLATCHED       0x80000000
-#define SKF_LALTLOCKED        0x00100000
-#define SKF_LCTLLOCKED        0x00040000
-#define SKF_LSHIFTLOCKED      0x00010000
-#define SKF_RALTLOCKED        0x00200000
-#define SKF_RCTLLOCKED        0x00080000
-#define SKF_RSHIFTLOCKED      0x00020000
-#define SKF_LWINLOCKED        0x00400000
-#define SKF_RWINLOCKED        0x00800000
-#endif /* _WIN32_WINNT >= 0x0500 */
+static const int SKF_STICKYKEYSON   = 0x00000001;
+static const int SKF_AVAILABLE      = 0x00000002;
+static const int SKF_HOTKEYACTIVE   = 0x00000004;
+static const int SKF_CONFIRMHOTKEY  = 0x00000008;
+static const int SKF_HOTKEYSOUND    = 0x00000010;
+static const int SKF_INDICATOR      = 0x00000020;
+static const int SKF_AUDIBLEFEEDBACK= 0x00000040;
+static const int SKF_TRISTATE       = 0x00000080;
+static const int SKF_TWOKEYSOFF     = 0x00000100;
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int SKF_LALTLATCHED    =   0x10000000;
+static const int SKF_LCTLLATCHED    =   0x04000000;
+static const int SKF_LSHIFTLATCHED  =   0x01000000;
+static const int SKF_RALTLATCHED    =   0x20000000;
+static const int SKF_RCTLLATCHED    =   0x08000000;
+static const int SKF_RSHIFTLATCHED  =   0x02000000;
+static const int SKF_LWINLATCHED    =   0x40000000;
+static const int SKF_RWINLATCHED    =   0x80000000;
+static const int SKF_LALTLOCKED     =   0x00100000;
+static const int SKF_LCTLLOCKED     =   0x00040000;
+static const int SKF_LSHIFTLOCKED   =   0x00010000;
+static const int SKF_RALTLOCKED     =   0x00200000;
+static const int SKF_RCTLLOCKED     =   0x00080000;
+static const int SKF_RSHIFTLOCKED   =   0x00020000;
+static const int SKF_LWINLOCKED     =   0x00400000;
+static const int SKF_RWINLOCKED     =   0x00800000;
+]]
 
+ffi.cdef[[
 typedef struct tagMOUSEKEYS
 {
     UINT cbSize;
@@ -12564,68 +12507,63 @@ typedef struct tagMOUSEKEYS
     DWORD dwReserved1;
     DWORD dwReserved2;
 } MOUSEKEYS, *LPMOUSEKEYS;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * MOUSEKEYS dwFlags field
  */
-#define MKF_MOUSEKEYSON     0x00000001
-#define MKF_AVAILABLE       0x00000002
-#define MKF_HOTKEYACTIVE    0x00000004
-#define MKF_CONFIRMHOTKEY   0x00000008
-#define MKF_HOTKEYSOUND     0x00000010
-#define MKF_INDICATOR       0x00000020
-#define MKF_MODIFIERS       0x00000040
-#define MKF_REPLACENUMBERS  0x00000080
-#if(_WIN32_WINNT >= 0x0500)
-#define MKF_LEFTBUTTONSEL   0x10000000
-#define MKF_RIGHTBUTTONSEL  0x20000000
-#define MKF_LEFTBUTTONDOWN  0x01000000
-#define MKF_RIGHTBUTTONDOWN 0x02000000
-#define MKF_MOUSEMODE       0x80000000
-#endif /* _WIN32_WINNT >= 0x0500 */
+static const int MKF_MOUSEKEYSON    = 0x00000001;
+static const int MKF_AVAILABLE      = 0x00000002;
+static const int MKF_HOTKEYACTIVE   = 0x00000004;
+static const int MKF_CONFIRMHOTKEY  = 0x00000008;
+static const int MKF_HOTKEYSOUND    = 0x00000010;
+static const int MKF_INDICATOR      = 0x00000020;
+static const int MKF_MODIFIERS      = 0x00000040;
+static const int MKF_REPLACENUMBERS = 0x00000080;
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int MKF_LEFTBUTTONSEL  = 0x10000000;
+static const int MKF_RIGHTBUTTONSEL = 0x20000000;
+static const int MKF_LEFTBUTTONDOWN = 0x01000000;
+static const int MKF_RIGHTBUTTONDOWN= 0x02000000;
+static const int MKF_MOUSEMODE      = 0x80000000;
+]]
 
+ffi.cdef[[
 typedef struct tagACCESSTIMEOUT
 {
     UINT  cbSize;
     DWORD dwFlags;
     DWORD iTimeOutMSec;
 } ACCESSTIMEOUT, *LPACCESSTIMEOUT;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * ACCESSTIMEOUT dwFlags field
  */
-#define ATF_TIMEOUTON       0x00000001
-#define ATF_ONOFFFEEDBACK   0x00000002
+static const int ATF_TIMEOUTON      = 0x00000001;
+static const int ATF_ONOFFFEEDBACK  = 0x00000002;
 
 /* values for SOUNDSENTRY iFSGrafEffect field */
-#define SSGF_NONE       0
-#define SSGF_DISPLAY    3
+static const int SSGF_NONE     =  0;
+static const int SSGF_DISPLAY  =  3;
 
 /* values for SOUNDSENTRY iFSTextEffect field */
-#define SSTF_NONE       0
-#define SSTF_CHARS      1
-#define SSTF_BORDER     2
-#define SSTF_DISPLAY    3
+static const int SSTF_NONE     =  0;
+static const int SSTF_CHARS    =  1;
+static const int SSTF_BORDER   =  2;
+static const int SSTF_DISPLAY  =  3;
 
 /* values for SOUNDSENTRY iWindowsEffect field */
-#define SSWF_NONE     0
-#define SSWF_TITLE    1
-#define SSWF_WINDOW   2
-#define SSWF_DISPLAY  3
-#define SSWF_CUSTOM   4
+static const int SSWF_NONE    = 0;
+static const int SSWF_TITLE   = 1;
+static const int SSWF_WINDOW  = 2;
+static const int SSWF_DISPLAY = 3;
+static const int SSWF_CUSTOM  = 4;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagSOUNDSENTRYA
 {
     UINT cbSize;
@@ -12641,6 +12579,9 @@ typedef struct tagSOUNDSENTRYA
     LPSTR   lpszWindowsEffectDLL;
     DWORD iWindowsEffectOrdinal;
 } SOUNDSENTRYA, *LPSOUNDSENTRYA;
+]]
+
+ffi.cdef[[
 typedef struct tagSOUNDSENTRYW
 {
     UINT cbSize;
@@ -12656,7 +12597,7 @@ typedef struct tagSOUNDSENTRYW
     LPWSTR  lpszWindowsEffectDLL;
     DWORD iWindowsEffectOrdinal;
 } SOUNDSENTRYW, *LPSOUNDSENTRYW;
---]=]
+]]
 
 --[[
 #ifdef UNICODE
@@ -12698,8 +12639,6 @@ static const int TKF_HOTKEYACTIVE  =  0x00000004;
 static const int TKF_CONFIRMHOTKEY =  0x00000008;
 static const int TKF_HOTKEYSOUND   =  0x00000010;
 static const int TKF_INDICATOR     =  0x00000020;
-
-
 
 typedef struct tagAUDIODESCRIPTION {
     UINT cbSize;   // sizeof(AudioDescriptionType)
@@ -12745,14 +12684,14 @@ EndTask(
 BOOL __stdcall CancelShutdown(void);
 ]]
 
---[=[
+ffi.cdef[[
 /*
  * Multimonitor API.
  */
 
-#define MONITOR_DEFAULTTONULL       0x00000000
-#define MONITOR_DEFAULTTOPRIMARY    0x00000001
-#define MONITOR_DEFAULTTONEAREST    0x00000002
+static const int MONITOR_DEFAULTTONULL     =  0x00000000;
+static const int MONITOR_DEFAULTTOPRIMARY  =  0x00000001;
+static const int MONITOR_DEFAULTTONEAREST  =  0x00000002;
 
 
 HMONITOR
@@ -12776,12 +12715,17 @@ MonitorFromWindow(
      DWORD dwFlags);
 
 
-#define MONITORINFOF_PRIMARY        0x00000001
+static const int MONITORINFOF_PRIMARY       = 0x00000001;
+]]
 
-#ifndef CCHDEVICENAME
-#define CCHDEVICENAME 32
-#endif
+if not CCHDEVICENAME then
+CCHDEVICENAME = true;
+ffi.cdef[[
+static const int CCHDEVICENAME = 32;
+]]
+end
 
+ffi.cdef[[
 typedef struct tagMONITORINFO
 {
     DWORD   cbSize;
@@ -12790,33 +12734,30 @@ typedef struct tagMONITORINFO
     DWORD   dwFlags;
 } MONITORINFO, *LPMONITORINFO;
 
-#ifdef __cplusplus
-typedef struct tagMONITORINFOEXA : public tagMONITORINFO
-{
-    CHAR        szDevice[CCHDEVICENAME];
-} MONITORINFOEXA, *LPMONITORINFOEXA;
-typedef struct tagMONITORINFOEXW : public tagMONITORINFO
-{
-    WCHAR       szDevice[CCHDEVICENAME];
-} MONITORINFOEXW, *LPMONITORINFOEXW;
-#ifdef UNICODE
-typedef MONITORINFOEXW MONITORINFOEX;
-typedef LPMONITORINFOEXW LPMONITORINFOEX;
-#else
-typedef MONITORINFOEXA MONITORINFOEX;
-typedef LPMONITORINFOEXA LPMONITORINFOEX;
-#endif // UNICODE
-#else // ndef __cplusplus
 typedef struct tagMONITORINFOEXA
 {
-    MONITORINFO DUMMYSTRUCTNAME;
+    //MONITORINFO DUMMYSTRUCTNAME;
+    DWORD   cbSize;
+    RECT    rcMonitor;
+    RECT    rcWork;
+    DWORD   dwFlags;
+
     CHAR        szDevice[CCHDEVICENAME];
 } MONITORINFOEXA, *LPMONITORINFOEXA;
+
 typedef struct tagMONITORINFOEXW
 {
-    MONITORINFO DUMMYSTRUCTNAME;
+    //MONITORINFO DUMMYSTRUCTNAME;
+    DWORD   cbSize;
+    RECT    rcMonitor;
+    RECT    rcWork;
+    DWORD   dwFlags;
+
     WCHAR       szDevice[CCHDEVICENAME];
 } MONITORINFOEXW, *LPMONITORINFOEXW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef MONITORINFOEXW MONITORINFOEX;
 typedef LPMONITORINFOEXW LPMONITORINFOEX;
@@ -12824,9 +12765,10 @@ typedef LPMONITORINFOEXW LPMONITORINFOEX;
 typedef MONITORINFOEXA MONITORINFOEX;
 typedef LPMONITORINFOEXA LPMONITORINFOEX;
 #endif // UNICODE
-#endif
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 GetMonitorInfoA(
@@ -12838,12 +12780,17 @@ __stdcall
 GetMonitorInfoW(
      HMONITOR hMonitor,
      LPMONITORINFO lpmi);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetMonitorInfo  GetMonitorInfoW
 #else
 #define GetMonitorInfo  GetMonitorInfoA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 typedef BOOL (__stdcall* MONITORENUMPROC)(HMONITOR, HDC, LPRECT, LPARAM);
 
 
@@ -12854,7 +12801,7 @@ EnumDisplayMonitors(
      LPCRECT lprcClip,
      MONITORENUMPROC lpfnEnum,
      LPARAM dwData);
---]=]
+]]
 
 
 
@@ -12862,8 +12809,6 @@ ffi.cdef[[
 /*
  * WinEvents - Active Accessibility hooks
  */
-
-
 VOID
 __stdcall
 NotifyWinEvent(
@@ -12915,30 +12860,32 @@ UnhookWinEvent(
      HWINEVENTHOOK hWinEventHook);
 ]]
 
---[=[
 
-#define     CHILDID_SELF        0
-#define     INDEXID_OBJECT      0
-#define     INDEXID_CONTAINER   0
+ffi.cdef[[
+static const int     CHILDID_SELF       = 0;
+static const int     INDEXID_OBJECT     = 0;
+static const int     INDEXID_CONTAINER  = 0;
+]]
 
+ffi.cdef[[
 /*
  * Reserved IDs for system objects
  */
-#define     OBJID_WINDOW        ((LONG)0x00000000)
-#define     OBJID_SYSMENU       ((LONG)0xFFFFFFFF)
-#define     OBJID_TITLEBAR      ((LONG)0xFFFFFFFE)
-#define     OBJID_MENU          ((LONG)0xFFFFFFFD)
-#define     OBJID_CLIENT        ((LONG)0xFFFFFFFC)
-#define     OBJID_VSCROLL       ((LONG)0xFFFFFFFB)
-#define     OBJID_HSCROLL       ((LONG)0xFFFFFFFA)
-#define     OBJID_SIZEGRIP      ((LONG)0xFFFFFFF9)
-#define     OBJID_CARET         ((LONG)0xFFFFFFF8)
-#define     OBJID_CURSOR        ((LONG)0xFFFFFFF7)
-#define     OBJID_ALERT         ((LONG)0xFFFFFFF6)
-#define     OBJID_SOUND         ((LONG)0xFFFFFFF5)
-#define     OBJID_QUERYCLASSNAMEIDX ((LONG)0xFFFFFFF4)
-#define     OBJID_NATIVEOM      ((LONG)0xFFFFFFF0)
---]=]
+static const int     OBJID_WINDOW      =  ((LONG)0x00000000);
+static const int     OBJID_SYSMENU     =  ((LONG)0xFFFFFFFF);
+static const int     OBJID_TITLEBAR    =  ((LONG)0xFFFFFFFE);
+static const int     OBJID_MENU        =  ((LONG)0xFFFFFFFD);
+static const int     OBJID_CLIENT      =  ((LONG)0xFFFFFFFC);
+static const int     OBJID_VSCROLL     =  ((LONG)0xFFFFFFFB);
+static const int     OBJID_HSCROLL     =  ((LONG)0xFFFFFFFA);
+static const int     OBJID_SIZEGRIP    =  ((LONG)0xFFFFFFF9);
+static const int     OBJID_CARET       =  ((LONG)0xFFFFFFF8);
+static const int     OBJID_CURSOR      =  ((LONG)0xFFFFFFF7);
+static const int     OBJID_ALERT       =  ((LONG)0xFFFFFFF6);
+static const int     OBJID_SOUND       =  ((LONG)0xFFFFFFF5);
+static const int     OBJID_QUERYCLASSNAMEIDX =((LONG)0xFFFFFFF4);
+static const int     OBJID_NATIVEOM    =  ((LONG)0xFFFFFFF0);
+]]
 
 
 -- in-context hook functions
@@ -13168,9 +13115,9 @@ IsProcessDPIAware(
     VOID);
 
 #endif /* _WIN32_WINNT >= 0x0600 */
+--]=]
 
-#if(WINVER >= 0x0605)
-
+ffi.cdef[[
 DPI_AWARENESS_CONTEXT
 __stdcall
 SetThreadDpiAwarenessContext(
@@ -13199,63 +13146,61 @@ __stdcall
 AreDpiAwarenessContextsEqual(
      DPI_AWARENESS_CONTEXT dpiContextA,
      DPI_AWARENESS_CONTEXT dpiContextB);
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 IsValidDpiAwarenessContext(
      DPI_AWARENESS_CONTEXT value);
-
 
 UINT
 __stdcall
 GetDpiForWindow(
      HWND hwnd);
 
-
 UINT
 __stdcall
 GetDpiForSystem();
-
 
 BOOL
 __stdcall
 EnableNonClientDpiScaling(
      HWND hwnd);
 
-
 BOOL
 __stdcall
 InheritWindowMonitor(
      HWND hwnd,
      HWND hwndInherit);
+]]
 
-#endif /* WINVER >= 0x0605 */
-
-
-
+ffi.cdef[[
 UINT
 __stdcall
 GetWindowModuleFileNameA(
      HWND hwnd,
-    _Out_writes_to_(cchFileNameMax, return) LPSTR pszFileName,
+    LPSTR pszFileName,
      UINT cchFileNameMax);
 
 UINT
 __stdcall
 GetWindowModuleFileNameW(
      HWND hwnd,
-    _Out_writes_to_(cchFileNameMax, return) LPWSTR pszFileName,
+    LPWSTR pszFileName,
      UINT cchFileNameMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowModuleFileName  GetWindowModuleFileNameW
 #else
 #define GetWindowModuleFileName  GetWindowModuleFileNameA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #ifndef NO_STATE_FLAGS
 #define STATE_SYSTEM_UNAVAILABLE        0x00000001  // Disabled
 #define STATE_SYSTEM_SELECTED           0x00000002
@@ -13290,13 +13235,14 @@ GetWindowModuleFileNameW(
 #define STATE_SYSTEM_PROTECTED          0x20000000  // access to this is restricted
 #define STATE_SYSTEM_VALID              0x3FFFFFFF
 #endif
+--]=]
 
-#define CCHILDREN_TITLEBAR              5
-#define CCHILDREN_SCROLLBAR             5
+ffi.cdef[[
+static const int CCHILDREN_TITLEBAR   =           5;
+static const int CCHILDREN_SCROLLBAR  =           5;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 /*
  * Information about the global cursor.
  */
@@ -13308,17 +13254,16 @@ typedef struct tagCURSORINFO
     POINT   ptScreenPos;
 } CURSORINFO, *PCURSORINFO, *LPCURSORINFO;
 
-#define CURSOR_SHOWING     0x00000001
-#if(WINVER >= 0x0602)
-#define CURSOR_SUPPRESSED  0x00000002
-#endif /* WINVER >= 0x0602 */
-
+static const int CURSOR_SHOWING     = 0x00000001;
+static const int CURSOR_SUPPRESSED  = 0x00000002;
 
 BOOL
 __stdcall
 GetCursorInfo(
      PCURSORINFO pci);
+]]
 
+ffi.cdef[[
 /*
  * Window information snapshot
  */
@@ -13336,15 +13281,16 @@ typedef struct tagWINDOWINFO
     WORD wCreatorVersion;
 } WINDOWINFO, *PWINDOWINFO, *LPWINDOWINFO;
 
-#define WS_ACTIVECAPTION    0x0001
-
+static const int WS_ACTIVECAPTION    = 0x0001;
 
 BOOL
 __stdcall
 GetWindowInfo(
      HWND hwnd,
      PWINDOWINFO pwi);
+]]
 
+ffi.cdef[[
 /*
  * Titlebar information.
  */
@@ -13361,8 +13307,9 @@ __stdcall
 GetTitleBarInfo(
      HWND hwnd,
      PTITLEBARINFO pti);
+]]
 
-#if(WINVER >= 0x0600)
+ffi.cdef[[
 typedef struct tagTITLEBARINFOEX
 {
     DWORD cbSize;
@@ -13370,8 +13317,9 @@ typedef struct tagTITLEBARINFOEX
     DWORD rgstate[CCHILDREN_TITLEBAR + 1];
     RECT rgrect[CCHILDREN_TITLEBAR + 1];
 } TITLEBARINFOEX, *PTITLEBARINFOEX, *LPTITLEBARINFOEX;
-#endif /* WINVER >= 0x0600 */
+]]
 
+ffi.cdef[[
 /*
  * Menubar information
  */
@@ -13384,8 +13332,9 @@ typedef struct tagMENUBARINFO
     BOOL fBarFocused:1;  // bar, popup has the focus
     BOOL fFocused:1;     // item has the focus
 } MENUBARINFO, *PMENUBARINFO, *LPMENUBARINFO;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetMenuBarInfo(
@@ -13393,7 +13342,9 @@ GetMenuBarInfo(
      LONG idObject,
      LONG idItem,
      PMENUBARINFO pmbi);
+]]
 
+ffi.cdef[[
 /*
  * Scrollbar information
  */
@@ -13408,14 +13359,15 @@ typedef struct tagSCROLLBARINFO
     DWORD rgstate[CCHILDREN_SCROLLBAR + 1];
 } SCROLLBARINFO, *PSCROLLBARINFO, *LPSCROLLBARINFO;
 
-
 BOOL
 __stdcall
 GetScrollBarInfo(
      HWND hwnd,
      LONG idObject,
      PSCROLLBARINFO psbi);
+]]
 
+ffi.cdef[[
 /*
  * Combobox information
  */
@@ -13436,20 +13388,15 @@ __stdcall
 GetComboBoxInfo(
      HWND hwndCombo,
      PCOMBOBOXINFO pcbi);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * The "real" ancestor window
  */
-#define     GA_PARENT       1
-#define     GA_ROOT         2
-#define     GA_ROOTOWNER    3
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+static const int     GA_PARENT      = 1;
+static const int     GA_ROOT        = 2;
+static const int     GA_ROOTOWNER   = 3;
 
 HWND
 __stdcall
@@ -13457,49 +13404,37 @@ GetAncestor(
      HWND hwnd,
      UINT gaFlags);
 
-
-/*
- * This gets the REAL child window at the point.  If it is in the dead
- * space of a group box, it will try a sibling behind it.  But static
- * fields will get returned.  In other words, it is kind of a cross between
- * ChildWindowFromPointEx and WindowFromPoint.
- */
-
 HWND
 __stdcall
 RealChildWindowFromPoint(
      HWND hwndParent,
      POINT ptParentClientCoords);
 
-
-/*
- * This gets the name of the window TYPE, not class.  This allows us to
- * recognize ThunderButton32 et al.
- */
-
 UINT
 __stdcall
 RealGetWindowClassA(
      HWND hwnd,
-    _Out_writes_to_(cchClassNameMax, return) LPSTR ptszClassName,
+    LPSTR ptszClassName,
      UINT cchClassNameMax);
-/*
- * This gets the name of the window TYPE, not class.  This allows us to
- * recognize ThunderButton32 et al.
- */
+
 
 UINT
 __stdcall
 RealGetWindowClassW(
      HWND hwnd,
-    _Out_writes_to_(cchClassNameMax, return) LPWSTR ptszClassName,
+    LPWSTR ptszClassName,
      UINT cchClassNameMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define RealGetWindowClass  RealGetWindowClassW
 #else
 #define RealGetWindowClass  RealGetWindowClassA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /*
  * Alt-Tab Switch window information.
  */
@@ -13523,7 +13458,7 @@ GetAltTabInfoA(
      HWND hwnd,
      int iItem,
      PALTTABINFO pati,
-    _Out_writes_opt_(cchItemText) LPSTR pszItemText,
+    LPSTR pszItemText,
      UINT cchItemText);
 
 BOOL
@@ -13532,14 +13467,19 @@ GetAltTabInfoW(
      HWND hwnd,
      int iItem,
      PALTTABINFO pati,
-    _Out_writes_opt_(cchItemText) LPWSTR pszItemText,
+    LPWSTR pszItemText,
      UINT cchItemText);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetAltTabInfo  GetAltTabInfoW
 #else
 #define GetAltTabInfo  GetAltTabInfoA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
 /*
  * Listbox information.
  * Returns the number of items per row.
@@ -13553,9 +13493,7 @@ GetListBoxInfo(
 BOOL
 __stdcall
 LockWorkStation(
-    VOID);
-
-
+    void);
 
 BOOL
 __stdcall
@@ -13563,7 +13501,7 @@ UserHandleGrantAccess(
      HANDLE hUserHandle,
      HANDLE hJob,
      BOOL   bGrant);
---]=]
+]]
 
 
 
@@ -13627,47 +13565,47 @@ typedef struct tagRAWMOUSE {
 } RAWMOUSE, *PRAWMOUSE, *LPRAWMOUSE;
 ]]
 
---[=[
+ffi.cdef[[
 /*
  * Define the mouse button state indicators.
  */
 
-#define RI_MOUSE_LEFT_BUTTON_DOWN   0x0001  // Left Button changed to down.
-#define RI_MOUSE_LEFT_BUTTON_UP     0x0002  // Left Button changed to up.
-#define RI_MOUSE_RIGHT_BUTTON_DOWN  0x0004  // Right Button changed to down.
-#define RI_MOUSE_RIGHT_BUTTON_UP    0x0008  // Right Button changed to up.
-#define RI_MOUSE_MIDDLE_BUTTON_DOWN 0x0010  // Middle Button changed to down.
-#define RI_MOUSE_MIDDLE_BUTTON_UP   0x0020  // Middle Button changed to up.
+static const int RI_MOUSE_LEFT_BUTTON_DOWN  = 0x0001;  // Left Button changed to down.
+static const int RI_MOUSE_LEFT_BUTTON_UP    = 0x0002;  // Left Button changed to up.
+static const int RI_MOUSE_RIGHT_BUTTON_DOWN = 0x0004;  // Right Button changed to down.
+static const int RI_MOUSE_RIGHT_BUTTON_UP   = 0x0008;  // Right Button changed to up.
+static const int RI_MOUSE_MIDDLE_BUTTON_DOWN= 0x0010;  // Middle Button changed to down.
+static const int RI_MOUSE_MIDDLE_BUTTON_UP  = 0x0020;  // Middle Button changed to up.
 
-#define RI_MOUSE_BUTTON_1_DOWN      RI_MOUSE_LEFT_BUTTON_DOWN
-#define RI_MOUSE_BUTTON_1_UP        RI_MOUSE_LEFT_BUTTON_UP
-#define RI_MOUSE_BUTTON_2_DOWN      RI_MOUSE_RIGHT_BUTTON_DOWN
-#define RI_MOUSE_BUTTON_2_UP        RI_MOUSE_RIGHT_BUTTON_UP
-#define RI_MOUSE_BUTTON_3_DOWN      RI_MOUSE_MIDDLE_BUTTON_DOWN
-#define RI_MOUSE_BUTTON_3_UP        RI_MOUSE_MIDDLE_BUTTON_UP
+static const int RI_MOUSE_BUTTON_1_DOWN     = RI_MOUSE_LEFT_BUTTON_DOWN;
+static const int RI_MOUSE_BUTTON_1_UP       = RI_MOUSE_LEFT_BUTTON_UP;
+static const int RI_MOUSE_BUTTON_2_DOWN     = RI_MOUSE_RIGHT_BUTTON_DOWN;
+static const int RI_MOUSE_BUTTON_2_UP       = RI_MOUSE_RIGHT_BUTTON_UP;
+static const int RI_MOUSE_BUTTON_3_DOWN     = RI_MOUSE_MIDDLE_BUTTON_DOWN;
+static const int RI_MOUSE_BUTTON_3_UP       = RI_MOUSE_MIDDLE_BUTTON_UP;
 
-#define RI_MOUSE_BUTTON_4_DOWN      0x0040
-#define RI_MOUSE_BUTTON_4_UP        0x0080
-#define RI_MOUSE_BUTTON_5_DOWN      0x0100
-#define RI_MOUSE_BUTTON_5_UP        0x0200
+static const int RI_MOUSE_BUTTON_4_DOWN     = 0x0040;
+static const int RI_MOUSE_BUTTON_4_UP       = 0x0080;
+static const int RI_MOUSE_BUTTON_5_DOWN     = 0x0100;
+static const int RI_MOUSE_BUTTON_5_UP       = 0x0200;
 
 /*
  * If usButtonFlags has RI_MOUSE_WHEEL, the wheel delta is stored in usButtonData.
  * Take it as a signed value.
  */
-#define RI_MOUSE_WHEEL              0x0400
-#define RI_MOUSE_HWHEEL             0x0800
+static const int RI_MOUSE_WHEEL             = 0x0400;
+static const int RI_MOUSE_HWHEEL            = 0x0800;
 
 
 /*
  * Define the mouse indicator flags.
  */
-#define MOUSE_MOVE_RELATIVE         0
-#define MOUSE_MOVE_ABSOLUTE         1
-#define MOUSE_VIRTUAL_DESKTOP    0x02  // the coordinates are mapped to the virtual desktop
-#define MOUSE_ATTRIBUTES_CHANGED 0x04  // requery for mouse attributes
-#define MOUSE_MOVE_NOCOALESCE    0x08  // do not coalesce mouse moves
---]=]
+static const int MOUSE_MOVE_RELATIVE        = 0;
+static const int MOUSE_MOVE_ABSOLUTE        = 1;
+static const int MOUSE_VIRTUAL_DESKTOP   = 0x02;  // the coordinates are mapped to the virtual desktop
+static const int MOUSE_ATTRIBUTES_CHANGED= 0x04;  // requery for mouse attributes
+static const int MOUSE_MOVE_NOCOALESCE   = 0x08;  // do not coalesce mouse moves
+]]
 
 ffi.cdef[[
 /*
@@ -13853,33 +13791,31 @@ typedef struct tagRAWINPUTDEVICE {
 typedef const RAWINPUTDEVICE* PCRAWINPUTDEVICE;
 ]]
 
---[=[
-#define RIDEV_REMOVE            0x00000001
-#define RIDEV_EXCLUDE           0x00000010
-#define RIDEV_PAGEONLY          0x00000020
-#define RIDEV_NOLEGACY          0x00000030
-#define RIDEV_INPUTSINK         0x00000100
-#define RIDEV_CAPTUREMOUSE      0x00000200  // effective when mouse nolegacy is specified, otherwise it would be an error
-#define RIDEV_NOHOTKEYS         0x00000200  // effective for keyboard.
-#define RIDEV_APPKEYS           0x00000400  // effective for keyboard.
+ffi.cdef[[
+static const int RIDEV_REMOVE           = 0x00000001;
+static const int RIDEV_EXCLUDE          = 0x00000010;
+static const int RIDEV_PAGEONLY         = 0x00000020;
+static const int RIDEV_NOLEGACY         = 0x00000030;
+static const int RIDEV_INPUTSINK        = 0x00000100;
+static const int RIDEV_CAPTUREMOUSE     = 0x00000200;  // effective when mouse nolegacy is specified, otherwise it would be an error
+static const int RIDEV_NOHOTKEYS        = 0x00000200;  // effective for keyboard.
+static const int RIDEV_APPKEYS          = 0x00000400; // effective for keyboard.
+static const int RIDEV_EXINPUTSINK      = 0x00001000;
+static const int RIDEV_DEVNOTIFY        = 0x00002000;
+static const int RIDEV_EXMODEMASK       = 0x000000F0;
+]]
 
-#define RIDEV_EXINPUTSINK       0x00001000
-#define RIDEV_DEVNOTIFY         0x00002000
+--#define RIDEV_EXMODE(mode)  ((mode) & RIDEV_EXMODEMASK)
 
-#define RIDEV_EXMODEMASK        0x000000F0
+ffi.cdef[[
+static const int GIDC_ARRIVAL        =     1;
+static const int GIDC_REMOVAL        =     2;
+]]
 
-#define RIDEV_EXMODE(mode)  ((mode) & RIDEV_EXMODEMASK)
-
-
-#define GIDC_ARRIVAL             1
-#define GIDC_REMOVAL             2
-
-
-
-#define GET_DEVICE_CHANGE_WPARAM(wParam)  (LOWORD(wParam))
-
-#define GET_DEVICE_CHANGE_LPARAM(lParam)  (LOWORD(lParam))
---]=]
+--[[
+exports.GET_DEVICE_CHANGE_WPARAM(wParam)  (LOWORD(wParam))
+exports.GET_DEVICE_CHANGE_LPARAM(lParam)  (LOWORD(lParam))
+--]]
 
 
 ffi.cdef[[
@@ -14463,22 +14399,17 @@ SetDisplayAutoRotationPreferences(
      ORIENTATION_PREFERENCE orientation);
 ]]
 
-
-
 ffi.cdef[[
 BOOL
 __stdcall
 IsImmersiveProcess(
      HANDLE hProcess);
 
-
 BOOL
 __stdcall
 SetProcessRestrictionExemption(
      BOOL fEnableExemption);
 ]]
-
-
 
 exports.GetRawInputDeviceList = exports.Lib.GetRawInputDeviceList;
 exports.GetPointerDevices = exports.Lib.GetPointerDevices;
