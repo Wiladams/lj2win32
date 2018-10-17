@@ -1776,39 +1776,41 @@ typedef LPEXTLOGFONTA LPEXTLOGFONT;
 #define GetRValue(rgb)      (LOBYTE(rgb))
 #define GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
 #define GetBValue(rgb)      (LOBYTE((rgb)>>16))
+--]=]
 
+ffi.cdef[[
 /* Background Modes */
-#define TRANSPARENT         1
-#define OPAQUE              2
-#define BKMODE_LAST         2
+static const int TRANSPARENT        = 1;
+static const int OPAQUE             = 2;
+static const int BKMODE_LAST        = 2;
 
 /* Graphics Modes */
 
-#define GM_COMPATIBLE       1
-#define GM_ADVANCED         2
-#define GM_LAST             2
+static const int GM_COMPATIBLE      = 1;
+static const int GM_ADVANCED        = 2;
+static const int GM_LAST            = 2;
 
 /* PolyDraw and GetPath point types */
-#define PT_CLOSEFIGURE      0x01
-#define PT_LINETO           0x02
-#define PT_BEZIERTO         0x04
-#define PT_MOVETO           0x06
+static const int PT_CLOSEFIGURE     = 0x01;
+static const int PT_LINETO          = 0x02;
+static const int PT_BEZIERTO        = 0x04;
+static const int PT_MOVETO          = 0x06;
 
 /* Mapping Modes */
-#define MM_TEXT             1
-#define MM_LOMETRIC         2
-#define MM_HIMETRIC         3
-#define MM_LOENGLISH        4
-#define MM_HIENGLISH        5
-#define MM_TWIPS            6
-#define MM_ISOTROPIC        7
-#define MM_ANISOTROPIC      8
+static const int MM_TEXT            = 1;
+static const int MM_LOMETRIC        = 2;
+static const int MM_HIMETRIC        = 3;
+static const int MM_LOENGLISH       = 4;
+static const int MM_HIENGLISH       = 5;
+static const int MM_TWIPS           = 6;
+static const int MM_ISOTROPIC       = 7;
+static const int MM_ANISOTROPIC     = 8;
 
 /* Min and Max Mapping Mode values */
-#define MM_MIN              MM_TEXT
-#define MM_MAX              MM_ANISOTROPIC
-#define MM_MAX_FIXEDSCALE   MM_TWIPS
---]=]
+static const int MM_MIN             = MM_TEXT;
+static const int MM_MAX             = MM_ANISOTROPIC;
+static const int MM_MAX_FIXEDSCALE  = MM_TWIPS;
+]]
 
 ffi.cdef[[
 /* Coordinate Modes */
@@ -4296,6 +4298,9 @@ typedef struct tagENUMTEXTMETRICW
     NEWTEXTMETRICEXW etmNewTextMetricEx;
     AXESLISTW        etmAxesList;
 } ENUMTEXTMETRICW, *PENUMTEXTMETRICW,  *LPENUMTEXTMETRICW;
+--]=]
+
+--[[
 #ifdef UNICODE
 typedef ENUMTEXTMETRICW ENUMTEXTMETRIC;
 typedef PENUMTEXTMETRICW PENUMTEXTMETRIC;
@@ -4306,19 +4311,15 @@ typedef PENUMTEXTMETRICA PENUMTEXTMETRIC;
 typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
 #endif // UNICODE
 #endif /* NOTEXTMETRIC */
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
- BOOL  __stdcall GetViewportExtEx(  HDC hdc, _Out_ LPSIZE lpsize);
- BOOL  __stdcall GetViewportOrgEx(  HDC hdc, _Out_ LPPOINT lppoint);
- BOOL  __stdcall GetWindowExtEx(  HDC hdc, _Out_ LPSIZE lpsize);
- BOOL  __stdcall GetWindowOrgEx(  HDC hdc, _Out_ LPPOINT lppoint);
+ffi.cdef[[
+ BOOL  __stdcall GetViewportExtEx(  HDC hdc, LPSIZE lpsize);
+ BOOL  __stdcall GetViewportOrgEx(  HDC hdc, LPPOINT lppoint);
+ BOOL  __stdcall GetWindowExtEx(  HDC hdc, LPSIZE lpsize);
+ BOOL  __stdcall GetWindowOrgEx(  HDC hdc, LPPOINT lppoint);
 
   int  __stdcall IntersectClipRect(  HDC hdc,  int left,  int top,  int right,  int bottom);
   BOOL __stdcall InvertRgn(  HDC hdc,  HRGN hrgn);
@@ -4326,7 +4327,7 @@ typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
   BOOL __stdcall LineTo(  HDC hdc,  int x,  int y);
  BOOL __stdcall MaskBlt(  HDC hdcDest,  int xDest,  int yDest,  int width,  int height,
                HDC hdcSrc,  int xSrc,  int ySrc,  HBITMAP hbmMask,  int xMask,  int yMask,  DWORD rop);
- BOOL __stdcall PlgBlt(  HDC hdcDest, _In_reads_(3) const POINT * lpPoint,  HDC hdcSrc,  int xSrc,  int ySrc,  int width,
+ BOOL __stdcall PlgBlt(  HDC hdcDest, const POINT * lpPoint,  HDC hdcSrc,  int xSrc,  int ySrc,  int width,
                       int height,  HBITMAP hbmMask,  int xMask,  int yMask);
 
   int  __stdcall OffsetClipRgn( HDC hdc,  int x,  int y);
@@ -4335,7 +4336,7 @@ typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
   BOOL __stdcall Pie( HDC hdc,  int left,  int top,  int right,  int bottom,  int xr1,  int yr1,  int xr2,  int yr2);
  BOOL __stdcall PlayMetaFile( HDC hdc,  HMETAFILE hmf);
   BOOL __stdcall PaintRgn( HDC hdc,  HRGN hrgn);
-  BOOL __stdcall PolyPolygon( HDC hdc,   const POINT *apt,  _In_reads_(csz) const INT *asz,   int csz);
+  BOOL __stdcall PolyPolygon( HDC hdc,   const POINT *apt,  const INT *asz,   int csz);
  BOOL __stdcall PtInRegion( HRGN hrgn,  int x,  int y);
  BOOL __stdcall PtVisible( HDC hdc,  int x,  int y);
  BOOL __stdcall RectInRegion( HRGN hrgn,  const RECT * lprect);
@@ -4344,6 +4345,9 @@ typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
   BOOL __stdcall RestoreDC( HDC hdc,  int nSavedDC);
   HDC  __stdcall ResetDCA( HDC hdc,  const DEVMODEA * lpdm);
   HDC  __stdcall ResetDCW( HDC hdc,  const DEVMODEW * lpdm);
+]]
+
+--[[
 #ifdef UNICODE
 #define ResetDC  ResetDCW
 #else
@@ -4352,11 +4356,17 @@ typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
   UINT __stdcall RealizePalette( HDC hdc);
  BOOL __stdcall RemoveFontResourceA( LPCSTR lpFileName);
  BOOL __stdcall RemoveFontResourceW( LPCWSTR lpFileName);
+--]]
+
+--[[
 #ifdef UNICODE
 #define RemoveFontResource  RemoveFontResourceW
 #else
 #define RemoveFontResource  RemoveFontResourceA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
   BOOL  __stdcall RoundRect( HDC hdc,  int left,  int top,  int right,  int bottom,  int width,  int height);
   BOOL __stdcall ResizePalette( HPALETTE hpal,  UINT n);
 
@@ -4368,10 +4378,10 @@ typedef LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
   HPALETTE __stdcall SelectPalette( HDC hdc,  HPALETTE hPal,  BOOL bForceBkgd);
   COLORREF __stdcall SetBkColor( HDC hdc,  COLORREF color);
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
+
  COLORREF __stdcall SetDCBrushColor( HDC hdc,  COLORREF color);
  COLORREF __stdcall SetDCPenColor( HDC hdc,  COLORREF color);
-#endif
+
 
   int   __stdcall SetBkMode( HDC hdc,  int mode);
 
@@ -4380,7 +4390,7 @@ LONG __stdcall
 SetBitmapBits(
      HBITMAP hbm,
      DWORD cb,
-    _In_reads_bytes_(cb) const VOID *pvBits);
+    const VOID *pvBits);
 
  UINT  __stdcall SetBoundsRect( HDC hdc,  const RECT * lprect,  UINT flags);
  int   __stdcall SetDIBits( HDC hdc,  HBITMAP hbm,  UINT start,  UINT cLines,  const VOID *lpBits,  const BITMAPINFO * lpbmi,  UINT ColorUse);
@@ -4389,17 +4399,22 @@ SetBitmapBits(
   DWORD __stdcall SetMapperFlags( HDC hdc,  DWORD flags);
  int   __stdcall SetGraphicsMode( HDC hdc,  int iMode);
   int   __stdcall SetMapMode( HDC hdc,  int iMode);
+]]
 
-#if(WINVER >= 0x0500)
-  DWORD __stdcall SetLayout( HDC hdc,  DWORD l);
- DWORD __stdcall GetLayout( HDC hdc);
-#endif /* WINVER >= 0x0500 */
+ffi.cdef[[
+DWORD __stdcall SetLayout( HDC hdc,  DWORD l);
+DWORD __stdcall GetLayout( HDC hdc);
+]]
 
- HMETAFILE   __stdcall SetMetaFileBitsEx( UINT cbBuffer, _In_reads_bytes_(cbBuffer) const BYTE *lpData);
+ffi.cdef[[
+ HMETAFILE   __stdcall SetMetaFileBitsEx( UINT cbBuffer, const BYTE *lpData);
+]]
+
+ffi.cdef[[
   UINT  __stdcall SetPaletteEntries(    HPALETTE hpal,
                                              UINT iStart,
                                              UINT cEntries,
-                                            _In_reads_(cEntries) const PALETTEENTRY *pPalEntries);
+                                            const PALETTEENTRY *pPalEntries);
   COLORREF __stdcall SetPixel( HDC hdc,  int x,  int y,  COLORREF color);
  BOOL   __stdcall SetPixelV( HDC hdc,  int x,  int y,  COLORREF color);
  BOOL  __stdcall SetPixelFormat( HDC hdc,  int format,  const PIXELFORMATDESCRIPTOR * ppfd);
@@ -4416,25 +4431,20 @@ SetBitmapBits(
   UINT  __stdcall SetTextAlign( HDC hdc,  UINT align);
   BOOL  __stdcall SetTextJustification( HDC hdc,  int extra,  int count);
  BOOL  __stdcall UpdateColors( HDC hdc);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+]]
 
 
-#ifdef  COMBOX_SANDBOX
 
-#if (_WIN32_WINNT >= 0x0600)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef PVOID   (__stdcall *GDIMARSHALLOC)(DWORD dwSize,  LPVOID pGdiRef);
 
-typedef HRESULT (__stdcall *DDRAWMARSHCALLBACKMARSHAL)( HGDIOBJ hGdiObj,  LPVOID pGdiRef, _Out_ LPVOID *ppDDrawRef);
-typedef HRESULT (__stdcall *DDRAWMARSHCALLBACKUNMARSHAL)( LPVOID pData, _Out_ HDC *phdc, _Out_ LPVOID *ppDDrawRef);
+typedef HRESULT (__stdcall *DDRAWMARSHCALLBACKMARSHAL)( HGDIOBJ hGdiObj,  LPVOID pGdiRef, LPVOID *ppDDrawRef);
+typedef HRESULT (__stdcall *DDRAWMARSHCALLBACKUNMARSHAL)( LPVOID pData, HDC *phdc, LPVOID *ppDDrawRef);
 typedef HRESULT (__stdcall *DDRAWMARSHCALLBACKRELEASE)( LPVOID pDDrawRef);
+]]
 
-#define GDIREGISTERDDRAWPACKETVERSION   0x1
+ffi.cdef[[
+static const int GDIREGISTERDDRAWPACKETVERSION   = 0x1;
 
 typedef struct {
     DWORD                       dwSize;
@@ -4444,19 +4454,12 @@ typedef struct {
     DDRAWMARSHCALLBACKRELEASE   pfnDdRelease;
 } GDIREGISTERDDRAWPACKET, *PGDIREGISTERDDRAWPACKET;
 
- BOOL    __stdcall   GdiRegisterDdraw( PGDIREGISTERDDRAWPACKET pPacket, _Out_ GDIMARSHALLOC *ppfnGdiAlloc);
+ BOOL    __stdcall   GdiRegisterDdraw( PGDIREGISTERDDRAWPACKET pPacket, GDIMARSHALLOC *ppfnGdiAlloc);
 
- ULONG   __stdcall   GdiMarshalSize(VOID);
- VOID    __stdcall   GdiMarshal(DWORD dwProcessIdTo,  HGDIOBJ hGdiObj, _Inout_ PVOID pData, ULONG ulFlags);
+ ULONG   __stdcall   GdiMarshalSize(void);
+ VOID    __stdcall   GdiMarshal(DWORD dwProcessIdTo,  HGDIOBJ hGdiObj, PVOID pData, ULONG ulFlags);
  HGDIOBJ __stdcall   GdiUnmarshal( PVOID pData, ULONG ulFlags);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif // (_WIN32_WINNT >= 0x0600)
-
-#endif  // COMBOX_SANDBOX
---]=]
+]]
 
 ffi.cdef[[
 //

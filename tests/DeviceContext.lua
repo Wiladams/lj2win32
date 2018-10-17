@@ -5,7 +5,7 @@ local bnot = bit.bnot
 local lshift = bit.lshift
 local rshift = bit.rshift
 
-local gdi_ffi = require("win32.gdi32")
+local gdi_ffi = require("win32.wingdi")
 
 --[[
 	DeviceContext
@@ -48,14 +48,14 @@ end
 function DeviceContext.create(self, lpszDriver, lpszDevice, lpszOutput, lpInitData)
 	lpszDriver = lpszDriver or "DISPLAY"
 	
-	local rawhandle = gdi_ffi.CreateDCA(lpszDriver, lpszDevice, lpszOutput, lpInitData);
+	local rawhandle = ffi.C.CreateDCA(lpszDriver, lpszDevice, lpszOutput, lpInitData);
 	
 	if rawhandle == nil then
 		return nil, "could not create Device Context as specified"
 	end
 
 	-- default to advanced graphics mode instead of GM_COMPATIBLE
-	gdi_ffi.SetGraphicsMode(rawhandle, "GM_ADVANCED")
+	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
 
 	return self:init(rawhandle)
 end
@@ -66,18 +66,18 @@ end
 	By default will create a DeviceContext tied to memory, compatible with the screen
 ]]
 function DeviceContext.CreateForMemory(self, hDC)
-	hDC = hDC or gdi_ffi.CreateDCA("DISPLAY", nil, nil, nil)
-	local rawhandle = gdi_ffi.CreateCompatibleDC(hDC) 
+	hDC = hDC or ffi.C.CreateDCA("DISPLAY", nil, nil, nil)
+	local rawhandle = ffi.C.CreateCompatibleDC(hDC) 
 	
 	-- need to delete original DC
-	-- gdi_ffi.DeleteDC(hDC)
+	-- ffi.C.DeleteDC(hDC)
 
 	return self:init(rawhandle)
 end
 
 
 function DeviceContext.clone(self)
-	local hDC = gdi_ffi.CreateCompatibleDC(self.Handle);
+	local hDC = ffi.C.CreateCompatibleDC(self.Handle);
 	local ctxt = DeviceContext:init(hDC)
 	
 	return ctxt;
@@ -93,30 +93,30 @@ end
 
 -- Coordinates and Transforms
 function DeviceContext.setGraphicsMode(self, mode)
-	gdi_ffi.SetGraphicsMode(self.Handle, mode)
+	ffi.C.SetGraphicsMode(self.Handle, mode)
 
 	return true;
 end
 
 function DeviceContext.setMapMode(self, mode)
-	gdi_ffi.SetMapMode(self.Handle, mode)
+	ffi.C.SetMapMode(self.Handle, mode)
 
 	return true;
 end
 
 -- Device Context State
 function DeviceContext.flush(self)
-	return gdi_ffi.GdiFlush()
+	return ffi.C.GdiFlush()
 end
 
 function DeviceContext.restore(self, nSavedDC)
 	nSavedDC = nSavedDC or -1;
 	
-	return gdi_ffi.RestoreDC(self.Handle, nSavedDC);
+	return ffi.C.RestoreDC(self.Handle, nSavedDC);
 end
 
 function DeviceContext.save(self)
-	local stateIndex = gdi_ffi.SaveDC(self.Handle);
+	local stateIndex = ffi.C.SaveDC(self.Handle);
 	if stateIndex == 0 then
 		return false, "failed to save GDI state"
 	end
@@ -126,17 +126,17 @@ end
 
 -- Object Management
 function DeviceContext.SelectObject(self, gdiobj)
-	gdi_ffi.SelectObject(self.Handle, gdiobj.Handle)
+	ffi.C.SelectObject(self.Handle, gdiobj.Handle)
 	
 	return true;
 end
 
 DeviceContext.SelectStockObject = function(self, objectIndex)
     -- First get a handle on the object
-    local objHandle = gdi_ffi.GetStockObject(objectIndex);
+    local objHandle = ffi.C.GetStockObject(objectIndex);
 
     --  Then select it into the device context
-	return gdi_ffi.SelectObject(self.Handle, objHandle);
+	return ffi.C.SelectObject(self.Handle, objHandle);
 end
 
 
@@ -150,53 +150,53 @@ function DeviceContext.UseDCPen(self)
 end
 
 function DeviceContext.SetDCBrushColor(self, color)
-	return gdi_ffi.SetDCBrushColor(self.Handle, color)
+	return ffi.C.SetDCBrushColor(self.Handle, color)
 end
 
 function DeviceContext.SetDCPenColor(self, color)
-	return gdi_ffi.SetDCPenColor(self.Handle, color)
+	return ffi.C.SetDCPenColor(self.Handle, color)
 end
 
 
 -- Drawing routines
-DeviceContext.MoveTo = function(self, x, y)
-	local result = gdi_ffi.MoveToEx(self.Handle, x, y, nil);
+function DeviceContext.MoveTo(self, x, y)
+	local result = ffi.C.MoveToEx(self.Handle, x, y, nil);
 	return result
 end
 
 DeviceContext.MoveToEx = function(self, x, y, lpPoint)
-	return gdi_ffi.MoveToEx(self.Handle, X, Y, lpPoint);
+	return ffi.C.MoveToEx(self.Handle, X, Y, lpPoint);
 end
 
 DeviceContext.SetPixel = function(self, x, y, color)
-	return gdi_ffi.SetPixel(self.Handle, x, y, color);
+	return ffi.C.SetPixel(self.Handle, x, y, color);
 end
 
 DeviceContext.SetPixelV = function(self, x, y, crColor)
-	return gdi_ffi.SetPixelV(self.Handle, X, Y, crColor);
+	return ffi.C.SetPixelV(self.Handle, X, Y, crColor);
 end
 
 DeviceContext.LineTo = function(self, xend, yend)
-	local result = gdi_ffi.LineTo(self.Handle, xend, yend);
+	local result = ffi.C.LineTo(self.Handle, xend, yend);
 	return result
 end
 
 DeviceContext.Ellipse = function(self, nLeftRect, nTopRect, nRightRect, nBottomRect)
-	return gdi_ffi.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect);
+	return ffi.C.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect);
 end
 
 DeviceContext.Polygon = function(self, lpPoints, nCount)
-	local res = gdi_ffi.Polygon(self.Handle,lpPoints, nCount);
+	local res = ffi.C.Polygon(self.Handle,lpPoints, nCount);
 
 	return true;
 end
 
 function DeviceContext.Rectangle(self, left, top, right, bottom)
-	return gdi_ffi.Rectangle(self.Handle, left, top, right, bottom);
+	return ffi.C.Rectangle(self.Handle, left, top, right, bottom);
 end
 
 function DeviceContext.RoundRect(self, left, top, right, bottom, width, height)
-	return gdi_ffi.RoundRect(self.Handle, left, top, right, bottom, width, height);
+	return ffi.C.RoundRect(self.Handle, left, top, right, bottom, width, height);
 end
 
 -- Text Drawing
@@ -204,29 +204,29 @@ function DeviceContext.Text(self, txt, x, y)
 	x = x or 0
 	y = y or 0
 	
-	return gdi_ffi.TextOutA(self.Handle, x, y, txt, #txt);
+	return ffi.C.TextOutA(self.Handle, x, y, txt, #txt);
 end
 
 -- Bitmap drawing
 function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, dwRop)
 	nXSrc = nXSrc or 0
 	nYSrc = nYSrc or 0
-	dwRop = dwRop or gdi_ffi.SRCCOPY
+	dwRop = dwRop or ffi.C.SRCCOPY
 	
-	return gdi_ffi.BitBlt(self.Handle,nXDest,nYDest,nWidth,nHeight,hdcSrc,nXSrc,nYSrc,dwRop);
+	return ffi.C.BitBlt(self.Handle,nXDest,nYDest,nWidth,nHeight,hdcSrc,nXSrc,nYSrc,dwRop);
 end
 
 function DeviceContext.StretchDIBits(self, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, lpBitsInfo, iUsage, dwRop)
 			XDest = XDest or 0
 			YDest = YDest or 0
 			iUsage = iUsage or 0
-			dwRop = dwRop or gdi_ffi.SRCCOPY;
+			dwRop = dwRop or ffi.C.SRCCOPY;
 
-			return gdi_ffi.StretchDIBits(hdc,XDest,YDest,nDestWidth,nDestHeight,XSrc,YSrc,nSrcWidth,nSrcHeight,lpBits,lpBitsInfo,iUsage,dwRop);
+			return ffi.C.StretchDIBits(hdc,XDest,YDest,nDestWidth,nDestHeight,XSrc,YSrc,nSrcWidth,nSrcHeight,lpBits,lpBitsInfo,iUsage,dwRop);
 end
 
 function DeviceContext.GetDIBits(self, hbmp, uStartScan, cScanLines, lpvBits, lpbi, uUsage)
-			return gdi_ffi.GetDIBits(self.Handle,hbmp,uStartScan,cScanLines,lpvBits,lpbi,uUsage);
+			return ffi.C.GetDIBits(self.Handle,hbmp,uStartScan,cScanLines,lpvBits,lpbi,uUsage);
 end
 
 function DeviceContext.StretchBlt(self, img, XDest, YDest,DestWidth,DestHeight)
