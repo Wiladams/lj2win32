@@ -79,10 +79,14 @@ local function printModeInfo(mode)
         print("  format: ", DISPLAYCONFIG_PIXELFORMAT[tonumber(mode.sourceMode.pixelFormat)])
         print("  locate: ", mode.sourceMode.position.x, mode.sourceMode.position.y)
     elseif mode.infoType == ffi.C.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET then
+        local targetInfo = mode.targetMode.targetVideoSignalInfo;
+
         print("TARGET")
         print("  pixel rate: ", mode.targetMode.targetVideoSignalInfo.pixelRate)
         print("       hsync: ", mode.targetMode.targetVideoSignalInfo.hSyncFreq.Numerator, mode.targetMode.targetVideoSignalInfo.hSyncFreq.Denominator)
         print("       vsync: ", mode.targetMode.targetVideoSignalInfo.vSyncFreq.Numerator, mode.targetMode.targetVideoSignalInfo.vSyncFreq.Denominator, mode.targetMode.targetVideoSignalInfo.vSyncFreq.Numerator/ mode.targetMode.targetVideoSignalInfo.vSyncFreq.Denominator)
+        print(" active size: ", targetInfo.activeSize.cx, targetInfo.activeSize.cy)
+        print("  total size: ", targetInfo.totalSize.cx, targetInfo.totalSize.cy)
         print("    ordering: ", tonumber(mode.targetMode.targetVideoSignalInfo.scanLineOrdering))
         print("    standard: ", mode.targetMode.targetVideoSignalInfo.AdditionalSignalInfo.videoStandard)
         print("     divisor: ", mode.targetMode.targetVideoSignalInfo.AdditionalSignalInfo.vSyncFreqDivider)

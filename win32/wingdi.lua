@@ -249,24 +249,16 @@ static const int META_CREATEBRUSHINDIRECT     = 0x02FC;
 static const int META_CREATEREGION            = 0x06FF;
 ]]
 
---[=[
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if(WINVER >= 0x0400)
+ffi.cdef[[
 typedef struct _DRAWPATRECT {
         POINT ptPosition;
         POINT ptSize;
         WORD wStyle;
         WORD wPattern;
 } DRAWPATRECT, *PDRAWPATRECT;
-#endif /* WINVER >= 0x0400 */
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* NOMETAFILE */
-
+--[=[
 /* GDI Escapes */
 #define NEWFRAME                     1
 #define ABORTDOC                     2
@@ -364,10 +356,10 @@ typedef struct _DRAWPATRECT {
  * Return Values for MILCORE_TS_QUERYVER
  */
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_LONGHORN)
+
 #define MILCORE_TS_QUERYVER_RESULT_FALSE        0x0
 #define MILCORE_TS_QUERYVER_RESULT_TRUE  0x7FFFFFFF
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_LONGHORN)
+
 
 
 #define SPCLPASSTHROUGH2             4568   /* new escape for NT5 pscript driver */
@@ -379,8 +371,7 @@ typedef struct _DRAWPATRECT {
 #define PSIDENT_GDICENTRIC    0
 #define PSIDENT_PSCENTRIC     1
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
 
 /*
  * Header structure for the input buffer to POSTSCRIPT_INJECTION escape
@@ -396,8 +387,6 @@ typedef struct _PSINJECTDATA {
 
 } PSINJECTDATA, *PPSINJECTDATA;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 /*
  * Constants for PSINJECTDATA.InjectionPoint field
@@ -458,17 +447,16 @@ typedef struct _PSINJECTDATA {
 #define FEATURESETTING_NEGATIVE             5
 #define FEATURESETTING_PROTOCOL             6
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
+
 //
 // The range of selectors between FEATURESETTING_PRIVATE_BEGIN and
 // FEATURESETTING_PRIVATE_END is reserved by Microsoft for private use
 //
 #define FEATURESETTING_PRIVATE_BEGIN 0x1000
 #define FEATURESETTING_PRIVATE_END   0x1FFF
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
 
 /*
  * Information about output options
@@ -495,8 +483,7 @@ typedef struct _PSFEATURE_CUSTPAPER {
 
 } PSFEATURE_CUSTPAPER, *PPSFEATURE_CUSTPAPER;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /* Value returned for FEATURESETTING_PROTOCOL */
 #define PSPROTOCOL_ASCII             0
@@ -858,26 +845,17 @@ typedef struct tagBITMAPFILEHEADER {
 
 --#include <poppack.h>
 
---[=[
-#define MAKEPOINTS(l)       (*((POINTS  *)&(l)))
 
-#if(WINVER >= 0x0400)
-#ifndef NOFONTSIG
+--#define MAKEPOINTS(l)       (*((POINTS  *)&(l)))
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+ffi.cdef[[
 typedef struct tagFONTSIGNATURE
 {
     DWORD fsUsb[4];
     DWORD fsCsb[2];
 } FONTSIGNATURE, *PFONTSIGNATURE, *LPFONTSIGNATURE;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagCHARSETINFO
 {
@@ -885,19 +863,15 @@ typedef struct tagCHARSETINFO
     UINT ciACP;
     FONTSIGNATURE fs;
 } CHARSETINFO, *PCHARSETINFO,  *NPCHARSETINFO,  *LPCHARSETINFO;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+--[=[
 #define TCI_SRCCHARSET  1
 #define TCI_SRCCODEPAGE 2
 #define TCI_SRCFONTSIG  3
-#if (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
-#define TCI_SRCLOCALE   0x1000
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+#define TCI_SRCLOCALE   0x1000
+
 
 typedef struct tagLOCALESIGNATURE
 {
@@ -905,18 +879,10 @@ typedef struct tagLOCALESIGNATURE
     DWORD lsCsbDefault[2];
     DWORD lsCsbSupported[2];
 } LOCALESIGNATURE, *PLOCALESIGNATURE, *LPLOCALESIGNATURE;
+--]=]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#endif
-#endif /* WINVER >= 0x0400 */
-
-#ifndef NOMETAFILE
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 /* Clipboard Metafile Picture Structure */
 
 typedef struct tagHANDLETABLE
@@ -930,22 +896,13 @@ typedef struct tagMETARECORD
     WORD        rdFunction;
     WORD        rdParm[1];
   } METARECORD;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+ffi.cdef[[
+typedef struct tagMETARECORD *PMETARECORD;
 
-typedef struct tagMETARECORD UNALIGNED *PMETARECORD;
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-typedef struct tagMETARECORD UNALIGNED  *LPMETARECORD;
+typedef struct tagMETARECORD  *LPMETARECORD;
 
 typedef struct tagMETAFILEPICT
   {
@@ -954,15 +911,13 @@ typedef struct tagMETAFILEPICT
     LONG        yExt;
     HMETAFILE   hMF;
   } METAFILEPICT,  *LPMETAFILEPICT;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#include <pshpack2.h>
+--#include <pshpack2.h>
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+ffi.cdef[[
 typedef struct tagMETAHEADER
 {
     WORD        mtType;
@@ -975,15 +930,11 @@ typedef struct tagMETAHEADER
 } METAHEADER;
 typedef struct tagMETAHEADER UNALIGNED *PMETAHEADER;
 typedef struct tagMETAHEADER UNALIGNED  *LPMETAHEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+--#include <poppack.h>
 
-#include <poppack.h>
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 /* Enhanced Metafile structures */
 typedef struct tagENHMETARECORD
 {
@@ -1013,52 +964,43 @@ typedef struct tagENHMETAHEADER
     DWORD   nPalEntries;        // Number of entries in the metafile palette.
     SIZEL   szlDevice;          // Size of the reference device in pels
     SIZEL   szlMillimeters;     // Size of the reference device in millimeters
-#if(WINVER >= 0x0400)
+
     DWORD   cbPixelFormat;      // Size of PIXELFORMATDESCRIPTOR information
                                 // This is 0 if no pixel format is set
     DWORD   offPixelFormat;     // Offset to PIXELFORMATDESCRIPTOR
                                 // This is 0 if no pixel format is set
     DWORD   bOpenGL;            // TRUE if OpenGL commands are present in
                                 // the metafile, otherwise FALSE
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0500)
+
+
     SIZEL   szlMicrometers;     // Size of the reference device in micrometers
-#endif /* WINVER >= 0x0500 */
+
 
 } ENHMETAHEADER, *PENHMETAHEADER, *LPENHMETAHEADER;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#endif /* NOMETAFILE */
-
-#ifndef NOTEXTMETRIC
-
+ffi.cdef[[
 /* tmPitchAndFamily flags */
-#define TMPF_FIXED_PITCH    0x01
-#define TMPF_VECTOR             0x02
-#define TMPF_DEVICE             0x08
-#define TMPF_TRUETYPE       0x04
+static const int TMPF_FIXED_PITCH  =  0x01;
+static const int TMPF_VECTOR       =  0x02;
+static const int TMPF_DEVICE       =  0x08;
+static const int TMPF_TRUETYPE     =  0x04;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-//
-// BCHAR definition for APPs
-//
-#ifdef UNICODE
+-- BCHAR definition for APPs
+if UNICODE then
+ffi.cdef[[
     typedef WCHAR BCHAR;
-#else
+]]
+else
+ffi.cdef[[
     typedef BYTE BCHAR;
-#endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
---]=]
+]]
+end
 
 
 --#include <pshpack4.h>
-
 ffi.cdef[[
 typedef struct tagTEXTMETRICA
 {
@@ -1962,11 +1904,12 @@ static const int AD_CLOCKWISE        =2;
                              /* pixels                                  */
 #define BLTALIGNMENT    119  /* Preferred blt alignment                 */
 
-#if(WINVER >= 0x0500)
+
 #define SHADEBLENDCAPS  120  /* Shading and blending caps               */
 #define COLORMGMTCAPS   121  /* Color Management caps                   */
-#endif /* WINVER >= 0x0500 */
+]=]
 
+--[[
 #ifndef NOGDICAPMASKS
 
 /* Device Capability Masks: */
@@ -2041,7 +1984,9 @@ static const int AD_CLOCKWISE        =2;
 #define TC_SCROLLBLT        0x00010000  /* Don't do text scroll with blt           */
 
 #endif /* NOGDICAPMASKS */
+--]]
 
+--[=[
 /* Raster Capabilities */
 #define RC_NONE
 #define RC_BITBLT           1       /* Can do standard BLT.             */
@@ -2061,7 +2006,7 @@ static const int AD_CLOCKWISE        =2;
 #define RC_OP_DX_OUTPUT     0x4000
 #define RC_DEVBITS          0x8000
 
-#if(WINVER >= 0x0500)
+
 
 /* Shading and blending caps */
 #define SB_NONE             0x00000000
@@ -2078,7 +2023,6 @@ static const int AD_CLOCKWISE        =2;
 #define CM_GAMMA_RAMP       0x00000002
 #define CM_CMYK_COLOR       0x00000004
 
-#endif /* WINVER >= 0x0500 */
 --]=]
 
 ffi.cdef[[
@@ -3402,39 +3346,39 @@ typedef struct tagPIXELFORMATDESCRIPTOR
 ]]
 
 
---[=[
+ffi.cdef[[
 /* pixel types */
-#define PFD_TYPE_RGBA        0
-#define PFD_TYPE_COLORINDEX  1
+static const int PFD_TYPE_RGBA       = 0;
+static const int PFD_TYPE_COLORINDEX = 1;
 
 /* layer types */
-#define PFD_MAIN_PLANE       0
-#define PFD_OVERLAY_PLANE    1
-#define PFD_UNDERLAY_PLANE   (-1)
+static const int PFD_MAIN_PLANE      = 0;
+static const int PFD_OVERLAY_PLANE   = 1;
+static const int PFD_UNDERLAY_PLANE  = (-1);
 
 /* PIXELFORMATDESCRIPTOR flags */
-#define PFD_DOUBLEBUFFER            0x00000001
-#define PFD_STEREO                  0x00000002
-#define PFD_DRAW_TO_WINDOW          0x00000004
-#define PFD_DRAW_TO_BITMAP          0x00000008
-#define PFD_SUPPORT_GDI             0x00000010
-#define PFD_SUPPORT_OPENGL          0x00000020
-#define PFD_GENERIC_FORMAT          0x00000040
-#define PFD_NEED_PALETTE            0x00000080
-#define PFD_NEED_SYSTEM_PALETTE     0x00000100
-#define PFD_SWAP_EXCHANGE           0x00000200
-#define PFD_SWAP_COPY               0x00000400
-#define PFD_SWAP_LAYER_BUFFERS      0x00000800
-#define PFD_GENERIC_ACCELERATED     0x00001000
-#define PFD_SUPPORT_DIRECTDRAW      0x00002000
-#define PFD_DIRECT3D_ACCELERATED    0x00004000
-#define PFD_SUPPORT_COMPOSITION     0x00008000
+static const int PFD_DOUBLEBUFFER           = 0x00000001;
+static const int PFD_STEREO                 = 0x00000002;
+static const int PFD_DRAW_TO_WINDOW         = 0x00000004;
+static const int PFD_DRAW_TO_BITMAP         = 0x00000008;
+static const int PFD_SUPPORT_GDI            = 0x00000010;
+static const int PFD_SUPPORT_OPENGL         = 0x00000020;
+static const int PFD_GENERIC_FORMAT         = 0x00000040;
+static const int PFD_NEED_PALETTE           = 0x00000080;
+static const int PFD_NEED_SYSTEM_PALETTE    = 0x00000100;
+static const int PFD_SWAP_EXCHANGE          = 0x00000200;
+static const int PFD_SWAP_COPY              = 0x00000400;
+static const int PFD_SWAP_LAYER_BUFFERS     = 0x00000800;
+static const int PFD_GENERIC_ACCELERATED    = 0x00001000;
+static const int PFD_SUPPORT_DIRECTDRAW     = 0x00002000;
+static const int PFD_DIRECT3D_ACCELERATED   = 0x00004000;
+static const int PFD_SUPPORT_COMPOSITION    = 0x00008000;
 
 /* PIXELFORMATDESCRIPTOR flags for use in ChoosePixelFormat only */
-#define PFD_DEPTH_DONTCARE          0x20000000
-#define PFD_DOUBLEBUFFER_DONTCARE   0x40000000
-#define PFD_STEREO_DONTCARE         0x80000000
---]=]
+static const int PFD_DEPTH_DONTCARE         = 0x20000000;
+static const int PFD_DOUBLEBUFFER_DONTCARE  = 0x40000000;
+static const int PFD_STEREO_DONTCARE        = 0x80000000;
+]]
 
 
 
@@ -3924,7 +3868,7 @@ ffi.cdef[[
      LPVOID lpvBits,  LPBITMAPINFO lpbmi,  UINT usage);  // SAL actual size of lpbmi is computed from structure elements
 ]]
 
---[=[
+ffi.cdef[[
  DWORD __stdcall GetFontData (     HDC     hdc,
                                          DWORD   dwTable,
                                          DWORD   dwOffset,
@@ -3935,188 +3879,215 @@ ffi.cdef[[
  DWORD __stdcall GetGlyphOutlineA(     HDC hdc,
                                              UINT uChar,
                                              UINT fuFormat,
-                                            _Out_ LPGLYPHMETRICS lpgm,
+                                            LPGLYPHMETRICS lpgm,
                                              DWORD cjBuffer,
-                                            _Out_writes_bytes_opt_(cjBuffer) LPVOID pvBuffer,
+                                            LPVOID pvBuffer,
                                              const MAT2 *lpmat2
                                         );
  DWORD __stdcall GetGlyphOutlineW(     HDC hdc,
                                              UINT uChar,
                                              UINT fuFormat,
-                                            _Out_ LPGLYPHMETRICS lpgm,
+                                            LPGLYPHMETRICS lpgm,
                                              DWORD cjBuffer,
-                                            _Out_writes_bytes_opt_(cjBuffer) LPVOID pvBuffer,
+                                            LPVOID pvBuffer,
                                              const MAT2 *lpmat2
                                         );
+]]
+
+--[[
 #ifdef UNICODE
 #define GetGlyphOutline  GetGlyphOutlineW
 #else
 #define GetGlyphOutline  GetGlyphOutlineA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
  int   __stdcall GetGraphicsMode(  HDC hdc);
  int   __stdcall GetMapMode(  HDC hdc);
- UINT  __stdcall GetMetaFileBitsEx( HMETAFILE hMF,  UINT cbBuffer, _Out_writes_bytes_opt_(cbBuffer) LPVOID lpData);
+ UINT  __stdcall GetMetaFileBitsEx( HMETAFILE hMF,  UINT cbBuffer, LPVOID lpData);
  HMETAFILE   __stdcall GetMetaFileA(  LPCSTR lpName);
  HMETAFILE   __stdcall GetMetaFileW(  LPCWSTR lpName);
+]]
+
+ --[[
 #ifdef UNICODE
 #define GetMetaFile  GetMetaFileW
 #else
 #define GetMetaFile  GetMetaFileA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  COLORREF __stdcall GetNearestColor(  HDC hdc,  COLORREF color);
  UINT  __stdcall GetNearestPaletteIndex(  HPALETTE h,  COLORREF color);
  DWORD __stdcall GetObjectType(  HGDIOBJ h);
+]]
 
-#ifndef NOTEXTMETRIC
 
+ffi.cdef[[
  UINT __stdcall GetOutlineTextMetricsA(  HDC hdc,
                                                  UINT cjCopy,
-                                                _Out_writes_bytes_opt_(cjCopy) LPOUTLINETEXTMETRICA potm);
+                                                 LPOUTLINETEXTMETRICA potm);
  UINT __stdcall GetOutlineTextMetricsW(  HDC hdc,
                                                  UINT cjCopy,
-                                                _Out_writes_bytes_opt_(cjCopy) LPOUTLINETEXTMETRICW potm);
+                                                 LPOUTLINETEXTMETRICW potm);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetOutlineTextMetrics  GetOutlineTextMetricsW
 #else
 #define GetOutlineTextMetrics  GetOutlineTextMetricsA
 #endif // !UNICODE
+--]]
 
-#endif /* NOTEXTMETRIC */
 
-_Ret_range_(0,cEntries)
+ffi.cdef[[
  UINT  __stdcall GetPaletteEntries(    HPALETTE hpal,
                                              UINT iStart,
                                              UINT cEntries,
-                                            _Out_writes_to_opt_(cEntries,return) LPPALETTEENTRY pPalEntries);
+                                             LPPALETTEENTRY pPalEntries);
  COLORREF __stdcall GetPixel(  HDC hdc,  int x,  int y);
  int   __stdcall GetPixelFormat(  HDC hdc);
  int   __stdcall GetPolyFillMode(  HDC hdc);
- BOOL  __stdcall GetRasterizerCaps(   _Out_writes_bytes_(cjBytes) LPRASTERIZER_STATUS lpraststat,
+ BOOL  __stdcall GetRasterizerCaps(    LPRASTERIZER_STATUS lpraststat,
                                              UINT cjBytes);
 
  int   __stdcall GetRandomRgn ( HDC hdc,  HRGN hrgn,  INT i);
  DWORD __stdcall GetRegionData(    HRGN hrgn,
                                          DWORD nCount,
-                                        _Out_writes_bytes_to_opt_(nCount, return) LPRGNDATA lpRgnData);
- int   __stdcall GetRgnBox(  HRGN hrgn,  _Out_ LPRECT lprc);
+                                        LPRGNDATA lpRgnData);
+ int   __stdcall GetRgnBox(  HRGN hrgn,  LPRECT lprc);
  HGDIOBJ __stdcall GetStockObject(  int i);
  int   __stdcall GetStretchBltMode( HDC hdc);
+]]
 
+ffi.cdef[[
 UINT
 __stdcall
 GetSystemPaletteEntries(
      HDC  hdc,
      UINT iStart,
      UINT cEntries,
-    _Out_writes_opt_(cEntries) LPPALETTEENTRY pPalEntries
+     LPPALETTEENTRY pPalEntries
     );
 
  UINT  __stdcall GetSystemPaletteUse( HDC hdc);
  int   __stdcall GetTextCharacterExtra( HDC hdc);
  UINT  __stdcall GetTextAlign( HDC hdc);
  COLORREF __stdcall GetTextColor( HDC hdc);
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetTextExtentPointA(
      HDC hdc,
-    _In_reads_(c) LPCSTR lpString,
+    LPCSTR lpString,
      int c,
-    _Out_ LPSIZE lpsz
+    LPSIZE lpsz
     );
 
 BOOL
 __stdcall
 GetTextExtentPointW(
      HDC hdc,
-    _In_reads_(c) LPCWSTR lpString,
+    LPCWSTR lpString,
      int c,
-    _Out_ LPSIZE lpsz
+    LPSIZE lpsz
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define GetTextExtentPoint  GetTextExtentPointW
 #else
 #define GetTextExtentPoint  GetTextExtentPointA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetTextExtentPoint32A(
      HDC hdc,
-    _In_reads_(c) LPCSTR lpString,
+    LPCSTR lpString,
      int c,
-    _Out_ LPSIZE psizl
+    LPSIZE psizl
     );
 
 BOOL
 __stdcall
 GetTextExtentPoint32W(
      HDC hdc,
-    _In_reads_(c) LPCWSTR lpString,
+    LPCWSTR lpString,
      int c,
-    _Out_ LPSIZE psizl
+    LPSIZE psizl
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define GetTextExtentPoint32  GetTextExtentPoint32W
 #else
 #define GetTextExtentPoint32  GetTextExtentPoint32A
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetTextExtentExPointA(
      HDC hdc,
-    _In_reads_(cchString) LPCSTR lpszString,
+    LPCSTR lpszString,
      int cchString,
      int nMaxExtent,
      LPINT lpnFit,
-    _Out_writes_to_opt_ (cchString, *lpnFit) LPINT lpnDx,
-    _Out_ LPSIZE lpSize
+    LPINT lpnDx,
+    LPSIZE lpSize
     );
 
 BOOL
 __stdcall
 GetTextExtentExPointW(
      HDC hdc,
-    _In_reads_(cchString) LPCWSTR lpszString,
+    LPCWSTR lpszString,
      int cchString,
      int nMaxExtent,
      LPINT lpnFit,
-    _Out_writes_to_opt_ (cchString, *lpnFit) LPINT lpnDx,
-    _Out_ LPSIZE lpSize
+    LPINT lpnDx,
+    LPSIZE lpSize
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define GetTextExtentExPoint  GetTextExtentExPointW
 #else
 #define GetTextExtentExPoint  GetTextExtentExPointA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
+ffi.cdef[[
  int __stdcall GetTextCharset(  HDC hdc);
  int __stdcall GetTextCharsetInfo(  HDC hdc,  LPFONTSIGNATURE lpSig,  DWORD dwFlags);
- BOOL __stdcall TranslateCharsetInfo( _Inout_ DWORD  *lpSrc,  _Out_ LPCHARSETINFO lpCs,  DWORD dwFlags);
+ BOOL __stdcall TranslateCharsetInfo( DWORD  *lpSrc, LPCHARSETINFO lpCs,  DWORD dwFlags);
  DWORD __stdcall GetFontLanguageInfo(  HDC hdc);
- DWORD __stdcall GetCharacterPlacementA(   HDC hdc, _In_reads_(nCount) LPCSTR lpString,  int nCount,  int nMexExtent, _Inout_ LPGCP_RESULTSA lpResults,  DWORD dwFlags);
- DWORD __stdcall GetCharacterPlacementW(   HDC hdc, _In_reads_(nCount) LPCWSTR lpString,  int nCount,  int nMexExtent, _Inout_ LPGCP_RESULTSW lpResults,  DWORD dwFlags);
+ DWORD __stdcall GetCharacterPlacementA(   HDC hdc, LPCSTR lpString,  int nCount,  int nMexExtent, LPGCP_RESULTSA lpResults,  DWORD dwFlags);
+ DWORD __stdcall GetCharacterPlacementW(   HDC hdc, LPCWSTR lpString,  int nCount,  int nMexExtent, LPGCP_RESULTSW lpResults,  DWORD dwFlags);
+]]
+
+ --[[
 #ifdef UNICODE
 #define GetCharacterPlacement  GetCharacterPlacementW
 #else
 #define GetCharacterPlacement  GetCharacterPlacementA
 #endif // !UNICODE
-#endif /* WINVER >= 0x0400 */
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagWCRANGE
 {
     WCHAR  wcLow;
@@ -4132,7 +4103,9 @@ typedef struct tagGLYPHSET
     DWORD    cRanges;
     WCRANGE  ranges[1];
 } GLYPHSET, *PGLYPHSET,  *LPGLYPHSET;
+]]
 
+--[=[
 /* flAccel flags for the GLYPHSET structure above */
 
 #define GS_8BIT_INDICES     0x00000001
@@ -4144,42 +4117,49 @@ typedef struct tagGLYPHSET
  DWORD __stdcall GetFontUnicodeRanges(  HDC hdc,  LPGLYPHSET lpgs);
  DWORD __stdcall GetGlyphIndicesA(  HDC hdc, _In_reads_(c) LPCSTR lpstr,  int c, _Out_writes_(c) LPWORD pgi,  DWORD fl);
  DWORD __stdcall GetGlyphIndicesW(  HDC hdc, _In_reads_(c) LPCWSTR lpstr,  int c, _Out_writes_(c) LPWORD pgi,  DWORD fl);
+--]=]
+
+--[[
 #ifdef UNICODE
 #define GetGlyphIndices  GetGlyphIndicesW
 #else
 #define GetGlyphIndices  GetGlyphIndicesA
 #endif // !UNICODE
- BOOL  __stdcall GetTextExtentPointI( HDC hdc, _In_reads_(cgi) LPWORD pgiIn,  int cgi, _Out_ LPSIZE psize);
+--]]
+
+ffi.cdef[[
+ BOOL  __stdcall GetTextExtentPointI( HDC hdc, LPWORD pgiIn,  int cgi, LPSIZE psize);
  BOOL  __stdcall GetTextExtentExPointI (   HDC hdc,
-                                                _In_reads_(cwchString) LPWORD lpwszString,
+                                                LPWORD lpwszString,
                                                  int cwchString,
                                                  int nMaxExtent,
                                                  LPINT lpnFit,
-                                                _Out_writes_to_opt_(cwchString, *lpnFit) LPINT lpnDx,
-                                                _Out_ LPSIZE lpSize
+                                                LPINT lpnDx,
+                                                 LPSIZE lpSize
                                                 );
 
  BOOL  __stdcall GetCharWidthI(    HDC hdc,
                                          UINT giFirst,
                                          UINT cgi,
-                                        _In_reads_opt_(cgi) LPWORD pgi,
-                                        _Out_writes_(cgi) LPINT piWidths
+                                         LPWORD pgi,
+                                         LPINT piWidths
                                         );
 
  BOOL  __stdcall GetCharABCWidthsI(    HDC    hdc,
                                              UINT   giFirst,
                                              UINT   cgi,
-                                            _In_reads_opt_(cgi) LPWORD pgi,
-                                            _Out_writes_(cgi) LPABC  pabc
+                                             LPWORD pgi,
+                                             LPABC  pabc
                                         );
+]]
 
+ffi.cdef[[
+//#define STAMP_DESIGNVECTOR  (0x8000000 + 'd' + ('v' << 8))
+//#define STAMP_AXESLIST      (0x8000000 + 'a' + ('l' << 8))
+static const int MM_MAX_NUMAXES     = 16;
+]]
 
-#define STAMP_DESIGNVECTOR  (0x8000000 + 'd' + ('v' << 8))
-#define STAMP_AXESLIST      (0x8000000 + 'a' + ('l' << 8))
-#define MM_MAX_NUMAXES      16
-
-
-
+ffi.cdef[[
 typedef struct tagDESIGNVECTOR
 {
     DWORD  dvReserved;
@@ -4187,34 +4167,49 @@ typedef struct tagDESIGNVECTOR
     LONG   dvValues[MM_MAX_NUMAXES];
 } DESIGNVECTOR, *PDESIGNVECTOR,  *LPDESIGNVECTOR;
 
- int  __stdcall AddFontResourceExA(  LPCSTR name,  DWORD fl, _Reserved_ PVOID res);
- int  __stdcall AddFontResourceExW(  LPCWSTR name,  DWORD fl, _Reserved_ PVOID res);
+ int  __stdcall AddFontResourceExA(  LPCSTR name,  DWORD fl,  PVOID res);
+ int  __stdcall AddFontResourceExW(  LPCWSTR name,  DWORD fl,  PVOID res);
+]]
+
+--[[
 #ifdef UNICODE
 #define AddFontResourceEx  AddFontResourceExW
 #else
 #define AddFontResourceEx  AddFontResourceExA
 #endif // !UNICODE
- BOOL __stdcall RemoveFontResourceExA(  LPCSTR name,  DWORD fl, _Reserved_ PVOID pdv);
- BOOL __stdcall RemoveFontResourceExW(  LPCWSTR name,  DWORD fl, _Reserved_ PVOID pdv);
+--]]
+
+ffi.cdef[[
+ BOOL __stdcall RemoveFontResourceExA(  LPCSTR name,  DWORD fl,  PVOID pdv);
+ BOOL __stdcall RemoveFontResourceExW(  LPCWSTR name,  DWORD fl,  PVOID pdv);
+]]
+
+--[[
 #ifdef UNICODE
 #define RemoveFontResourceEx  RemoveFontResourceExW
 #else
 #define RemoveFontResourceEx  RemoveFontResourceExA
 #endif // !UNICODE
- HANDLE __stdcall AddFontMemResourceEx(   _In_reads_bytes_(cjSize) PVOID pFileView,
+--]]
+
+ffi.cdef[[
+ HANDLE __stdcall AddFontMemResourceEx(  PVOID pFileView,
                                                  DWORD cjSize,
-                                                _Reserved_ PVOID pvResrved,
+                                                 PVOID pvResrved,
                                                  DWORD* pNumFonts);
 
  BOOL __stdcall RemoveFontMemResourceEx(  HANDLE h);
-#define FR_PRIVATE     0x10
-#define FR_NOT_ENUM    0x20
 
+static const int FR_PRIVATE     = 0x10;
+static const int FR_NOT_ENUM    = 0x20;
+]]
+
+ffi.cdef[[
 // The actual size of the DESIGNVECTOR and ENUMLOGFONTEXDV structures
 // is determined by dvNumAxes,
 // MM_MAX_NUMAXES only detemines the maximal size allowed
 
-#define MM_MAX_AXES_NAMELEN 16
+static const int MM_MAX_AXES_NAMELEN  = 16;
 
 typedef struct tagAXISINFOA
 {
@@ -4228,6 +4223,9 @@ typedef struct tagAXISINFOW
     LONG   axMaxValue;
     WCHAR  axAxisName[MM_MAX_AXES_NAMELEN];
 } AXISINFOW, *PAXISINFOW,  *LPAXISINFOW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef AXISINFOW AXISINFO;
 typedef PAXISINFOW PAXISINFO;
@@ -4237,7 +4235,9 @@ typedef AXISINFOA AXISINFO;
 typedef PAXISINFOA PAXISINFO;
 typedef LPAXISINFOA LPAXISINFO;
 #endif // UNICODE
+--]]
 
+ffi.cdef[[
 typedef struct tagAXESLISTA
 {
     DWORD     axlReserved;
@@ -4250,6 +4250,9 @@ typedef struct tagAXESLISTW
     DWORD     axlNumAxes;
     AXISINFOW axlAxisInfo[MM_MAX_NUMAXES];
 } AXESLISTW, *PAXESLISTW,  *LPAXESLISTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef AXESLISTW AXESLIST;
 typedef PAXESLISTW PAXESLIST;
@@ -4259,7 +4262,9 @@ typedef AXESLISTA AXESLIST;
 typedef PAXESLISTA PAXESLIST;
 typedef LPAXESLISTA LPAXESLIST;
 #endif // UNICODE
+--]]
 
+ffi.cdef[[
 // The actual size of the AXESLIST and ENUMTEXTMETRIC structure is
 // determined by axlNumAxes,
 // MM_MAX_NUMAXES only detemines the maximal size allowed
@@ -4269,11 +4274,15 @@ typedef struct tagENUMLOGFONTEXDVA
     ENUMLOGFONTEXA elfEnumLogfontEx;
     DESIGNVECTOR   elfDesignVector;
 } ENUMLOGFONTEXDVA, *PENUMLOGFONTEXDVA,  *LPENUMLOGFONTEXDVA;
+
 typedef struct tagENUMLOGFONTEXDVW
 {
     ENUMLOGFONTEXW elfEnumLogfontEx;
     DESIGNVECTOR   elfDesignVector;
 } ENUMLOGFONTEXDVW, *PENUMLOGFONTEXDVW,  *LPENUMLOGFONTEXDVW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef ENUMLOGFONTEXDVW ENUMLOGFONTEXDV;
 typedef PENUMLOGFONTEXDVW PENUMLOGFONTEXDV;
@@ -4283,16 +4292,22 @@ typedef ENUMLOGFONTEXDVA ENUMLOGFONTEXDV;
 typedef PENUMLOGFONTEXDVA PENUMLOGFONTEXDV;
 typedef LPENUMLOGFONTEXDVA LPENUMLOGFONTEXDV;
 #endif // UNICODE
+--]]
 
+ffi.cdef[[
  HFONT  __stdcall CreateFontIndirectExA(  const ENUMLOGFONTEXDVA *);
  HFONT  __stdcall CreateFontIndirectExW(  const ENUMLOGFONTEXDVW *);
+]]
+
+ --[[
 #ifdef UNICODE
 #define CreateFontIndirectEx  CreateFontIndirectExW
 #else
 #define CreateFontIndirectEx  CreateFontIndirectExA
 #endif // !UNICODE
+--]]
 
-#ifndef NOTEXTMETRIC
+ffi.cdef[[
 typedef struct tagENUMTEXTMETRICA
 {
     NEWTEXTMETRICEXA etmNewTextMetricEx;
@@ -4303,7 +4318,7 @@ typedef struct tagENUMTEXTMETRICW
     NEWTEXTMETRICEXW etmNewTextMetricEx;
     AXESLISTW        etmAxesList;
 } ENUMTEXTMETRICW, *PENUMTEXTMETRICW,  *LPENUMTEXTMETRICW;
---]=]
+]]
 
 --[[
 #ifdef UNICODE
@@ -4545,37 +4560,28 @@ static const int AC_SRC_ALPHA               = 0x01;
      UINT crTransparent);
 ]]
 
---[=[
+ffi.cdef[[
 //
 // gradient drawing modes
 //
 
-#define GRADIENT_FILL_RECT_H    0x00000000
-#define GRADIENT_FILL_RECT_V    0x00000001
-#define GRADIENT_FILL_TRIANGLE  0x00000002
-#define GRADIENT_FILL_OP_FLAG   0x000000ff
+static const int GRADIENT_FILL_RECT_H   = 0x00000000;
+static const int GRADIENT_FILL_RECT_V   = 0x00000001;
+static const int GRADIENT_FILL_TRIANGLE = 0x00000002;
+static const int GRADIENT_FILL_OP_FLAG  = 0x000000ff;
 
 
 BOOL
 __stdcall
 GradientFill(
      HDC hdc,
-    _In_reads_(nVertex) PTRIVERTEX pVertex,
+    PTRIVERTEX pVertex,
      ULONG nVertex,
      PVOID pMesh,
      ULONG nMesh,
      ULONG ulMode
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif // (WINVER >= 0x0400)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
 
 
  BOOL  __stdcall GdiAlphaBlend( HDC hdcDest,  int xoriginDest,  int yoriginDest,  int wDest,  int hDest,  HDC hdcSrc,  int xoriginSrc,  int yoriginSrc,  int wSrc,  int hSrc,  BLENDFUNCTION ftn);
@@ -4584,14 +4590,14 @@ GradientFill(
                                             int xoriginSrc,  int yoriginSrc,  int wSrc,  int hSrc,  UINT crTransparent);
 
  BOOL  __stdcall GdiGradientFill(  HDC hdc,
-                                        _In_reads_(nVertex) PTRIVERTEX pVertex,
+                                        PTRIVERTEX pVertex,
                                          ULONG nVertex,
                                          PVOID pMesh,
                                          ULONG nCount,
                                          ULONG ulMode);
 
-#endif
---]=]
+
+]]
 
 --[=[
  BOOL  __stdcall PlayMetaFileRecord(   HDC hdc,
