@@ -3,6 +3,7 @@
 local ffi = require("ffi")
 local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift
+local band, bor = bit.band, bit.bor
 
 require("win32.windef")
 
@@ -1704,28 +1705,33 @@ typedef LPEXTLOGFONTA LPEXTLOGFONT;
 --]]
 
 
---[=[
-#define ELF_VERSION         0
-#define ELF_CULTURE_LATIN   0
+ffi.cdef[[
+static const int ELF_VERSION        = 0;
+static const int ELF_CULTURE_LATIN  = 0;
 
 /* EnumFonts Masks */
-#define RASTER_FONTTYPE     0x0001
-#define DEVICE_FONTTYPE     0x0002
-#define TRUETYPE_FONTTYPE   0x0004
+static const int RASTER_FONTTYPE    = 0x0001;
+static const int DEVICE_FONTTYPE    = 0x0002;
+static const int TRUETYPE_FONTTYPE  = 0x0004;
+]]
 
-#define RGB(r,g,b)          ((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
-#define PALETTERGB(r,g,b)   (0x02000000 | RGB(r,g,b))
-#define PALETTEINDEX(i)     ((COLORREF)(0x01000000 | (DWORD)(WORD)(i)))
 
+function exports.RGB(r,g,b)         return  ffi.cast("COLORREF",bor(ffi.cast("BYTE",r),lshift(g,8),lshift(b,16))) end
+function exports.PALETTERGB(r,g,b)   return bor(0x02000000 , RGB(r,g,b)) end
+--function exports.PALETTEINDEX(i)     ffi.cast("COLORREF", bor(0x01000000, (DWORD)(WORD)(i)))
+
+ffi.cdef[[
 /* palette entry flags */
 
-#define PC_RESERVED     0x01    /* palette index used for animation */
-#define PC_EXPLICIT     0x02    /* palette index is explicit to device */
-#define PC_NOCOLLAPSE   0x04    /* do not match color to system palette */
+static const int PC_RESERVED    = 0x01;    /* palette index used for animation */
+static const int PC_EXPLICIT    = 0x02;    /* palette index is explicit to device */
+static const int PC_NOCOLLAPSE  = 0x04;    /* do not match color to system palette */
+]]
 
-#define GetRValue(rgb)      (LOBYTE(rgb))
-#define GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
-#define GetBValue(rgb)      (LOBYTE((rgb)>>16))
+--[=[
+function exports.GetRValue(rgb)      (LOBYTE(rgb))
+function exports.GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
+function exports.GetBValue(rgb)      (LOBYTE((rgb)>>16))
 --]=]
 
 ffi.cdef[[
@@ -4607,90 +4613,115 @@ GradientFill(
 
 ]]
 
---[=[
+ffi.cdef[[
  BOOL  __stdcall PlayMetaFileRecord(   HDC hdc,
-                                            _In_reads_(noObjs) LPHANDLETABLE lpHandleTable,
+                                            LPHANDLETABLE lpHandleTable,
                                              LPMETARECORD lpMR,
                                              UINT noObjs);
 
-typedef int (CALLBACK* MFENUMPROC)(  HDC hdc, _In_reads_(nObj) HANDLETABLE * lpht,  METARECORD * lpMR,  int nObj,  LPARAM param);
+typedef int (__stdcall * MFENUMPROC)(  HDC hdc,  HANDLETABLE * lpht,  METARECORD * lpMR,  int nObj,  LPARAM param);
  BOOL  __stdcall EnumMetaFile(  HDC hdc,  HMETAFILE hmf,  MFENUMPROC proc,  LPARAM param);
 
-typedef int (CALLBACK* ENHMFENUMPROC)( HDC hdc, _In_reads_(nHandles) HANDLETABLE * lpht,  const ENHMETARECORD * lpmr,  int nHandles,  LPARAM data);
+typedef int (__stdcall * ENHMFENUMPROC)( HDC hdc,  HANDLETABLE * lpht,  const ENHMETARECORD * lpmr,  int nHandles,  LPARAM data);
+]]
 
+ffi.cdef[[
 // Enhanced Metafile Function Declarations
 
  HENHMETAFILE __stdcall CloseEnhMetaFile(  HDC hdc);
  HENHMETAFILE __stdcall CopyEnhMetaFileA(  HENHMETAFILE hEnh,  LPCSTR lpFileName);
  HENHMETAFILE __stdcall CopyEnhMetaFileW(  HENHMETAFILE hEnh,  LPCWSTR lpFileName);
+]]
+ --[[
 #ifdef UNICODE
 #define CopyEnhMetaFile  CopyEnhMetaFileW
 #else
 #define CopyEnhMetaFile  CopyEnhMetaFileA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HDC   __stdcall CreateEnhMetaFileA(  HDC hdc,  LPCSTR lpFilename,  const RECT *lprc,  LPCSTR lpDesc);
  HDC   __stdcall CreateEnhMetaFileW(  HDC hdc,  LPCWSTR lpFilename,  const RECT *lprc,  LPCWSTR lpDesc);
-#ifdef UNICODE
+]]
+
+--[[
+ #ifdef UNICODE
 #define CreateEnhMetaFile  CreateEnhMetaFileW
 #else
 #define CreateEnhMetaFile  CreateEnhMetaFileA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  BOOL  __stdcall DeleteEnhMetaFile(  HENHMETAFILE hmf);
  BOOL  __stdcall EnumEnhMetaFile(  HDC hdc,  HENHMETAFILE hmf,  ENHMFENUMPROC proc,
                                          LPVOID param,  const RECT * lpRect);
  HENHMETAFILE  __stdcall GetEnhMetaFileA(  LPCSTR lpName);
  HENHMETAFILE  __stdcall GetEnhMetaFileW(  LPCWSTR lpName);
+]]
+
+
+ --[[
 #ifdef UNICODE
 #define GetEnhMetaFile  GetEnhMetaFileW
 #else
 #define GetEnhMetaFile  GetEnhMetaFileA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  UINT  __stdcall GetEnhMetaFileBits(   HENHMETAFILE hEMF,
                                              UINT nSize,
-                                            _Out_writes_bytes_opt_(nSize) LPBYTE lpData);
+                                            LPBYTE lpData);
  UINT  __stdcall GetEnhMetaFileDescriptionA(   HENHMETAFILE hemf,
                                                      UINT cchBuffer,
-                                                    _Out_writes_opt_(cchBuffer) LPSTR lpDescription);
+                                                    LPSTR lpDescription);
  UINT  __stdcall GetEnhMetaFileDescriptionW(   HENHMETAFILE hemf,
                                                      UINT cchBuffer,
-                                                    _Out_writes_opt_(cchBuffer) LPWSTR lpDescription);
+                                                     LPWSTR lpDescription);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetEnhMetaFileDescription  GetEnhMetaFileDescriptionW
 #else
 #define GetEnhMetaFileDescription  GetEnhMetaFileDescriptionA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  UINT  __stdcall GetEnhMetaFileHeader(     HENHMETAFILE hemf,
                                                  UINT nSize,
-                                                _Out_writes_bytes_opt_(nSize) LPENHMETAHEADER lpEnhMetaHeader);
+                                                 LPENHMETAHEADER lpEnhMetaHeader);
  UINT  __stdcall GetEnhMetaFilePaletteEntries( HENHMETAFILE hemf,
                                                      UINT nNumEntries,
-                                                    _Out_writes_opt_(nNumEntries) LPPALETTEENTRY lpPaletteEntries);
+                                                    LPPALETTEENTRY lpPaletteEntries);
 
  UINT  __stdcall GetEnhMetaFilePixelFormat(    HENHMETAFILE hemf,
                                                      UINT cbBuffer,
-                                                    _Out_writes_bytes_opt_(cbBuffer) PIXELFORMATDESCRIPTOR *ppfd);
+                                                     PIXELFORMATDESCRIPTOR *ppfd);
  UINT  __stdcall GetWinMetaFileBits(   HENHMETAFILE hemf,
                                              UINT cbData16,
-                                            _Out_writes_bytes_opt_(cbData16) LPBYTE pData16,
+                                             LPBYTE pData16,
                                              INT iMapMode,
                                              HDC hdcRef);
  BOOL  __stdcall PlayEnhMetaFile(  HDC hdc,  HENHMETAFILE hmf,  const RECT * lprect);
  BOOL  __stdcall PlayEnhMetaFileRecord(    HDC hdc,
-                                                _In_reads_(cht) LPHANDLETABLE pht,
+                                                 LPHANDLETABLE pht,
                                                  const ENHMETARECORD *pmr,
                                                  UINT cht);
 
  HENHMETAFILE  __stdcall SetEnhMetaFileBits(   UINT nSize,
-                                                    _In_reads_bytes_(nSize) const BYTE * pb);
+                                                    const BYTE * pb);
 
  HENHMETAFILE  __stdcall SetWinMetaFileBits(   UINT nSize,
-                                                    _In_reads_bytes_(nSize) const BYTE *lpMeta16Data,
+                                                     const BYTE *lpMeta16Data,
                                                      HDC hdcRef,
                                                      const METAFILEPICT *lpMFP);
- BOOL  __stdcall GdiComment( HDC hdc,  UINT nSize, _In_reads_bytes_(nSize) const BYTE *lpData);
+ BOOL  __stdcall GdiComment( HDC hdc,  UINT nSize,  const BYTE *lpData);
+]]
 
-#endif  /* NOMETAFILE */
---]=]
 
 ffi.cdef[[
  BOOL __stdcall GetTextMetricsA(  HDC hdc, LPTEXTMETRICA lptm);
@@ -6239,3 +6270,4 @@ static const int WGL_SWAPMULTIPLE_MAX = 16;
  DWORD __stdcall wglSwapMultipleBuffers(UINT, const WGLSWAP *);
 ]]
 
+return exports

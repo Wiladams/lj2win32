@@ -27,10 +27,9 @@ typedef unsigned char *PBYTE;
 
 
 typedef wchar_t			WCHAR;
-//typedef long *    PBOOL;
 typedef double          DOUBLE;
 typedef uint8_t			BCHAR;
-//typedef unsigned int	UINT32;
+
 
 
 // Some pointer types
@@ -50,18 +49,11 @@ typedef unsigned long	*PULONG;
 typedef unsigned short	*PUSHORT;
 typedef LONGLONG 		*PLONGLONG;
 typedef ULONGLONG 		*PULONGLONG;
-
-
-
 ]]
 
 
 
 ffi.cdef[[
-
-
-typedef DWORD *			LPCOLORREF;
-
 typedef BOOL *			LPBOOL;
 typedef BYTE *      LPBYTE;
 typedef char *			LPSTR;

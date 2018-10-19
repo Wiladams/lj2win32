@@ -164,24 +164,24 @@ function DeviceContext.MoveTo(self, x, y)
 	return result
 end
 
-DeviceContext.MoveToEx = function(self, x, y, lpPoint)
+function DeviceContext.MoveToEx(self, x, y, lpPoint)
 	return ffi.C.MoveToEx(self.Handle, X, Y, lpPoint);
 end
 
-DeviceContext.SetPixel = function(self, x, y, color)
+function DeviceContext.SetPixel(self, x, y, color)
 	return ffi.C.SetPixel(self.Handle, x, y, color);
 end
 
-DeviceContext.SetPixelV = function(self, x, y, crColor)
+function DeviceContext.SetPixelV(self, x, y, crColor)
 	return ffi.C.SetPixelV(self.Handle, X, Y, crColor);
 end
 
-DeviceContext.LineTo = function(self, xend, yend)
+function DeviceContext.LineTo(self, xend, yend)
 	local result = ffi.C.LineTo(self.Handle, xend, yend);
 	return result
 end
 
-DeviceContext.Ellipse = function(self, nLeftRect, nTopRect, nRightRect, nBottomRect)
+function DeviceContext.Ellipse(self, nLeftRect, nTopRect, nRightRect, nBottomRect)
 	return ffi.C.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect);
 end
 
