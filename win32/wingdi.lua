@@ -928,8 +928,8 @@ typedef struct tagMETAHEADER
     DWORD       mtMaxRecord;
     WORD        mtNoParameters;
 } METAHEADER;
-typedef struct tagMETAHEADER UNALIGNED *PMETAHEADER;
-typedef struct tagMETAHEADER UNALIGNED  *LPMETAHEADER;
+typedef struct tagMETAHEADER  *PMETAHEADER;
+typedef struct tagMETAHEADER   *LPMETAHEADER;
 ]]
 
 --#include <poppack.h>
@@ -1084,9 +1084,11 @@ typedef LPTEXTMETRICA LPTEXTMETRIC;
 #define NTM_MULTIPLEMASTER  0x00080000
 #define NTM_TYPE1           0x00100000
 #define NTM_DSIG            0x00200000
+--]=]
 
-#include <pshpack4.h>
+--#include <pshpack4.h>
 
+ffi.cdef[[
 typedef struct tagNEWTEXTMETRICA
 {
     LONG        tmHeight;
@@ -1114,6 +1116,7 @@ typedef struct tagNEWTEXTMETRICA
     UINT    ntmCellHeight;
     UINT    ntmAvgWidth;
 } NEWTEXTMETRICA, *PNEWTEXTMETRICA,  *NPNEWTEXTMETRICA,  *LPNEWTEXTMETRICA;
+
 typedef struct tagNEWTEXTMETRICW
 {
     LONG        tmHeight;
@@ -1141,6 +1144,9 @@ typedef struct tagNEWTEXTMETRICW
     UINT    ntmCellHeight;
     UINT    ntmAvgWidth;
 } NEWTEXTMETRICW, *PNEWTEXTMETRICW,  *NPNEWTEXTMETRICW,  *LPNEWTEXTMETRICW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef NEWTEXTMETRICW NEWTEXTMETRIC;
 typedef PNEWTEXTMETRICW PNEWTEXTMETRIC;
@@ -1152,38 +1158,36 @@ typedef PNEWTEXTMETRICA PNEWTEXTMETRIC;
 typedef NPNEWTEXTMETRICA NPNEWTEXTMETRIC;
 typedef LPNEWTEXTMETRICA LPNEWTEXTMETRIC;
 #endif // UNICODE
+--]]
 
-#include <poppack.h>
+--#include <poppack.h>
 
-#if(WINVER >= 0x0400)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+ffi.cdef[[
 typedef struct tagNEWTEXTMETRICEXA
 {
     NEWTEXTMETRICA  ntmTm;
     FONTSIGNATURE   ntmFontSig;
 }NEWTEXTMETRICEXA;
+
 typedef struct tagNEWTEXTMETRICEXW
 {
     NEWTEXTMETRICW  ntmTm;
     FONTSIGNATURE   ntmFontSig;
 }NEWTEXTMETRICEXW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef NEWTEXTMETRICEXW NEWTEXTMETRICEX;
 #else
 typedef NEWTEXTMETRICEXA NEWTEXTMETRICEX;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-#endif /* WINVER >= 0x0400 */
 
-#endif /* NOTEXTMETRIC */
-/* GDI Logical Objects: */
---]=]
-
+--/* GDI Logical Objects: */
 
 ffi.cdef[[
 typedef struct tagPELARRAY
@@ -1652,8 +1656,8 @@ static const int PAN_XHEIGHT_DUCKING_STD        = 6; /* Ducking/Standard        
 static const int PAN_XHEIGHT_DUCKING_LARGE      = 7; /* Ducking/Large                  */
 ]]
 
---[=[
-#define ELF_VENDOR_SIZE     4
+ffi.cdef[[
+static const int ELF_VENDOR_SIZE  =   4;
 
 /* The extended logical font       */
 /* An extension of the ENUMLOGFONT */
@@ -1670,6 +1674,7 @@ typedef struct tagEXTLOGFONTA {
     DWORD       elfCulture;     /* 0 for Latin                   */
     PANOSE      elfPanose;
 } EXTLOGFONTA, *PEXTLOGFONTA,  *NPEXTLOGFONTA,  *LPEXTLOGFONTA;
+
 typedef struct tagEXTLOGFONTW {
     LOGFONTW    elfLogFont;
     WCHAR       elfFullName[LF_FULLFACESIZE];
@@ -1682,6 +1687,9 @@ typedef struct tagEXTLOGFONTW {
     DWORD       elfCulture;     /* 0 for Latin                   */
     PANOSE      elfPanose;
 } EXTLOGFONTW, *PEXTLOGFONTW,  *NPEXTLOGFONTW,  *LPEXTLOGFONTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef EXTLOGFONTW EXTLOGFONT;
 typedef PEXTLOGFONTW PEXTLOGFONT;
@@ -1693,10 +1701,10 @@ typedef PEXTLOGFONTA PEXTLOGFONT;
 typedef NPEXTLOGFONTA NPEXTLOGFONT;
 typedef LPEXTLOGFONTA LPEXTLOGFONT;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
+--[=[
 #define ELF_VERSION         0
 #define ELF_CULTURE_LATIN   0
 
@@ -4734,17 +4742,19 @@ HBITMAP __stdcall CreateDIBSection(
             DWORD             offset);
 ]]
 
---[=[
-_Ret_range_(0,cEntries)
+ffi.cdef[[
+
  UINT __stdcall GetDIBColorTable(  HDC  hdc,
                                          UINT iStart,
                                          UINT cEntries,
-                                        _Out_writes_to_(cEntries,return) RGBQUAD *prgbq);
+                                        RGBQUAD *prgbq);
  UINT __stdcall SetDIBColorTable(  HDC  hdc,
                                          UINT iStart,
                                          UINT cEntries,
-                                        _In_reads_(cEntries) const RGBQUAD *prgbq);
+                                        const RGBQUAD *prgbq);
+]]
 
+--[=[
 /* Flags value for COLORADJUSTMENT */
 #define CA_NEGATIVE                 0x0001
 #define CA_LOG_FILTER               0x0002
@@ -4779,7 +4789,9 @@ _Ret_range_(0,cEntries)
 /* Min and max for Contrast, Brightness, Colorfulness, RedGreenTint */
 #define COLOR_ADJ_MIN               (SHORT)-100
 #define COLOR_ADJ_MAX               (SHORT)100
+--]=]
 
+ffi.cdef[[
 typedef struct  tagCOLORADJUSTMENT {
     WORD   caSize;
     WORD   caFlags;
@@ -4794,11 +4806,13 @@ typedef struct  tagCOLORADJUSTMENT {
     SHORT  caColorfulness;
     SHORT  caRedGreenTint;
 } COLORADJUSTMENT, *PCOLORADJUSTMENT,  *LPCOLORADJUSTMENT;
+]]
 
+ffi.cdef[[
  BOOL __stdcall SetColorAdjustment(  HDC hdc,  const COLORADJUSTMENT *lpca);
- BOOL __stdcall GetColorAdjustment(  HDC hdc, _Out_ LPCOLORADJUSTMENT lpca);
+ BOOL __stdcall GetColorAdjustment(  HDC hdc,  LPCOLORADJUSTMENT lpca);
  HPALETTE __stdcall CreateHalftonePalette(  HDC hdc);
---]=]
+]]
 
 ffi.cdef[[
 typedef BOOL (__stdcall* ABORTPROC)(  HDC,  int);
@@ -5367,7 +5381,7 @@ typedef struct tagEMRRESIZEPALETTE
 } EMRRESIZEPALETTE, *PEMRRESIZEPALETTE;
 ]]
 
---[=[
+ffi.cdef[[
 typedef struct tagEMRSETPALETTEENTRIES
 {
     EMR     emr;
@@ -5427,7 +5441,9 @@ typedef struct tagEMREXCLUDECLIPRECT
     RECTL   rclClip;
 } EMREXCLUDECLIPRECT,   *PEMREXCLUDECLIPRECT,
   EMRINTERSECTCLIPRECT, *PEMRINTERSECTCLIPRECT;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRSETVIEWPORTORGEX
 {
     EMR     emr;
@@ -5472,7 +5488,9 @@ typedef struct tagEMRSETPIXELV
     POINTL  ptlPixel;
     COLORREF crColor;
 } EMRSETPIXELV, *PEMRSETPIXELV;
+]]
 
+ffi.cdef[[
 typedef struct tagEMREXTFLOODFILL
 {
     EMR     emr;
@@ -5515,7 +5533,9 @@ typedef struct tagEMRANGLEARC
     FLOAT   eStartAngle;
     FLOAT   eSweepAngle;
 } EMRANGLEARC, *PEMRANGLEARC;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRPOLYLINE
 {
     EMR     emr;
@@ -5579,7 +5599,9 @@ typedef struct tagEMRPOLYPOLYLINE16
     POINTS  apts[1];            // Array of points
 } EMRPOLYPOLYLINE16, *PEMRPOLYPOLYLINE16,
   EMRPOLYPOLYGON16,  *PEMRPOLYPOLYGON16;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRINVERTRGN
 {
     EMR     emr;
@@ -5615,7 +5637,9 @@ typedef struct tagEMREXTSELECTCLIPRGN
     DWORD   iMode;
     BYTE    RgnData[1];
 } EMREXTSELECTCLIPRGN, *PEMREXTSELECTCLIPRGN;
+]]
 
+ffi.cdef[[
 typedef struct tagEMREXTTEXTOUTA
 {
     EMR     emr;
@@ -5640,7 +5664,9 @@ typedef struct tagEMRPOLYTEXTOUTA
                                 // followed by the strings and spacing arrays.
 } EMRPOLYTEXTOUTA, *PEMRPOLYTEXTOUTA,
   EMRPOLYTEXTOUTW, *PEMRPOLYTEXTOUTW;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRBITBLT
 {
     EMR     emr;
@@ -5738,7 +5764,9 @@ typedef struct tagEMRPLGBLT
     DWORD   offBitsMask;        // Offset to the mask bitmap bits if any
     DWORD   cbBitsMask;         // Size of the mask bitmap bits if any
 } EMRPLGBLT, *PEMRPLGBLT;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRSETDIBITSTODEVICE
 {
     EMR     emr;
@@ -5777,7 +5805,9 @@ typedef struct tagEMRSTRETCHDIBITS
     LONG    cxDest;
     LONG    cyDest;
 } EMRSTRETCHDIBITS, *PEMRSTRETCHDIBITS;
+]]
 
+ffi.cdef[[
 typedef struct tagEMREXTCREATEFONTINDIRECTW
 {
     EMR     emr;
@@ -5792,7 +5822,9 @@ typedef struct tagEMRCREATEPALETTE
     LOGPALETTE lgpl;            // The peFlags fields in the palette entries
                                 // do not contain any flags
 } EMRCREATEPALETTE, *PEMRCREATEPALETTE;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRCREATEPEN
 {
     EMR     emr;
@@ -5831,7 +5863,9 @@ typedef struct tagEMRCREATEMONOBRUSH
     DWORD   offBits;            // Offset to the bitmap bits
     DWORD   cbBits;             // Size of the bitmap bits
 } EMRCREATEMONOBRUSH, *PEMRCREATEMONOBRUSH;
+]]
 
+ffi.cdef[[
 typedef struct tagEMRCREATEDIBPATTERNBRUSHPT
 {
     EMR     emr;
@@ -5853,9 +5887,10 @@ typedef struct tagEMRFORMAT
     DWORD   offData;            // Offset to data from GDICOMMENT_IDENTIFIER.
                                 // It must begin at a DWORD offset.
 } EMRFORMAT, *PEMRFORMAT;
+]]
 
-#if(WINVER >= 0x0400)
 
+ffi.cdef[[
 typedef struct tagEMRGLSRECORD
 {
     EMR     emr;
@@ -5892,9 +5927,9 @@ typedef struct tagEMRSETCOLORSPACE
   EMRSELECTCOLORSPACE, *PEMRSELECTCOLORSPACE,
   EMRDELETECOLORSPACE, *PEMRDELETECOLORSPACE;
 
-#endif /* WINVER >= 0x0400 */
+]]
 
-#if(WINVER >= 0x0500)
+ffi.cdef[[
 
 typedef struct tagEMREXTESCAPE
 {
@@ -5913,8 +5948,10 @@ typedef struct tagEMRNAMEDESCAPE
     INT     cbEscData;          // Size of escape data
     BYTE    EscData[1];         // Driver name and Escape data
 } EMRNAMEDESCAPE, *PEMRNAMEDESCAPE;
+]]
 
-#define SETICMPROFILE_EMBEDED           0x00000001
+ffi.cdef[[
+static const int SETICMPROFILE_EMBEDED          = 0x00000001;
 
 typedef struct tagEMRSETICMPROFILE
 {
@@ -5926,8 +5963,10 @@ typedef struct tagEMRSETICMPROFILE
 } EMRSETICMPROFILE,  *PEMRSETICMPROFILE,
   EMRSETICMPROFILEA, *PEMRSETICMPROFILEA,
   EMRSETICMPROFILEW, *PEMRSETICMPROFILEW;
+]]
 
-#define CREATECOLORSPACE_EMBEDED        0x00000001
+ffi.cdef[[
+static const int CREATECOLORSPACE_EMBEDED     =   0x00000001;
 
 typedef struct tagEMRCREATECOLORSPACEW
 {
@@ -5938,7 +5977,7 @@ typedef struct tagEMRCREATECOLORSPACEW
     DWORD           cbData;     // size of raw source profile data if attached
     BYTE            Data[1];    // Array size is cbData
 } EMRCREATECOLORSPACEW, *PEMRCREATECOLORSPACEW;
---]=]
+]]
 
 ffi.cdef[[
 static const int COLORMATCHTOTARGET_EMBEDED     = 0x00000001;
