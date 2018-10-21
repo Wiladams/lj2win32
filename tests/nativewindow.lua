@@ -6,7 +6,7 @@ local bor = bit.bor;
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local core_library = require("win32.core.libraryloader_l1_1_1");
 
-local User32 = require("win32.user32");
+local User32 = require("win32.winuser");
 
 
 print(" core_library: ", core_library)
@@ -63,7 +63,7 @@ function NativeWindow.create(self, className, width, height, title)
 
 	local appInstance = core_library.GetModuleHandleA(nil);
 
-	local hwnd = User32.CreateWindowExA(
+	local hwnd = ffi.C.CreateWindowExA(
 		0,
 		className,
 		title,
@@ -96,7 +96,7 @@ end
 
 function NativeWindow.getDeviceContext(self)
 	if not self.ClientContext then
-		self.ClientContext = DeviceContext(User32.GetDC(self:getNativeHandle()))
+		self.ClientContext = DeviceContext(ffi.C.GetDC(self:getNativeHandle()))
 	end
 
 	return self.ClientContext;
@@ -104,7 +104,7 @@ end
 
 -- Functions
 function NativeWindow.hide(self, kind)
-	kind = kind or User32.SW_HIDE;
+	kind = kind or ffi.C.SW_HIDE;
 	self:Show(kind);
 end
 		
@@ -118,7 +118,7 @@ function NativeWindow.redraw(self, flags)
 	local hrgnUpdate = nil; -- HRGN
 	flags = flags or ffi.C.RDW_UPDATENOW;
 
-	local res = User32.RedrawWindow(
+	local res = ffi.C.RedrawWindow(
   		self:getNativeHandle(),
   		lprcUpdate,
    		hrgnUpdate,
@@ -130,11 +130,11 @@ end
 function NativeWindow.show(self, kind)
 	kind = kind or ffi.C.SW_SHOWNORMAL;
 
-	return User32.ShowWindow(self:getNativeHandle(), kind);
+	return ffi.C.ShowWindow(self:getNativeHandle(), kind);
 end
 
 function NativeWindow.update(self)
-	User32.UpdateWindow(self:getNativeHandle())
+	ffi.C.UpdateWindow(self:getNativeHandle())
 end
 
 function NativeWindow.getClientSize(self)

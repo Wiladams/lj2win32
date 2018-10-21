@@ -22,7 +22,7 @@ local bor = bit.bor;
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local libraryloader = require("win32.core.libraryloader_l1_1_1");
 
-local User32 = require("win32.user32");
+local winuser = require("win32.winuser");
 local NativeWindow = require("NativeWindow");
 
 
@@ -48,7 +48,7 @@ function WindowKind.init(self, classname, atom)
 end
 
 function WindowKind.create(self, classname, msgproc, style)
-	msgproc = msgproc or User32.DefWindowProcA;
+	msgproc = msgproc or ffi.C.DefWindowProcA;
 	style = style or bor(ffi.C.CS_HREDRAW,ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
 
 	local appInstance = libraryloader.GetModuleHandleA(nil);
@@ -61,13 +61,13 @@ function WindowKind.create(self, classname, msgproc, style)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = appInstance;
     wcex.hIcon          = nil;		-- LoadIcon(hInst, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex.hCursor        = User32.LoadCursor(nil, IDC_ARROW);
+    wcex.hCursor        = ffi.C.LoadCursor(nil, ffi.C.IDC_ARROW);
     wcex.hbrBackground  = nil;		-- (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName   = nil;		-- NULL;
     wcex.lpszClassName  = classname;
     wcex.hIconSm        = nil;		-- LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
-	local classAtom = User32.RegisterClassExA(wcex);
+	local classAtom = ffi.C.RegisterClassExA(wcex);
 
 	if classAtom == 0 then
     	return nil, errorhandling.GetLastError();

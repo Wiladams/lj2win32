@@ -6197,55 +6197,55 @@ typedef struct tagLAYERPLANEDESCRIPTOR { // lpd
 } LAYERPLANEDESCRIPTOR, *PLAYERPLANEDESCRIPTOR, *LPLAYERPLANEDESCRIPTOR;
 ]]
 
---[[
+ffi.cdef[[
 /* LAYERPLANEDESCRIPTOR flags */
-#define LPD_DOUBLEBUFFER        0x00000001
-#define LPD_STEREO              0x00000002
-#define LPD_SUPPORT_GDI         0x00000010
-#define LPD_SUPPORT_OPENGL      0x00000020
-#define LPD_SHARE_DEPTH         0x00000040
-#define LPD_SHARE_STENCIL       0x00000080
-#define LPD_SHARE_ACCUM         0x00000100
-#define LPD_SWAP_EXCHANGE       0x00000200
-#define LPD_SWAP_COPY           0x00000400
-#define LPD_TRANSPARENT         0x00001000
+static const int LPD_DOUBLEBUFFER       = 0x00000001;
+static const int LPD_STEREO             = 0x00000002;
+static const int LPD_SUPPORT_GDI        = 0x00000010;
+static const int LPD_SUPPORT_OPENGL     = 0x00000020;
+static const int LPD_SHARE_DEPTH        = 0x00000040;
+static const int LPD_SHARE_STENCIL      = 0x00000080;
+static const int LPD_SHARE_ACCUM        = 0x00000100;
+static const int LPD_SWAP_EXCHANGE      = 0x00000200;
+static const int LPD_SWAP_COPY          = 0x00000400;
+static const int LPD_TRANSPARENT        = 0x00001000;
 
-#define LPD_TYPE_RGBA        0
-#define LPD_TYPE_COLORINDEX  1
+static const int LPD_TYPE_RGBA       = 0;
+static const int LPD_TYPE_COLORINDEX = 1;
 
 /* wglSwapLayerBuffers flags */
-#define WGL_SWAP_MAIN_PLANE     0x00000001
-#define WGL_SWAP_OVERLAY1       0x00000002
-#define WGL_SWAP_OVERLAY2       0x00000004
-#define WGL_SWAP_OVERLAY3       0x00000008
-#define WGL_SWAP_OVERLAY4       0x00000010
-#define WGL_SWAP_OVERLAY5       0x00000020
-#define WGL_SWAP_OVERLAY6       0x00000040
-#define WGL_SWAP_OVERLAY7       0x00000080
-#define WGL_SWAP_OVERLAY8       0x00000100
-#define WGL_SWAP_OVERLAY9       0x00000200
-#define WGL_SWAP_OVERLAY10      0x00000400
-#define WGL_SWAP_OVERLAY11      0x00000800
-#define WGL_SWAP_OVERLAY12      0x00001000
-#define WGL_SWAP_OVERLAY13      0x00002000
-#define WGL_SWAP_OVERLAY14      0x00004000
-#define WGL_SWAP_OVERLAY15      0x00008000
-#define WGL_SWAP_UNDERLAY1      0x00010000
-#define WGL_SWAP_UNDERLAY2      0x00020000
-#define WGL_SWAP_UNDERLAY3      0x00040000
-#define WGL_SWAP_UNDERLAY4      0x00080000
-#define WGL_SWAP_UNDERLAY5      0x00100000
-#define WGL_SWAP_UNDERLAY6      0x00200000
-#define WGL_SWAP_UNDERLAY7      0x00400000
-#define WGL_SWAP_UNDERLAY8      0x00800000
-#define WGL_SWAP_UNDERLAY9      0x01000000
-#define WGL_SWAP_UNDERLAY10     0x02000000
-#define WGL_SWAP_UNDERLAY11     0x04000000
-#define WGL_SWAP_UNDERLAY12     0x08000000
-#define WGL_SWAP_UNDERLAY13     0x10000000
-#define WGL_SWAP_UNDERLAY14     0x20000000
-#define WGL_SWAP_UNDERLAY15     0x40000000
---]]
+static const int WGL_SWAP_MAIN_PLANE    = 0x00000001;
+static const int WGL_SWAP_OVERLAY1      = 0x00000002;
+static const int WGL_SWAP_OVERLAY2      = 0x00000004;
+static const int WGL_SWAP_OVERLAY3      = 0x00000008;
+static const int WGL_SWAP_OVERLAY4      = 0x00000010;
+static const int WGL_SWAP_OVERLAY5      = 0x00000020;
+static const int WGL_SWAP_OVERLAY6      = 0x00000040;
+static const int WGL_SWAP_OVERLAY7      = 0x00000080;
+static const int WGL_SWAP_OVERLAY8      = 0x00000100;
+static const int WGL_SWAP_OVERLAY9      = 0x00000200;
+static const int WGL_SWAP_OVERLAY10     = 0x00000400;
+static const int WGL_SWAP_OVERLAY11     = 0x00000800;
+static const int WGL_SWAP_OVERLAY12     = 0x00001000;
+static const int WGL_SWAP_OVERLAY13     = 0x00002000;
+static const int WGL_SWAP_OVERLAY14     = 0x00004000;
+static const int WGL_SWAP_OVERLAY15     = 0x00008000;
+static const int WGL_SWAP_UNDERLAY1     = 0x00010000;
+static const int WGL_SWAP_UNDERLAY2     = 0x00020000;
+static const int WGL_SWAP_UNDERLAY3     = 0x00040000;
+static const int WGL_SWAP_UNDERLAY4     = 0x00080000;
+static const int WGL_SWAP_UNDERLAY5     = 0x00100000;
+static const int WGL_SWAP_UNDERLAY6     = 0x00200000;
+static const int WGL_SWAP_UNDERLAY7     = 0x00400000;
+static const int WGL_SWAP_UNDERLAY8     = 0x00800000;
+static const int WGL_SWAP_UNDERLAY9     = 0x01000000;
+static const int WGL_SWAP_UNDERLAY10    = 0x02000000;
+static const int WGL_SWAP_UNDERLAY11    = 0x04000000;
+static const int WGL_SWAP_UNDERLAY12    = 0x08000000;
+static const int WGL_SWAP_UNDERLAY13    = 0x10000000;
+static const int WGL_SWAP_UNDERLAY14    = 0x20000000;
+static const int WGL_SWAP_UNDERLAY15    = 0x40000000;
+]]
 
 ffi.cdef[[
  BOOL  __stdcall wglDescribeLayerPlane(HDC, int, int, UINT,

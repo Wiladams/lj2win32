@@ -4,7 +4,7 @@ local os = require("os")
 local ffi = require("ffi")
 
 
-local User32 = require("win32.user32")
+local User32 = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local wmmsgs = require("wmmsgs")
 --local wmmsgs = require("wm_reserved")

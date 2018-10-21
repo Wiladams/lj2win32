@@ -2812,7 +2812,7 @@ __stdcall
 DrawCaption(
      HWND hwnd,
      HDC hdc,
-     CONST RECT * lprect,
+     const RECT * lprect,
      UINT flags);
 ]]
 
@@ -2998,7 +2998,7 @@ typedef struct tagSTYLESTRUCT
 ]]
 
 
-
+--[=[
 /*
  * Owner draw control types
  */

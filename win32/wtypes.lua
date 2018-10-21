@@ -13,6 +13,11 @@ local arch = require("win32.arch");
 
 
 ffi.cdef[[
+static const int TRUE = 1;
+static const int FALSE = 0;
+]]
+
+ffi.cdef[[
 typedef uint32_t *  PDWORD;
 typedef long *      PLONG;
 typedef long *      LPLONG;
