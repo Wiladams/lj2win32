@@ -5,4 +5,4 @@ package.path = "../?.lua;"..package.path;
 
 
 require("win32.winbase")
-require("win32.win_nt")
+require("win32.winnt")

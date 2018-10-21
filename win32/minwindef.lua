@@ -78,7 +78,7 @@ typedef void *			PVOID;
 
 
 if not NT_INCLUDED then
-require "win32.win_nt"
+require "win32.winnt"
 end
 
 ffi.cdef[[

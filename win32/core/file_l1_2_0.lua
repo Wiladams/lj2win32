@@ -4,7 +4,7 @@
 local ffi = require("ffi");
 
 local WTypes = require("win32.wtypes");
-local WinNT = require("win32.win_nt");
+local WinNT = require("win32.winnt");
 local WinBase = require("win32.winbase");
 
 

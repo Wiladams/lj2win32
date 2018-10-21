@@ -10,7 +10,7 @@ local ffi = require("ffi")
 
 
 local minwindef = require("win32.minwindef")
-local winnt = require("win32.win_nt")
+local winnt = require("win32.winnt")
 
 local DECLARE_HANDLE = DECLARE_HANDLE
 
