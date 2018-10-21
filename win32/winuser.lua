@@ -2534,101 +2534,94 @@ TrackMouseEvent(
 
 
 #endif /* !NOWINMESSAGES */
+--]=]
 
-#ifndef NOWINSTYLES
 
 
+ffi.cdef[[
 /*
  * Window Styles
  */
-#define WS_OVERLAPPED       0x00000000L
-#define WS_POPUP            0x80000000L
-#define WS_CHILD            0x40000000L
-#define WS_MINIMIZE         0x20000000L
-#define WS_VISIBLE          0x10000000L
-#define WS_DISABLED         0x08000000L
-#define WS_CLIPSIBLINGS     0x04000000L
-#define WS_CLIPCHILDREN     0x02000000L
-#define WS_MAXIMIZE         0x01000000L
-#define WS_CAPTION          0x00C00000L     /* WS_BORDER | WS_DLGFRAME  */
-#define WS_BORDER           0x00800000L
-#define WS_DLGFRAME         0x00400000L
-#define WS_VSCROLL          0x00200000L
-#define WS_HSCROLL          0x00100000L
-#define WS_SYSMENU          0x00080000L
-#define WS_THICKFRAME       0x00040000L
-#define WS_GROUP            0x00020000L
-#define WS_TABSTOP          0x00010000L
+static const int WS_OVERLAPPED       = 0x00000000L;
+static const int WS_POPUP            = 0x80000000L;
+static const int WS_CHILD            = 0x40000000L;
+static const int WS_MINIMIZE         = 0x20000000L;
+static const int WS_VISIBLE          = 0x10000000L;
+static const int WS_DISABLED         = 0x08000000L;
+static const int WS_CLIPSIBLINGS     = 0x04000000L;
+static const int WS_CLIPCHILDREN     = 0x02000000L;
+static const int WS_MAXIMIZE         = 0x01000000L;
+static const int WS_CAPTION          = 0x00C00000L;     /* WS_BORDER | WS_DLGFRAME  */
+static const int WS_BORDER           = 0x00800000L;
+static const int WS_DLGFRAME         = 0x00400000L;
+static const int WS_VSCROLL          = 0x00200000L;
+static const int WS_HSCROLL          = 0x00100000L;
+static const int WS_SYSMENU          = 0x00080000L;
+static const int WS_THICKFRAME       = 0x00040000L;
+static const int WS_GROUP            = 0x00020000L;
+static const int WS_TABSTOP          = 0x00010000L;
 
-#define WS_MINIMIZEBOX      0x00020000L
-#define WS_MAXIMIZEBOX      0x00010000L
+static const int WS_MINIMIZEBOX      = 0x00020000L;
+static const int WS_MAXIMIZEBOX      = 0x00010000L;
+]]
 
-
-#define WS_TILED            WS_OVERLAPPED
-#define WS_ICONIC           WS_MINIMIZE
-#define WS_SIZEBOX          WS_THICKFRAME
-#define WS_TILEDWINDOW      WS_OVERLAPPEDWINDOW
-
+ffi.cdef[[
 /*
  * Common Window Styles
  */
-#define WS_OVERLAPPEDWINDOW (WS_OVERLAPPED     | \
-                             WS_CAPTION        | \
-                             WS_SYSMENU        | \
-                             WS_THICKFRAME     | \
-                             WS_MINIMIZEBOX    | \
-                             WS_MAXIMIZEBOX)
+static const int WS_OVERLAPPEDWINDOW = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX;
+static const int WS_POPUPWINDOW    =  WS_POPUP|WS_BORDER|WS_SYSMENU;
+static const int WS_CHILDWINDOW    =  WS_CHILD;
+]]
 
-#define WS_POPUPWINDOW      (WS_POPUP          | \
-                             WS_BORDER         | \
-                             WS_SYSMENU)
+ffi.cdef[[
+static const int WS_TILED            = WS_OVERLAPPED;
+static const int WS_ICONIC           = WS_MINIMIZE;
+static const int WS_SIZEBOX          = WS_THICKFRAME;
+static const int WS_TILEDWINDOW      = WS_OVERLAPPEDWINDOW;
+]]
 
-#define WS_CHILDWINDOW      (WS_CHILD)
 
+
+ffi.cdef[[
 /*
  * Extended Window Styles
  */
-#define WS_EX_DLGMODALFRAME     0x00000001L
-#define WS_EX_NOPARENTNOTIFY    0x00000004L
-#define WS_EX_TOPMOST           0x00000008L
-#define WS_EX_ACCEPTFILES       0x00000010L
-#define WS_EX_TRANSPARENT       0x00000020L
-#if(WINVER >= 0x0400)
-#define WS_EX_MDICHILD          0x00000040L
-#define WS_EX_TOOLWINDOW        0x00000080L
-#define WS_EX_WINDOWEDGE        0x00000100L
-#define WS_EX_CLIENTEDGE        0x00000200L
-#define WS_EX_CONTEXTHELP       0x00000400L
+static const int WS_EX_DLGMODALFRAME     = 0x00000001L;
+static const int WS_EX_NOPARENTNOTIFY    = 0x00000004L;
+static const int WS_EX_TOPMOST           = 0x00000008L;
+static const int WS_EX_ACCEPTFILES       = 0x00000010L;
+static const int WS_EX_TRANSPARENT       = 0x00000020L;
 
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0400)
-
-#define WS_EX_RIGHT             0x00001000L
-#define WS_EX_LEFT              0x00000000L
-#define WS_EX_RTLREADING        0x00002000L
-#define WS_EX_LTRREADING        0x00000000L
-#define WS_EX_LEFTSCROLLBAR     0x00004000L
-#define WS_EX_RIGHTSCROLLBAR    0x00000000L
-
-#define WS_EX_CONTROLPARENT     0x00010000L
-#define WS_EX_STATICEDGE        0x00020000L
-#define WS_EX_APPWINDOW         0x00040000L
+static const int WS_EX_MDICHILD          = 0x00000040L;
+static const int WS_EX_TOOLWINDOW        = 0x00000080L;
+static const int WS_EX_WINDOWEDGE        = 0x00000100L;
+static const int WS_EX_CLIENTEDGE        = 0x00000200L;
+static const int WS_EX_CONTEXTHELP       = 0x00000400L;
 
 
-#define WS_EX_OVERLAPPEDWINDOW  (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE)
-#define WS_EX_PALETTEWINDOW     (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST)
+static const int WS_EX_RIGHT             = 0x00001000L;
+static const int WS_EX_LEFT              = 0x00000000L;
+static const int WS_EX_RTLREADING        = 0x00002000L;
+static const int WS_EX_LTRREADING        = 0x00000000L;
+static const int WS_EX_LEFTSCROLLBAR     = 0x00004000L;
+static const int WS_EX_RIGHTSCROLLBAR    = 0x00000000L;
 
-#endif /* WINVER >= 0x0400 */
-
-#if(_WIN32_WINNT >= 0x0500)
-#define WS_EX_LAYERED           0x00080000
-
-#endif /* _WIN32_WINNT >= 0x0500 */
+static const int WS_EX_CONTROLPARENT     = 0x00010000L;
+static const int WS_EX_STATICEDGE        = 0x00020000L;
+static const int WS_EX_APPWINDOW         = 0x00040000L;
 
 
-#if(WINVER >= 0x0500)
+static const int WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE);
+static const int WS_EX_PALETTEWINDOW    = (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST);
+
+static const int WS_EX_LAYERED           = 0x00080000;
+]]
+
+
+--[=[
 #define WS_EX_NOINHERITLAYOUT   0x00100000L // Disable inheritence of mirroring by children
-#endif /* WINVER >= 0x0500 */
+/
 
 #if(WINVER >= 0x0602)
 #define WS_EX_NOREDIRECTIONBITMAP 0x00200000L
@@ -3723,7 +3716,6 @@ PostThreadMessageW(
  * Special HWND value for use with PostMessage() and SendMessage()
  */
 #define HWND_BROADCAST  ((HWND)0xffff)
-
 #define HWND_MESSAGE     ((HWND)-3)
 --]]
 
@@ -3756,39 +3748,34 @@ WaitForInputIdle(
      DWORD dwMilliseconds);
 ]]
 
---[=[
-#ifndef _MAC
+ffi.cdef[[
 LRESULT
 __stdcall
-#else
-LRESULT
-__stdcall
-#endif
 DefWindowProcA(
      HWND hWnd,
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
 
-#ifndef _MAC
+
 LRESULT
 __stdcall
-#else
-LRESULT
-__stdcall
-#endif
 DefWindowProcW(
      HWND hWnd,
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define DefWindowProc  DefWindowProcW
 #else
 #define DefWindowProc  DefWindowProcA
 #endif // !UNICODE
+--]]
 
-
+--[=[
 VOID
 __stdcall
 PostQuitMessage(
@@ -3814,12 +3801,14 @@ CallWindowProcW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+
+--[[
 #ifdef UNICODE
 #define CallWindowProc  CallWindowProcW
 #else
 #define CallWindowProc  CallWindowProcA
 #endif // !UNICODE
-
+--]]
 #else /* !STRICT */
 
 
@@ -3880,12 +3869,11 @@ InSendMessageEx(
 #define ISMEX___stdcall    0x00000004
 #define ISMEX_REPLIED     0x00000008
 #endif /* WINVER >= 0x0500 */
+--]=]
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-
+ffi.cdef[[
 UINT
 __stdcall
 GetDoubleClickTime(
@@ -3896,24 +3884,29 @@ BOOL
 __stdcall
 SetDoubleClickTime(
      UINT);
+]]
 
-
+ffi.cdef[[
 ATOM
 __stdcall
 RegisterClassA(
-     CONST WNDCLASSA *lpWndClass);
+     const WNDCLASSA *lpWndClass);
 
 ATOM
 __stdcall
 RegisterClassW(
-     CONST WNDCLASSW *lpWndClass);
+     const WNDCLASSW *lpWndClass);
+]]
+
+--[[
 #ifdef UNICODE
 #define RegisterClass  RegisterClassW
 #else
 #define RegisterClass  RegisterClassA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 UnregisterClassA(
@@ -3925,21 +3918,24 @@ __stdcall
 UnregisterClassW(
      LPCWSTR lpClassName,
      HINSTANCE hInstance);
+]]
+
+--[[
 #ifdef UNICODE
 #define UnregisterClass  UnregisterClassW
 #else
 #define UnregisterClass  UnregisterClassA
 #endif // !UNICODE
+--]]
 
-_Success_(return)
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetClassInfoA(
      HINSTANCE hInstance,
      LPCSTR lpClassName,
      LPWNDCLASSA lpWndClass);
-_Success_(return)
+
 
 BOOL
 __stdcall
@@ -3947,38 +3943,44 @@ GetClassInfoW(
      HINSTANCE hInstance,
      LPCWSTR lpClassName,
      LPWNDCLASSW lpWndClass);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetClassInfo  GetClassInfoW
 #else
 #define GetClassInfo  GetClassInfoA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
-
+ffi.cdef[[
 ATOM
 __stdcall
 RegisterClassExA(
-     CONST WNDCLASSEXA *);
+     const WNDCLASSEXA *);
 
 ATOM
 __stdcall
 RegisterClassExW(
-     CONST WNDCLASSEXW *);
+     const WNDCLASSEXW *);
+]]
+
+--[[
 #ifdef UNICODE
 #define RegisterClassEx  RegisterClassExW
 #else
 #define RegisterClassEx  RegisterClassExA
 #endif // !UNICODE
+--]]
 
-_Success_(return)
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetClassInfoExA(
      HINSTANCE hInstance,
      LPCSTR lpszClass,
      LPWNDCLASSEXA lpwcx);
-_Success_(return)
+
 
 BOOL
 __stdcall
@@ -3986,30 +3988,26 @@ GetClassInfoExW(
      HINSTANCE hInstance,
      LPCWSTR lpszClass,
      LPWNDCLASSEXW lpwcx);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetClassInfoEx  GetClassInfoExW
 #else
 #define GetClassInfoEx  GetClassInfoExA
 #endif // !UNICODE
+--]]
 
-#endif /* WINVER >= 0x0400 */
+ffi.cdef[[
+static const int CW_USEDEFAULT      = 0x80000000;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#define CW_USEDEFAULT       ((int)0x80000000)
+-- Special value for CreateWindow, et al.
+exports.HWND_DESKTOP  = ffi.cast("HWND",0)
 
-/*
- * Special value for CreateWindow, et al.
- */
-#define HWND_DESKTOP        ((HWND)0)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if(_WIN32_WINNT >= 0x0501)
+ffi.cdef[[
 typedef BOOLEAN (__stdcall * PREGISTERCLASSNAMEW)(LPCWSTR);
-#endif /* _WIN32_WINNT >= 0x0501 */
 
 
 HWND
@@ -4027,7 +4025,9 @@ CreateWindowExA(
      HMENU hMenu,
      HINSTANCE hInstance,
      LPVOID lpParam);
+]]
 
+ffi.cdef[[
 HWND
 __stdcall
 CreateWindowExW(
@@ -4043,46 +4043,45 @@ CreateWindowExW(
      HMENU hMenu,
      HINSTANCE hInstance,
      LPVOID lpParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateWindowEx  CreateWindowExW
 #else
 #define CreateWindowEx  CreateWindowExA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#define CreateWindowA(lpClassName, lpWindowName, dwStyle, x, y,\
-nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)\
-CreateWindowExA(0L, lpClassName, lpWindowName, dwStyle, x, y,\
-nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)
-#define CreateWindowW(lpClassName, lpWindowName, dwStyle, x, y,\
-nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)\
-CreateWindowExW(0L, lpClassName, lpWindowName, dwStyle, x, y,\
-nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)
+function exports.CreateWindowA(lpClassName, lpWindowName, dwStyle, x, y,nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)  
+    return ffi.C.CreateWindowExA(0, lpClassName, lpWindowName, dwStyle, x, y,nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)
+end
+
+function exports.CreateWindowW(lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)
+    return ffi.C.CreateWindowExW(0, lpClassName, lpWindowName, dwStyle, x, y,nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam)
+end
+
+--[[
 #ifdef UNICODE
 #define CreateWindow  CreateWindowW
 #else
 #define CreateWindow  CreateWindowA
 #endif // !UNICODE
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]]
 
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 IsWindow(
      HWND hWnd);
 
-
-
 BOOL
 __stdcall
 IsMenu(
      HMENU hMenu);
-
 
 BOOL
 __stdcall
@@ -4090,39 +4089,28 @@ IsChild(
      HWND hWndParent,
      HWND hWnd);
 
-
 BOOL
 __stdcall
 DestroyWindow(
      HWND hWnd);
-
 
 BOOL
 __stdcall
 ShowWindow(
      HWND hWnd,
      int nCmdShow);
+]]
 
-#if(WINVER >= 0x0500)
-
+ffi.cdef[[
 BOOL
 __stdcall
 AnimateWindow(
      HWND hWnd,
      DWORD dwTime,
      DWORD dwFlags);
-#endif /* WINVER >= 0x0500 */
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#if(_WIN32_WINNT >= 0x0500)
-#if defined(_WINGDI_) && !defined(NOGDI)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 UpdateLayeredWindow(
@@ -4152,61 +4140,39 @@ typedef struct tagUPDATELAYEREDWINDOWINFO
     DWORD dwFlags;
     const RECT* prcDirty;
 } UPDATELAYEREDWINDOWINFO, *PUPDATELAYEREDWINDOWINFO;
+]]
 
-
-#if (_WIN32_WINNT < 0x0502)
-typedef
-#endif /* _WIN32_WINNT < 0x0502 */
-
+ffi.cdef[[
 BOOL
 __stdcall
 UpdateLayeredWindowIndirect(
      HWND hWnd,
      const UPDATELAYEREDWINDOWINFO* pULWInfo);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif
-
-#if(_WIN32_WINNT >= 0x0501)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 BOOL
 __stdcall
 GetLayeredWindowAttributes(
      HWND hwnd,
-    _Out_opt_ COLORREF* pcrKey,
-    _Out_opt_ BYTE* pbAlpha,
-    _Out_opt_ DWORD* pdwFlags);
+    COLORREF* pcrKey,
+    BYTE* pbAlpha,
+    DWORD* pdwFlags);
 
-#define PW_CLIENTONLY           0x00000001
-
-#if(_WIN32_WINNT >= 0x0603)
-#define PW_RENDERFULLCONTENT    0x00000002
-#endif /* _WIN32_WINNT >= 0x0603 */
+static const int PW_CLIENTONLY          = 0x00000001;
+static const int PW_RENDERFULLCONTENT   = 0x00000002;
+]]
 
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 PrintWindow(
      HWND hwnd,
      HDC hdcBlt,
      UINT nFlags);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetLayeredWindowAttributes(
@@ -4214,44 +4180,39 @@ SetLayeredWindowAttributes(
      COLORREF crKey,
      BYTE bAlpha,
      DWORD dwFlags);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#define LWA_COLORKEY            0x00000001
-#define LWA_ALPHA               0x00000002
+]]
 
 
-#define ULW_COLORKEY            0x00000001
-#define ULW_ALPHA               0x00000002
-#define ULW_OPAQUE              0x00000004
-
-#define ULW_EX_NORESIZE         0x00000008
-
-#endif /* _WIN32_WINNT >= 0x0500 */
+ffi.cdef[[
+static const int  LWA_COLORKEY          =  0x00000001;
+static const int  LWA_ALPHA             =  0x00000002;
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int  ULW_COLORKEY          =  0x00000001;
+static const int  ULW_ALPHA             =  0x00000002;
+static const int  ULW_OPAQUE            =  0x00000004;
 
+static const int  ULW_EX_NORESIZE       =  0x00000008;
+]]
 
-#if(WINVER >= 0x0400)
-
+ffi.cdef[[
 BOOL
 __stdcall
 ShowWindowAsync(
       HWND hWnd,
       int nCmdShow);
-#endif /* WINVER >= 0x0400 */
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 FlashWindow(
       HWND hWnd,
       BOOL bInvert);
+]]
 
-#if(WINVER >= 0x0500)
+
+ffi.cdef[[
 typedef struct {
     UINT  cbSize;
     HWND  hwnd;
@@ -4265,17 +4226,19 @@ BOOL
 __stdcall
 FlashWindowEx(
      PFLASHWINFO pfwi);
+]]
 
+--[[
 #define FLASHW_STOP         0
 #define FLASHW_CAPTION      0x00000001
 #define FLASHW_TRAY         0x00000002
 #define FLASHW_ALL          (FLASHW_CAPTION | FLASHW_TRAY)
 #define FLASHW_TIMER        0x00000004
 #define FLASHW_TIMERNOFG    0x0000000C
+--]]
 
-#endif /* WINVER >= 0x0500 */
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 ShowOwnedPopups(
@@ -4329,8 +4292,10 @@ BOOL
 __stdcall
 SetWindowPlacement(
      HWND hWnd,
-     CONST WINDOWPLACEMENT *lpwndpl);
+     const WINDOWPLACEMENT *lpwndpl);
+]]
 
+--[=[
 #if(_WIN32_WINNT >= 0x0601)
 #define WDA_NONE        0x00000000
 #define WDA_MONITOR     0x00000001
@@ -9601,88 +9566,71 @@ CallNextHookEx(
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 #pragma endregion
+--]=]
 
-#ifndef NOMENUS
-
-
-/* ;win40  -- A lot of MF_* flags have been renamed as MFT_* and MFS_* flags */
+ffi.cdef[[
 /*
  * Menu flags for Add/Check/EnableMenuItem()
  */
-#define MF_INSERT           0x00000000L
-#define MF_CHANGE           0x00000080L
-#define MF_APPEND           0x00000100L
-#define MF_DELETE           0x00000200L
-#define MF_REMOVE           0x00001000L
-
-#define MF_BYCOMMAND        0x00000000L
-#define MF_BYPOSITION       0x00000400L
-
-#define MF_SEPARATOR        0x00000800L
-
-#define MF_ENABLED          0x00000000L
-#define MF_GRAYED           0x00000001L
-#define MF_DISABLED         0x00000002L
-
-#define MF_UNCHECKED        0x00000000L
-#define MF_CHECKED          0x00000008L
-#define MF_USECHECKBITMAPS  0x00000200L
-
-#define MF_STRING           0x00000000L
-#define MF_BITMAP           0x00000004L
-#define MF_OWNERDRAW        0x00000100L
-
-#define MF_POPUP            0x00000010L
-#define MF_MENUBARBREAK     0x00000020L
-#define MF_MENUBREAK        0x00000040L
-
-#define MF_UNHILITE         0x00000000L
-#define MF_HILITE           0x00000080L
-
-#if(WINVER >= 0x0400)
-#define MF_DEFAULT          0x00001000L
-#endif /* WINVER >= 0x0400 */
-#define MF_SYSMENU          0x00002000L
-#define MF_HELP             0x00004000L
-#if(WINVER >= 0x0400)
-#define MF_RIGHTJUSTIFY     0x00004000L
-#endif /* WINVER >= 0x0400 */
-
-#define MF_MOUSESELECT      0x00008000L
-#if(WINVER >= 0x0400)
-#define MF_END              0x00000080L  /* Obsolete -- only used by old RES files */
-#endif /* WINVER >= 0x0400 */
+static const int MF_INSERT            = 0x00000000L;
+static const int MF_CHANGE            = 0x00000080L;
+static const int MF_APPEND            = 0x00000100L;
+static const int MF_DELETE            = 0x00000200L;
+static const int MF_REMOVE            = 0x00001000L;
+static const int MF_BYCOMMAND         = 0x00000000L;
+static const int MF_BYPOSITION        = 0x00000400L;
+static const int MF_SEPARATOR         = 0x00000800L;
+static const int MF_ENABLED           = 0x00000000L;
+static const int MF_GRAYED            = 0x00000001L;
+static const int MF_DISABLED          = 0x00000002L;
+static const int MF_UNCHECKED         = 0x00000000L;
+static const int MF_CHECKED           = 0x00000008L;
+static const int MF_USECHECKBITMAPS   = 0x00000200L;
+static const int MF_STRING            = 0x00000000L;
+static const int MF_BITMAP            = 0x00000004L;
+static const int MF_OWNERDRAW         = 0x00000100L;
+static const int MF_POPUP             = 0x00000010L;
+static const int MF_MENUBARBREAK      = 0x00000020L;
+static const int MF_MENUBREAK         = 0x00000040L;
+static const int MF_UNHILITE          = 0x00000000L;
+static const int MF_HILITE            = 0x00000080L;
+static const int MF_DEFAULT           = 0x00001000L;
+static const int MF_SYSMENU           = 0x00002000L;
+static const int MF_HELP              = 0x00004000L;
+static const int MF_RIGHTJUSTIFY      = 0x00004000L;
+static const int MF_MOUSESELECT       = 0x00008000L;
+static const int MF_END               = 0x00000080L;  /* Obsolete -- only used by old RES files */
 
 
-#if(WINVER >= 0x0400)
-#define MFT_STRING          MF_STRING
-#define MFT_BITMAP          MF_BITMAP
-#define MFT_MENUBARBREAK    MF_MENUBARBREAK
-#define MFT_MENUBREAK       MF_MENUBREAK
-#define MFT_OWNERDRAW       MF_OWNERDRAW
-#define MFT_RADIOCHECK      0x00000200L
-#define MFT_SEPARATOR       MF_SEPARATOR
-#define MFT_RIGHTORDER      0x00002000L
-#define MFT_RIGHTJUSTIFY    MF_RIGHTJUSTIFY
+
+
+static const int MFT_STRING         = MF_STRING;
+static const int MFT_BITMAP         = MF_BITMAP;
+static const int MFT_MENUBARBREAK   = MF_MENUBARBREAK;
+static const int MFT_MENUBREAK      = MF_MENUBREAK;
+static const int MFT_OWNERDRAW      = MF_OWNERDRAW;
+static const int MFT_RADIOCHECK       = 0x00000200L;
+static const int MFT_SEPARATOR      = MF_SEPARATOR;
+static const int MFT_RIGHTORDER       = 0x00002000L;
+static const int MFT_RIGHTJUSTIFY   = MF_RIGHTJUSTIFY;
 
 /* Menu flags for Add/Check/EnableMenuItem() */
-#define MFS_GRAYED          0x00000003L
-#define MFS_DISABLED        MFS_GRAYED
-#define MFS_CHECKED         MF_CHECKED
-#define MFS_HILITE          MF_HILITE
-#define MFS_ENABLED         MF_ENABLED
-#define MFS_UNCHECKED       MF_UNCHECKED
-#define MFS_UNHILITE        MF_UNHILITE
-#define MFS_DEFAULT         MF_DEFAULT
-#endif /* WINVER >= 0x0400 */
+static const int MFS_GRAYED         = 0x00000003L;
+static const int MFS_DISABLED       = MFS_GRAYED;
+static const int MFS_CHECKED        = MF_CHECKED;
+static const int MFS_HILITE         = MF_HILITE;
+static const int MFS_ENABLED        = MF_ENABLED;
+static const int MFS_UNCHECKED      = MF_UNCHECKED;
+static const int MFS_UNHILITE       = MF_UNHILITE;
+static const int MFS_DEFAULT        = MF_DEFAULT;
+]]
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#if(WINVER >= 0x0400)
 
 
+
+
+ffi.cdef[[
 BOOL
 __stdcall
 CheckMenuRadioItem(
@@ -9691,8 +9639,9 @@ CheckMenuRadioItem(
      UINT last,
      UINT check,
      UINT flags);
-#endif /* WINVER >= 0x0400 */
+]]
 
+ffi.cdef[[
 /*
  * Menu item resource format
  */
@@ -9706,15 +9655,11 @@ typedef struct {        // version 0
     WORD mtID;
     WCHAR mtString[1];
 } MENUITEMTEMPLATE, *PMENUITEMTEMPLATE;
-#define MF_END             0x00000080L
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#endif /* !NOMENUS */
 
-#ifndef NOSYSCOMMANDS
-
+--[[
 /*
  * System Menu Command Values
  */
@@ -9734,35 +9679,27 @@ typedef struct {        // version 0
 #define SC_TASKLIST     0xF130
 #define SC_SCREENSAVE   0xF140
 #define SC_HOTKEY       0xF150
-#if(WINVER >= 0x0400)
+
 #define SC_DEFAULT      0xF160
 #define SC_MONITORPOWER 0xF170
 #define SC_CONTEXTHELP  0xF180
 #define SC_SEPARATOR    0xF00F
-#endif /* WINVER >= 0x0400 */
 
-#if(WINVER >= 0x0600)
 #define SCF_ISSECURE    0x00000001
-#endif /* WINVER >= 0x0600 */
-
-#define GET_SC_WPARAM(wParam) ((int)wParam & 0xFFF0)
 
 /*
  * Obsolete names
  */
-#define SC_ICON         SC_MINIMIZE
-#define SC_ZOOM         SC_MAXIMIZE
+#define SC_ICON       =  SC_MINIMIZE
+#define SC_ZOOM       =  SC_MAXIMIZE
+--]]
 
-#endif /* !NOSYSCOMMANDS */
-
-/*
- * Resource Loading Routines
- */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+function exports.GET_SC_WPARAM(wParam) 
+    return ffi.cast("int",band(wParam, 0xFFF0)) 
+end
 
 
+ffi.cdef[[
 HBITMAP
 __stdcall
 LoadBitmapA(
@@ -9774,13 +9711,17 @@ __stdcall
 LoadBitmapW(
      HINSTANCE hInstance,
      LPCWSTR lpBitmapName);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadBitmap  LoadBitmapW
 #else
 #define LoadBitmap  LoadBitmapA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HCURSOR
 __stdcall
 LoadCursorA(
@@ -9792,13 +9733,16 @@ __stdcall
 LoadCursorW(
      HINSTANCE hInstance,
      LPCWSTR lpCursorName);
-#ifdef UNICODE
-#define LoadCursor  LoadCursorW
-#else
-#define LoadCursor  LoadCursorA
-#endif // !UNICODE
+]]
 
 
+exports.LoadCursor = ffi.C.LoadCursorA;
+if UNICODE then
+exports.LoadCursor  = ffi.C.LoadCursorW;
+end
+
+
+ffi.cdef[[
 HCURSOR
 __stdcall
 LoadCursorFromFileA(
@@ -9808,13 +9752,17 @@ HCURSOR
 __stdcall
 LoadCursorFromFileW(
      LPCWSTR lpFileName);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadCursorFromFile  LoadCursorFromFileW
 #else
 #define LoadCursorFromFile  LoadCursorFromFileA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HCURSOR
 __stdcall
 CreateCursor(
@@ -9823,15 +9771,17 @@ CreateCursor(
      int yHotSpot,
      int nWidth,
      int nHeight,
-     CONST VOID *pvANDPlane,
-     CONST VOID *pvXORPlane);
+     const VOID *pvANDPlane,
+     const VOID *pvXORPlane);
 
 
 BOOL
 __stdcall
 DestroyCursor(
      HCURSOR hCursor);
+]]
 
+--[[
 #ifndef _MAC
 #define CopyCursor(pcur) ((HCURSOR)CopyIcon((HICON)(pcur)))
 #else
@@ -9841,38 +9791,29 @@ __stdcall
 CopyCursor(
      HCURSOR hCursor);
 #endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-/*
- * Standard Cursor IDs
- */
-#define IDC_ARROW           MAKEINTRESOURCE(32512)
-#define IDC_IBEAM           MAKEINTRESOURCE(32513)
-#define IDC_WAIT            MAKEINTRESOURCE(32514)
-#define IDC_CROSS           MAKEINTRESOURCE(32515)
-#define IDC_UPARROW         MAKEINTRESOURCE(32516)
-#define IDC_SIZE            MAKEINTRESOURCE(32640)  /* OBSOLETE: use IDC_SIZEALL */
-#define IDC_ICON            MAKEINTRESOURCE(32641)  /* OBSOLETE: use IDC_ARROW */
-#define IDC_SIZENWSE        MAKEINTRESOURCE(32642)
-#define IDC_SIZENESW        MAKEINTRESOURCE(32643)
-#define IDC_SIZEWE          MAKEINTRESOURCE(32644)
-#define IDC_SIZENS          MAKEINTRESOURCE(32645)
-#define IDC_SIZEALL         MAKEINTRESOURCE(32646)
-#define IDC_NO              MAKEINTRESOURCE(32648) /*not in win3.1 */
-#if(WINVER >= 0x0500)
-#define IDC_HAND            MAKEINTRESOURCE(32649)
-#endif /* WINVER >= 0x0500 */
-#define IDC_APPSTARTING     MAKEINTRESOURCE(32650) /*not in win3.1 */
-#if(WINVER >= 0x0400)
-#define IDC_HELP            MAKEINTRESOURCE(32651)
-#endif /* WINVER >= 0x0400 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]]
 
 
+-- Standard Cursor IDs
+exports.IDC_ARROW         =  MAKEINTRESOURCE(32512)
+exports.IDC_IBEAM         =  MAKEINTRESOURCE(32513)
+exports.IDC_WAIT          =  MAKEINTRESOURCE(32514)
+exports.IDC_CROSS         =  MAKEINTRESOURCE(32515)
+exports.IDC_UPARROW       =  MAKEINTRESOURCE(32516)
+exports.IDC_SIZE          =  MAKEINTRESOURCE(32640)  --/* OBSOLETE: use IDC_SIZEALL */
+exports.IDC_ICON          =  MAKEINTRESOURCE(32641)  --/* OBSOLETE: use IDC_ARROW */
+exports.IDC_SIZENWSE      =  MAKEINTRESOURCE(32642)
+exports.IDC_SIZENESW      =  MAKEINTRESOURCE(32643)
+exports.IDC_SIZEWE        =  MAKEINTRESOURCE(32644)
+exports.IDC_SIZENS        =  MAKEINTRESOURCE(32645)
+exports.IDC_SIZEALL       =  MAKEINTRESOURCE(32646)
+exports.IDC_NO            =  MAKEINTRESOURCE(32648) --/*not in win3.1 */
+exports.IDC_HAND          =  MAKEINTRESOURCE(32649)
+exports.IDC_APPSTARTING   =  MAKEINTRESOURCE(32650) --/*not in win3.1 */
+exports.IDC_HELP          =  MAKEINTRESOURCE(32651)
+
+
+ffi.cdef[[
 BOOL
 __stdcall
 SetSystemCursor(
@@ -9900,44 +9841,52 @@ __stdcall
 LoadIconW(
      HINSTANCE hInstance,
      LPCWSTR lpIconName);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadIcon  LoadIconW
 #else
 #define LoadIcon  LoadIconA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 UINT
 __stdcall
 PrivateExtractIconsA(
-    _In_reads_(MAX_PATH) LPCSTR szFileName,
+     LPCSTR szFileName,
      int nIconIndex,
      int cxIcon,
      int cyIcon,
-    _Out_writes_opt_(nIcons) HICON *phicon,
-    _Out_writes_opt_(nIcons) UINT *piconid,
+     HICON *phicon,
+    UINT *piconid,
      UINT nIcons,
      UINT flags);
 
 UINT
 __stdcall
 PrivateExtractIconsW(
-    _In_reads_(MAX_PATH) LPCWSTR szFileName,
+    LPCWSTR szFileName,
      int nIconIndex,
      int cxIcon,
      int cyIcon,
-    _Out_writes_opt_(nIcons) HICON *phicon,
-    _Out_writes_opt_(nIcons) UINT *piconid,
+     HICON *phicon,
+     UINT *piconid,
      UINT nIcons,
      UINT flags);
+]]
+
+--[[
 #ifdef UNICODE
 #define PrivateExtractIcons  PrivateExtractIconsW
 #else
 #define PrivateExtractIcons  PrivateExtractIconsA
 #endif // !UNICODE
+--]]
 
 
+ffi.cdef[[
 HICON
 __stdcall
 CreateIcon(
@@ -9946,8 +9895,8 @@ CreateIcon(
      int nHeight,
      BYTE cPlanes,
      BYTE cBitsPixel,
-     CONST BYTE *lpbANDbits,
-     CONST BYTE *lpbXORbits);
+     const BYTE *lpbANDbits,
+     const BYTE *lpbXORbits);
 
 
 BOOL
@@ -9959,43 +9908,45 @@ DestroyIcon(
 int
 __stdcall
 LookupIconIdFromDirectory(
-    _In_reads_bytes_(sizeof(WORD) * 3) PBYTE presbits,
+     PBYTE presbits,
      BOOL fIcon);
 
-#if(WINVER >= 0x0400)
+
 
 int
 __stdcall
 LookupIconIdFromDirectoryEx(
-    _In_reads_bytes_(sizeof(WORD) * 3) PBYTE presbits,
+     PBYTE presbits,
      BOOL fIcon,
      int cxDesired,
      int cyDesired,
      UINT Flags);
-#endif /* WINVER >= 0x0400 */
+]]
 
-
+ffi.cdef[[
 HICON
 __stdcall
 CreateIconFromResource(
-    _In_reads_bytes_(dwResSize) PBYTE presbits,
+    PBYTE presbits,
      DWORD dwResSize,
      BOOL fIcon,
      DWORD dwVer);
 
-#if(WINVER >= 0x0400)
+
 
 HICON
 __stdcall
 CreateIconFromResourceEx(
-    _In_reads_bytes_(dwResSize) PBYTE presbits,
+    PBYTE presbits,
      DWORD dwResSize,
      BOOL fIcon,
      DWORD dwVer,
      int cxDesired,
      int cyDesired,
      UINT Flags);
+]]
 
+ffi.cdef[[
 /* Icon/Cursor header */
 typedef struct tagCURSORSHAPE
 {
@@ -10007,11 +9958,10 @@ typedef struct tagCURSORSHAPE
     BYTE    Planes;
     BYTE    BitsPixel;
 } CURSORSHAPE, *LPCURSORSHAPE;
-#endif /* WINVER >= 0x0400 */
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[=[
 #define IMAGE_BITMAP        0
 #define IMAGE_ICON          1
 #define IMAGE_CURSOR        2
@@ -10031,11 +9981,10 @@ typedef struct tagCURSORSHAPE
 #define LR_CREATEDIBSECTION 0x00002000
 #define LR_COPYFROMRESOURCE 0x00004000
 #define LR_SHARED           0x00008000
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]=]
 
 
+ffi.cdef[[
 HANDLE
 __stdcall
 LoadImageA(
@@ -10055,13 +10004,17 @@ LoadImageW(
      int cx,
      int cy,
      UINT fuLoad);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadImage  LoadImageW
 #else
 #define LoadImage  LoadImageA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CopyImage(
@@ -10070,7 +10023,9 @@ CopyImage(
      int cx,
      int cy,
      UINT flags);
+]]
 
+--[=[
 #define DI_MASK         0x0001
 #define DI_IMAGE        0x0002
 #define DI_NORMAL       0x0003

@@ -23,7 +23,7 @@ local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local libraryloader = require("win32.core.libraryloader_l1_1_1");
 
 local winuser = require("win32.winuser");
-local NativeWindow = require("NativeWindow");
+
 
 
 local WindowKind = {}
@@ -61,7 +61,7 @@ function WindowKind.create(self, classname, msgproc, style)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = appInstance;
     wcex.hIcon          = nil;		-- LoadIcon(hInst, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex.hCursor        = ffi.C.LoadCursor(nil, ffi.C.IDC_ARROW);
+    wcex.hCursor        = winuser.LoadCursor(nil, winuser.IDC_ARROW);
     wcex.hbrBackground  = nil;		-- (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName   = nil;		-- NULL;
     wcex.lpszClassName  = classname;
@@ -77,8 +77,5 @@ function WindowKind.create(self, classname, msgproc, style)
 end
 
 
-function WindowKind.createWindow(self, width, height, title)
-    return NativeWindow:create(self.ClassName, width, height,  title);
-end
 
 return WindowKind;

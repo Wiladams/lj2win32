@@ -9,9 +9,8 @@ local core_library = require("win32.core.libraryloader_l1_1_1");
 local User32 = require("win32.winuser");
 
 
-print(" core_library: ", core_library)
-print("errorhandling: ", errorhandling)
-
+--print(" core_library: ", core_library)
+--print("errorhandling: ", errorhandling)
 
 ffi.cdef[[
 typedef struct {
@@ -19,10 +18,10 @@ typedef struct {
 } WindowHandle, *PWindowHandle;
 ]]
 
-local WindowHandle = ffi.typeof("WindowHandle");
-local WindowHandle_mt = {}
-ffi.metatype(WindowHandle, WindowHandle_mt);
 
+local WindowHandle_mt = {}
+ffi.metatype("WindowHandle", WindowHandle_mt);
+local WindowHandle = ffi.typeof("WindowHandle");
 
 local NativeWindow = {}
 setmetatable(NativeWindow, {
@@ -58,8 +57,12 @@ function NativeWindow.create(self, className, width, height, title)
 	className = className or "NativeWindowClass";
 	title = title or "Native Window Title";
 
+	print("NativeWindow.create, name, title: ", className, title)
+
 	local dwExStyle = bor(ffi.C.WS_EX_APPWINDOW, ffi.C.WS_EX_WINDOWEDGE);
 	local dwStyle = bor(ffi.C.WS_SYSMENU, ffi.C.WS_VISIBLE, ffi.C.WS_POPUP);
+
+	print("  Style: ", string.format("0x%x",dwExStyle), string.format("0x%x",dwStyle))
 
 	local appInstance = core_library.GetModuleHandleA(nil);
 
@@ -68,9 +71,10 @@ function NativeWindow.create(self, className, width, height, title)
 		className,
 		title,
 		ffi.C.WS_OVERLAPPEDWINDOW,
-		ffi.C.CW_USEDEFAULT,
-		ffi.C.CW_USEDEFAULT,
-		width, height,
+		0, 	-- ffi.C.CW_USEDEFAULT,
+		0,	-- ffi.C.CW_USEDEFAULT,
+		width, 
+		height,
 		nil,
 		nil,
 		appInstance,
