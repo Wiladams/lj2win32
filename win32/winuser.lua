@@ -2644,32 +2644,30 @@ TrackMouseEvent(
 #if(_WIN32_WINNT >= 0x0500)
 #define WS_EX_NOACTIVATE        0x08000000L
 #endif /* _WIN32_WINNT >= 0x0500 */
+--]=]
 
-
+ffi.cdef[[
 /*
  * Class styles
  */
-#define CS_VREDRAW          0x0001
-#define CS_HREDRAW          0x0002
-#define CS_DBLCLKS          0x0008
-#define CS_OWNDC            0x0020
-#define CS_CLASSDC          0x0040
-#define CS_PARENTDC         0x0080
-#define CS_NOCLOSE          0x0200
-#define CS_SAVEBITS         0x0800
-#define CS_BYTEALIGNCLIENT  0x1000
-#define CS_BYTEALIGNWINDOW  0x2000
-#define CS_GLOBALCLASS      0x4000
+static const int CS_VREDRAW         = 0x0001;
+static const int CS_HREDRAW         = 0x0002;
+static const int CS_DBLCLKS         = 0x0008;
+static const int CS_OWNDC           = 0x0020;
+static const int CS_CLASSDC         = 0x0040;
+static const int CS_PARENTDC        = 0x0080;
+static const int CS_NOCLOSE         = 0x0200;
+static const int CS_SAVEBITS        = 0x0800;
+static const int CS_BYTEALIGNCLIENT = 0x1000;
+static const int CS_BYTEALIGNWINDOW = 0x2000;
+static const int CS_GLOBALCLASS     = 0x4000;
 
-#define CS_IME              0x00010000
-#if(_WIN32_WINNT >= 0x0501)
-#define CS_DROPSHADOW       0x00020000
-#endif /* _WIN32_WINNT >= 0x0501 */
+static const int CS_DROPSHADOW      = 0x00020000;
+]]
 
 
+--[=[
 
-#endif /* !NOWINSTYLES */
-#if(WINVER >= 0x0400)
 /* WM_PRINT flags */
 #define PRF_CHECKVISIBLE    0x00000001L
 #define PRF_NONCLIENT       0x00000002L
@@ -2722,12 +2720,9 @@ TrackMouseEvent(
 #define BF_ADJUST       0x2000  /* Calculate the space left over */
 #define BF_FLAT         0x4000  /* For flat rather than 3D borders */
 #define BF_MONO         0x8000  /* For monochrome borders */
+--]=]
 
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 DrawEdge(
@@ -2735,62 +2730,60 @@ DrawEdge(
      LPRECT qrc,
      UINT edge,
      UINT grfFlags);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+ffi.cdef[[
 /* flags for DrawFrameControl */
 
-#define DFC_CAPTION             1
-#define DFC_MENU                2
-#define DFC_SCROLL              3
-#define DFC_BUTTON              4
-#if(WINVER >= 0x0500)
-#define DFC_POPUPMENU           5
-#endif /* WINVER >= 0x0500 */
+static const int DFC_CAPTION            = 1;
+static const int DFC_MENU               = 2;
+static const int DFC_SCROLL             = 3;
+static const int DFC_BUTTON             = 4;
 
-#define DFCS_CAPTIONCLOSE       0x0000
-#define DFCS_CAPTIONMIN         0x0001
-#define DFCS_CAPTIONMAX         0x0002
-#define DFCS_CAPTIONRESTORE     0x0003
-#define DFCS_CAPTIONHELP        0x0004
-
-#define DFCS_MENUARROW          0x0000
-#define DFCS_MENUCHECK          0x0001
-#define DFCS_MENUBULLET         0x0002
-#define DFCS_MENUARROWRIGHT     0x0004
-#define DFCS_SCROLLUP           0x0000
-#define DFCS_SCROLLDOWN         0x0001
-#define DFCS_SCROLLLEFT         0x0002
-#define DFCS_SCROLLRIGHT        0x0003
-#define DFCS_SCROLLCOMBOBOX     0x0005
-#define DFCS_SCROLLSIZEGRIP     0x0008
-#define DFCS_SCROLLSIZEGRIPRIGHT 0x0010
-
-#define DFCS_BUTTONCHECK        0x0000
-#define DFCS_BUTTONRADIOIMAGE   0x0001
-#define DFCS_BUTTONRADIOMASK    0x0002
-#define DFCS_BUTTONRADIO        0x0004
-#define DFCS_BUTTON3STATE       0x0008
-#define DFCS_BUTTONPUSH         0x0010
-
-#define DFCS_INACTIVE           0x0100
-#define DFCS_PUSHED             0x0200
-#define DFCS_CHECKED            0x0400
-
-#if(WINVER >= 0x0500)
-#define DFCS_TRANSPARENT        0x0800
-#define DFCS_HOT                0x1000
-#endif /* WINVER >= 0x0500 */
-
-#define DFCS_ADJUSTRECT         0x2000
-#define DFCS_FLAT               0x4000
-#define DFCS_MONO               0x8000
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int DFC_POPUPMENU          = 5;
 
 
+static const int DFCS_CAPTIONCLOSE      = 0x0000;
+static const int DFCS_CAPTIONMIN        = 0x0001;
+static const int DFCS_CAPTIONMAX        = 0x0002;
+static const int DFCS_CAPTIONRESTORE    = 0x0003;
+static const int DFCS_CAPTIONHELP       = 0x0004;
+
+static const int DFCS_MENUARROW         = 0x0000;
+static const int DFCS_MENUCHECK         = 0x0001;
+static const int DFCS_MENUBULLET        = 0x0002;
+static const int DFCS_MENUARROWRIGHT    = 0x0004;
+static const int DFCS_SCROLLUP          = 0x0000;
+static const int DFCS_SCROLLDOWN        = 0x0001;
+static const int DFCS_SCROLLLEFT        = 0x0002;
+static const int DFCS_SCROLLRIGHT       = 0x0003;
+static const int DFCS_SCROLLCOMBOBOX    = 0x0005;
+static const int DFCS_SCROLLSIZEGRIP    = 0x0008;
+static const int DFCS_SCROLLSIZEGRIPRIGHT= 0x0010;
+
+static const int DFCS_BUTTONCHECK       = 0x0000;
+static const int DFCS_BUTTONRADIOIMAGE  = 0x0001;
+static const int DFCS_BUTTONRADIOMASK   = 0x0002;
+static const int DFCS_BUTTONRADIO       = 0x0004;
+static const int DFCS_BUTTON3STATE      = 0x0008;
+static const int DFCS_BUTTONPUSH        = 0x0010;
+
+static const int DFCS_INACTIVE          = 0x0100;
+static const int DFCS_PUSHED            = 0x0200;
+static const int DFCS_CHECKED           = 0x0400;
+
+
+static const int DFCS_TRANSPARENT       = 0x0800;
+static const int DFCS_HOT               = 0x1000;
+
+
+static const int DFCS_ADJUSTRECT        = 0x2000;
+static const int DFCS_FLAT              = 0x4000;
+static const int DFCS_MONO              = 0x8000;
+]]
+
+ffi.cdef[[
 BOOL
 __stdcall
 DrawFrameControl(
@@ -2798,29 +2791,22 @@ DrawFrameControl(
      LPRECT,
      UINT,
      UINT);
+]]
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-
+ffi.cdef[[
 /* flags for DrawCaption */
-#define DC_ACTIVE           0x0001
-#define DC_SMALLCAP         0x0002
-#define DC_ICON             0x0004
-#define DC_TEXT             0x0008
-#define DC_INBUTTON         0x0010
-#if(WINVER >= 0x0500)
-#define DC_GRADIENT         0x0020
-#endif /* WINVER >= 0x0500 */
-#if(_WIN32_WINNT >= 0x0501)
-#define DC_BUTTONS          0x1000
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int DC_ACTIVE         =  0x0001;
+static const int DC_SMALLCAP       =  0x0002;
+static const int DC_ICON           =  0x0004;
+static const int DC_TEXT           =  0x0008;
+static const int DC_INBUTTON       =  0x0010;
+static const int DC_GRADIENT       =  0x0020;
+static const int DC_BUTTONS        =  0x1000;
+]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 DrawCaption(
@@ -2828,33 +2814,27 @@ DrawCaption(
      HDC hdc,
      CONST RECT * lprect,
      UINT flags);
+]]
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#define IDANI_OPEN          1
-#define IDANI_CAPTION       3
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+ffi.cdef[[
+static const int IDANI_OPEN         = 1;
+static const int IDANI_CAPTION      = 3;
+]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 DrawAnimatedRects(
      HWND hwnd,
      int idAni,
-     CONST RECT *lprcFrom,
-     CONST RECT *lprcTo);
+     const RECT *lprcFrom,
+     const RECT *lprcTo);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0400 */
-
+--[=[
 #ifndef NOCLIPBOARD
-
 
 /*
  * Predefined Clipboard Formats
@@ -2909,31 +2889,28 @@ DrawAnimatedRects(
 
 
 #endif /* !NOCLIPBOARD */
+--]=]
 
+ffi.cdef[[
 /*
  * Defines for the fVirt field of the Accelerator table structure.
  */
-#define FVIRTKEY  TRUE          /* Assumed to be == TRUE */
-#define FNOINVERT 0x02
-#define FSHIFT    0x04
-#define FCONTROL  0x08
-#define FALT      0x10
+static const int FVIRTKEY = TRUE;          /* Assumed to be == TRUE */
+static const int FNOINVERT= 0x02;
+static const int FSHIFT   = 0x04;
+static const int FCONTROL = 0x08;
+static const int FALT     = 0x10;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagACCEL {
-#ifndef _MAC
-    BYTE   fVirt;               /* Also called the flags field */
-    WORD   key;
-    WORD   cmd;
-#else
     WORD   fVirt;               /* Also called the flags field */
     WORD   key;
     DWORD  cmd;
-#endif
 } ACCEL, *LPACCEL;
+]]
 
+ffi.cdef[[
 typedef struct tagPAINTSTRUCT {
     HDC         hdc;
     BOOL        fErase;
@@ -2942,7 +2919,9 @@ typedef struct tagPAINTSTRUCT {
     BOOL        fIncUpdate;
     BYTE        rgbReserved[32];
 } PAINTSTRUCT, *PPAINTSTRUCT, *NPPAINTSTRUCT, *LPPAINTSTRUCT;
+]]
 
+ffi.cdef[[
 typedef struct tagCREATESTRUCTA {
     LPVOID      lpCreateParams;
     HINSTANCE   hInstance;
@@ -2957,6 +2936,7 @@ typedef struct tagCREATESTRUCTA {
     LPCSTR      lpszClass;
     DWORD       dwExStyle;
 } CREATESTRUCTA, *LPCREATESTRUCTA;
+
 typedef struct tagCREATESTRUCTW {
     LPVOID      lpCreateParams;
     HINSTANCE   hInstance;
@@ -2971,6 +2951,9 @@ typedef struct tagCREATESTRUCTW {
     LPCWSTR     lpszClass;
     DWORD       dwExStyle;
 } CREATESTRUCTW, *LPCREATESTRUCTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef CREATESTRUCTW CREATESTRUCT;
 typedef LPCREATESTRUCTW LPCREATESTRUCT;
@@ -2978,7 +2961,9 @@ typedef LPCREATESTRUCTW LPCREATESTRUCT;
 typedef CREATESTRUCTA CREATESTRUCT;
 typedef LPCREATESTRUCTA LPCREATESTRUCT;
 #endif // UNICODE
+--]]
 
+ffi.cdef[[
 typedef struct tagWINDOWPLACEMENT {
     UINT  length;
     UINT  flags;
@@ -2986,39 +2971,23 @@ typedef struct tagWINDOWPLACEMENT {
     POINT ptMinPosition;
     POINT ptMaxPosition;
     RECT  rcNormalPosition;
-#ifdef _MAC
-    RECT  rcDevice;
-#endif
+
 } WINDOWPLACEMENT;
 typedef WINDOWPLACEMENT *PWINDOWPLACEMENT, *LPWINDOWPLACEMENT;
 
-#define WPF_SETMINPOSITION          0x0001
-#define WPF_RESTORETOMAXIMIZED      0x0002
-#if(_WIN32_WINNT >= 0x0500)
-#define WPF_ASYNCWINDOWPLACEMENT    0x0004
-#endif /* _WIN32_WINNT >= 0x0500 */
+static const int WPF_SETMINPOSITION         = 0x0001;
+static const int WPF_RESTORETOMAXIMIZED     = 0x0002;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+static const int WPF_ASYNCWINDOWPLACEMENT   = 0x0004;
+]]
 
-#if(WINVER >= 0x0400)
-
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+ffi.cdef[[
 typedef struct tagNMHDR
 {
     HWND      hwndFrom;
     UINT_PTR  idFrom;
     UINT      code;         // NM_ code
 }   NMHDR;
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 typedef NMHDR * LPNMHDR;
 
 typedef struct tagSTYLESTRUCT
@@ -3026,10 +2995,8 @@ typedef struct tagSTYLESTRUCT
     DWORD   styleOld;
     DWORD   styleNew;
 } STYLESTRUCT, * LPSTYLESTRUCT;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-#endif /* WINVER >= 0x0400 */
 
 
 /*
