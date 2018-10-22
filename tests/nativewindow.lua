@@ -71,7 +71,7 @@ function NativeWindow.create(self, className, width, height, title)
 		className,
 		title,
 		ffi.C.WS_OVERLAPPEDWINDOW,
-		0, 	-- ffi.C.CW_USEDEFAULT,
+		ffi.C.CW_USEDEFAULT,
 		0,	-- ffi.C.CW_USEDEFAULT,
 		width, 
 		height,

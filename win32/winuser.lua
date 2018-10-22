@@ -3775,15 +3775,15 @@ DefWindowProcW(
 #endif // !UNICODE
 --]]
 
---[=[
+ffi.cdef[[
 VOID
 __stdcall
 PostQuitMessage(
      int nExitCode);
+]]
 
-#ifdef STRICT
 
-
+ffi.cdef[[
 LRESULT
 __stdcall
 CallWindowProcA(
@@ -3801,6 +3801,7 @@ CallWindowProcW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+]]
 
 --[[
 #ifdef UNICODE
@@ -3809,67 +3810,23 @@ CallWindowProcW(
 #define CallWindowProc  CallWindowProcA
 #endif // !UNICODE
 --]]
-#else /* !STRICT */
 
 
-LRESULT
-__stdcall
-CallWindowProcA(
-     FARPROC lpPrevWndFunc,
-     HWND hWnd,
-     UINT Msg,
-     WPARAM wParam,
-     LPARAM lParam);
+ffi.cdef[[
+BOOL __stdcall InSendMessage(void);
 
-LRESULT
-__stdcall
-CallWindowProcW(
-     FARPROC lpPrevWndFunc,
-     HWND hWnd,
-     UINT Msg,
-     WPARAM wParam,
-     LPARAM lParam);
-#ifdef UNICODE
-#define CallWindowProc  CallWindowProcW
-#else
-#define CallWindowProc  CallWindowProcA
-#endif // !UNICODE
+DWORD __stdcall InSendMessageEx(LPVOID lpReserved);
 
-#endif /* !STRICT */
-
-
-BOOL
-__stdcall
-InSendMessage(
-    VOID);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#if(WINVER >= 0x0500)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
-DWORD
-__stdcall
-InSendMessageEx(
-    LPVOID lpReserved);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
 /*
  * InSendMessageEx return value
  */
-#define ISMEX_NOSEND      0x00000000
-#define ISMEX_SEND        0x00000001
-#define ISMEX_NOTIFY      0x00000002
-#define ISMEX___stdcall    0x00000004
-#define ISMEX_REPLIED     0x00000008
-#endif /* WINVER >= 0x0500 */
---]=]
+static const int ISMEX_NOSEND     = 0x00000000;
+static const int ISMEX_SEND       = 0x00000001;
+static const int ISMEX_NOTIFY     = 0x00000002;
+static const int ISMEX_CALLBACK   = 0x00000004;
+static const int ISMEX_REPLIED    = 0x00000008;
+]]
 
 
 
@@ -3877,7 +3834,7 @@ ffi.cdef[[
 UINT
 __stdcall
 GetDoubleClickTime(
-    VOID);
+    void);
 
 
 BOOL
