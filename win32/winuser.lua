@@ -11299,33 +11299,24 @@ __stdcall CascadeWindows(
 #endif /* !NOMDI */
 
 #endif /* !NOUSER */
+--]=]
 
-/****** Help support ********************************************************/
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#ifndef NOHELP
-
+ffi.cdef[[
 typedef DWORD HELPPOLY;
 typedef struct tagMULTIKEYHELPA {
-#ifndef _MAC
     DWORD  mkSize;
-#else
-    WORD   mkSize;
-#endif
     CHAR   mkKeylist;
     CHAR   szKeyphrase[1];
 } MULTIKEYHELPA, *PMULTIKEYHELPA, *LPMULTIKEYHELPA;
+
 typedef struct tagMULTIKEYHELPW {
-#ifndef _MAC
     DWORD  mkSize;
-#else
-    WORD   mkSize;
-#endif
     WCHAR  mkKeylist;
     WCHAR  szKeyphrase[1];
 } MULTIKEYHELPW, *PMULTIKEYHELPW, *LPMULTIKEYHELPW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef MULTIKEYHELPW MULTIKEYHELP;
 typedef PMULTIKEYHELPW PMULTIKEYHELP;
@@ -11335,7 +11326,9 @@ typedef MULTIKEYHELPA MULTIKEYHELP;
 typedef PMULTIKEYHELPA PMULTIKEYHELP;
 typedef LPMULTIKEYHELPA LPMULTIKEYHELP;
 #endif // UNICODE
+--]]
 
+ffi.cdef[[
 typedef struct tagHELPWININFOA {
     int  wStructSize;
     int  x;
@@ -11345,6 +11338,7 @@ typedef struct tagHELPWININFOA {
     int  wMax;
     CHAR   rgchMember[2];
 } HELPWININFOA, *PHELPWININFOA, *LPHELPWININFOA;
+
 typedef struct tagHELPWININFOW {
     int  wStructSize;
     int  x;
@@ -11354,6 +11348,9 @@ typedef struct tagHELPWININFOW {
     int  wMax;
     WCHAR  rgchMember[2];
 } HELPWININFOW, *PHELPWININFOW, *LPHELPWININFOW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef HELPWININFOW HELPWININFO;
 typedef PHELPWININFOW PHELPWININFO;
@@ -11363,8 +11360,9 @@ typedef HELPWININFOA HELPWININFO;
 typedef PHELPWININFOA PHELPWININFO;
 typedef LPHELPWININFOA LPHELPWININFO;
 #endif // UNICODE
+--]]
 
-
+--[=[
 /*
  * Commands to pass to WinHelp()
  */
@@ -11401,10 +11399,10 @@ typedef LPHELPWININFOA LPHELPWININFO;
 #define IDH_HELP                        28445
 
 #endif /* WINVER >= 0x0400 */
+--]=]
 
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 WinHelpA(
@@ -11420,19 +11418,18 @@ WinHelpW(
      LPCWSTR lpszHelp,
      UINT uCommand,
      ULONG_PTR dwData);
+]]
+
+--[[
 #ifdef UNICODE
 #define WinHelp  WinHelpW
 #else
 #define WinHelp  WinHelpA
 #endif // !UNICODE
+--]]
 
-#endif /* !NOHELP */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#if(WINVER >= 0x0500)
-
+--[[
 #define GR_GDIOBJECTS       0       /* Count of GDI objects */
 #define GR_USEROBJECTS      1       /* Count of USER objects */
 #endif /* WINVER >= 0x0500 */
@@ -11444,33 +11441,19 @@ WinHelpW(
 #if(WINVER >= 0x0601)
 #define GR_GLOBAL           ((HANDLE)-2)
 #endif /* WINVER >= 0x0601 */
+--]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-#if(WINVER >= 0x0500)
 
+ffi.cdef[[
 DWORD
 __stdcall
 GetGuiResources(
      HANDLE hProcess,
      DWORD uiFlags);
-#endif /* WINVER >= 0x0500 */
+]]
 
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#ifndef NOSYSPARAMSINFO
-
+--[[
 /*
  * Parameter for SystemParametersInfo.
  */
@@ -11508,7 +11491,7 @@ GetGuiResources(
 #define SPI_SETICONTITLELOGFONT     0x0022
 #define SPI_GETFASTTASKSWITCH       0x0023
 #define SPI_SETFASTTASKSWITCH       0x0024
-#if(WINVER >= 0x0400)
+
 #define SPI_SETDRAGFULLWINDOWS      0x0025
 #define SPI_GETDRAGFULLWINDOWS      0x0026
 #define SPI_GETNONCLIENTMETRICS     0x0029
@@ -11552,7 +11535,7 @@ GetGuiResources(
 #define SPI_GETMOUSETRAILS          0x005E
 #define SPI_SETSCREENSAVERRUNNING   0x0061
 #define SPI_SCREENSAVERRUNNING     SPI_SETSCREENSAVERRUNNING
-#endif /* WINVER >= 0x0400 */
+
 #define SPI_GETFILTERKEYS          0x0032
 #define SPI_SETFILTERKEYS          0x0033
 #define SPI_GETTOGGLEKEYS          0x0034
@@ -11565,17 +11548,17 @@ GetGuiResources(
 #define SPI_SETSTICKYKEYS          0x003B
 #define SPI_GETACCESSTIMEOUT       0x003C
 #define SPI_SETACCESSTIMEOUT       0x003D
-#if(WINVER >= 0x0400)
+
 #define SPI_GETSERIALKEYS          0x003E
 #define SPI_SETSERIALKEYS          0x003F
-#endif /* WINVER >= 0x0400 */
+
 #define SPI_GETSOUNDSENTRY         0x0040
 #define SPI_SETSOUNDSENTRY         0x0041
-#if(_WIN32_WINNT >= 0x0400)
+
 #define SPI_GETSNAPTODEFBUTTON     0x005F
 #define SPI_SETSNAPTODEFBUTTON     0x0060
-#endif /* _WIN32_WINNT >= 0x0400 */
-#if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
+
+
 #define SPI_GETMOUSEHOVERWIDTH     0x0062
 #define SPI_SETMOUSEHOVERWIDTH     0x0063
 #define SPI_GETMOUSEHOVERHEIGHT    0x0064
@@ -11587,32 +11570,32 @@ GetGuiResources(
 #define SPI_GETMENUSHOWDELAY       0x006A
 #define SPI_SETMENUSHOWDELAY       0x006B
 
-#if (_WIN32_WINNT >= 0x0600)
+
 #define SPI_GETWHEELSCROLLCHARS   0x006C
 #define SPI_SETWHEELSCROLLCHARS   0x006D
-#endif
+
 
 #define SPI_GETSHOWIMEUI          0x006E
 #define SPI_SETSHOWIMEUI          0x006F
-#endif
 
 
-#if(WINVER >= 0x0500)
+
+
 #define SPI_GETMOUSESPEED         0x0070
 #define SPI_SETMOUSESPEED         0x0071
 #define SPI_GETSCREENSAVERRUNNING 0x0072
 #define SPI_GETDESKWALLPAPER      0x0073
-#endif /* WINVER >= 0x0500 */
 
-#if(WINVER >= 0x0600)
+
+
 #define SPI_GETAUDIODESCRIPTION   0x0074
 #define SPI_SETAUDIODESCRIPTION   0x0075
 
 #define SPI_GETSCREENSAVESECURE   0x0076
 #define SPI_SETSCREENSAVESECURE   0x0077
-#endif /* WINVER >= 0x0600 */
 
-#if(_WIN32_WINNT >= 0x0601)
+
+
 #define SPI_GETHUNGAPPTIMEOUT           0x0078
 #define SPI_SETHUNGAPPTIMEOUT           0x0079
 #define SPI_GETWAITTOKILLTIMEOUT        0x007A
@@ -11639,8 +11622,9 @@ GetGuiResources(
 #define SPI_SETSNAPSIZING               0x008F
 #define SPI_GETDOCKMOVING               0x0090
 #define SPI_SETDOCKMOVING               0x0091
-#endif /* _WIN32_WINNT >= 0x0601 */
+--]]
 
+--[=[
 #if(WINVER >= 0x0602)
 #define MAX_TOUCH_PREDICTION_FILTER_TAPS 3
 

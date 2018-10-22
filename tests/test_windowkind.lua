@@ -7,7 +7,8 @@ local ffi = require("ffi")
 local User32 = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
-local wmmsgs = require("wmmsgs")
+--local wmmsgs = require("wmmsgs")
+local wmmsgs = require("wm_reserved")
 local sched = require("scheduler")
 
 
