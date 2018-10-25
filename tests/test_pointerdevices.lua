@@ -7,15 +7,7 @@ local core_string = require("win32.core.string_l1_1_0");
 
 --local errorhandling = require("win32.core.errorhandling_l1_1_1");
 
---[[
-      DWORD displayOrientation;
-    HANDLE device;
-    POINTER_DEVICE_TYPE pointerDeviceType;
-    HMONITOR monitor;
-    ULONG startingCursorId;
-    USHORT maxActiveContacts;
-    WCHAR productString[POINTER_DEVICE_PRODUCT_STRING_MAX];  
---]]
+
 local POINTER_DEVICE_TYPE = {
     [1] = "POINTER_DEVICE_TYPE_INTEGRATED_PEN",
     [2] = "POINTER_DEVICE_TYPE_EXTERNAL_PEN",
@@ -25,12 +17,11 @@ local POINTER_DEVICE_TYPE = {
 };
 
 local function printPointerDevice(device)
-    print("==== printPointerDevice ====")
-    print("Name: ", core_string.toAnsi(device.productString))
-    print("        Device Type: ", POINTER_DEVICE_TYPE[tonumber(device.pointerDeviceType)])
-    print("Display Orientation: ", device.displayOrientation);
-    print("          Cursor ID: ", device.startingCursorId);
-    print("Max Active Contacts: ", device.maxActiveContacts);
+    io.write(string.format("{ Name = '%s';", core_string.toAnsi(device.productString)))
+    io.write(string.format("  DeviceType = '%s';", POINTER_DEVICE_TYPE[tonumber(device.pointerDeviceType)]))
+    io.write(string.format("  DisplayOrientation = '%s';", device.displayOrientation));
+    io.write(string.format("  CursorID = %d;", device.startingCursorId));
+    print(string.format("  MaxActiveContacts = %d;", device.maxActiveContacts));
 end
 
 

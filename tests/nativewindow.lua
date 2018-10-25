@@ -33,16 +33,6 @@ local NativeWindow_mt = {
 	__index = NativeWindow,
 }
 
---[[
-function NativeWindow.RegisterClass(self, classname, msgproc, style)
-	msgproc = msgproc or User32.Lib.DefWindowProcA;
-	style = style or bor(ffi.C.CS_HREDRAW, ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
-
-	local winclass = User32.RegisterWindowClass(classname)
-
-	return winclass;
-end
---]]
 
 function NativeWindow.init(self, rawhandle)
 	local obj = {

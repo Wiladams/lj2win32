@@ -16,7 +16,7 @@ local function createWindow(params)
     return NativeWindow:create(params.kind.ClassName, params.width, params.height,  params.title);
 end
 
-jit.off(WindowProc)
+
 function WindowProc(hwnd, msg, wparam, lparam)
     print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]), wparam, lparam)
 
@@ -30,6 +30,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
 
 	return res
 end
+jit.off(WindowProc)
 
 local function msgLoop()
     --  create some a loop to process window messages

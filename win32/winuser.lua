@@ -10045,6 +10045,7 @@ typedef struct _ICONINFOEXW {
     WCHAR   szResName[MAX_PATH];
 } ICONINFOEXW, *PICONINFOEXW;
 
+--[[
 #ifdef UNICODE
 typedef ICONINFOEXW ICONINFOEX;
 typedef PICONINFOEXW PICONINFOEX;
@@ -10052,8 +10053,9 @@ typedef PICONINFOEXW PICONINFOEX;
 typedef ICONINFOEXA ICONINFOEX;
 typedef PICONINFOEXA PICONINFOEX;
 #endif // UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetIconInfoExA(
@@ -10065,20 +10067,22 @@ __stdcall
 GetIconInfoExW(
      HICON hicon,
      PICONINFOEXW piconinfo);
+]]
 
+--[[
 #ifdef UNICODE
 #define GetIconInfoEx  GetIconInfoExW
 #else
 #define GetIconInfoEx  GetIconInfoExA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
+static const int RES_ICON   = 1;
+static const int RES_CURSOR = 2;
+]]
 
-
-#define RES_ICON    1
-#define RES_CURSOR  2
-
-
-
+--[[
 #ifdef OEMRESOURCE
 
 
@@ -10166,7 +10170,8 @@ GetIconInfoExW(
 #define ORD_LANGDRIVER    1     /* The ordinal number for the entry point of
                                 ** language drivers.
                                 */
-
+--]]
+--[[
 #ifndef NOICONS
 
 /*
@@ -10198,28 +10203,25 @@ GetIconInfoExW(
 #endif /* WINVER >= 0x0600 */
 #endif /* RC_INVOKED */
 
-#if(WINVER >= 0x0400)
+
 #define IDI_WARNING     IDI_EXCLAMATION
 #define IDI_ERROR       IDI_HAND
 #define IDI_INFORMATION IDI_ASTERISK
-#endif /* WINVER >= 0x0400 */
+
 
 
 #endif /* !NOICONS */
+--]]
 
 
-#ifdef NOAPISET
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 int
 __stdcall
 LoadStringA(
      HINSTANCE hInstance,
      UINT uID,
-    _Out_writes_to_(cchBufferMax, return + 1) LPSTR lpBuffer,
+    LPSTR lpBuffer,
      int cchBufferMax);
 
 int
@@ -10227,20 +10229,20 @@ __stdcall
 LoadStringW(
      HINSTANCE hInstance,
      UINT uID,
-    _Out_writes_to_(cchBufferMax, return + 1) LPWSTR lpBuffer,
+    LPWSTR lpBuffer,
      int cchBufferMax);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadString  LoadStringW
 #else
 #define LoadString  LoadStringA
 #endif // !UNICODE
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif
+--]]
 
 
+--[[
 /*
  * Dialog Box Command IDs
  */
@@ -10251,21 +10253,14 @@ LoadStringW(
 #define IDIGNORE            5
 #define IDYES               6
 #define IDNO                7
-#if(WINVER >= 0x0400)
 #define IDCLOSE         8
 #define IDHELP          9
-#endif /* WINVER >= 0x0400 */
-
-#if(WINVER >= 0x0500)
 #define IDTRYAGAIN      10
 #define IDCONTINUE      11
-#endif /* WINVER >= 0x0500 */
-
-#if(WINVER >= 0x0501)
 #ifndef IDTIMEOUT
 #define IDTIMEOUT 32000
-#endif
-#endif /* WINVER >= 0x0501 */
+--]]
+
 
 
 #ifndef NOCTLMGR
@@ -10274,9 +10269,9 @@ LoadStringW(
  * Control Manager Structures and Definitions
  */
 
-#ifndef NOWINSTYLES
 
 
+--[[
 /*
  * Edit Control Styles
  */
@@ -10293,13 +10288,13 @@ LoadStringW(
 #define ES_OEMCONVERT       0x0400L
 #define ES_READONLY         0x0800L
 #define ES_WANTRETURN       0x1000L
-#if(WINVER >= 0x0400)
+
 #define ES_NUMBER           0x2000L
-#endif /* WINVER >= 0x0400 */
+--]]
 
 
-#endif /* !NOWINSTYLES */
 
+--[[
 /*
  * Edit Control Notification Codes
  */
@@ -10312,24 +10307,24 @@ LoadStringW(
 #define EN_HSCROLL          0x0601
 #define EN_VSCROLL          0x0602
 
-#if(_WIN32_WINNT >= 0x0500)
+
 #define EN_ALIGN_LTR_EC     0x0700
 #define EN_ALIGN_RTL_EC     0x0701
-#endif /* _WIN32_WINNT >= 0x0500 */
 
-#if(WINVER >= 0x0604)
+
+
 #define EN_BEFORE_PASTE     0x0800
 #define EN_AFTER_PASTE      0x0801
-#endif /* WINVER >= 0x0604 */
 
-#if(WINVER >= 0x0400)
+
+
 /* Edit control EM_SETMARGIN parameters */
 #define EC_LEFTMARGIN       0x0001
 #define EC_RIGHTMARGIN      0x0002
 #define EC_USEFONTINFO      0xffff
-#endif /* WINVER >= 0x0400 */
 
-#if(WINVER >= 0x0500)
+
+
 /* wParam of EM_GET/SETIMESTATUS  */
 #define EMSIS_COMPOSITIONSTRING        0x0001
 
@@ -10337,9 +10332,7 @@ LoadStringW(
 #define EIMES_GETCOMPSTRATONCE         0x0001
 #define EIMES_CANCELCOMPSTRINFOCUS     0x0002
 #define EIMES_COMPLETECOMPSTRKILLFOCUS 0x0004
-#endif /* WINVER >= 0x0500 */
 
-#ifndef NOWINMESSAGES
 
 
 /*
@@ -10376,28 +10369,20 @@ LoadStringW(
 #define EM_SETWORDBREAKPROC     0x00D0
 #define EM_GETWORDBREAKPROC     0x00D1
 #define EM_GETPASSWORDCHAR      0x00D2
-#if(WINVER >= 0x0400)
+
 #define EM_SETMARGINS           0x00D3
 #define EM_GETMARGINS           0x00D4
-#define EM_SETLIMITTEXT         EM_LIMITTEXT   /* ;win40 Name change */
-#define EM_GETLIMITTEXT         0x00D5
-#define EM_POSFROMCHAR          0x00D6
-#define EM_CHARFROMPOS          0x00D7
-#endif /* WINVER >= 0x0400 */
-
-#if(WINVER >= 0x0500)
-#define EM_SETIMESTATUS         0x00D8
-#define EM_GETIMESTATUS         0x00D9
-#endif /* WINVER >= 0x0500 */
-
-#if(WINVER >= 0x0604)
-#define EM_ENABLEFEATURE        0x00DA
-#endif /* WINVER >= 0x0604 */
+#define EM_SETLIMITTEXT        = EM_LIMITTEXT;   /* ;win40 Name change */
+#define EM_GETLIMITTEXT        0x00D5
+#define EM_POSFROMCHAR         0x00D6
+#define EM_CHARFROMPOS         0x00D7
+#define EM_SETIMESTATUS        0x00D8
+#define EM_GETIMESTATUS        0x00D9
+#define EM_ENABLEFEATURE       0x00DA
 
 
-#endif /* !NOWINMESSAGES */
 
-#if(WINVER >= 0x0604)
+
 /*
  * EM_ENABLEFEATURE options
  */
@@ -10405,7 +10390,7 @@ typedef enum {
     EDIT_CONTROL_FEATURE_ENTERPRISE_DATA_PROTECTION_PASTE_SUPPORT  = 0,
     EDIT_CONTROL_FEATURE_PASTE_NOTIFICATIONS                       = 1,
 } EDIT_CONTROL_FEATURE;
-#endif /* WINVER >= 0x0604 */
+
 
 /*
  * EDITWORDBREAKPROC code values
@@ -10432,7 +10417,7 @@ typedef enum {
 #define BS_OWNERDRAW        0x0000000BL
 #define BS_TYPEMASK         0x0000000FL
 #define BS_LEFTTEXT         0x00000020L
-#if(WINVER >= 0x0400)
+
 #define BS_TEXT             0x00000000L
 #define BS_ICON             0x00000040L
 #define BS_BITMAP           0x00000080L
@@ -10447,7 +10432,7 @@ typedef enum {
 #define BS_NOTIFY           0x00004000L
 #define BS_FLAT             0x00008000L
 #define BS_RIGHTBUTTON      BS_LEFTTEXT
-#endif /* WINVER >= 0x0400 */
+
 
 /*
  * User Button Notification Codes
@@ -10458,13 +10443,13 @@ typedef enum {
 #define BN_UNHILITE         3
 #define BN_DISABLE          4
 #define BN_DOUBLECLICKED    5
-#if(WINVER >= 0x0400)
+
 #define BN_PUSHED           BN_HILITE
 #define BN_UNPUSHED         BN_UNHILITE
 #define BN_DBLCLK           BN_DOUBLECLICKED
 #define BN_SETFOCUS         6
 #define BN_KILLFOCUS        7
-#endif /* WINVER >= 0x0400 */
+
 
 /*
  * Button Control Messages
@@ -10474,22 +10459,22 @@ typedef enum {
 #define BM_GETSTATE        0x00F2
 #define BM_SETSTATE        0x00F3
 #define BM_SETSTYLE        0x00F4
-#if(WINVER >= 0x0400)
+
 #define BM_CLICK           0x00F5
 #define BM_GETIMAGE        0x00F6
 #define BM_SETIMAGE        0x00F7
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
-#define BM_SETDONTCLICK    0x00F8
-#endif /* WINVER >= 0x0600 */
 
-#if(WINVER >= 0x0400)
+
+#define BM_SETDONTCLICK    0x00F8
+
+
+
 #define BST_UNCHECKED      0x0000
 #define BST_CHECKED        0x0001
 #define BST_INDETERMINATE  0x0002
 #define BST_PUSHED         0x0004
 #define BST_FOCUS          0x0008
-#endif /* WINVER >= 0x0400 */
+
 
 /*
  * Static Control Constants
@@ -10507,7 +10492,7 @@ typedef enum {
 #define SS_USERITEM         0x0000000AL
 #define SS_SIMPLE           0x0000000BL
 #define SS_LEFTNOWORDWRAP   0x0000000CL
-#if(WINVER >= 0x0400)
+
 #define SS_OWNERDRAW        0x0000000DL
 #define SS_BITMAP           0x0000000EL
 #define SS_ENHMETAFILE      0x0000000FL
@@ -10515,10 +10500,10 @@ typedef enum {
 #define SS_ETCHEDVERT       0x00000011L
 #define SS_ETCHEDFRAME      0x00000012L
 #define SS_TYPEMASK         0x0000001FL
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0501)
+
+
 #define SS_REALSIZECONTROL  0x00000040L
-#endif /* WINVER >= 0x0501 */
+
 #define SS_NOPREFIX         0x00000080L /* Don't do "&" character translation */
 #if(WINVER >= 0x0400)
 #define SS_NOTIFY           0x00000100L
