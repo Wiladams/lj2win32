@@ -35,27 +35,43 @@ local NativeWindow_mt = {
 function NativeWindow.init(self, rawhandle)
 	local obj = {
 		Handle = WindowHandle(rawhandle);
+		ClientDC = ffi.C.GetDC(rawhandle);
 	}
 	setmetatable(obj, NativeWindow_mt);
 
 	return obj;
 end
 
+--[[
+	CreateWindowExA(
+     DWORD dwExStyle,
+     LPCSTR lpClassName,
+     LPCSTR lpWindowName,
+     DWORD dwStyle,
+     int X,
+     int Y,
+     int nWidth,
+     int nHeight,
+     HWND hWndParent,
+     HMENU hMenu,
+     HINSTANCE hInstance,
+     LPVOID lpParam);
+]]
 function NativeWindow.create(self, className, width, height, title)
 	className = className or "NativeWindowClass";
 	title = title or "Native Window Title";
 
 	print("NativeWindow.create, name, title: ", className, title)
 
-	local dwExStyle = bor(ffi.C.WS_EX_APPWINDOW, ffi.C.WS_EX_WINDOWEDGE);
+	local dwExStyle = bor(ffi.C.WS_EX_OVERLAPPEDWINDOW, ffi.C.WS_EX_APPWINDOW);
 	local dwStyle = bor(ffi.C.WS_SYSMENU, ffi.C.WS_VISIBLE, ffi.C.WS_POPUP);
 
-	print("  Style: ", string.format("0x%x",dwExStyle), string.format("0x%x",dwStyle))
+	--print("  Style: ", string.format("0x%x",dwExStyle), string.format("0x%x",dwStyle))
 
 	local appInstance = core_library.GetModuleHandleA(nil);
 
 	local hwnd = ffi.C.CreateWindowExA(
-		0,
+		dwExStyle,
 		className,
 		title,
 		ffi.C.WS_OVERLAPPEDWINDOW,

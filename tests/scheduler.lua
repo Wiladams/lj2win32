@@ -453,7 +453,7 @@ end
 
 
 -- One shot signal activation
-local function onSignal(sigName, func)
+local function onOnce(sigName, func)
 	local function closure(sigName, func)
 		func(waitForSignal(sigName));
 	end
@@ -462,7 +462,7 @@ local function onSignal(sigName, func)
 end
 
 -- continuous signal activation
-local function whenever(sigName, func)
+local function on(sigName, func)
 	local function watchit(sigName, func)
 		while true do
 			func(waitForSignal(sigName))
@@ -503,13 +503,12 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"yield", yield);
 
 	-- signaling
-	rawset(tbl,"onSignal", onSignal);
 	rawset(tbl,"signalAll", signalAll);
 	rawset(tbl,"signalAllImmediate", signalAllImmediate);
 	rawset(tbl,"signalOne", signalOne);
 	rawset(tbl,"waitForSignal", waitForSignal);
-	rawset(tbl,"when", when);
-	rawset(tbl,"whenever", whenever);
+	rawset(tbl,"onOnce", onOnce);
+	rawset(tbl,"on", on);
 
 	-- extras
 	rawset(tbl,"getCurrentTaskID", getCurrentTaskID);

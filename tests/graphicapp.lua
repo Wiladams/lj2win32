@@ -45,17 +45,19 @@ function onMouseActivity(hwnd, msg, wparam, lparam)
         signalAll('mousemove', event)
     elseif msg == ffi.C.WM_LBUTTONDOWN or 
         msg == ffi.C.WM_RBUTTONDOWN or
-        msg == ffi.C.WM_MBUTTONDOWN then
+        msg == ffi.C.WM_MBUTTONDOWN or
+        msg == ffi.C.WM_XBUTTONDOWN then
         event.activity = 'mousedown';
         signalAll('mousedown', event)
     elseif msg == ffi.C.WM_LBUTTONUP or
         msg == ffi.C.WM_RBUTTONUP or
-        msg == ffi.C.WM_MBUTTON then
+        msg == ffi.C.WM_MBUTTONUP or
+        msg == ffi.C.WM_XBUTTONUP then
         event.activity = 'mouseup'
         signalAll('mouseup', event)
     elseif msg == ffi.C.WM_MOUSEWHEEL then
         event.activity = 'mousewheel';
-        signalAll('mousewheen', event)
+        signalAll('mousewheel', event)
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end

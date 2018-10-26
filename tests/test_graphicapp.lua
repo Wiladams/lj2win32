@@ -7,24 +7,24 @@ local function onMouseMove(event)
 end
 
 local function onMouseDown(event)
-    print("MOUSE DOWN: ", event.x, event.y)
+    print("MOUSE DOWN: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
 end
 
 local function onMouseUp(event)
-    print("MOUSE UP: ", event.x, event.y)
+    print("MOUSE UP: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
 end
 
 local function onMouseActivity(event)
-    print(string.format("{activity ='%s'; x = %d; y = %d }; ", 
-        event.activity, event.x, event.y));
+    print("MOUSE: ", event.activity, event.x, event.y, event.lbutton, event.mbutton, event.rbutton, event.xbutton1, event.xbutton2)
 end
 
---whenever('mousemove', onMouseMove);
---whenever('mousedown', onMouseDown);
---whenever('mouseup', onMouseUp);
+--on('mousemove', onMouseMove);
+--on('mousedown', onMouseDown);
+--on('mouseup', onMouseUp);
 
-whenever('mousedown', onMouseActivity);
-whenever('mouseup', onMouseActivity);
-whenever('mousemove', onMouseActivity);
+on('mousedown', onMouseActivity);
+on('mouseup', onMouseActivity);
+--on('mousemove', onMouseActivity);
+on('mousewheel', onMouseActivity);
 
 graphicApp.run();

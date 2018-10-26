@@ -60,12 +60,12 @@ function WindowKind.create(self, classname, msgproc, style)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = appInstance;
-    wcex.hIcon          = nil;		-- LoadIcon(hInst, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.hIcon          = ffi.C.LoadIconA(appInstance, winuser.MAKEINTRESOURCE(ffi.C.IDI_APPLICATION));
     wcex.hCursor        = winuser.LoadCursor(nil, winuser.IDC_ARROW);
-    wcex.hbrBackground  = nil;		-- (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = ffi.cast("HBRUSH", ffi.C.COLOR_WINDOW+1);
     wcex.lpszMenuName   = nil;		-- NULL;
     wcex.lpszClassName  = classname;
-    wcex.hIconSm        = nil;		-- LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.hIconSm        = ffi.C.LoadIconA(appInstance, winuser.MAKEINTRESOURCE(ffi.C.IDI_APPLICATION));
 
 	local classAtom = ffi.C.RegisterClassExA(wcex);
 

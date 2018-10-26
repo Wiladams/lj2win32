@@ -128,6 +128,8 @@ if UNICODE then
 MAKEINTRESOURCE  = MAKEINTRESOURCEW
 end
 
+exports.MAKEINTRESOURCE = MAKEINTRESOURCE;
+
 --[=[
 #ifndef NORESOURCE
 
@@ -7719,8 +7721,9 @@ LockSetForegroundWindow(
 #define LSFW_UNLOCK     2
 
 #endif /* _WIN32_WINNT >= 0x0500 */
+--]=]
 
-
+ffi.cdef[[
 HWND
 __stdcall
 WindowFromDC(
@@ -7739,10 +7742,10 @@ GetDCEx(
      HWND hWnd,
      HRGN hrgnClip,
      DWORD flags);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[[
 /*
  * GetDCEx() flags
  */
@@ -7759,11 +7762,10 @@ GetDCEx(
 #define DCX_LOCKWINDOWUPDATE 0x00000400L
 
 #define DCX_VALIDATE         0x00200000L
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]]
 
 
+ffi.cdef[[
 HDC
 __stdcall
 GetWindowDC(
@@ -7788,14 +7790,14 @@ BOOL
 __stdcall
 EndPaint(
      HWND hWnd,
-     CONST PAINTSTRUCT *lpPaint);
+     const PAINTSTRUCT *lpPaint);
 
 
 BOOL
 __stdcall
 GetUpdateRect(
      HWND hWnd,
-    _Out_opt_ LPRECT lpRect,
+    LPRECT lpRect,
      BOOL bErase);
 
 
@@ -7813,22 +7815,15 @@ SetWindowRgn(
      HWND hWnd,
      HRGN hRgn,
      BOOL bRedraw);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+]]
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 int
 __stdcall
 GetWindowRgn(
      HWND hWnd,
      HRGN hRgn);
-
-#if(_WIN32_WINNT >= 0x0501)
 
 
 int
@@ -7836,22 +7831,20 @@ __stdcall
 GetWindowRgnBox(
      HWND hWnd,
      LPRECT lprc);
+]]
 
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-
+ffi.cdef[[
 int
 __stdcall
 ExcludeUpdateRgn(
      HDC hDC,
      HWND hWnd);
 
-
 BOOL
 __stdcall
 InvalidateRect(
      HWND hWnd,
-     CONST RECT *lpRect,
+     const RECT *lpRect,
      BOOL bErase);
 
 
@@ -7859,7 +7852,7 @@ BOOL
 __stdcall
 ValidateRect(
      HWND hWnd,
-     CONST RECT *lpRect);
+     const RECT *lpRect);
 
 
 BOOL
@@ -7882,13 +7875,12 @@ BOOL
 __stdcall
 RedrawWindow(
      HWND hWnd,
-     CONST RECT *lprcUpdate,
+     const RECT *lprcUpdate,
      HRGN hrgnUpdate,
      UINT flags);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
+--[=[
 /*
  * RedrawWindow() flags
  */
@@ -7910,8 +7902,6 @@ RedrawWindow(
 #define RDW_NOFRAME             0x0800
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * LockWindowUpdate API
@@ -8712,9 +8702,6 @@ ChildWindowFromPoint(
 #define CWP_SKIPDISABLED    0x0002
 #define CWP_SKIPTRANSPARENT 0x0004
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
 
 HWND
 __stdcall
@@ -8722,85 +8709,66 @@ ChildWindowFromPointEx(
      HWND hwnd,
      POINT pt,
      UINT flags);
+--]=]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0400 */
-
-#ifndef NOCOLOR
-
+ffi.cdef[[
 /*
  * Color Types
- */
-#define CTLCOLOR_MSGBOX         0
-#define CTLCOLOR_EDIT           1
-#define CTLCOLOR_LISTBOX        2
-#define CTLCOLOR_BTN            3
-#define CTLCOLOR_DLG            4
-#define CTLCOLOR_SCROLLBAR      5
-#define CTLCOLOR_STATIC         6
-#define CTLCOLOR_MAX            7
-
-#define COLOR_SCROLLBAR         0
-#define COLOR_BACKGROUND        1
-#define COLOR_ACTIVECAPTION     2
-#define COLOR_INACTIVECAPTION   3
-#define COLOR_MENU              4
-#define COLOR_WINDOW            5
-#define COLOR_WINDOWFRAME       6
-#define COLOR_MENUTEXT          7
-#define COLOR_WINDOWTEXT        8
-#define COLOR_CAPTIONTEXT       9
-#define COLOR_ACTIVEBORDER      10
-#define COLOR_INACTIVEBORDER    11
-#define COLOR_APPWORKSPACE      12
-#define COLOR_HIGHLIGHT         13
-#define COLOR_HIGHLIGHTTEXT     14
-#define COLOR_BTNFACE           15
-#define COLOR_BTNSHADOW         16
-#define COLOR_GRAYTEXT          17
-#define COLOR_BTNTEXT           18
-#define COLOR_INACTIVECAPTIONTEXT 19
-#define COLOR_BTNHIGHLIGHT      20
-
-#if(WINVER >= 0x0400)
-#define COLOR_3DDKSHADOW        21
-#define COLOR_3DLIGHT           22
-#define COLOR_INFOTEXT          23
-#define COLOR_INFOBK            24
-#endif /* WINVER >= 0x0400 */
-
-#if(WINVER >= 0x0500)
-#define COLOR_HOTLIGHT          26
-#define COLOR_GRADIENTACTIVECAPTION 27
-#define COLOR_GRADIENTINACTIVECAPTION 28
-#if(WINVER >= 0x0501)
-#define COLOR_MENUHILIGHT       29
-#define COLOR_MENUBAR           30
-#endif /* WINVER >= 0x0501 */
-#endif /* WINVER >= 0x0500 */
-
-#if(WINVER >= 0x0400)
-#define COLOR_DESKTOP           COLOR_BACKGROUND
-#define COLOR_3DFACE            COLOR_BTNFACE
-#define COLOR_3DSHADOW          COLOR_BTNSHADOW
-#define COLOR_3DHIGHLIGHT       COLOR_BTNHIGHLIGHT
-#define COLOR_3DHILIGHT         COLOR_BTNHIGHLIGHT
-#define COLOR_BTNHILIGHT        COLOR_BTNHIGHLIGHT
-#endif /* WINVER >= 0x0400 */
+ */;
+static const int CTLCOLOR_MSGBOX       =  0;
+static const int CTLCOLOR_EDIT         =  1;
+static const int CTLCOLOR_LISTBOX      =  2;
+static const int CTLCOLOR_BTN          =  3;
+static const int CTLCOLOR_DLG          =  4;
+static const int CTLCOLOR_SCROLLBAR    =  5;
+static const int CTLCOLOR_STATIC       =  6;
+static const int CTLCOLOR_MAX          =  7;
+static const int COLOR_SCROLLBAR       =  0;
+static const int COLOR_BACKGROUND      =  1;
+static const int COLOR_ACTIVECAPTION   =  2;
+static const int COLOR_INACTIVECAPTION =  3;
+static const int COLOR_MENU            =  4;
+static const int COLOR_WINDOW          =  5;
+static const int COLOR_WINDOWFRAME     =  6;
+static const int COLOR_MENUTEXT        =  7;
+static const int COLOR_WINDOWTEXT      =  8;
+static const int COLOR_CAPTIONTEXT     =  9;
+static const int COLOR_ACTIVEBORDER    =  10;
+static const int COLOR_INACTIVEBORDER  =  11;
+static const int COLOR_APPWORKSPACE    =  12;
+static const int COLOR_HIGHLIGHT       =  13;
+static const int COLOR_HIGHLIGHTTEXT   =  14;
+static const int COLOR_BTNFACE         =  15;
+static const int COLOR_BTNSHADOW       =  16;
+static const int COLOR_GRAYTEXT        =  17;
+static const int COLOR_BTNTEXT         =  18;
+static const int COLOR_INACTIVECAPTIONTEXT= 19;
+static const int COLOR_BTNHIGHLIGHT    =  20;
+static const int COLOR_3DDKSHADOW      =  21;
+static const int COLOR_3DLIGHT         =  22;
+static const int COLOR_INFOTEXT        =  23;
+static const int COLOR_INFOBK          =  24;
+static const int COLOR_HOTLIGHT        =  26;
+static const int COLOR_GRADIENTACTIVECAPTION =27;
+static const int COLOR_GRADIENTINACTIVECAPTION =28;
+static const int COLOR_MENUHILIGHT     =  29;
+static const int COLOR_MENUBAR         =  30;
+static const int COLOR_DESKTOP         =  COLOR_BACKGROUND;
+static const int COLOR_3DFACE          =  COLOR_BTNFACE;
+static const int COLOR_3DSHADOW        =  COLOR_BTNSHADOW;
+static const int COLOR_3DHIGHLIGHT     =  COLOR_BTNHIGHLIGHT;
+static const int COLOR_3DHILIGHT       =  COLOR_BTNHIGHLIGHT;
+static const int COLOR_BTNHILIGHT      =  COLOR_BTNHIGHLIGHT;
+]]
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetSysColor(
      int nIndex);
 
-#if(WINVER >= 0x0400)
+
 
 HBRUSH
 __stdcall
@@ -8808,37 +8776,27 @@ GetSysColorBrush(
      int nIndex);
 
 
-#endif /* WINVER >= 0x0400 */
-
-
 BOOL
 __stdcall
 SetSysColors(
      int cElements,
-    _In_reads_(cElements) CONST INT * lpaElements,
-    _In_reads_(cElements) CONST COLORREF * lpaRgbValues);
+    const INT * lpaElements,
+    const COLORREF * lpaRgbValues);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* !NOCOLOR */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 DrawFocusRect(
      HDC hDC,
-     CONST RECT * lprc);
+     const RECT * lprc);
 
 
 int
 __stdcall
 FillRect(
      HDC hDC,
-     CONST RECT *lprc,
+     const RECT *lprc,
      HBRUSH hbr);
 
 
@@ -8846,7 +8804,7 @@ int
 __stdcall
 FrameRect(
      HDC hDC,
-     CONST RECT *lprc,
+     const RECT *lprc,
      HBRUSH hbr);
 
 
@@ -8854,9 +8812,10 @@ BOOL
 __stdcall
 InvertRect(
      HDC hDC,
-     CONST RECT *lprc);
+     const RECT *lprc);
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetRect(
@@ -8877,7 +8836,7 @@ BOOL
 __stdcall
 CopyRect(
      LPRECT lprcDst,
-     CONST RECT *lprcSrc);
+     const RECT *lprcSrc);
 
 
 BOOL
@@ -8892,24 +8851,24 @@ BOOL
 __stdcall
 IntersectRect(
      LPRECT lprcDst,
-     CONST RECT *lprcSrc1,
-     CONST RECT *lprcSrc2);
+     const RECT *lprcSrc1,
+     const RECT *lprcSrc2);
 
 
 BOOL
 __stdcall
 UnionRect(
      LPRECT lprcDst,
-     CONST RECT *lprcSrc1,
-     CONST RECT *lprcSrc2);
+     const RECT *lprcSrc1,
+     const RECT *lprcSrc2);
 
 
 BOOL
 __stdcall
 SubtractRect(
      LPRECT lprcDst,
-     CONST RECT *lprcSrc1,
-     CONST RECT *lprcSrc2);
+     const RECT *lprcSrc1,
+     const RECT *lprcSrc2);
 
 
 BOOL
@@ -8923,25 +8882,25 @@ OffsetRect(
 BOOL
 __stdcall
 IsRectEmpty(
-     CONST RECT *lprc);
+     const RECT *lprc);
 
 
 BOOL
 __stdcall
 EqualRect(
-     CONST RECT *lprc1,
-     CONST RECT *lprc2);
+     const RECT *lprc1,
+     const RECT *lprc2);
 
 
 BOOL
 __stdcall
 PtInRect(
-     CONST RECT *lprc,
+     const RECT *lprc,
      POINT pt);
+]]
 
-#ifndef NOWINOFFSETS
 
-
+ffi.cdef[[
 WORD
 __stdcall
 GetWindowWord(
@@ -8968,13 +8927,17 @@ __stdcall
 GetWindowLongW(
      HWND hWnd,
      int nIndex);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowLong  GetWindowLongW
 #else
 #define GetWindowLong  GetWindowLongA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 LONG
 __stdcall
 SetWindowLongA(
@@ -8988,15 +8951,19 @@ SetWindowLongW(
      HWND hWnd,
      int nIndex,
      LONG dwNewLong);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowLong  SetWindowLongW
 #else
 #define SetWindowLong  SetWindowLongA
 #endif // !UNICODE
+--]]
 
-#ifdef _WIN64
 
-
+if _WIN64 then
+ffi.cdef[[
 LONG_PTR
 __stdcall
 GetWindowLongPtrA(
@@ -9008,13 +8975,17 @@ __stdcall
 GetWindowLongPtrW(
      HWND hWnd,
      int nIndex);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowLongPtr  GetWindowLongPtrW
 #else
 #define GetWindowLongPtr  GetWindowLongPtrA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 LONG_PTR
 __stdcall
 SetWindowLongPtrA(
@@ -9028,33 +8999,42 @@ SetWindowLongPtrW(
      HWND hWnd,
      int nIndex,
      LONG_PTR dwNewLong);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowLongPtr  SetWindowLongPtrW
 #else
 #define SetWindowLongPtr  SetWindowLongPtrA
 #endif // !UNICODE
+--]]
 
-#else  /* _WIN64 */
+else  -- _WIN64
 
-#define GetWindowLongPtrA   GetWindowLongA
-#define GetWindowLongPtrW   GetWindowLongW
+exports.GetWindowLongPtrA  = ffi.C.GetWindowLongA;
+exports.GetWindowLongPtrW  = ffi.C.GetWindowLongW;
+
+--[[
 #ifdef UNICODE
 #define GetWindowLongPtr  GetWindowLongPtrW
 #else
 #define GetWindowLongPtr  GetWindowLongPtrA
 #endif // !UNICODE
+--]]
 
-#define SetWindowLongPtrA   SetWindowLongA
-#define SetWindowLongPtrW   SetWindowLongW
+exports.SetWindowLongPtrA  = ffi.C.SetWindowLongA;
+exports.SetWindowLongPtrW  = ffi.C.SetWindowLongW;
+
+--[[
 #ifdef UNICODE
 #define SetWindowLongPtr  SetWindowLongPtrW
 #else
 #define SetWindowLongPtr  SetWindowLongPtrA
 #endif // !UNICODE
+--]]
+end -- _WIN64
 
-#endif /* _WIN64 */
-
-
+ffi.cdef[[
 WORD
 __stdcall
 GetClassWord(
@@ -9081,13 +9061,17 @@ __stdcall
 GetClassLongW(
      HWND hWnd,
      int nIndex);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetClassLong  GetClassLongW
 #else
 #define GetClassLong  GetClassLongA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 SetClassLongA(
@@ -9101,12 +9085,17 @@ SetClassLongW(
      HWND hWnd,
      int nIndex,
      LONG dwNewLong);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetClassLong  SetClassLongW
 #else
 #define SetClassLong  SetClassLongA
 #endif // !UNICODE
+--]]
 
+--[=[
 #ifdef _WIN64
 
 
@@ -9121,12 +9110,14 @@ __stdcall
 GetClassLongPtrW(
      HWND hWnd,
      int nIndex);
+
+--[[
 #ifdef UNICODE
 #define GetClassLongPtr  GetClassLongPtrW
 #else
 #define GetClassLongPtr  GetClassLongPtrA
 #endif // !UNICODE
-
+--]]
 
 ULONG_PTR
 __stdcall
@@ -9168,9 +9159,9 @@ SetClassLongPtrW(
 #endif /* _WIN64 */
 
 #endif /* !NOWINOFFSETS */
+--]=]
 
-#if(WINVER >= 0x0500)
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetProcessDefaultLayout(
@@ -9181,13 +9172,13 @@ BOOL
 __stdcall
 SetProcessDefaultLayout(
      DWORD dwDefaultLayout);
-#endif /* WINVER >= 0x0500 */
+]]
 
-
+ffi.cdef[[
 HWND
 __stdcall
 GetDesktopWindow(
-    VOID);
+    void);
 
 
 
@@ -9224,14 +9215,18 @@ __stdcall
 FindWindowW(
      LPCWSTR lpClassName,
      LPCWSTR lpWindowName);
+]]
+
+--[[
 #ifdef UNICODE
 #define FindWindow  FindWindowW
 #else
 #define FindWindow  FindWindowA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
 
+ffi.cdef[[
 HWND
 __stdcall
 FindWindowExA(
@@ -9247,22 +9242,25 @@ FindWindowExW(
      HWND hWndChildAfter,
      LPCWSTR lpszClass,
      LPCWSTR lpszWindow);
+]]
+
+--[[
 #ifdef UNICODE
 #define FindWindowEx  FindWindowExW
 #else
 #define FindWindowEx  FindWindowExA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HWND
 __stdcall
 GetShellWindow(
-    VOID);
-
-#endif /* WINVER >= 0x0400 */
-
+    void);
+]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 RegisterShellHookWindow(
@@ -9288,11 +9286,13 @@ EnumThreadWindows(
      DWORD dwThreadId,
      WNDENUMPROC lpfn,
      LPARAM lParam);
+]]
 
+function exports.EnumTaskWindows(hTask, lpfn, lParam) 
+    return ffi.C.EnumThreadWindows(ffi.C.HandleToUlong(hTask), lpfn, lParam);
+end
 
-#define EnumTaskWindows(hTask, lpfn, lParam) EnumThreadWindows(HandleToUlong(hTask), lpfn, lParam)
-
-
+--[=[
 int
 __stdcall
 GetClassNameA(
@@ -9377,18 +9377,15 @@ GetLastActivePopup(
 /*
  * GetWindow() Constants
  */
-#define GW_HWNDFIRST        0
-#define GW_HWNDLAST         1
-#define GW_HWNDNEXT         2
-#define GW_HWNDPREV         3
-#define GW_OWNER            4
-#define GW_CHILD            5
-#if(WINVER <= 0x0400)
-#define GW_MAX              5
-#else
-#define GW_ENABLEDPOPUP     6
-#define GW_MAX              6
-#endif
+static const int GW_HWNDFIRST       = 0;
+static const int GW_HWNDLAST        = 1;
+static const int GW_HWNDNEXT        = 2;
+static const int GW_HWNDPREV        = 3;
+static const int GW_OWNER           = 4;
+static const int GW_CHILD           = 5;
+static const int GW_ENABLEDPOPUP    = 6;
+static const int GW_MAX             = 6;
+
 
 
 HWND
@@ -10134,24 +10131,21 @@ static const int RES_CURSOR = 2;
                                 ** language drivers.
                                 */
 --]]
---[[
-#ifndef NOICONS
+--]=]
 
+ffi.cdef[[
 /*
  * Standard Icon IDs
  */
-#ifdef RC_INVOKED
-#define IDI_APPLICATION     32512
-#define IDI_HAND            32513
-#define IDI_QUESTION        32514
-#define IDI_EXCLAMATION     32515
-#define IDI_ASTERISK        32516
-#if(WINVER >= 0x0400)
-#define IDI_WINLOGO         32517
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
-#define IDI_SHIELD          32518
-#endif /* WINVER >= 0x0600 */
+//#ifdef RC_INVOKED
+static const int IDI_APPLICATION    = 32512;
+static const int IDI_HAND           = 32513;
+static const int IDI_QUESTION       = 32514;
+static const int IDI_EXCLAMATION    = 32515;
+static const int IDI_ASTERISK       = 32516;
+static const int IDI_WINLOGO        = 32517;
+static const int IDI_SHIELD         = 32518;
+/*
 #else
 #define IDI_APPLICATION     MAKEINTRESOURCE(32512)
 #define IDI_HAND            MAKEINTRESOURCE(32513)
@@ -10160,21 +10154,17 @@ static const int RES_CURSOR = 2;
 #define IDI_ASTERISK        MAKEINTRESOURCE(32516)
 #if(WINVER >= 0x0400)
 #define IDI_WINLOGO         MAKEINTRESOURCE(32517)
-#endif /* WINVER >= 0x0400 */
+#endif // WINVER >= 0x0400
 #if(WINVER >= 0x0600)
 #define IDI_SHIELD          MAKEINTRESOURCE(32518)
-#endif /* WINVER >= 0x0600 */
-#endif /* RC_INVOKED */
+#endif // WINVER >= 0x0600
+#endif // RC_INVOKED
+*/
 
-
-#define IDI_WARNING     IDI_EXCLAMATION
-#define IDI_ERROR       IDI_HAND
-#define IDI_INFORMATION IDI_ASTERISK
-
-
-
-#endif /* !NOICONS */
---]]
+static const int IDI_WARNING     = IDI_EXCLAMATION;
+static const int IDI_ERROR       = IDI_HAND;
+static const int IDI_INFORMATION = IDI_ASTERISK;
+]]
 
 
 
@@ -10223,14 +10213,6 @@ LoadStringW(
 #ifndef IDTIMEOUT
 #define IDTIMEOUT 32000
 --]]
-
-
-
-#ifndef NOCTLMGR
-
-/*
- * Control Manager Structures and Definitions
- */
 
 
 
@@ -10342,10 +10324,10 @@ LoadStringW(
 #define EM_SETIMESTATUS        0x00D8
 #define EM_GETIMESTATUS        0x00D9
 #define EM_ENABLEFEATURE       0x00DA
+--]]
 
 
-
-
+ffi.cdef[[
 /*
  * EM_ENABLEFEATURE options
  */
@@ -10353,8 +10335,9 @@ typedef enum {
     EDIT_CONTROL_FEATURE_ENTERPRISE_DATA_PROTECTION_PASTE_SUPPORT  = 0,
     EDIT_CONTROL_FEATURE_PASTE_NOTIFICATIONS                       = 1,
 } EDIT_CONTROL_FEATURE;
+]]
 
-
+--[=[
 /*
  * EDITWORDBREAKPROC code values
  */
@@ -10526,7 +10509,9 @@ typedef enum {
 
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]=]
 
+--[=[
 /*
  * Dialog Manager Routines
  */
