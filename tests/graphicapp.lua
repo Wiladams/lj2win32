@@ -45,7 +45,7 @@ local function wm_mouse_event(hwnd, msg, wparam, lparam)
     return event;
 end
 
-function onMouseActivity(hwnd, msg, wparam, lparam)
+function MouseActivity(hwnd, msg, wparam, lparam)
     local res = 1;
 
     local event = wm_mouse_event(hwnd, msg, wparam, lparam)
@@ -74,7 +74,7 @@ function onMouseActivity(hwnd, msg, wparam, lparam)
     return res;
 end
 
-function onKeyboardActivity(hwnd, msg, wparam, lparam)
+function KeyboardActivity(hwnd, msg, wparam, lparam)
     print("onKeyboardActivity")
     local res = 1;
 
@@ -92,13 +92,14 @@ function WindowProc(hwnd, msg, wparam, lparam)
     -- If the window has been destroyed, then post a quit message
     if msg == ffi.C.WM_DESTROY then
         ffi.C.PostQuitMessage(0);
+        signalAllImmediate('sys-quitting');
         return 0;
     end
 
     if msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
-        res = onMouseActivity(hwnd, msg, wparam, lparam)
+        res = MouseActivity(hwnd, msg, wparam, lparam)
     elseif msg >= ffi.C.WM_KEYFIRST and msg <= ffi.C.WM_KEYLAST then
-        res = onKeyboardActivity(hwnd, msg, wparam, lparam)  
+        res = KeyboardActivity(hwnd, msg, wparam, lparam)  
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -134,7 +135,7 @@ local function msgLoop()
             res = ffi.C.TranslateMessage(msg)
             res = ffi.C.DispatchMessageA(msg)
         end
-
+        signalAll("sys-idle")
         yield();
     end
 
@@ -164,13 +165,57 @@ local function createWindow(params)
     appWindow:show();
 end
 
+local function setupUIHandlers()
+    if onMouseActivity then
+        on('mousedown', onMouseActivity);
+        on('mouseup', onMouseActivity);
+        on('mousemove', onMouseActivity);
+        on('mousewheel', onMouseActivity);
+    end
+
+    if onMouseMove then
+        on('mousemove', onMouseMove);
+    end
+
+    if onMouseUp then
+        on('mouseup', onMouseUp);
+    end
+
+    if onMouseDown then
+        on('mousedown', onMouseDown);
+    end
+
+    if onMouseWheel then
+        on('mousewheel', onMouseWheel);
+    end
+
+    -- Put the keyboard ones
+    if onKeyboardActivity then
+        on('keydown', onKeyboardActivity);
+        on('keyup', onKeyboardActivity);
+        on('syskeydown', onKeyboardActivity);
+        on('syskeyup', onKeyboardActivity);
+    end
+
+
+end
 
 local function main()
+    
     spawn(msgLoop);
     yield();
     spawn(createWindow);
     yield();
-    signalAll("appready");
+    setupUIHandlers();
+    yield();
+
+    if setup then
+        --on('sys-ready', setup);
+        setup();
+    end
+    --yield();
+
+    signalAll("sys-ready");
 end
 
 

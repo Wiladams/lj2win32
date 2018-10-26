@@ -5,14 +5,24 @@ local gdi = require("win32.wingdi")
 local random = math.random;
 
 
+--[[
+function onMouseActivity(event)
+    print("MOUSE: ", event.activity, event.x, event.y, event.lbutton, event.mbutton, event.rbutton, event.xbutton1, event.xbutton2)
+end
+--]]
 
-
+--[[
 local function onMouseMove(event)
     print("MOUSE MOVE: ", event.x, event.y)
 end
 
-local function onMouseDown(event)
-    print("MOUSE DOWN: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
+local function onMouseUp(event)
+    print("MOUSE UP: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
+end
+--]]
+
+function onMouseDown(event)
+    --print("MOUSE DOWN: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
 
     local dc = ClientDC;
 
@@ -23,13 +33,6 @@ local function onMouseDown(event)
     dc:flush();
 end
 
-local function onMouseUp(event)
-    print("MOUSE UP: ", event.x, event.y, event.lbutton, event.mbutton, event.rbutton)
-end
-
-local function onMouseActivity(event)
-    print("MOUSE: ", event.activity, event.x, event.y, event.lbutton, event.mbutton, event.rbutton, event.xbutton1, event.xbutton2)
-end
 
 
 local function drawEllipse(win)
@@ -42,7 +45,7 @@ local function drawEllipse(win)
     local minheight = 40;
 
     while true do
-        for i=1,10 do
+        for i=1,1 do
             local x = random(win.left, win.left+win.width-1-minwidth)
             local y = random(win.top, win.top+win.height-1-minheight)
 
@@ -61,7 +64,7 @@ local function drawLines(win)
 
     while true do
 
-        for i=1,5 do
+        for i=1,1 do
             local x1 = random(win.left, win.left+win.width-1)
             local y1 = random(win.top, win.top+win.height-1)
             local x2 = random(win.left, win.left+win.width-1)
@@ -72,7 +75,7 @@ local function drawLines(win)
             dc:MoveTo(x1,y1);
             dc:LineTo(x2,y2);
         end
-        --dc:flush();
+
         yield();
     end
 end
@@ -85,7 +88,7 @@ local function drawPixels(win)
     
     while true do
         --dc:Rectangle(win.left, win.top, win.left+win.width-1, win.top+win.height-1);
-        for i=1,100 do
+        for i=1,10 do
             local x = random(win.left,win.left+win.width-1)
             local y = random(win.top,win.top+win.height-1)
             local gray = random(0,255);
@@ -94,7 +97,7 @@ local function drawPixels(win)
 
             dc:SetPixel(x,y,color);
         end
-        --dc:flush();
+
         yield();
     end
 end
@@ -108,7 +111,7 @@ local function drawRectangles(win)
     local minheight = 40;
 
     while true do
-        for i=1,10 do
+        for i=1,1 do
             local x = random(win.left, win.left+win.width-1-minwidth)
             local y = random(win.top, win.top+win.height-1-minheight)
 
@@ -120,16 +123,8 @@ end
 
 
 
-local function setup()
---on('mousemove', onMouseMove);
-on('mousedown', onMouseDown);
---on('mouseup', onMouseUp);
-
---on('mousedown', onMouseActivity);
---on('mouseup', onMouseActivity);
---on('mousemove', onMouseActivity);
-on('mousewheel', onMouseActivity);
-
+function setup()
+    --print("SETUP")
     local win1 = {left=0, top=0, width = width/2, height = height/2}
     local win2 = {left=width/2+1, top=0, width = width/2, height = height/2}
     local win3 = {left=0, top = height/2+1, width = width/2, height = height/2}
@@ -141,6 +136,5 @@ on('mousewheel', onMouseActivity);
     spawn(drawEllipse, win4)
 end
 
-on('appready', setup)
 
 graphicApp.run();
