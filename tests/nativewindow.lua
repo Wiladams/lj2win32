@@ -42,26 +42,12 @@ function NativeWindow.init(self, rawhandle)
 	return obj;
 end
 
---[[
-	CreateWindowExA(
-     DWORD dwExStyle,
-     LPCSTR lpClassName,
-     LPCSTR lpWindowName,
-     DWORD dwStyle,
-     int X,
-     int Y,
-     int nWidth,
-     int nHeight,
-     HWND hWndParent,
-     HMENU hMenu,
-     HINSTANCE hInstance,
-     LPVOID lpParam);
-]]
+
 function NativeWindow.create(self, className, width, height, title)
 	className = className or "NativeWindowClass";
 	title = title or "Native Window Title";
 
-	print("NativeWindow.create, name, title: ", className, title)
+	--print("NativeWindow.create, name, title: ", className, title)
 
 	local dwExStyle = bor(ffi.C.WS_EX_OVERLAPPEDWINDOW, ffi.C.WS_EX_APPWINDOW);
 	local dwStyle = bor(ffi.C.WS_SYSMENU, ffi.C.WS_VISIBLE, ffi.C.WS_POPUP);

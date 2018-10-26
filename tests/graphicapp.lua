@@ -15,11 +15,20 @@ local winuser = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
 local wmmsgs = require("wm_reserved")
-
+local DeviceContext = require("DeviceContext")
 
 local exports = {}
 
+MemoryDC = nil;
+ClientDC = nil;
 
+-- static Global variables
+width = 1024;
+height = 768;
+
+
+
+-- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)
     local event = {
         x = band(lparam,0x0000ffff);
@@ -83,7 +92,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
     -- If the window has been destroyed, then post a quit message
     if msg == ffi.C.WM_DESTROY then
         ffi.C.PostQuitMessage(0);
-        return res;
+        return 0;
     end
 
     if msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
@@ -149,13 +158,21 @@ local function createWindow(params)
 
     -- create an instance of a window
     appWindow = NativeWindow:create(winkind.ClassName, params.width, params.height,  params.title);
+    --MemoryDC = DeviceContext:CreateForMemory(appWindow.ClientDC);
+    ClientDC = DeviceContext:init(appWindow.ClientDC);
+
     appWindow:show();
 end
 
+
 local function main()
-    spawn(msgLoop)
-    spawn(createWindow)
+    spawn(msgLoop);
+    yield();
+    spawn(createWindow);
+    yield();
+    signalAll("appready");
 end
+
 
 function exports.run()
     run(main)
