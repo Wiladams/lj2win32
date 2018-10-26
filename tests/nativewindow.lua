@@ -9,8 +9,6 @@ local core_library = require("win32.core.libraryloader_l1_1_1");
 local User32 = require("win32.winuser");
 
 
---print(" core_library: ", core_library)
---print("errorhandling: ", errorhandling)
 
 ffi.cdef[[
 typedef struct {

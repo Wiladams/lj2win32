@@ -1907,7 +1907,9 @@ static const int WM_NCACTIVATE                   = 0x0086;
 static const int WM_GETDLGCODE                   = 0x0087;
 
 static const int WM_SYNCPAINT                    = 0x0088;
+]]
 
+ffi.cdef[[
 static const int WM_NCMOUSEMOVE                  = 0x00A0;
 static const int WM_NCLBUTTONDOWN                = 0x00A1;
 static const int WM_NCLBUTTONUP                  = 0x00A2;
@@ -1918,21 +1920,21 @@ static const int WM_NCRBUTTONDBLCLK              = 0x00A6;
 static const int WM_NCMBUTTONDOWN                = 0x00A7;
 static const int WM_NCMBUTTONUP                  = 0x00A8;
 static const int WM_NCMBUTTONDBLCLK              = 0x00A9;
+]]
 
+ffi.cdef[[
 static const int WM_NCXBUTTONDOWN                = 0x00AB;
 static const int WM_NCXBUTTONUP                  = 0x00AC;
 static const int WM_NCXBUTTONDBLCLK              = 0x00AD;
+]]
 
 
-
-
+ffi.cdef[[
 static const int WM_INPUT_DEVICE_CHANGE          = 0x00FE;
-
-
-
 static const int WM_INPUT                        = 0x00FF;
+]]
 
-
+ffi.cdef[[
 static const int WM_KEYFIRST                     = 0x0100;
 static const int WM_KEYDOWN                      = 0x0100;
 static const int WM_KEYUP                        = 0x0101;
@@ -1945,9 +1947,11 @@ static const int WM_SYSDEADCHAR                  = 0x0107;
 
 static const int WM_UNICHAR                      = 0x0109;
 static const int WM_KEYLAST                      = 0x0109;
+]]
+
+ffi.cdef[[
 static const int UNICODE_NOCHAR                  = 0xFFFF;
 
-//static const int WM_KEYLAST                      = 0x0108;
 
 
 
@@ -2002,50 +2006,38 @@ static const int UIS_INITIALIZE                 = 3;
  static const int UISF_ACTIVE                    = 0x4;
 ]]
 
+ffi.cdef[[
+static const int WM_CTLCOLORMSGBOX               = 0x0132;
+static const int WM_CTLCOLOREDIT                 = 0x0133;
+static const int WM_CTLCOLORLISTBOX              = 0x0134;
+static const int WM_CTLCOLORBTN                  = 0x0135;
+static const int WM_CTLCOLORDLG                  = 0x0136;
+static const int WM_CTLCOLORSCROLLBAR            = 0x0137;
+static const int WM_CTLCOLORSTATIC               = 0x0138;
+static const int MN_GETHMENU                     = 0x01E1;
+]]
+
+ffi.cdef[[
+static const int WM_MOUSEFIRST                   = 0x0200;
+static const int WM_MOUSEMOVE                    = 0x0200;
+static const int WM_LBUTTONDOWN                  = 0x0201;
+static const int WM_LBUTTONUP                    = 0x0202;
+static const int WM_LBUTTONDBLCLK                = 0x0203;
+static const int WM_RBUTTONDOWN                  = 0x0204;
+static const int WM_RBUTTONUP                    = 0x0205;
+static const int WM_RBUTTONDBLCLK                = 0x0206;
+static const int WM_MBUTTONDOWN                  = 0x0207;
+static const int WM_MBUTTONUP                    = 0x0208;
+static const int WM_MBUTTONDBLCLK                = 0x0209;
+static const int WM_MOUSEWHEEL                   = 0x020A;
+static const int WM_XBUTTONDOWN                  = 0x020B;
+static const int WM_XBUTTONUP                    = 0x020C;
+static const int WM_XBUTTONDBLCLK                = 0x020D;
+static const int WM_MOUSEHWHEEL                  = 0x020E;
+static const int WM_MOUSELAST                    = 0x020E;
+]]
+
 --[=[
-#define WM_CTLCOLORMSGBOX               0x0132
-#define WM_CTLCOLOREDIT                 0x0133
-#define WM_CTLCOLORLISTBOX              0x0134
-#define WM_CTLCOLORBTN                  0x0135
-#define WM_CTLCOLORDLG                  0x0136
-#define WM_CTLCOLORSCROLLBAR            0x0137
-#define WM_CTLCOLORSTATIC               0x0138
-#define MN_GETHMENU                     0x01E1
-
-#define WM_MOUSEFIRST                   0x0200
-#define WM_MOUSEMOVE                    0x0200
-#define WM_LBUTTONDOWN                  0x0201
-#define WM_LBUTTONUP                    0x0202
-#define WM_LBUTTONDBLCLK                0x0203
-#define WM_RBUTTONDOWN                  0x0204
-#define WM_RBUTTONUP                    0x0205
-#define WM_RBUTTONDBLCLK                0x0206
-#define WM_MBUTTONDOWN                  0x0207
-#define WM_MBUTTONUP                    0x0208
-#define WM_MBUTTONDBLCLK                0x0209
-#if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
-#define WM_MOUSEWHEEL                   0x020A
-#endif
-#if (_WIN32_WINNT >= 0x0500)
-#define WM_XBUTTONDOWN                  0x020B
-#define WM_XBUTTONUP                    0x020C
-#define WM_XBUTTONDBLCLK                0x020D
-#endif
-#if (_WIN32_WINNT >= 0x0600)
-#define WM_MOUSEHWHEEL                  0x020E
-#endif
-
-#if (_WIN32_WINNT >= 0x0600)
-#define WM_MOUSELAST                    0x020E
-#elif (_WIN32_WINNT >= 0x0500)
-#define WM_MOUSELAST                    0x020D
-#elif (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
-#define WM_MOUSELAST                    0x020A
-#else
-#define WM_MOUSELAST                    0x0209
-#endif /* (_WIN32_WINNT >= 0x0600) */
-
-
 #if(_WIN32_WINNT >= 0x0400)
 /* Value for rolling one detent */
 #define WHEEL_DELTA                     120
@@ -2430,8 +2422,6 @@ RegisterWindowMessageW(
 #define SIZEZOOMHIDE        SIZE_MAXHIDE
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
  * WM_WINDOWPOSCHANGING/CHANGED struct pointed to by lParam
@@ -2469,45 +2459,31 @@ typedef struct tagNCCALCSIZE_PARAMS {
 #define WVR_REDRAW         (WVR_HREDRAW | \
                             WVR_VREDRAW)
 #define WVR_VALIDRECTS      0x0400
+--]=]
 
-
-#ifndef NOKEYSTATES
-
+ffi.cdef[[
 /*
  * Key State Masks for Mouse Messages
  */
-#define MK_LBUTTON          0x0001
-#define MK_RBUTTON          0x0002
-#define MK_SHIFT            0x0004
-#define MK_CONTROL          0x0008
-#define MK_MBUTTON          0x0010
-#if(_WIN32_WINNT >= 0x0500)
-#define MK_XBUTTON1         0x0020
-#define MK_XBUTTON2         0x0040
-#endif /* _WIN32_WINNT >= 0x0500 */
-
-#endif /* !NOKEYSTATES */
+static const int MK_LBUTTON         = 0x0001;
+static const int MK_RBUTTON         = 0x0002;
+static const int MK_SHIFT           = 0x0004;
+static const int MK_CONTROL         = 0x0008;
+static const int MK_MBUTTON         = 0x0010;
+static const int MK_XBUTTON1        = 0x0020;
+static const int MK_XBUTTON2        = 0x0040;
+]]
 
 
-#if(_WIN32_WINNT >= 0x0400)
-#ifndef NOTRACKMOUSEEVENT
-
-#define TME_HOVER       0x00000001
-#define TME_LEAVE       0x00000002
-#if(WINVER >= 0x0500)
-#define TME_NONCLIENT   0x00000010
-#endif /* WINVER >= 0x0500 */
-#define TME_QUERY       0x40000000
-#define TME_CANCEL      0x80000000
+ffi.cdef[[
+static const int TME_HOVER     =  0x00000001;
+static const int TME_LEAVE     =  0x00000002;
+static const int TME_NONCLIENT =  0x00000010;
+static const int TME_QUERY     =  0x40000000;
+static const int TME_CANCEL    =  0x80000000;
 
 
-#define HOVER_DEFAULT   0xFFFFFFFF
-#endif /* _WIN32_WINNT >= 0x0400 */
-
-#if(_WIN32_WINNT >= 0x0400)
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+static const int HOVER_DEFAULT  = 0xFFFFFFFF;
 
 typedef struct tagTRACKMOUSEEVENT {
     DWORD cbSize;
@@ -2521,20 +2497,7 @@ BOOL
 __stdcall
 TrackMouseEvent(
      LPTRACKMOUSEEVENT lpEventTrack);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* _WIN32_WINNT >= 0x0400 */
-
-#if(_WIN32_WINNT >= 0x0400)
-
-#endif /* !NOTRACKMOUSEEVENT */
-#endif /* _WIN32_WINNT >= 0x0400 */
-
-
-#endif /* !NOWINMESSAGES */
---]=]
+]]
 
 
 

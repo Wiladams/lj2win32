@@ -396,7 +396,7 @@ local function suspend(...)
 end
 
 
-local function signalTasks(eventName, priority, allof, ...)
+local function signalTasks(eventName, priority, allofthem, ...)
 	local tasklist = Kernel.TasksSuspendedForSignal[eventName];
 
 	if not  tasklist then
@@ -409,9 +409,10 @@ local function signalTasks(eventName, priority, allof, ...)
 	end
 
 	if allofthem then
-		local allparams = {...}
+		--local allparams = {...}
+		--print("allparams: ", allparams, #allparams)
 		for i=1,nTasks do
-			Kernel.Scheduler:scheduleTask(tasklist[1],allparams, priority);
+			Kernel.Scheduler:scheduleTask(tasklist[1],{...}, priority);
 			table.remove(tasklist, 1);
 		end
 	else
@@ -450,14 +451,28 @@ local function waitForSignal(eventName,...)
 	return suspend(...)
 end
 
-local function onSignal(eventName, func)
-	local function closure()
-		waitForSignal(eventName)
-		func();
+
+-- One shot signal activation
+local function onSignal(sigName, func)
+	local function closure(sigName, func)
+		func(waitForSignal(sigName));
 	end
 
-	return spawn(closure)
+	return spawn(closure, sigName, func)
 end
+
+-- continuous signal activation
+local function whenever(sigName, func)
+	local function watchit(sigName, func)
+		while true do
+			func(waitForSignal(sigName))
+		end
+	end
+
+	spawn(watchit, sigName, func)
+end
+
+
 
 local function run(func, ...)
 
@@ -493,6 +508,8 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"signalAllImmediate", signalAllImmediate);
 	rawset(tbl,"signalOne", signalOne);
 	rawset(tbl,"waitForSignal", waitForSignal);
+	rawset(tbl,"when", when);
+	rawset(tbl,"whenever", whenever);
 
 	-- extras
 	rawset(tbl,"getCurrentTaskID", getCurrentTaskID);
