@@ -1,9 +1,29 @@
 --[[
-    Create a graphic application.  That means there will be a window,
-    a default event loop, and when the window closes, the app will close.
+    This single file is the guts of a typical Windows graphical application.
+    It will put a general window on the screen, deal with the paint command,
+    and call UI event handlers the user specifies in their own code.
+    
+    There are a few variables this file will put into the global address space
+        width - width of the available drawing area
+        height - height of the available drawing area
+        surface - primary object supporting graphic drawing calls
 
-    A set of GDI based graphics calls will be available by default.
-    Access to the device context of the window, and the window handle itself
+    When you close the window, the application will be terminated.
+
+    The graphicapp uses the 'scheduler' module at its core, so the features
+    of spawning tasks, signaling, and the like are fully available.
+
+    Typical usage:
+
+    -- This first line MUST come before any user code
+    local graphicApp = require("graphicapp")
+
+    function onMouseMove(event)
+        print("MOVE: ", event.x, event.y)
+    end
+
+    -- This MUST be the last line of the user code
+    graphicApp.run();
 ]]
 local ffi = require("ffi")
 local bit = require("bit")
@@ -11,6 +31,7 @@ local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
 
 local sched = require("scheduler")
+local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
@@ -28,7 +49,7 @@ ClientDC = nil;
 -- static Global variables
 width = 1024;
 height = 768;
-
+RGB = wingdi.RGB;
 
 
 -- encapsulate a mouse event
@@ -171,7 +192,7 @@ local function createWindow(params)
     -- set global variables
     width = params.width;
     height = params.height;
-    
+
     -- You MUST register a window class before you can use it.
     local winkind, err = WindowKind("GraphicWindow", WindowProc);
 

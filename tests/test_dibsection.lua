@@ -3,7 +3,7 @@ package.path = "../?.lua;"..package.path;
 local graphicApp = require("graphicapp")
 
 local wingdi = require("win32.wingdi")
-local GDISurface = require("GDISurface")
+
 
 
 
@@ -22,8 +22,8 @@ function setup()
     dc:UseDCPen(true);
     dc:UseDCBrush(true);
 
-    dc:SetDCPenColor(wingdi.RGB(0,0,255))
-    dc:SetDCBrushColor(wingdi.RGB(127,127,0))
+    dc:SetDCPenColor(RGB(0,0,255))
+    dc:SetDCBrushColor(RGB(127,127,0))
     dc:Rectangle(100, 100, 400, 400);
     dc:flush();
 end
