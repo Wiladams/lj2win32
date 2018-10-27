@@ -7,7 +7,7 @@ local GDISurface = require("GDISurface")
 
 
 
-local function onMouseMove(event)
+function onMouseMove(event)
     print("MOVE: ", event.x, event.y)
 end
 
@@ -20,7 +20,10 @@ function setup()
     yield();
 
     dc:UseDCPen(true);
+    dc:UseDCBrush(true);
+
     dc:SetDCPenColor(wingdi.RGB(0,0,255))
+    dc:SetDCBrushColor(wingdi.RGB(127,127,0))
     dc:Rectangle(100, 100, 400, 400);
     dc:flush();
 end

@@ -95,15 +95,14 @@ function WindowProc(hwnd, msg, wparam, lparam)
     -- If the window has been destroyed, then post a quit message
     if msg == ffi.C.WM_DESTROY then
         ffi.C.PostQuitMessage(0);
-        signalAllImmediate('sys-quitting');
+        signalAllImmediate('gap-quitting');
         return 0;
     elseif msg == ffi.C.WM_PAINT then
         local ps = ffi.new("PAINTSTRUCT");
 		local hdc = ffi.C.BeginPaint(hwnd, ps);
-print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
-		-- bitblt bmhandle to client area
-		-- we should actually look at the paint struct
-		-- and only blit the part that needs to be drawn
+--print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
+		-- bitblt backing store to client area
+
         if (nil ~= surface) then
 			ret = ffi.C.BitBlt(hdc,
 				ps.rcPaint.left, ps.rcPaint.top,
@@ -112,7 +111,7 @@ print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bo
 				ps.rcPaint.left, ps.rcPaint.top,
                 ffi.C.SRCCOPY);
         else
-            print("NO SURFACE YET")
+            --print("NO SURFACE YET")
         end
 
 		ffi.C.EndPaint(hwnd, ps);
@@ -155,7 +154,7 @@ local function msgLoop()
             res = ffi.C.TranslateMessage(msg)
             res = ffi.C.DispatchMessageA(msg)
         end
-        signalAll("sys-idle")
+        signalAll("gap-idle")
         yield();
     end
 
@@ -164,11 +163,15 @@ end
 
 
 local function createWindow(params)
-    params = params or {width=1026, height=768, title="GraphicApplication"}
+    params = params or {width=1024, height=768, title="GraphicApplication"}
     params.width = params.width or 1024;
     params.height = params.height or 768;
-    params.title = params.title or "Graphic Application";
+    params.title = params.title or "Graphic App";
 
+    -- set global variables
+    width = params.width;
+    height = params.height;
+    
     -- You MUST register a window class before you can use it.
     local winkind, err = WindowKind("GraphicWindow", WindowProc);
 
@@ -185,63 +188,67 @@ local function createWindow(params)
     appWindow:show();
 end
 
+
+-- Register UI event handler global functions
+-- These are the functions that the user should implement
+-- in their code
 local function setupUIHandlers()
-    if onMouseActivity then
-        on('mousedown', onMouseActivity);
-        on('mouseup', onMouseActivity);
-        on('mousemove', onMouseActivity);
-        on('mousewheel', onMouseActivity);
-    end
+    local uiHandlers = {
+        {activity = 'gap-mousedown', response = "onMouseActivity"};
+        {activity = 'gap-mouseup', response = "onMouseActivity"};
+        {activity = 'gap-mousemove', response = "onMouseActivity"};
+        {activity = 'gap-mousewheel', response = "onMouseActivity"};
 
-    if onMouseMove then
-        on('mousemove', onMouseMove);
-    end
+        {activity = 'gap-mousemove', response = "onMouseMove"};
+        {activity = 'gap-mouseup', response = "onMouseUp"};
+        {activity = 'gap-mousedown', response = "onMouseDown"};
+        {activity = 'gap-mousewheel', response = "onMouseWheel"};
 
-    if onMouseUp then
-        on('mouseup', onMouseUp);
-    end
+        {activity = 'gap-keydown', response = "onKeyboardActivity"};
+        {activity = 'gap-keyup', response = "onKeyboardActivity"};
+        {activity = 'gap-syskeydown', response = "onKeyboardActivity"};
+        {activity = 'gap-syskeyup', response = "onKeyboardActivity"};
+    }
 
-    if onMouseDown then
-        on('mousedown', onMouseDown);
-    end
-
-    if onMouseWheel then
-        on('mousewheel', onMouseWheel);
-    end
-
-    -- Put the keyboard ones
-    if onKeyboardActivity then
-        on('keydown', onKeyboardActivity);
-        on('keyup', onKeyboardActivity);
-        on('syskeydown', onKeyboardActivity);
-        on('syskeyup', onKeyboardActivity);
+    for i, handler in ipairs(uiHandlers) do
+        print("response: ", handler.response, _G[handler.response])
+        if _G[handler.response] ~= nil then
+            on(handler.activity, _G[handler.response])
+        end
     end
 
 
 end
 
-local function main()
+local function main(params)
     
     spawn(msgLoop);
     yield();
-    spawn(createWindow);
+    spawn(createWindow, params);
     yield();
     setupUIHandlers();
     yield();
-    surface = GDISurface({width = width, height=height})
+    surface = GDISurface(params)
 
     if setup then
-        --on('sys-ready', setup);
+        --on('gap-ready', setup);
         setup();
     end
     --yield();
 
-    signalAll("sys-ready");
+    signalAll("gap-ready");
 end
 
 
-function exports.run()
-    run(main)
+function exports.run(params)
+    params = params or {
+        width = 640;
+        height = 480;
+    }
+    params.width = params.width or 640;
+    params.height = params.height or 480;
+
+    run(main, params)
 end
 
 return exports
