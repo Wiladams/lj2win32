@@ -57,7 +57,7 @@ end
 
 
 local function drawLines(win)
-    print("drawLines")
+    --print("drawLines")
     local dc = ClientDC;
     dc:UseDCPen(true);
     dc:Rectangle(win.left, win.top, win.left+win.width-1, win.top+win.height-1);

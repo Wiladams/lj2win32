@@ -4,6 +4,7 @@ local ffi = require("ffi")
 local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift
 local band, bor = bit.band, bit.bor
+local bnot = bit.bnot;
 
 require("win32.windef")
 
@@ -4756,12 +4757,27 @@ ffi.cdef[[
  BOOL __stdcall CombineTransform(LPXFORM lpxfOut,  const XFORM *lpxf1,  const XFORM *lpxf2);
 ]]
 
---[[
-#define GDI_WIDTHBYTES(bits) ((DWORD)(((bits)+31) & (~31)) / 8)
-#define GDI_DIBWIDTHBYTES(bi) (DWORD)GDI_WIDTHBYTES((DWORD)(bi).biWidth * (DWORD)(bi).biBitCount)
-#define GDI__DIBSIZE(bi) (GDI_DIBWIDTHBYTES(bi) * (DWORD)(bi).biHeight)
-#define GDI_DIBSIZE(bi) ((bi).biHeight < 0 ? (-1)*(GDI__DIBSIZE(bi)) : GDI__DIBSIZE(bi))
---]]
+
+function exports.GDI_WIDTHBYTES(bits) 
+    return band((bits+31), bnot(31)) / 8
+end
+
+function exports.GDI_DIBWIDTHBYTES(bi) 
+    return GDI_WIDTHBYTES(bi.biWidth * bi.biBitCount);
+end
+
+function exports.GDI__DIBSIZE(bi) 
+    return exports.GDI_DIBWIDTHBYTES(bi) * bi.biHeight
+end
+
+function exports.GDI_DIBSIZE(bi) 
+    if bi.biHeight < 0 then 
+        return -1*exports.GDI__DIBSIZE(bi); 
+    end
+    
+    return exports.GDI__DIBSIZE(bi);
+end
+
 
 ffi.cdef[[
 HBITMAP __stdcall CreateDIBSection(

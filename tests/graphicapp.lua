@@ -16,6 +16,9 @@ local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
 local wmmsgs = require("wm_reserved")
 local DeviceContext = require("DeviceContext")
+local GDISurface = require("GDISurface")
+
+
 
 local exports = {}
 
@@ -94,9 +97,26 @@ function WindowProc(hwnd, msg, wparam, lparam)
         ffi.C.PostQuitMessage(0);
         signalAllImmediate('sys-quitting');
         return 0;
-    end
+    elseif msg == ffi.C.WM_PAINT then
+        local ps = ffi.new("PAINTSTRUCT");
+		local hdc = ffi.C.BeginPaint(hwnd, ps);
+print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
+		-- bitblt bmhandle to client area
+		-- we should actually look at the paint struct
+		-- and only blit the part that needs to be drawn
+        if (nil ~= surface) then
+			ret = ffi.C.BitBlt(hdc,
+				ps.rcPaint.left, ps.rcPaint.top,
+				ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top,
+				surface.DC.Handle,
+				ps.rcPaint.left, ps.rcPaint.top,
+                ffi.C.SRCCOPY);
+        else
+            print("NO SURFACE YET")
+        end
 
-    if msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
+		ffi.C.EndPaint(hwnd, ps);
+    elseif msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
         res = MouseActivity(hwnd, msg, wparam, lparam)
     elseif msg >= ffi.C.WM_KEYFIRST and msg <= ffi.C.WM_KEYLAST then
         res = KeyboardActivity(hwnd, msg, wparam, lparam)  
@@ -208,6 +228,7 @@ local function main()
     yield();
     setupUIHandlers();
     yield();
+    surface = GDISurface({width = width, height=height})
 
     if setup then
         --on('sys-ready', setup);

@@ -42,6 +42,9 @@ function DeviceContext.init(self, rawhandle)
 	}
 	setmetatable(obj, DeviceContext_mt)
 
+	-- default to advanced graphics mode instead of GM_COMPATIBLE
+	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
+	
 	return obj;
 end
 
@@ -53,9 +56,6 @@ function DeviceContext.create(self, lpszDriver, lpszDevice, lpszOutput, lpInitDa
 	if rawhandle == nil then
 		return nil, "could not create Device Context as specified"
 	end
-
-	-- default to advanced graphics mode instead of GM_COMPATIBLE
-	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
 
 	return self:init(rawhandle)
 end
@@ -126,7 +126,7 @@ end
 
 -- Object Management
 function DeviceContext.SelectObject(self, gdiobj)
-	ffi.C.SelectObject(self.Handle, gdiobj.Handle)
+	ffi.C.SelectObject(self.Handle, gdiobj)
 	
 	return true;
 end
