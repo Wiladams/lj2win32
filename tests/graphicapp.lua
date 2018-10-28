@@ -55,8 +55,8 @@ RGB = wingdi.RGB;
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)
     local event = {
-        x = band(lparam,0x0000ffff);
-        y = rshift(band(lparam, 0xffff0000),16);
+        x = tonumber(band(lparam,0x0000ffff));
+        y = tonumber(rshift(band(lparam, 0xffff0000),16));
         control = band(wparam, ffi.C.MK_CONTROL) ~= 0;
         shift = band(wparam, ffi.C.MK_SHIFT) ~= 0;
         lbutton = band(wparam, ffi.C.MK_LBUTTON) ~= 0;
@@ -75,22 +75,22 @@ function MouseActivity(hwnd, msg, wparam, lparam)
     local event = wm_mouse_event(hwnd, msg, wparam, lparam)
     if msg == ffi.C.WM_MOUSEMOVE  then
         event.activity = 'mousemove' 
-        signalAll('mousemove', event)
+        signalAll('gap-mousemove', event)
     elseif msg == ffi.C.WM_LBUTTONDOWN or 
         msg == ffi.C.WM_RBUTTONDOWN or
         msg == ffi.C.WM_MBUTTONDOWN or
         msg == ffi.C.WM_XBUTTONDOWN then
         event.activity = 'mousedown';
-        signalAll('mousedown', event)
+        signalAll('gap-mousedown', event)
     elseif msg == ffi.C.WM_LBUTTONUP or
         msg == ffi.C.WM_RBUTTONUP or
         msg == ffi.C.WM_MBUTTONUP or
         msg == ffi.C.WM_XBUTTONUP then
         event.activity = 'mouseup'
-        signalAll('mouseup', event)
+        signalAll('gap-mouseup', event)
     elseif msg == ffi.C.WM_MOUSEWHEEL then
         event.activity = 'mousewheel';
-        signalAll('mousewheel', event)
+        signalAll('gap-mousewheel', event)
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -99,7 +99,7 @@ function MouseActivity(hwnd, msg, wparam, lparam)
 end
 
 function KeyboardActivity(hwnd, msg, wparam, lparam)
-    print("onKeyboardActivity")
+    --print("onKeyboardActivity")
     local res = 1;
 
     res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
@@ -121,7 +121,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
     elseif msg == ffi.C.WM_PAINT then
         local ps = ffi.new("PAINTSTRUCT");
 		local hdc = ffi.C.BeginPaint(hwnd, ps);
---print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
+print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
 		-- bitblt backing store to client area
 
         if (nil ~= surface) then
@@ -209,12 +209,17 @@ local function createWindow(params)
     appWindow:show();
 end
 
+function drawNow()
+    appWindow:redraw(ffi.C.RDW_INVALIDATE)
+
+    return true;
+end
 
 -- Register UI event handler global functions
 -- These are the functions that the user should implement
 -- in their code
 local function setupUIHandlers()
-    local uiHandlers = {
+    local handlers = {
         {activity = 'gap-mousedown', response = "onMouseActivity"};
         {activity = 'gap-mouseup', response = "onMouseActivity"};
         {activity = 'gap-mousemove', response = "onMouseActivity"};
@@ -229,15 +234,17 @@ local function setupUIHandlers()
         {activity = 'gap-keyup', response = "onKeyboardActivity"};
         {activity = 'gap-syskeydown', response = "onKeyboardActivity"};
         {activity = 'gap-syskeyup', response = "onKeyboardActivity"};
+
+        {activity = 'gap-idle', response = "loop"};
+        {activity = 'gap-idle', response = "onIdle"};
     }
 
-    for i, handler in ipairs(uiHandlers) do
-        print("response: ", handler.response, _G[handler.response])
+    for i, handler in ipairs(handlers) do
+        --print("response: ", handler.response, _G[handler.response])
         if _G[handler.response] ~= nil then
             on(handler.activity, _G[handler.response])
         end
     end
-
 
 end
 
@@ -255,13 +262,13 @@ local function main(params)
         --on('gap-ready', setup);
         setup();
     end
-    --yield();
+    yield();
 
     signalAll("gap-ready");
 end
 
 
-function exports.run(params)
+function exports.go(params)
     params = params or {
         width = 640;
         height = 480;

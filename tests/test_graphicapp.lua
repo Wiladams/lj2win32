@@ -137,4 +137,4 @@ function setup()
 end
 
 
-graphicApp.run();
+graphicApp.go({width=1024, height=768, title="test_graphicapp"});

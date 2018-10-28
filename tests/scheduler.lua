@@ -454,11 +454,14 @@ end
 
 -- One shot signal activation
 local function onOnce(sigName, func)
-	local function closure(sigName, func)
+	local function watchit(sigName, func)
 		func(waitForSignal(sigName));
 	end
 
-	return spawn(closure, sigName, func)
+	local res = coop(0, watchit, sigName, func);
+	yield();
+
+	return res
 end
 
 -- continuous signal activation
@@ -469,7 +472,10 @@ local function on(sigName, func)
 		end
 	end
 
-	spawn(watchit, sigName, func)
+	local res = coop(0, watchit, sigName, func);
+	yield();
+	
+	return res;
 end
 
 

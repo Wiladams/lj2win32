@@ -1,14 +1,12 @@
 package.path = "../?.lua;"..package.path;
 
-local graphicApp = require("graphicapp")
+local gApp = require("graphicapp")
 
 local wingdi = require("win32.wingdi")
 
 
-
-
-function onMouseMove(event)
-    print("MOVE: ", event.x, event.y)
+local function onMouseMove(event)
+    print("MOUSE MOVE: ", event.x, event.y)
 end
 
 
@@ -26,6 +24,14 @@ function setup()
     dc:SetDCBrushColor(RGB(127,127,0))
     dc:Rectangle(100, 100, 400, 400);
     dc:flush();
+
+    drawNow();
+end
+
+
+function loop()
+    --print("LOOP")
+    --drawNow();
 end
 
 
@@ -34,7 +40,4 @@ end
 
 
 
-
-
-
-graphicApp.run();
+gApp.go({width=1024, height=768, title="test_dibsection"});

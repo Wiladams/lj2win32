@@ -7880,29 +7880,29 @@ RedrawWindow(
      UINT flags);
 ]]
 
---[=[
+ffi.cdef[[
 /*
  * RedrawWindow() flags
  */
-#define RDW_INVALIDATE          0x0001
-#define RDW_INTERNALPAINT       0x0002
-#define RDW_ERASE               0x0004
+static const int RDW_INVALIDATE          = 0x0001;
+static const int RDW_INTERNALPAINT       = 0x0002;
+static const int RDW_ERASE               = 0x0004;
 
-#define RDW_VALIDATE            0x0008
-#define RDW_NOINTERNALPAINT     0x0010
-#define RDW_NOERASE             0x0020
+static const int RDW_VALIDATE            = 0x0008;
+static const int RDW_NOINTERNALPAINT     = 0x0010;
+static const int RDW_NOERASE             = 0x0020;
 
-#define RDW_NOCHILDREN          0x0040
-#define RDW_ALLCHILDREN         0x0080
+static const int RDW_NOCHILDREN          = 0x0040;
+static const int RDW_ALLCHILDREN         = 0x0080;
 
-#define RDW_UPDATENOW           0x0100
-#define RDW_ERASENOW            0x0200
+static const int RDW_UPDATENOW           = 0x0100;
+static const int RDW_ERASENOW            = 0x0200;
 
-#define RDW_FRAME               0x0400
-#define RDW_NOFRAME             0x0800
+static const int RDW_FRAME               = 0x0400;
+static const int RDW_NOFRAME             = 0x0800;
+]]
 
-
-
+--[=[
 /*
  * LockWindowUpdate API
  */
