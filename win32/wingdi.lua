@@ -1716,8 +1716,13 @@ static const int DEVICE_FONTTYPE    = 0x0002;
 static const int TRUETYPE_FONTTYPE  = 0x0004;
 ]]
 
+local function LOBYTE(val) return ffi.cast("BYTE",band(val,0xff)) end
 
-function exports.RGB(r,g,b)         return  ffi.cast("COLORREF",bor(ffi.cast("BYTE",r),lshift(g,8),lshift(b,16))) end
+function exports.GetRValue(rgb)    return  LOBYTE(rgb) end
+function exports.GetGValue(rgb)    return  LOBYTE(rshift(rgb, 8)) end
+function exports.GetBValue(rgb)    return  LOBYTE(rshift(rgb,16)) end
+
+function exports.RGB(r,g,b)         return  ffi.cast("COLORREF",bor(ffi.cast("BYTE",r),lshift(ffi.cast("BYTE",g),8),lshift(b,16))) end
 function exports.PALETTERGB(r,g,b)   return bor(0x02000000 , RGB(r,g,b)) end
 --function exports.PALETTEINDEX(i)     ffi.cast("COLORREF", bor(0x01000000, (DWORD)(WORD)(i)))
 
@@ -1729,11 +1734,8 @@ static const int PC_EXPLICIT    = 0x02;    /* palette index is explicit to devic
 static const int PC_NOCOLLAPSE  = 0x04;    /* do not match color to system palette */
 ]]
 
---[=[
-function exports.GetRValue(rgb)      (LOBYTE(rgb))
-function exports.GetGValue(rgb)      (LOBYTE(((WORD)(rgb)) >> 8))
-function exports.GetBValue(rgb)      (LOBYTE((rgb)>>16))
---]=]
+
+
 
 ffi.cdef[[
 /* Background Modes */

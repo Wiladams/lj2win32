@@ -1,6 +1,10 @@
 local ffi = require("ffi")
+local enum = require("enum")
 
-local EMRCommands = {
+local exports = {}
+
+
+local RecordType = enum {
 	EMR_HEADER                    =  1;
 	EMR_POLYBEZIER                =  2;
 	EMR_POLYGON                   =  3;
@@ -131,3 +135,7 @@ local EMRCommands = {
 	EMR_COLORMATCHTOTARGETW       = 121;
     EMR_CREATECOLORSPACEW         = 122;
 }
+
+exports.EMRCommands = EMRCommands;
+
+return exports
