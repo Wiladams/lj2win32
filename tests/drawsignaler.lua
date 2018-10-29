@@ -14,155 +14,127 @@ local exports = {}
 local marshalers = {
     backgroundValues = function(v1, v2, v3, alpha) return {command = 'backgroundValues', params={v1=v1, v2=v2, v3=v3, alpha=alpha}} end;
     background = function(value) return {command='background', params={value = value}} end;
+    backgroundImage = function(image) return {command='backgroundImage', params={image=image}} end;
     clear = function() return {command='clear'} end;
     colorMode = function(mode, max1, max2, max3, maxA) return {command='colorMode', params={mode=mode,max1=max1,max2=max2,max3= max3, maxA = maxA}} end;
 
     noFill = function() return {command='noFill'} end;
 }
 
--- Setting colors
+
 --[[
-function exports.colorMode(mode, max1, max2, max3, maxA)
-    signalAll('draw_colorMode', {command='colorMode', params={mode = mode, max1=max1, max2=max2, maxA=maxA}})
-end
 --DPPIXELVAL color(v1, v2 = -1, v3 = -1, alpha = -1);
-
-function exports.backgroundValues(v1, v2, v3, alpha)
-    signalAll('draw_backgroundValues', {command='backgroundValues', params={v1=v1, v2=v2,v3=v3,alpha=alpha}})
-end
-
-
-function exports.background(value)
-    signalAll('draw_background', {command='background', params={value=value}})
-end
+--function marshalers.colorMode();
 --]]
 
-function exports.backgroundImage(image)
-    signalAll('draw_backgroundImage', {command = 'backgroundImage', image = image});
+function marshalers.fillValues(v1, v2, v3, alpha)
+    return {command='fillValues', params={v1=v1,v2=v2,v3=v3,alpha=alpha}}
 end
 
---[[
-function exports.clear()
-    print("CLEAR")
-    signalAll('draw_clear', {command='clear'})
-end
---]]
-
---function exports.colorMode();
---[[
-    function exports.noFill()
-    signalAll('draw_noFill', {command='noFill'})
-end
---]]
-
-function exports.fillValues(v1, v2, v3, alpha)
-    signalAll('draw_fillValues', {command='fillValues', params={v1=v1,v2=v2,v3=v3,alpha=alpha}})
+function marshalers.fill(value)
+    return {command='fill', params={value=value}}
 end
 
-function exports.fill(value)
-    signalAll('draw_fill', {command='fill', params={value=value}})
+function marshalers.noStroke()
+    return {command='noStroke'}
 end
 
-function exports.noStroke()
-    signalAll('draw_noStroke', {command='noStroke'})
+function marshalers.stroke(value)
+    return {command='stroke', params={value = value}}
 end
 
-function exports.stroke(value)
-    signalAll('draw_stroke', {command='stroke'})
-end
-
-function exports.strokeValues(v1, v2, v3, alpha)
-    signalAll('draw_strokeValues', {command='strokeValues'})
+function marshalers.strokeValues(v1, v2, v3, alpha)
+    return {command='strokeValues'}
 end
 
 -- attributes
-function exports.ellipseMode(mode)
-    signalAll('draw_ellipseMode', {command='ellipseMode'})
+function marshalers.ellipseMode(mode)
+    return {command='ellipseMode'}
 end
 
-function exports.noSmooth()
-    signalAll('draw_noSmooth', {command='noSmooth'})
+function marshalers.noSmooth()
+    return {command='noSmooth'}
 end
 
-function exports.rectMode(mode)
-    signalAll('draw_rectMode', {command='rectMode'})
+function marshalers.rectMode(mode)
+    return {command='rectMode', params={mode=mode}}
 end
 
-function exports.smooth()
-    signalAll('draw_smooth', {command='smooth'})
+function marshalers.smooth()
+    return {command='smooth'}
 end
 
-function exports.strokeCap()
-    signalAll('draw_strokeCap', {command='strokeCap'})
+function marshalers.strokeCap()
+    return {command='strokeCap'}
 end
 
-function exports.strokeJoin()
-    signalAll('draw_strokeJoin', {command='strokeJoin'})
+function marshalers.strokeJoin()
+    return {command='strokeJoin'}
 end
 
-function exports.strokeWeight(weight)
-    signalAll('draw_strokeWeight', {command='strokeWeight'})
+function marshalers.strokeWeight(weight)
+    return {command='strokeWeight', params={weight=weight}}
 end
 
 
 -- 2D primitives
-function exports.bezier(x1, y1, x2, y2, x3, y3, segments)
-    signalAll('draw_bezier', {command='bezier'})
+function marshalers.bezier(x1, y1, x2, y2, x3, y3, segments)
+    return {command='bezier', params={x1=x1,y1=y1,x2=x2,y2=y2,x3=x3,y3=y3,segments=segments}}
 end
 
-function exports.ellipse(a, b, c, d)
-    signalAll('draw_ellipse', {command='ellipse'})
+function marshalers.ellipse(a, b, c, d)
+    return {command='ellipse', params={a=a, b=b,c=c,d=d}})
 end
 
-function exports.line(x1, y1, x2, y2)
-    signalAll('draw_line', {command='line'})
+function marshalers.line(x1, y1, x2, y2)
+    return {command='line', params={x1=x1,y1=y1,x2=x2,y2=y2}}
 end
 
-function exports.lineloop(nPtr, pts)
-    signalAll('draw_lineloop', {command='lineloop'})
+function marshalers.lineloop(nPtr, pts)
+    return {command='lineloop'}
 end
 
-function exports.point(x, y)
-    signalAll('draw_point', {command='point'})
+function marshalers.point(x, y)
+    return {command='point'}
 end
 
-function exports.rect(a, b, c, d)
-    signalAll('draw_rect', {command='rect'})
+function marshalers.rect(a, b, c, d)
+    return {command='rect'}
 end
 
-function exports.quad(x1, y1, x2, y2, x3, y3, x4, y4)
-    signalAll('draw_quad', {command='quad'})
+function marshalers.quad(x1, y1, x2, y2, x3, y3, x4, y4)
+    return {command='quad'}
 end
 
-function exports.triangle(x1, y1, x2, y2, x3, y3)
-    signalAll('draw_triangle', {command='triangle'})
+function marshalers.triangle(x1, y1, x2, y2, x3, y3)
+    return {command='triangle'}
 end
 
-function exports.polygon(nverts, a)
-    signalAll('draw_polygon', {command='polygon'})
+function marshalers.polygon(nverts, a)
+    return {command='polygon'}
 end
 
 -- Text
 
 -- createFont
 -- loadFont()
-function exports.setFont(fontdata)
-    signalAll('draw_setFont', {command='setFont'})
+function marshalers.setFont(fontdata)
+    return {command='setFont'}
 end
 
-function exports.text(str, x, y)
-    signalAll('draw_text', {command='text'})
+function marshalers.text(str, x, y)
+    return {command='text'}
 end
 
---function exports.textFont(font_t *font);
-function exports.textAlign(alignX, alignY)
-    signalAll('draw_textAlign', {command='textAlign'})
+--function marshalers.textFont(font_t *font);
+function marshalers.textAlign(alignX, alignY)
+    return {command='textAlign'}
 end
 
 -- textLeading()
 -- textMode()
-function exports.textSize(size)
-    signalAll('draw_textSize', {command='textSize'})
+function marshalers.textSize(size)
+    return {command='textSize'}
 end
 
 -- textWidth()
@@ -170,25 +142,25 @@ end
 -- textDescent()
 
 -- Shape
-function exports.beginShape(shapeKind)
-    signalAll('draw_beginShape', {command='beginShape'})
+function marshalers.beginShape(shapeKind)
+    return {command='beginShape'}
 end
 
-function exports.vertex(x, y)
-    signalAll('draw_vertex', {command='vertex'})
+function marshalers.vertex(x, y)
+    return {command='vertex'}
 end
 
-function exports.bezierVertex(x1, y1, x2, y2, x3, y3)
-    signalAll('draw_bezierVertex', {command='bezierVertex'})
+function marshalers.bezierVertex(x1, y1, x2, y2, x3, y3)
+    return {command='bezierVertex'}
 end
 
-function exports.endShape(kindOfClose)
-    signalAll('draw_endShape', {command='endShape'})
+function marshalers.endShape(kindOfClose)
+    return {command='endShape'}
 end
 
 -- Images
-function exports.image(img, a, b, c, d)
-    signalAll('draw_image', {command='image'})
+function marshalers.image(img, a, b, c, d)
+    return {command='image'}
 end
 
 --[[
@@ -197,60 +169,60 @@ end
 --]]
 
 -- Coordinate transformation
-function exports.applyMatrix()
-    signalAll('draw_applyMatrix', {command='applyMatrix'})
+function marshalers.applyMatrix()
+    return {command='applyMatrix'}
 end
 
-function exports.popMatrix()
-    signalAll('draw_popMatrix', {command='popMatrix'})
+function marshalers.popMatrix()
+    return {command='popMatrix'}
 end
 
-function exports.printMatrix()
-    signalAll('draw_printMatrix', {command='printMatrix'})
+function marshalers.printMatrix()
+    return {command='printMatrix'}
 end
 
-function exports.pushMatrix()
-    signalAll('draw_pushMatrix', {command='pushMatrix'})
+function marshalers.pushMatrix()
+    return {command='pushMatrix'}
 end
 
-function exports.resetMatrix()
-    signalAll('draw_resetMatrix', {command='resetMatrix'})
+function marshalers.resetMatrix()
+    return {command='resetMatrix'}
 end
 
-function exports.rotate(angle, x, y, z)
-    signalAll('draw_rotate', {command='rotate'})
+function marshalers.rotate(angle, x, y, z)
+    return {command='rotate'}
 end
 
-function exports.rotateX(anglex)
-    signalAll('draw_rotateX', {command='rotateX'})
+function marshalers.rotateX(anglex)
+    return {command='rotateX'}
 end
 
-function exports.rotateY(angley)
-    signalAll('draw_rotateY', {command='rotateY'})
+function marshalers.rotateY(angley)
+    return {command='rotateY'}
 end
 
-function exports.rotateZ(anglez)
-    signalAll('draw_rotateZ', {command='rotateZ'})
+function marshalers.rotateZ(anglez)
+    return {command='rotateZ'}
 end
 
-function exports.scale(a, b, c)
-    signalAll('draw_scale', {command='scale'})
+function marshalers.scale(a, b, c)
+    return {command='scale'}
 end
 
-function exports.shearX()
-    signalAll('draw_shearX', {command='shearX'})
+function marshalers.shearX()
+    return {command='shearX'}
 end
 
-function exports.shearY()
-    signalAll('draw_shearY', {command='shearY'})
+function marshalers.shearY()
+    return {command='shearY'}
 end
 
-function exports.shearZ()
-    signalAll('draw_shearZ', {command='shearZ'})
+function marshalers.shearZ()
+    return {command='shearZ'}
 end
 
-function exports.translate(x, y, z)
-    signalAll('draw_translate', {command='translate'})
+function marshalers.translate(x, y, z)
+    return {command='translate'}
 end
 
 

@@ -16,6 +16,9 @@ function setup()
     dsignaler.background(123)
 end
 
+function loop()
+
+end
 
 
 graphicApp.go({title="test_drawreactor"});
