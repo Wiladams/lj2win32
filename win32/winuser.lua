@@ -12893,25 +12893,23 @@ BOOL
 __stdcall
 BlockInput(
     BOOL fBlockIt);
+--]=]
 
-#if(_WIN32_WINNT >= 0x0600)
-
-#define USER_DEFAULT_SCREEN_DPI 96
+ffi.cdef[[
+static const int USER_DEFAULT_SCREEN_DPI = 96;
 
 
 BOOL
 __stdcall
 SetProcessDPIAware(
-    VOID);
+    void);
 
 
 BOOL
 __stdcall
 IsProcessDPIAware(
-    VOID);
-
-#endif /* _WIN32_WINNT >= 0x0600 */
---]=]
+    void);
+]]
 
 ffi.cdef[[
 DPI_AWARENESS_CONTEXT

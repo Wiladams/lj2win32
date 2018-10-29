@@ -5071,14 +5071,17 @@ ffi.cdef[[
  DWORD __stdcall GdiGetBatchLimit(void);
 ]]
 
---[=[
-#define ICM_OFF               1
-#define ICM_ON                2
-#define ICM_QUERY             3
-#define ICM_DONE_OUTSIDEDC    4
+ffi.cdef[[
+static const int ICM_OFF              = 1;
+static const int ICM_ON               = 2;
+static const int ICM_QUERY            = 3;
+static const int ICM_DONE_OUTSIDEDC   = 4;
+]]
 
-typedef int (CALLBACK* ICMENUMPROCA)(LPSTR, LPARAM);
-typedef int (CALLBACK* ICMENUMPROCW)(LPWSTR, LPARAM);
+ffi.cdef[[
+typedef int (__stdcall* ICMENUMPROCA)(LPSTR, LPARAM);
+typedef int (__stdcall* ICMENUMPROCW)(LPWSTR, LPARAM);
+]]
 
 --[[
 #ifdef UNICODE
@@ -5088,72 +5091,95 @@ typedef int (CALLBACK* ICMENUMPROCW)(LPWSTR, LPARAM);
 #endif // !UNICODE
 --]]
 
+ffi.cdef[[
  int         __stdcall SetICMMode(  HDC hdc,  int mode);
  BOOL        __stdcall CheckColorsInGamut(     HDC hdc,
-                                                    _In_reads_(nCount) LPRGBTRIPLE lpRGBTriple,
-                                                    _Out_writes_bytes_(nCount) LPVOID dlpBuffer,
+                                                    LPRGBTRIPLE lpRGBTriple,
+                                                    LPVOID dlpBuffer,
                                                      DWORD nCount);
 
  HCOLORSPACE __stdcall GetColorSpace(  HDC hdc);
  BOOL        __stdcall GetLogColorSpaceA(  HCOLORSPACE hColorSpace,
-                                                _Out_writes_bytes_(nSize) LPLOGCOLORSPACEA lpBuffer,
+                                                LPLOGCOLORSPACEA lpBuffer,
                                                  DWORD nSize);
  BOOL        __stdcall GetLogColorSpaceW(  HCOLORSPACE hColorSpace,
-                                                _Out_writes_bytes_(nSize) LPLOGCOLORSPACEW lpBuffer,
+                                                LPLOGCOLORSPACEW lpBuffer,
                                                  DWORD nSize);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetLogColorSpace  GetLogColorSpaceW
 #else
 #define GetLogColorSpace  GetLogColorSpaceA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
  HCOLORSPACE __stdcall CreateColorSpaceA(  LPLOGCOLORSPACEA lplcs);
  HCOLORSPACE __stdcall CreateColorSpaceW(  LPLOGCOLORSPACEW lplcs);
-#ifdef UNICODE
+]]
+
+--[[
+ #ifdef UNICODE
 #define CreateColorSpace  CreateColorSpaceW
 #else
 #define CreateColorSpace  CreateColorSpaceA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
  HCOLORSPACE __stdcall SetColorSpace(  HDC hdc,  HCOLORSPACE hcs);
  BOOL        __stdcall DeleteColorSpace(  HCOLORSPACE hcs);
  BOOL        __stdcall GetICMProfileA(     HDC hdc,
-                                                _Inout_ LPDWORD pBufSize,
-                                                _Out_writes_opt_(*pBufSize) LPSTR pszFilename);
+                                                LPDWORD pBufSize,
+                                                LPSTR pszFilename);
  BOOL        __stdcall GetICMProfileW(     HDC hdc,
-                                                _Inout_ LPDWORD pBufSize,
-                                                _Out_writes_opt_(*pBufSize) LPWSTR pszFilename);
+                                                LPDWORD pBufSize,
+                                                LPWSTR pszFilename);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetICMProfile  GetICMProfileW
 #else
 #define GetICMProfile  GetICMProfileA
 #endif // !UNICODE
+--]]
 
+ffi.cdef[[
  BOOL        __stdcall SetICMProfileA(  HDC hdc,  LPSTR lpFileName);
  BOOL        __stdcall SetICMProfileW(  HDC hdc,  LPWSTR lpFileName);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetICMProfile  SetICMProfileW
 #else
 #define SetICMProfile  SetICMProfileA
 #endif // !UNICODE
- BOOL        __stdcall GetDeviceGammaRamp(  HDC hdc, _Out_writes_bytes_(3*256*2) LPVOID lpRamp);
- BOOL        __stdcall SetDeviceGammaRamp(  HDC hdc, _In_reads_bytes_(3*256*2)  LPVOID lpRamp);
+-]]
+
+ffi.cdef[[
+ BOOL        __stdcall GetDeviceGammaRamp(  HDC hdc, LPVOID lpRamp);
+ BOOL        __stdcall SetDeviceGammaRamp(  HDC hdc, LPVOID lpRamp);
  BOOL        __stdcall ColorMatchToTarget(  HDC hdc,  HDC hdcTarget,  DWORD action);
  int         __stdcall EnumICMProfilesA(  HDC hdc,  ICMENUMPROCA proc,  LPARAM param);
  int         __stdcall EnumICMProfilesW(  HDC hdc,  ICMENUMPROCW proc,  LPARAM param);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumICMProfiles  EnumICMProfilesW
 #else
 #define EnumICMProfiles  EnumICMProfilesA
 #endif // !UNICODE
+--]]
 
 
-
-#endif /* WINVER >= 0x0400 */
-
-#if (WINVER >= 0x0500)
+ffi.cdef[[
  BOOL        __stdcall ColorCorrectPalette(  HDC hdc,  HPALETTE hPal,  DWORD deFirst,  DWORD num);
-#endif
---]=]
+]]
 
 
 --if not NOMETAFILE
