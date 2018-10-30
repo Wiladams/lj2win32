@@ -11872,80 +11872,77 @@ static const int SECTION_ALL_ACCESS =(STANDARD_RIGHTS_REQUIRED|SECTION_QUERY|\
                             SECTION_EXTEND_SIZE);
 ]]
 
---[==[
+ffi.cdef[[
 //
 // Session Specific Access Rights.
 //
 
-#define SESSION_QUERY_ACCESS  0x0001
-#define SESSION_MODIFY_ACCESS 0x0002
+static const int SESSION_QUERY_ACCESS  = 0x0001;
+static const int SESSION_MODIFY_ACCESS = 0x0002;
 
-#define SESSION_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED |  \
-                            SESSION_QUERY_ACCESS |             \
-                            SESSION_MODIFY_ACCESS)
+static const int SESSION_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SESSION_QUERY_ACCESS | SESSION_MODIFY_ACCESS);
 
 //
 // Partition Specific Access Rights.
 //
 
-#define MEMORY_PARTITION_QUERY_ACCESS  0x0001
-#define MEMORY_PARTITION_MODIFY_ACCESS 0x0002
+static const int MEMORY_PARTITION_QUERY_ACCESS  = 0x0001;
+static const int MEMORY_PARTITION_MODIFY_ACCESS = 0x0002;
 
-#define MEMORY_PARTITION_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED |         \
-                                     SYNCHRONIZE |                      \
-                                     MEMORY_PARTITION_QUERY_ACCESS |    \
-                                     MEMORY_PARTITION_MODIFY_ACCESS)
+static const int MEMORY_PARTITION_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED |SYNCHRONIZE | MEMORY_PARTITION_QUERY_ACCESS |MEMORY_PARTITION_MODIFY_ACCESS);
 
 // end_access
-#define PAGE_NOACCESS           0x01    
-#define PAGE_READONLY           0x02    
-#define PAGE_READWRITE          0x04    
-#define PAGE_WRITECOPY          0x08    
-#define PAGE_EXECUTE            0x10    
-#define PAGE_EXECUTE_READ       0x20    
-#define PAGE_EXECUTE_READWRITE  0x40    
-#define PAGE_EXECUTE_WRITECOPY  0x80    
-#define PAGE_GUARD             0x100    
-#define PAGE_NOCACHE           0x200    
-#define PAGE_WRITECOMBINE      0x400    
-#define PAGE_REVERT_TO_FILE_MAP     0x80000000  
-#define PAGE_ENCLAVE_THREAD_CONTROL 0x80000000  
-#define PAGE_TARGETS_NO_UPDATE      0x40000000  
-#define PAGE_TARGETS_INVALID        0x40000000  
-#define PAGE_ENCLAVE_UNVALIDATED    0x20000000  
-#define MEM_COMMIT                  0x00001000  
-#define MEM_RESERVE                 0x00002000  
-#define MEM_DECOMMIT                0x00004000  
-#define MEM_RELEASE                 0x00008000  
-#define MEM_FREE                    0x00010000  
-#define MEM_PRIVATE                 0x00020000  
-#define MEM_MAPPED                  0x00040000  
-#define MEM_RESET                   0x00080000  
-#define MEM_TOP_DOWN                0x00100000  
-#define MEM_WRITE_WATCH             0x00200000  
-#define MEM_PHYSICAL                0x00400000  
-#define MEM_ROTATE                  0x00800000  
-#define MEM_DIFFERENT_IMAGE_BASE_OK 0x00800000  
-#define MEM_RESET_UNDO              0x01000000  
-#define MEM_LARGE_PAGES             0x20000000  
-#define MEM_4MB_PAGES               0x80000000  
-#define MEM_64K_PAGES               (MEM_LARGE_PAGES | MEM_PHYSICAL)  
-#define SEC_64K_PAGES               0x00080000  
-#define SEC_FILE                    0x00800000  
-#define SEC_IMAGE                   0x01000000  
-#define SEC_PROTECTED_IMAGE         0x02000000  
-#define SEC_RESERVE                 0x04000000  
-#define SEC_COMMIT                  0x08000000  
-#define SEC_NOCACHE                 0x10000000  
-#define SEC_WRITECOMBINE            0x40000000  
-#define SEC_LARGE_PAGES             0x80000000  
-#define SEC_IMAGE_NO_EXECUTE (SEC_IMAGE | SEC_NOCACHE)  
-#define MEM_IMAGE  SEC_IMAGE            
-#define WRITE_WATCH_FLAG_RESET  0x01    
-#define MEM_UNMAP_WITH_TRANSIENT_BOOST  0x01    
+static const int PAGE_NOACCESS           = 0x01;
+static const int PAGE_READONLY           = 0x02;   
+static const int PAGE_READWRITE          = 0x04;   
+static const int PAGE_WRITECOPY          = 0x08;   
+static const int PAGE_EXECUTE            = 0x10;   
+static const int PAGE_EXECUTE_READ       = 0x20;   
+static const int PAGE_EXECUTE_READWRITE  = 0x40;   
+static const int PAGE_EXECUTE_WRITECOPY  = 0x80;   
+static const int PAGE_GUARD             = 0x100;   
+static const int PAGE_NOCACHE           = 0x200;   
+static const int PAGE_WRITECOMBINE      = 0x400;   
+static const int PAGE_REVERT_TO_FILE_MAP     = 0x80000000;
+static const int PAGE_ENCLAVE_THREAD_CONTROL = 0x80000000; 
+static const int PAGE_TARGETS_NO_UPDATE      = 0x40000000; 
+static const int PAGE_TARGETS_INVALID        = 0x40000000; 
+static const int PAGE_ENCLAVE_UNVALIDATED    = 0x20000000; 
+static const int MEM_COMMIT                  = 0x00001000; 
+static const int MEM_RESERVE                 = 0x00002000; 
+static const int MEM_DECOMMIT                = 0x00004000; 
+static const int MEM_RELEASE                 = 0x00008000; 
+static const int MEM_FREE                    = 0x00010000; 
+static const int MEM_PRIVATE                 = 0x00020000; 
+static const int MEM_MAPPED                  = 0x00040000; 
+static const int MEM_RESET                   = 0x00080000; 
+static const int MEM_TOP_DOWN                = 0x00100000; 
+static const int MEM_WRITE_WATCH             = 0x00200000; 
+static const int MEM_PHYSICAL                = 0x00400000; 
+static const int MEM_ROTATE                  = 0x00800000; 
+static const int MEM_DIFFERENT_IMAGE_BASE_OK = 0x00800000; 
+static const int MEM_RESET_UNDO              = 0x01000000; 
+static const int MEM_LARGE_PAGES             = 0x20000000; 
+static const int MEM_4MB_PAGES               = 0x80000000; 
+static const int MEM_64K_PAGES               = (MEM_LARGE_PAGES | MEM_PHYSICAL);
+static const int SEC_64K_PAGES               = 0x00080000;
+static const int SEC_FILE                    = 0x00800000; 
+static const int SEC_IMAGE                   = 0x01000000; 
+static const int SEC_PROTECTED_IMAGE         = 0x02000000; 
+static const int SEC_RESERVE                 = 0x04000000; 
+static const int SEC_COMMIT                  = 0x08000000; 
+static const int SEC_NOCACHE                 = 0x10000000; 
+static const int SEC_WRITECOMBINE            = 0x40000000; 
+static const int SEC_LARGE_PAGES             = 0x80000000; 
+static const int SEC_IMAGE_NO_EXECUTE        = (SEC_IMAGE | SEC_NOCACHE);
+static const int MEM_IMAGE                   = SEC_IMAGE;
+static const int WRITE_WATCH_FLAG_RESET  = 0x01;
+static const int MEM_UNMAP_WITH_TRANSIENT_BOOST  = 0x01;
 
-#define ENCLAVE_TYPE_SGX            0x00000001
+static const int ENCLAVE_TYPE_SGX            = 0x00000001;
+]]
 
+--[==[
 typedef struct _ENCLAVE_CREATE_INFO_SGX {
     BYTE  Secs[4096];
 } ENCLAVE_CREATE_INFO_SGX, *PENCLAVE_CREATE_INFO_SGX;

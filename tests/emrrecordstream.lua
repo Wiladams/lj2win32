@@ -237,7 +237,7 @@ function EMRRecordStream.readEMRGDICOMMENT(self, res)
     return res;
 end
 
---[=[
+--[[
 typedef struct tagEMREOF
 {
     EMR     emr;
@@ -247,14 +247,30 @@ typedef struct tagEMREOF
                                 // of the record.  The palette entries,
                                 // if exist, precede this field.
 } EMREOF, *PEMREOF;
+--]]
 
-typedef struct tagEMRLINETO
-{
-    EMR     emr;
-    POINTL  ptl;
-} EMRLINETO,   *PEMRLINETO,
-  EMRMOVETOEX, *PEMRMOVETOEX;
+function EMRRecordStream.readEMREOF(self, res)
+    res = res or {}
+    res.emr = self:readEMR();
+    res.nPalEntries = self:readDWORD();
+    res.offPalEntries = self:readDWORD();
+    -- BUGBUG, need to account for palette entries
+    res.nSizeLast = self:readDWORD();
 
+    return res;
+end
+
+function EMRRecordStream.readEMRLINETO(self, res)
+    res = res or {}
+    res.emr = self:readEMR();
+    res.ptl = self:readPOINTL();
+
+    return res
+end
+
+EMRRecordStream.readEMRMOVETOEX = EMRRecordStream.readEMRLINETO;
+
+--[=[
 typedef struct tagEMROFFSETCLIPRGN
 {
     EMR     emr;

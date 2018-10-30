@@ -2,11 +2,14 @@
  memoryapi.h -- ApiSet Contract for api-ms-win-core-memory-l1-1-0
 --]]
 
+local ffi = require("ffi")
+
 --#include <apiset.h>
 --#include <apisetcconv.h>
 require("win32.minwindef")
 require("win32.minwinbase")
-local ffi = require("ffi")
+
+
 
 local exports = {}
 

@@ -4,9 +4,21 @@ local graphicApp = require("graphicapp")
 
 local GDICommander = require("GDICommander")
 local StopWatch = require("stopwatch")
+local mmap = require("mmap")
+
 
 local commander = GDICommander();
 local swatch = StopWatch();
+
+print(#arg, arg[1])
+
+--[[
+local afile = mmap()
+
+
+local map = afile:getPointer();
+print("FILE")
+print(ffi.string(map, #afile))
 
 function setup()
     swatch:reset();
@@ -26,3 +38,4 @@ function loop()
 end
 
 graphicApp.go({width=320, height=240, title="test_gdicommander"});
+--]]

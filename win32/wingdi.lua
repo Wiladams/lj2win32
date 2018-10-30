@@ -175,7 +175,11 @@ static const int MAXSTRETCHBLTMODE   =         4;
 #define DCB_DISABLE     0x0008
 --]=]
 
+--[[
+    The META_* definitions are for the original Windows Metafile format (1.0)
 
+    The EMR_* definitions are for modern day Enhanced Metafile format
+]]
 ffi.cdef[[
 /* Metafile Functions */
 static const int META_SETBKCOLOR              = 0x0201;
@@ -352,8 +356,9 @@ typedef struct _DRAWPATRECT {
 
 #define GDIPLUS_TS_QUERYVER          4122   /* private escape */
 #define GDIPLUS_TS_RECORD            4123   /* private escape */
+--]=]
 
-
+--[=[
 /*
  * Return Values for MILCORE_TS_QUERYVER
  */

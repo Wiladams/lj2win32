@@ -15,15 +15,17 @@ local ffi = require "ffi"
 local C = ffi.C
 local bit = require "bit"
 
-local memory = require("win32.core.memory_l1_1_1")
+--local winnt = require("win32.winnt")
+local memoryapi = require("win32.memoryapi")
+--local memory = require("win32.core.memory_l1_1_1")
 local file = require("win32.core.file_l1_2_0")
 local errorhandling = require("win32.core.errorhandling_l1_1_1");
 local handle = require("win32.core.handle_l1_1_0")
 
 
-local FILE_BEGIN = 0
-local PAGE_READWRITE = 0x4
-local FILE_MAP_ALL_ACCESS = 0xf001f
+
+--local PAGE_READWRITE = 0x4
+--local FILE_MAP_ALL_ACCESS = 0xf001f
 
 
 local mmap = {}
@@ -45,6 +47,7 @@ function mmap:__new(filename, newsize)
 	
 	-- Set file size if new
 	local exists = errorhandling.GetLastError() == ffi.C.ERROR_ALREADY_EXISTS
+
 	if exists then
 		local fsize = file.GetFileSize(m.filehandle, nil)
 		if fsize == 0 then
@@ -60,13 +63,13 @@ function mmap:__new(filename, newsize)
 	m.existed = exists
 	
 	-- Open mapping
-	m.maphandle = memory.CreateFileMappingW(m.filehandle, nil, PAGE_READWRITE, 0, m.size, nil)
+	m.maphandle = memory.CreateFileMappingW(m.filehandle, nil, ffi.C.PAGE_READWRITE, 0, m.size, nil)
 	if m.maphandle == nil then
 		error("Could not create file map: "..tostring(errorhandling.GetLastError()))
 	end
 	
 	-- Open view
-	m.map = memory.MapViewOfFile(m.maphandle, FILE_MAP_ALL_ACCESS, 0, 0, 0)
+	m.map = memory.MapViewOfFile(m.maphandle, ffi.C.FILE_MAP_ALL_ACCESS, 0, 0, 0)
 	if m.map == nil then
 		error("Could not map: "..tostring(errorhandling.GetLastError()))
 	end

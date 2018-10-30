@@ -275,6 +275,7 @@ typedef ULARGE_INTEGER *PULARGE_INTEGER;
 ]]
 --]=]
 
+--[=[
 ffi.cdef[[
 typedef struct _FILETIME
 {
@@ -286,6 +287,7 @@ typedef struct _FILETIME *PFILETIME;
 
 typedef struct _FILETIME *LPFILETIME;
 ]]
+
 
 ffi.cdef[[
 typedef struct _SYSTEMTIME
@@ -301,6 +303,7 @@ typedef struct _SYSTEMTIME
 } 	SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
 
+ffi.cdef[[
 typedef struct _SECURITY_ATTRIBUTES {
 	DWORD nLength;
 	LPVOID lpSecurityDescriptor;
@@ -319,8 +322,9 @@ typedef PVOID PSID;
 typedef LONG SCODE;
 
 typedef SCODE *PSCODE;
+--]=]
 
-
+ffi.cdef[[
 typedef
 enum tagMEMCTX
     {	MEMCTX_TASK	= 1,

@@ -3,11 +3,11 @@
 
 local ffi = require("ffi");
 
-local WTypes = require("win32.wtypes");
-local WinNT = require("win32.winnt");
-local WinBase = require("win32.winbase");
+--local wtypes = require("win32.wtypes");
+--local winnt = require("win32.winnt");
+local winbase = require("win32.winbase");
 
-
+--[=[
 ffi.cdef[[
 typedef struct _WIN32_FIND_DATAA {
     DWORD dwFileAttributes;
@@ -35,6 +35,8 @@ typedef struct _WIN32_FIND_DATAW {
 } WIN32_FIND_DATAW, *PWIN32_FIND_DATAW, *LPWIN32_FIND_DATAW;
 ]]
 
+
+
 ffi.cdef[[
 typedef enum _FINDEX_INFO_LEVELS {
     FindExInfoStandard,
@@ -52,6 +54,9 @@ typedef enum _FINDEX_SEARCH_OPS {
 static const int FIND_FIRST_EX_CASE_SENSITIVE  = 0x00000001;
 static const int FIND_FIRST_EX_LARGE_FETCH     = 0x00000002;
 ]]
+--]=]
+
+
 ffi.cdef[[
 LONG
 CompareFileTime(
