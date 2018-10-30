@@ -121,7 +121,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
     elseif msg == ffi.C.WM_PAINT then
         local ps = ffi.new("PAINTSTRUCT");
 		local hdc = ffi.C.BeginPaint(hwnd, ps);
-print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
+--print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
 		-- bitblt backing store to client area
 
         if (nil ~= surface) then
@@ -262,6 +262,7 @@ local function main(params)
         --on('gap-ready', setup);
         setup();
     end
+    drawNow();
     yield();
 
     signalAll("gap-ready");
