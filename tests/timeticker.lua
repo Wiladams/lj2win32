@@ -1,9 +1,6 @@
 local ffi = require("ffi")
 
-ffi.cdef[[
-int QueryPerformanceFrequency(int64_t *lpFrequency);
-int QueryPerformanceCounter(int64_t *lpPerformanceCount);
-]]
+require("win32.profileapi")
 
 local function GetPerformanceFrequency(anum)
 	anum = anum or ffi.new("int64_t[1]");

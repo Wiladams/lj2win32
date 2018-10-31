@@ -19,6 +19,8 @@ local function getLayoutList()
     -- Now call again with the proper sized array
     numElems = ffi.C.GetKeyboardLayoutList(numElems, ipList)
     print("Num Elems(2): ", numElems)
+
+    return lpList;
 end
 
 local function getLayoutName()
