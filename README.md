@@ -5,7 +5,7 @@ If you are writing LuaJIT code on the Windows platform, the binding code here
 will make that task easier.  The code was originally borrowed from TINN.  The
 difference is, whereas TINN provides an entire application shell within which
 you run your code, this project just provides raw low level bindings, without
-all the application level stuff.  This makes is possible for you to write simple
+all the application level stuff.  This makes it possible for you to write simple
 applications by just requiring the bits and pieces of this package as your
 needs dictate.
 
@@ -21,16 +21,16 @@ don't like the object models, it's kind of a pain to tease apart.  In this
 project, you primarily get the bindings, with fewer object abstractions.  The
 abstractions are saved for the sample code and experimental area.
 
-The directory 'core' contains the bulk of the bindings.  These bindings follow 
-the lowest level library structure within Windows.  It's different from the more
-traditional 'Kernel32', 'GDI', 'User32', etc.  It breaks down into how windows 
-actually layers the libraries to minimize interdependencies.  If you know what 
-specific functions you're looking for, then you can 'require' at this level:
+The primary bindings found in the win32 directory cover the standard APIs as
+are found in gdi32, user32, opengl32, kernel32, and some others that are of 
+common usage.
 
-```lua 
-require ("win32.core.console_l1_1_0")
-require ("win32.core.datetime_l1_1_1")
-```
+The directory 'experimental/apiset' contains the much more slenderized 'apiset' 
+representation of the APIs.  These are new style as of Windows 8, where much
+smaller libraries can be pulled in without dragging in as many dependencies.
+
+These might be the subject of a future project which is faithful to the apiset
+approach rather than this more standard 'win32' approach.
 
 Design Concepts
 ---------------
@@ -41,6 +41,6 @@ of the library can rely on.  They are meant to enhance the ability to use
 the routines in conjunction with other libraries and routines, as well as 
 make for a faithful rendering of the underlying Win32 APIs.
 
-* Nothing should be placed in the global address space
-* All integer constants that can be, should be accessible through ffi.C
+* Nothing should be placed in the global address space (with a couple of exceptions)
+* All integer constants that can be, should be accessible through ffi.C.*
 * Lowest level ffi binding should be true to native functions

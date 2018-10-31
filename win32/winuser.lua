@@ -1355,39 +1355,30 @@ GetThreadDesktop(
      DWORD dwThreadId);
 ]]
 
---[=[
-#ifndef NOWINDOWSTATION
+ffi.cdef[[
 /*
  * Windowstation-specific access flags
  */
-#define WINSTA_ENUMDESKTOPS         0x0001L
-#define WINSTA_READATTRIBUTES       0x0002L
-#define WINSTA_ACCESSCLIPBOARD      0x0004L
-#define WINSTA_CREATEDESKTOP        0x0008L
-#define WINSTA_WRITEATTRIBUTES      0x0010L
-#define WINSTA_ACCESSGLOBALATOMS    0x0020L
-#define WINSTA_EXITWINDOWS          0x0040L
-#define WINSTA_ENUMERATE            0x0100L
-#define WINSTA_READSCREEN           0x0200L
+static const int WINSTA_ENUMDESKTOPS        = 0x0001L;
+static const int WINSTA_READATTRIBUTES      = 0x0002L;
+static const int WINSTA_ACCESSCLIPBOARD     = 0x0004L;
+static const int WINSTA_CREATEDESKTOP       = 0x0008L;
+static const int WINSTA_WRITEATTRIBUTES     = 0x0010L;
+static const int WINSTA_ACCESSGLOBALATOMS   = 0x0020L;
+static const int WINSTA_EXITWINDOWS         = 0x0040L;
+static const int WINSTA_ENUMERATE           = 0x0100L;
+static const int WINSTA_READSCREEN          = 0x0200L;
 
-#define WINSTA_ALL_ACCESS           (WINSTA_ENUMDESKTOPS  | WINSTA_READATTRIBUTES  | WINSTA_ACCESSCLIPBOARD | \
+static const int WINSTA_ALL_ACCESS          = (WINSTA_ENUMDESKTOPS  | WINSTA_READATTRIBUTES  | WINSTA_ACCESSCLIPBOARD | \
                                      WINSTA_CREATEDESKTOP | WINSTA_WRITEATTRIBUTES | WINSTA_ACCESSGLOBALATOMS | \
-                                     WINSTA_EXITWINDOWS   | WINSTA_ENUMERATE       | WINSTA_READSCREEN)
-
-/*
- * Windowstation creation flags.
- */
-#define CWF_CREATE_ONLY          0x00000001
-
-/*
- * Windowstation-specific attribute flags
- */
-#define WSF_VISIBLE                 0x0001L
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+                                     WINSTA_EXITWINDOWS   | WINSTA_ENUMERATE       | WINSTA_READSCREEN);
 
 
+static const int CWF_CREATE_ONLY        =  0x00000001;
+static const int WSF_VISIBLE            =      0x0001;
+]]
+
+ffi.cdef[[
 HWINSTA
 __stdcall
 CreateWindowStationA(
@@ -1403,13 +1394,17 @@ CreateWindowStationW(
      DWORD dwFlags,
      ACCESS_MASK dwDesiredAccess,
      LPSECURITY_ATTRIBUTES lpsa);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateWindowStation  CreateWindowStationW
 #else
 #define CreateWindowStation  CreateWindowStationA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HWINSTA
 __stdcall
 OpenWindowStationA(
@@ -1423,13 +1418,17 @@ OpenWindowStationW(
      LPCWSTR lpszWinSta,
      BOOL fInherit,
      ACCESS_MASK dwDesiredAccess);
+]]
+
+--[[
 #ifdef UNICODE
 #define OpenWindowStation  OpenWindowStationW
 #else
 #define OpenWindowStation  OpenWindowStationA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumWindowStationsA(
@@ -1441,13 +1440,17 @@ __stdcall
 EnumWindowStationsW(
      WINSTAENUMPROCW lpEnumFunc,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumWindowStations  EnumWindowStationsW
 #else
 #define EnumWindowStations  EnumWindowStationsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 CloseWindowStation(
@@ -1463,9 +1466,7 @@ SetProcessWindowStation(
 HWINSTA
 __stdcall
 GetProcessWindowStation(
-    VOID);
-
-
+    void);
 
 BOOL
 __stdcall
@@ -1480,20 +1481,18 @@ __stdcall
 GetUserObjectSecurity(
      HANDLE hObj,
      PSECURITY_INFORMATION pSIRequested,
-    _Out_writes_bytes_opt_(nLength) PSECURITY_DESCRIPTOR pSID,
+     PSECURITY_DESCRIPTOR pSID,
      DWORD nLength,
      LPDWORD lpnLengthNeeded);
+]]
 
-
-
+--[=[
 #define UOI_FLAGS       1
 #define UOI_NAME        2
 #define UOI_TYPE        3
 #define UOI_USER_SID    4
-#if(WINVER >= 0x0600)
 #define UOI_HEAPSIZE    5
 #define UOI_IO          6
-#endif /* WINVER >= 0x0600 */
 #define UOI_TIMERPROC_EXCEPTION_SUPPRESSION       7
 
 

@@ -1,6 +1,5 @@
 package.path = "../?.lua;"..package.path;
 
-local desktop_ffi = require("win32.desktop")
 local Desktop = require("desktopclass")
 
 -- Get the names of the current desktops

@@ -1,9 +1,9 @@
 
 local ffi = require("ffi");
 
-local errorhandling = require("win32.core.errorhandling_l1_1_1");
-local desktop_ffi = require("win32.desktop");
-local core_process = require("win32.core.processthreads_l1_1_1");
+local errorhandling = require("experimental.apiset.errorhandling_l1_1_1");
+local core_process = require("experimental.apiset.processthreads_l1_1_1");
+local winuser = require("win32.winuser")
 
 ffi.cdef[[
 typedef struct {
@@ -49,7 +49,7 @@ function Desktop.create(self, name, dwFlags, dwAccess, lpsa)
 	dwAccess = dwAccess or 0
 	lpsa = lpsa or nil;
 
-	local rawhandle = desktop_ffi.CreateDesktopA(name, nil, nil, dwFlags, dwAccess, lpsa);
+	local rawhandle = ffi.C.CreateDesktopA(name, nil, nil, dwFlags, dwAccess, lpsa);
 	if rawhandle == nil then
 		return false, errorhandling.GetLastError();
 	end
@@ -62,7 +62,7 @@ function Desktop.open(self, name, dwFlags, fInherit, dwAccess)
 	fInherit = fInherit or false;
 	dwAccess = dwAccess or 0;
 
-	local rawhandle = desktop_ffi.OpenDesktop(name, dwFlags, fInherit, dwAccess);
+	local rawhandle = ffi.C.OpenDesktopA(name, dwFlags, fInherit, dwAccess);
 
 	if rawhandle == nil then
 		return false, errorhandling.GetLastError();
@@ -74,7 +74,7 @@ end
 function Desktop.openThreadDesktop(self, threadid)
 	threadid = threadid or core_process.GetCurrentThreadId();
 
-	local rawhandle = desktop_ffi.GetThreadDesktop(threadid);
+	local rawhandle = ffi.C.GetThreadDesktop(threadid);
 
 	if rawhandle == nil then
 		return false, errorhandling.GetLastError();
@@ -84,7 +84,7 @@ function Desktop.openThreadDesktop(self, threadid)
 end
 
 function Desktop.desktopNames(self, winsta)
-	winsta = winsta or desktop_ffi.GetProcessWindowStation()
+	winsta = winsta or ffi.C.GetProcessWindowStation()
 
 	local desktops = {}
 
@@ -99,7 +99,7 @@ function Desktop.desktopNames(self, winsta)
 	
 	local cb = ffi.cast("DESKTOPENUMPROCA", enumdesktop);
 
-	local result = desktop_ffi.EnumDesktopsA(winsta, cb, 0)
+	local result = ffi.C.EnumDesktopsA(winsta, cb, 0)
 	cb:free();
 	
 	return desktops
@@ -114,7 +114,7 @@ function Desktop.getNativeHandle(self)
 end
 
 function Desktop.makeActive(self)
-	local status = desktop_ffi.SwitchDesktop(self:getNativeHandle());
+	local status = ffi.C.SwitchDesktop(self:getNativeHandle());
 	if status == 0 then
 		return false, errorhandling.GetLastError();
 	end
@@ -134,7 +134,7 @@ function Desktop.getWindowHandles(self)
 	end
 
 	local cb = ffi.cast("WNDENUMPROC", enumwindows);
-	local status = desktop_ffi.EnumDesktopWindows(self:getNativeHandle(), cb, 0);
+	local status = ffi.C.EnumDesktopWindows(self:getNativeHandle(), cb, 0);
 	
 	-- once done with the callback, free the resources
 	cb:free();

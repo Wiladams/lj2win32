@@ -8102,8 +8102,11 @@ typedef struct _WOW64_DESCRIPTOR_TABLE_ENTRY {
 #define IS_UNWINDING(Flag) ((Flag & EXCEPTION_UNWIND) != 0)
 #define IS_DISPATCHING(Flag) ((Flag & EXCEPTION_UNWIND) == 0)
 #define IS_TARGET_UNWIND(Flag) (Flag & EXCEPTION_TARGET_UNWIND)
+--]==]
 
-#define EXCEPTION_MAXIMUM_PARAMETERS 15 // maximum number of exception parameters
+ffi.cdef[[
+static const int EXCEPTION_MAXIMUM_PARAMETERS = 15; // maximum number of exception parameters
+
 
 //
 // Exception record definition.
@@ -8147,11 +8150,10 @@ typedef struct _EXCEPTION_POINTERS {
     PEXCEPTION_RECORD ExceptionRecord;
     PCONTEXT ContextRecord;
 } EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
-
-// end_ntoshvp
-// end_wdm
+]]
 
 
+--[==[
 #if defined(_IA64_)
 
 NTSYSAPI
@@ -8166,11 +8168,16 @@ RtlUnwind2 (
     );
 
 #endif
+--]==]
 
+ffi.cdef[[
 typedef PVOID PACCESS_TOKEN;            
 typedef PVOID PSECURITY_DESCRIPTOR;     
 typedef PVOID PSID;     
 typedef PVOID PCLAIMS_BLOB;     
+]]
+
+--[==[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                             ACCESS MASK                            //
@@ -8208,25 +8215,14 @@ typedef PVOID PCLAIMS_BLOB;
 //
 //  So we'll declare ACCESS_MASK as DWORD
 //
-
-// begin_wdm
-// begin_ntoshvp
-typedef DWORD ACCESS_MASK;
-typedef ACCESS_MASK *PACCESS_MASK;
-
-// end_ntoshvp
 --]==]
 
 ffi.cdef[[
+typedef DWORD ACCESS_MASK;
+typedef ACCESS_MASK *PACCESS_MASK;
+]]
 
-////////////////////////////////////////////////////////////////////////
-//                                                                    //
-//                             ACCESS TYPES                           //
-//                                                                    //
-////////////////////////////////////////////////////////////////////////
-
-
-// begin_wdm
+ffi.cdef[[
 //
 //  The following are masks for the predefined standard access types
 //
@@ -10492,9 +10488,13 @@ typedef struct _SE_IMPERSONATION_STATE {
 #define SANDBOX_INERT           0x2 
 #define LUA_TOKEN               0x4 
 #define WRITE_RESTRICTED        0x8 
+--]==]
 
+ffi.cdef[[
 typedef DWORD SECURITY_INFORMATION, *PSECURITY_INFORMATION;
+]]
 
+--[==[
 #define OWNER_SECURITY_INFORMATION       (0x00000001L)
 #define GROUP_SECURITY_INFORMATION       (0x00000002L)
 #define DACL_SECURITY_INFORMATION        (0x00000004L)

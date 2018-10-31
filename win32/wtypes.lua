@@ -275,7 +275,6 @@ typedef ULARGE_INTEGER *PULARGE_INTEGER;
 ]]
 --]=]
 
---[=[
 ffi.cdef[[
 typedef struct _FILETIME
 {
@@ -301,7 +300,7 @@ typedef struct _SYSTEMTIME
     WORD wSecond;
     WORD wMilliseconds;
 } 	SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
-
+]]
 
 ffi.cdef[[
 typedef struct _SECURITY_ATTRIBUTES {
@@ -322,7 +321,7 @@ typedef PVOID PSID;
 typedef LONG SCODE;
 
 typedef SCODE *PSCODE;
---]=]
+]]
 
 ffi.cdef[[
 typedef
