@@ -19,7 +19,7 @@ local ffi = require("ffi");
 local bit = require("bit");
 local bor = bit.bor;
 
-local errorhandling = require("experimental.apiset.errorhandling_l1_1_1");
+local errorhandling = require("win32.errhandlingapi");
 local libraryloader = require("experimental.apiset.libraryloader_l1_1_1");
 
 local winuser = require("win32.winuser");

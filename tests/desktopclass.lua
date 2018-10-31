@@ -1,7 +1,7 @@
 
 local ffi = require("ffi");
 
-local errorhandling = require("experimental.apiset.errorhandling_l1_1_1");
+local errorhandling = require("win32.errhandlingapi");
 local core_process = require("experimental.apiset.processthreads_l1_1_1");
 local winuser = require("win32.winuser")
 
@@ -51,7 +51,7 @@ function Desktop.create(self, name, dwFlags, dwAccess, lpsa)
 
 	local rawhandle = ffi.C.CreateDesktopA(name, nil, nil, dwFlags, dwAccess, lpsa);
 	if rawhandle == nil then
-		return false, errorhandling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return self:init(rawhandle, true);
@@ -65,7 +65,7 @@ function Desktop.open(self, name, dwFlags, fInherit, dwAccess)
 	local rawhandle = ffi.C.OpenDesktopA(name, dwFlags, fInherit, dwAccess);
 
 	if rawhandle == nil then
-		return false, errorhandling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return self:init(rawhandle, true);
@@ -77,7 +77,7 @@ function Desktop.openThreadDesktop(self, threadid)
 	local rawhandle = ffi.C.GetThreadDesktop(threadid);
 
 	if rawhandle == nil then
-		return false, errorhandling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return self:init(rawhandle, false);
@@ -116,7 +116,7 @@ end
 function Desktop.makeActive(self)
 	local status = ffi.C.SwitchDesktop(self:getNativeHandle());
 	if status == 0 then
-		return false, errorhandling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return true;

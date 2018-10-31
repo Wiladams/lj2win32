@@ -17,9 +17,8 @@ local bit = require "bit"
 
 --local winnt = require("win32.winnt")
 local memoryapi = require("win32.memoryapi")
---local memory = require("win32.core.memory_l1_1_1")
 local file = require("win32.core.file_l1_2_0")
-local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local errorhandling = require("win32.errrhandlingapi");
 local handle = require("win32.core.handle_l1_1_0")
 
 

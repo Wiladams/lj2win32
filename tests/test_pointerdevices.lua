@@ -3,10 +3,8 @@ package.path = "../?.lua;"..package.path;
 local ffi = require("ffi")
 
 local winuser = require("win32.winuser")
-local core_string = require("win32.core.string_l1_1_0");
-
---local errorhandling = require("win32.core.errorhandling_l1_1_1");
-
+local errorhandling = require("win32.errhandlingapi");
+local core_string = require("experimental.apiset.string_l1_1_0");
 
 local POINTER_DEVICE_TYPE = {
     [1] = "POINTER_DEVICE_TYPE_INTEGRATED_PEN",
