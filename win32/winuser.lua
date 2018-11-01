@@ -3675,13 +3675,13 @@ PostThreadMessageW(
 #endif // !UNICODE
 --]]
 
---[[
+ffi.cdef[[
 /*
  * Special HWND value for use with PostMessage() and SendMessage()
  */
-#define HWND_BROADCAST  ((HWND)0xffff)
-#define HWND_MESSAGE     ((HWND)-3)
---]]
+static const int HWND_BROADCAST  = ((HWND)0xffff);
+static const int HWND_MESSAGE    = ((HWND)-3);
+]]
 
 ffi.cdef[[
 BOOL
