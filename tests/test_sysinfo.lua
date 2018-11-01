@@ -2,7 +2,7 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
-local sysinfo = require("win32.core.sysinfo_l1_2_0")
+local sysinfo = require("experimental.apiset.sysinfo_l1_2_0")
 
 local function getComputerName()
     local nameSize = 255;

@@ -2,7 +2,7 @@
 local ffi = require("ffi")
 
 local core_io = require("win32.core.io_l1_1_1");
-local errorhandling = require("win32.core.errorhandling_l1_1_1");
+local errorhandling = require("win32.core.errhandlingapi");
 local WinBase = require("win32.winbase");
 
 ffi.cdef[[
