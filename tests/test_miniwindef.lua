@@ -6,11 +6,11 @@ package.path = "../?.lua;"..package.path;
 local ffi = require("ffi")
 
 local function test_miniwindef()
-require ("win32.internal.minwindef")
+require ("win32.minwindef")
 end
 
 local function test_windef()
-    require("win32.internal.windef")
+    require("win32.windef")
 end
 
 test_miniwindef();
