@@ -7,14 +7,24 @@ local msgpump = require("msgpump")
 local wmmsgs = require("wmmsgs")
 local scheduler = require("scheduler")
 
---[[
-UINT
-__stdcall
-GetRegisteredRawInputDevices(
-    PRAWINPUTDEVICE pRawInputDevices,
-     PUINT puiNumDevices,
-     UINT cbSize);
---]]
+
+
+
+local function RegisterDevices(hwnd)
+    local pRawInputDevices = ffi.new("RAWINPUTDEVICE[1]")
+    local uiNumDevices = 1;
+    local cbSize = ffi.sizeof("RAWINPUTDEVICE")
+
+    -- mouse
+    pRawInputDevices[0].usUsagePage = 1;
+    pRawInputDevices[0].usUsage = 0x02;
+    pRawInputDevices[0].dwFlags = ffi.C.RIDEV_INPUTSINK;    -- must do this or no input
+    pRawInputDevices[0].hwndTarget = hwnd;                  -- must associate with window for input
+
+    local res = ffi.C.RegisterRawInputDevices(pRawInputDevices, uiNumDevices,cbSize);
+
+    print("RegisterDevices: ", res)
+end
 
 local function GetInputDevices()
     local cbSize = ffi.sizeof("RAWINPUTDEVICE");
@@ -25,21 +35,10 @@ local function GetInputDevices()
     print("Num Devices: ", numDevices)
 end
 
-local function RegisterDevices()
-    local pRawInputDevices = ffi.new("RAWINPUTDEVICE[1]")
-    local uiNumDevices = 1;
-    local cbSize = ffi.sizeof("RAWINPUTDEVICE")
-
-    pRawInputDevices[0].usUsagePage = 1;
-    pRawInputDevices[0].usUsage = 0x02;
-    local res = ffi.C.RegisterRawInputDevices(pRawInputDevices, uiNumDevices,cbSize);
-
-    print("RegisterDevices: ", res)
-end
 
 
 function msgproc(hwnd, msg, wparam, lparam)
-    print(string.format("msgproc: msg: 0x%x, %s", msg, wmmsgs[msg]), wparam, lparam)
+    print(string.format("msgproc: msg: 0x%x, %s", msg, wmmsgs[msg]))
 
     local res = 1;
 
@@ -48,41 +47,51 @@ function msgproc(hwnd, msg, wparam, lparam)
         ffi.C.PostQuitMessage(0);
         signalAllImmediate('gap-quitting');
         return 0;
-    elseif msg == ffi.C.WM_PAINT then
-        local ps = ffi.new("PAINTSTRUCT");
-		local hdc = ffi.C.BeginPaint(hwnd, ps);
---print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
-		-- bitblt backing store to client area
-
-        if (nil ~= surface) then
-			ret = ffi.C.BitBlt(hdc,
-				ps.rcPaint.left, ps.rcPaint.top,
-				ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top,
-				surface.DC.Handle,
-				ps.rcPaint.left, ps.rcPaint.top,
-                ffi.C.SRCCOPY);
-        else
-            --print("NO SURFACE YET")
-        end
-
-		ffi.C.EndPaint(hwnd, ps);
-    elseif msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
-        res = MouseActivity(hwnd, msg, wparam, lparam)
-    elseif msg >= ffi.C.WM_KEYFIRST and msg <= ffi.C.WM_KEYLAST then
-        res = KeyboardActivity(hwnd, msg, wparam, lparam)  
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
 
 	return res
 end
-jit.off(WindowProc)
+jit.off(msgproc)
 
+local function msgLoop(wndproc)
+    -- create an instance of a msgpump
+    local pump = msgpump(wndproc)
+
+    --  create some a loop to process window messages
+    --print("msgLoop - BEGIN")
+    local msg = ffi.new("MSG")
+    local res = 0;
+
+    while (true) do
+        --print("LOOP")
+        -- we use peekmessage, so we don't stall on a GetMessage
+        while (ffi.C.PeekMessageA(msg, nil, 0, 0, ffi.C.PM_REMOVE) ~= 0) do
+            --print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg.message])            
+            res = ffi.C.TranslateMessage(msg)
+            res = ffi.C.DispatchMessageA(msg)
+        end
+        
+        if msg.message == ffi.C.WM_QUIT then
+            print("msgLoop - QUIT")
+            --continueRunning = false;
+        end
+
+        yield();
+    end
+
+    print("msgLoop - END")
+end
+
+local pumper = msgpump(msgproc)
 
 local function main()
-    RegisterDevices();
+    spawn(msgLoop, msgproc)
+    yield()
+
+    RegisterDevices(pumper.hwnd);
     GetInputDevices();
-    spawn(msgpump, msgproc)
 end
 
 run(main)
