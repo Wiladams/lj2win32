@@ -30,7 +30,7 @@ typedef struct _HIDD_ATTRIBUTES {
     //
     // Additional fields will be added to the end of this structure.
     //
-} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES;
+} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES
 ]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
 
 ffi.cdef[[

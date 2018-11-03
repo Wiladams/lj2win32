@@ -33,8 +33,7 @@ typedef struct _USAGE_AND_PAGE
 {
     USAGE Usage;
     USAGE UsagePage;
-} USAGE_AND_PAGE, *PUSAGE_AND_PAGE;
-__attribute__((__packed__));]])
+} USAGE_AND_PAGE, *PUSAGE_AND_PAGE]] ..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
 --..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
 
 ffi.cdef([[
@@ -405,7 +404,7 @@ HidP_SetUsageValueArray (
     PCHAR UsageValue,
     USHORT UsageValueByteLength,
     PHIDP_PREPARSED_DATA PreparsedData,
-    (ReportLength) PCHAR Report,
+    PCHAR Report,
     ULONG ReportLength
     );
 
@@ -563,14 +562,11 @@ HidP_TranslateUsagesToI8042ScanCodes (
 #define HIDP_STATUS_BUTTON_NOT_PRESSED       (HIDP_ERROR_CODES(0xC,0xF))
 #define HIDP_STATUS_REPORT_DOES_NOT_EXIST    (HIDP_ERROR_CODES(0xC,0x10))
 #define HIDP_STATUS_NOT_IMPLEMENTED          (HIDP_ERROR_CODES(0xC,0x20))
+
+static const int HIDP_STATUS_I8242_TRANS_UNKNOWN = HIDP_STATUS_I8042_TRANS_UNKNOWN;
+
 --]]
 
-ffi.cdef[[
-//
-// We blundered this status code.
-//
-static const int HIDP_STATUS_I8242_TRANS_UNKNOWN = HIDP_STATUS_I8042_TRANS_UNKNOWN;
-]]
 
 --[[
 #define HidP_IsSameUsageAndPage(u1, u2) ((* (PULONG) &u1) == (* (PULONG) &u2))

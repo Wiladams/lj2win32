@@ -2,7 +2,7 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 require("win32.minwindef")
-
+require("win32.wtypes")
 --[=[
 ffi.cdef[[
 typedef  LONG NTSTATUS;
