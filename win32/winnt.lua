@@ -12649,484 +12649,127 @@ typedef struct _NETWORK_APP_INSTANCE_EA {
 // Object Manager Symbolic Link Specific Access Rights.
 //
 
-#define DUPLICATE_CLOSE_SOURCE      0x00000001  
-#define DUPLICATE_SAME_ACCESS       0x00000002  
+static const int DUPLICATE_CLOSE_SOURCE    =  0x00000001;
+static const int DUPLICATE_SAME_ACCESS     =  0x00000002;
 
-//
-// =========================================
-// Define GUIDs which represent well-known power schemes
-// =========================================
-//
 
-//
-// Maximum Power Savings - indicates that very aggressive power savings measures will be used to help
-//                         stretch battery life.
-//
-// {a1841308-3541-4fab-bc81-f71556f20b4a}
-//
 DEFINE_GUID( GUID_MAX_POWER_SAVINGS, 0xA1841308, 0x3541, 0x4FAB, 0xBC, 0x81, 0xF7, 0x15, 0x56, 0xF2, 0x0B, 0x4A );
 
-//
-// No Power Savings - indicates that almost no power savings measures will be used.
-//
-// {8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c}
-//
 DEFINE_GUID( GUID_MIN_POWER_SAVINGS, 0x8C5E7FDA, 0xE8BF, 0x4A96, 0x9A, 0x85, 0xA6, 0xE2, 0x3A, 0x8C, 0x63, 0x5C );
 
-//
-// Typical Power Savings - indicates that fairly aggressive power savings measures will be used.
-//
-// {381b4222-f694-41f0-9685-ff5bb260df2e}
-//
 DEFINE_GUID( GUID_TYPICAL_POWER_SAVINGS, 0x381B4222, 0xF694, 0x41F0, 0x96, 0x85, 0xFF, 0x5B, 0xB2, 0x60, 0xDF, 0x2E );
 
-//
-// This is a special GUID that represents "no subgroup" of settings.  That is, it indicates
-// that settings that are in the root of the power policy hierarchy as opposed to settings
-// that are buried under a subgroup of settings.  This should be used when querying for
-// power settings that may not fall into a subgroup.
-//
 DEFINE_GUID( NO_SUBGROUP_GUID, 0xFEA3413E, 0x7E05, 0x4911, 0x9A, 0x71, 0x70, 0x03, 0x31, 0xF1, 0xC2, 0x94 );
 
-//
-// This is a special GUID that represents "every power scheme".  That is, it indicates
-// that any write to this power scheme should be reflected to every scheme present.
-// This allows users to write a single setting once and have it apply to all schemes.  They
-// can then apply custom settings to specific power schemes that they care about.
-//
 DEFINE_GUID( ALL_POWERSCHEMES_GUID, 0x68A1E95E, 0x13EA, 0x41E1, 0x80, 0x11, 0x0C, 0x49, 0x6C, 0xA4, 0x90, 0xB0 );
 
-//
-// This is a special GUID that represents a 'personality' that each power scheme will have.
-// In other words, each power scheme will have this key indicating "I'm most like *this* base
-// power scheme."  This individual setting will have one of three settings:
-// GUID_MAX_POWER_SAVINGS
-// GUID_MIN_POWER_SAVINGS
-// GUID_TYPICAL_POWER_SAVINGS
-//
-// This allows several features:
-// 1. Drivers and applications can register for notification of this GUID.  So when this power
-//    scheme is activiated, this GUID's setting will be sent across the system and drivers/applications
-//    can see "GUID_MAX_POWER_SAVINGS" which will tell them in a generic fashion "get real aggressive
-//    about conserving power".
-// 2. UserB may install a driver or application which creates power settings, and UserB may modify
-//    those power settings.  Now UserA logs in.  How does he see those settings?  They simply don't
-//    exist in his private power key.  Well they do exist over in the system power key.  When we
-//    enumerate all the power settings in this system power key and don't find a corresponding entry
-//    in the user's private power key, then we can go look at this "personality" key in the users
-//    power scheme.  We can then go get a default value for the power setting, depending on which
-//    "personality" power scheme is being operated on.  Here's an example:
-//    A. UserB installs an application that creates a power setting Seetting1
-//    B. UserB changes Setting1 to have a value of 50 because that's one of the possible settings
-//       available for setting1.
-//    C. UserB logs out
-//    D. UserA logs in and his active power scheme is some custom scheme that was derived from
-//       the GUID_TYPICAL_POWER_SAVINGS.  But remember that UserA has no setting1 in his
-//       private power key.
-//    E. When activating UserA's selected power scheme, all power settings in the system power key will
-//       be enumerated (including Setting1).
-//    F. The power manager will see that UserA has no Setting1 power setting in his private power scheme.
-//    G. The power manager will query UserA's power scheme for its personality and retrieve
-//       GUID_TYPICAL_POWER_SAVINGS.
-//    H. The power manager then looks in Setting1 in the system power key and looks in its set of default
-//       values for the corresponding value for GUID_TYPICAL_POWER_SAVINGS power schemes.
-//    I. This derived power setting is applied.
 DEFINE_GUID( GUID_POWERSCHEME_PERSONALITY, 0x245D8541, 0x3943, 0x4422, 0xB0, 0x25, 0x13, 0xA7, 0x84, 0xF6, 0x79, 0xB7 );
 
-//
-// Define a special GUID which will be used to define the active power scheme.
-// User will register for this power setting GUID, and when the active power
-// scheme changes, they'll get a callback where the payload is the GUID
-// representing the active powerscheme.
-// ( 31F9F286-5084-42FE-B720-2B0264993763 }
-//
 DEFINE_GUID( GUID_ACTIVE_POWERSCHEME, 0x31F9F286, 0x5084, 0x42FE, 0xB7, 0x20, 0x2B, 0x02, 0x64, 0x99, 0x37, 0x63 );
 
-//
-// =========================================
-// Define GUIDs which represent well-known power settings
-// =========================================
-//
-
-// Idle resiliency settings
-// -------------------------
-//
-// Specifies the subgroup which will contain all of the idle resiliency
-// settings for a single policy.
-//
-// {2E601130-5351-4d9d-8E04-252966BAD054}
 DEFINE_GUID(GUID_IDLE_RESILIENCY_SUBGROUP, 0x2e601130, 0x5351, 0x4d9d, 0x8e, 0x4, 0x25, 0x29, 0x66, 0xba, 0xd0, 0x54);
 
-//
-// Specifies the maximum clock interrupt period (in ms)
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {C42B79AA-AA3A-484b-A98F-2CF32AA90A28}
 DEFINE_GUID(GUID_IDLE_RESILIENCY_PERIOD, 0xc42b79aa, 0xaa3a, 0x484b, 0xa9, 0x8f, 0x2c, 0xf3, 0x2a, 0xa9, 0xa, 0x28);
 
-//
-// Specifies the deep sleep policy setting.
-// This is intended to override the GUID_IDLE_RESILIENCY_PERIOD
-// {d502f7ee-1dc7-4efd-a55d-f04b6f5c0545}
 DEFINE_GUID(GUID_DEEP_SLEEP_ENABLED, 0xd502f7ee, 0x1dc7, 0x4efd, 0xa5, 0x5d, 0xf0, 0x4b, 0x6f, 0x5c, 0x5, 0x45);
 
-//
-// Specifies the platform idle state index associated with idle resiliency
-// period.
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {D23F2FB8-9536-4038-9C94-1CE02E5C2152}
 DEFINE_GUID(GUID_DEEP_SLEEP_PLATFORM_STATE, 0xd23f2fb8, 0x9536, 0x4038, 0x9c, 0x94, 0x1c, 0xe0, 0x2e, 0x5c, 0x21, 0x52);
 
-//
-// Specifies (in milliseconds) how long we wait after the last disk access
-// before we power off the disk in case when IO coalescing is active.
-//
-// {C36F0EB4-2988-4a70-8EEE-0884FC2C2433}
 DEFINE_GUID(GUID_DISK_COALESCING_POWERDOWN_TIMEOUT, 0xc36f0eb4, 0x2988, 0x4a70, 0x8e, 0xee, 0x8, 0x84, 0xfc, 0x2c, 0x24, 0x33);
 
-//
-// Specifies (in seconds) how long we wait after the CS Enter before
-// we deactivate execution required request.
-//
-//   0 : implies execution power requests are disabled and have no effect
-//  -1 : implies execution power requests are never deactivated
-//
-// Note: Execution required power requests are mapped into system required
-//      power requests on non-AoAc machines and this value has no effect.
-//
-// {3166BC41-7E98-4e03-B34E-EC0F5F2B218E}
 DEFINE_GUID(GUID_EXECUTION_REQUIRED_REQUEST_TIMEOUT, 0x3166bc41, 0x7e98, 0x4e03, 0xb3, 0x4e, 0xec, 0xf, 0x5f, 0x2b, 0x21, 0x8e);
 
-
-// Video settings
-// --------------
-//
-// Specifies the subgroup which will contain all of the video
-// settings for a single policy.
-//
 DEFINE_GUID( GUID_VIDEO_SUBGROUP, 0x7516B95F, 0xF776, 0x4464, 0x8C, 0x53, 0x06, 0x16, 0x7F, 0x40, 0xCC, 0x99 );
 
-//
-// Specifies (in seconds) how long we wait after the last user input has been
-// recieved before we power off the video.
-//
 DEFINE_GUID( GUID_VIDEO_POWERDOWN_TIMEOUT, 0x3C0BC021, 0xC8A8, 0x4E07, 0xA9, 0x73, 0x6B, 0x14, 0xCB, 0xCB, 0x2B, 0x7E );
 
-//
-// Specifies whether adaptive display dimming is turned on or off.
-// 82DBCF2D-CD67-40C5-BFDC-9F1A5CCD4663
-//
-// N.B. This setting is DEPRECATED in Windows 8.1
-//
 DEFINE_GUID( GUID_VIDEO_ANNOYANCE_TIMEOUT, 0x82DBCF2D, 0xCD67, 0x40C5, 0xBF, 0xDC, 0x9F, 0x1A, 0x5C, 0xCD, 0x46, 0x63 );
 
-//
-// Specifies how much adaptive dim time out will be increased by.
-// EED904DF-B142-4183-B10B-5A1197A37864
-//
-// N.B. This setting is DEPRECATED in Windows 8.1
-//
 DEFINE_GUID( GUID_VIDEO_ADAPTIVE_PERCENT_INCREASE, 0xEED904DF, 0xB142, 0x4183, 0xB1, 0x0B, 0x5A, 0x11, 0x97, 0xA3, 0x78, 0x64 );
 
-//
-// Specifies (in seconds) how long we wait after the last user input has been
-// recieved before we dim the video.
-//
 DEFINE_GUID( GUID_VIDEO_DIM_TIMEOUT, 0x17aaa29b, 0x8b43, 0x4b94, 0xaa, 0xfe, 0x35, 0xf6, 0x4d, 0xaa, 0xf1, 0xee);
-
-//
-// Specifies if the operating system should use adaptive timers (based on
-// previous behavior) to power down the video,
-//
 DEFINE_GUID( GUID_VIDEO_ADAPTIVE_POWERDOWN, 0x90959D22, 0xD6A1, 0x49B9, 0xAF, 0x93, 0xBC, 0xE8, 0x85, 0xAD, 0x33, 0x5B );
-
-//
-// Specifies a maximum power consumption level.
-//
 DEFINE_GUID(GUID_DISK_MAX_POWER, 0x51dea550, 0xbb38, 0x4bc4, 0x99, 0x1b, 0xea, 0xcf, 0x37, 0xbe, 0x5e, 0xc8);
-
-//
-// Specifies if the monitor is currently being powered or not.
-// 02731015-4510-4526-99E6-E5A17EBD1AEA
-//
 DEFINE_GUID( GUID_MONITOR_POWER_ON, 0x02731015, 0x4510, 0x4526, 0x99, 0xE6, 0xE5, 0xA1, 0x7E, 0xBD, 0x1A, 0xEA );
 
-//
-// Monitor brightness policy when in normal state
-// {aded5e82-b909-4619-9949-f5d71dac0bcb}
 DEFINE_GUID(GUID_DEVICE_POWER_POLICY_VIDEO_BRIGHTNESS, 0xaded5e82L, 0xb909, 0x4619, 0x99, 0x49, 0xf5, 0xd7, 0x1d, 0xac, 0x0b, 0xcb);
 
-//
-//
-// Monitor brightness policy when in dim state
-// {f1fbfde2-a960-4165-9f88-50667911ce96}
 DEFINE_GUID(GUID_DEVICE_POWER_POLICY_VIDEO_DIM_BRIGHTNESS, 0xf1fbfde2, 0xa960, 0x4165, 0x9f, 0x88, 0x50, 0x66, 0x79, 0x11, 0xce, 0x96);
 
-//
-// Current Monitor brightness
-// {8ffee2c6-2d01-46be-adb9-398addc5b4ff}
 DEFINE_GUID(GUID_VIDEO_CURRENT_MONITOR_BRIGHTNESS, 0x8ffee2c6, 0x2d01, 0x46be, 0xad, 0xb9, 0x39, 0x8a, 0xdd, 0xc5, 0xb4, 0xff);
 
-
-//
-// Specifies if the operating system should use ambient light sensor to change
-// disply brightness adatively.
-// {FBD9AA66-9553-4097-BA44-ED6E9D65EAB8}
 DEFINE_GUID(GUID_VIDEO_ADAPTIVE_DISPLAY_BRIGHTNESS, 0xFBD9AA66, 0x9553, 0x4097, 0xBA, 0x44, 0xED, 0x6E, 0x9D, 0x65, 0xEA, 0xB8);
 
-//
-// Specifies a change in the current monitor's display state.
-// 6fe69556-704a-47a0-8f24-c28d936fda47
-//
 DEFINE_GUID(GUID_CONSOLE_DISPLAY_STATE, 0x6fe69556, 0x704a, 0x47a0, 0x8f, 0x24, 0xc2, 0x8d, 0x93, 0x6f, 0xda, 0x47);
 
-//
-// Defines a guid for enabling/disabling the ability to create display required
-// power requests.
-//
-// {A9CEB8DA-CD46-44FB-A98B-02AF69DE4623}
-//
 DEFINE_GUID( GUID_ALLOW_DISPLAY_REQUIRED, 0xA9CEB8DA, 0xCD46, 0x44FB, 0xA9, 0x8B, 0x02, 0xAF, 0x69, 0xDE, 0x46, 0x23 );
 
-//
-// Specifies the video power down timeout (in seconds) after the interactive
-// console is locked (and sensors indicate UserNotPresent). Value 0
-// effectively disables this feature.
-//
-// {8EC4B3A5-6868-48c2-BE75-4F3044BE88A7}
 DEFINE_GUID(GUID_VIDEO_CONSOLE_LOCK_TIMEOUT, 0x8ec4b3a5, 0x6868, 0x48c2, 0xbe, 0x75, 0x4f, 0x30, 0x44, 0xbe, 0x88, 0xa7);
 
-
-// Adaptive power behavior settings
-// --------------------------------
-//
-// {8619B916-E004-4dd8-9B66-DAE86F806698}
 DEFINE_GUID(GUID_ADAPTIVE_POWER_BEHAVIOR_SUBGROUP, 0x8619b916, 0xe004, 0x4dd8, 0x9b, 0x66, 0xda, 0xe8, 0x6f, 0x80, 0x66, 0x98);
 
-//
-// Specifies the input timeout (in seconds) to be used to indicate UserUnkown.
-// Value 0 effectively disables this feature.
-//
-// {5ADBBFBC-074E-4da1-BA38-DB8B36B2C8F3}
 DEFINE_GUID(GUID_NON_ADAPTIVE_INPUT_TIMEOUT, 0x5adbbfbc, 0x74e, 0x4da1, 0xba, 0x38, 0xdb, 0x8b, 0x36, 0xb2, 0xc8, 0xf3);
 
-// Harddisk settings
-// -----------------
-//
-// Specifies the subgroup which will contain all of the harddisk
-// settings for a single policy.
-//
 DEFINE_GUID( GUID_DISK_SUBGROUP, 0x0012EE47, 0x9041, 0x4B5D, 0x9B, 0x77, 0x53, 0x5F, 0xBA, 0x8B, 0x14, 0x42 );
 
-//
-// Specifies (in seconds) how long we wait after the last disk access
-// before we power off the disk.
-//
 DEFINE_GUID( GUID_DISK_POWERDOWN_TIMEOUT, 0x6738E2C4, 0xE8A5, 0x4A42, 0xB1, 0x6A, 0xE0, 0x40, 0xE7, 0x69, 0x75, 0x6E );
 
-//
-// Specifies (in milliseconds) how long we wait after the last disk access
-// before we power off the disk taking into account if IO coalescing is active.
-//
-// {58E39BA8-B8E6-4EF6-90D0-89AE32B258D6}
 DEFINE_GUID( GUID_DISK_IDLE_TIMEOUT, 0x58E39BA8, 0xB8E6, 0x4EF6, 0x90, 0xD0, 0x89, 0xAE, 0x32, 0xB2, 0x58, 0xD6 );
-
-//
-// Specifies the amount of contiguous disk activity time to ignore when
-// calculating disk idleness.
-//
-// 80e3c60e-bb94-4ad8-bbe0-0d3195efc663
-//
 
 DEFINE_GUID( GUID_DISK_BURST_IGNORE_THRESHOLD, 0x80e3c60e, 0xbb94, 0x4ad8, 0xbb, 0xe0, 0x0d, 0x31, 0x95, 0xef, 0xc6, 0x63 );
 
-//
-// Specifies if the operating system should use adaptive timers (based on
-// previous behavior) to power down the disk,
-//
 DEFINE_GUID( GUID_DISK_ADAPTIVE_POWERDOWN, 0x396A32E1, 0x499A, 0x40B2, 0x91, 0x24, 0xA9, 0x6A, 0xFE, 0x70, 0x76, 0x67 );
 
-// System sleep settings
-// ---------------------
-//
-// Specifies the subgroup which will contain all of the sleep
-// settings for a single policy.
-// { 238C9FA8-0AAD-41ED-83F4-97BE242C8F20 }
-//
 DEFINE_GUID( GUID_SLEEP_SUBGROUP, 0x238C9FA8, 0x0AAD, 0x41ED, 0x83, 0xF4, 0x97, 0xBE, 0x24, 0x2C, 0x8F, 0x20 );
 
-//
-// Specifies an idle treshold percentage (0-100). The system must be this idle
-// over a period of time in order to idle to sleep.
-//
-// N.B. DEPRECATED IN WINDOWS 6.1
-//
 DEFINE_GUID( GUID_SLEEP_IDLE_THRESHOLD, 0x81cd32e0, 0x7833, 0x44f3, 0x87, 0x37, 0x70, 0x81, 0xf3, 0x8d, 0x1f, 0x70 );
 
-//
-// Specifies (in seconds) how long we wait after the system is deemed
-// "idle" before moving to standby (S1, S2 or S3).
-//
 DEFINE_GUID( GUID_STANDBY_TIMEOUT, 0x29F6C1DB, 0x86DA, 0x48C5, 0x9F, 0xDB, 0xF2, 0xB6, 0x7B, 0x1F, 0x44, 0xDA );
 
-//
-// Specifies (in seconds) how long the system should go back to sleep after
-// waking unattended. 0 indicates that the standard standby/hibernate idle
-// policy should be used instead.
-//
-// {7bc4a2f9-d8fc-4469-b07b-33eb785aaca0}
-//
 DEFINE_GUID( GUID_UNATTEND_SLEEP_TIMEOUT, 0x7bc4a2f9, 0xd8fc, 0x4469, 0xb0, 0x7b, 0x33, 0xeb, 0x78, 0x5a, 0xac, 0xa0 );
 
-//
-// Specifies (in seconds) how long we wait after the system is deemed
-// "idle" before moving to hibernate (S4).
-//
 DEFINE_GUID( GUID_HIBERNATE_TIMEOUT, 0x9D7815A6, 0x7EE4, 0x497E, 0x88, 0x88, 0x51, 0x5A, 0x05, 0xF0, 0x23, 0x64 );
 
-//
-// Specifies whether or not Fast S4 should be enabled if the system supports it
-// 94AC6D29-73CE-41A6-809F-6363BA21B47E
-//
 DEFINE_GUID( GUID_HIBERNATE_FASTS4_POLICY, 0x94AC6D29, 0x73CE, 0x41A6, 0x80, 0x9F, 0x63, 0x63, 0xBA, 0x21, 0xB4, 0x7E );
 
-//
-// Define a GUID for controlling the criticality of sleep state transitions.
-// Critical sleep transitions do not query applications, services or drivers
-// before transitioning the platform to a sleep state.
-//
-// {B7A27025-E569-46c2-A504-2B96CAD225A1}
-//
 DEFINE_GUID( GUID_CRITICAL_POWER_TRANSITION,  0xB7A27025, 0xE569, 0x46c2, 0xA5, 0x04, 0x2B, 0x96, 0xCA, 0xD2, 0x25, 0xA1);
 
-//
-// Specifies if the system is entering or exiting 'away mode'.
-// 98A7F580-01F7-48AA-9C0F-44352C29E5C0
-//
 DEFINE_GUID( GUID_SYSTEM_AWAYMODE, 0x98A7F580, 0x01F7, 0x48AA, 0x9C, 0x0F, 0x44, 0x35, 0x2C, 0x29, 0xE5, 0xC0 );
 
-//
-// Specify whether away mode is allowed
-//
-// {25DFA149-5DD1-4736-B5AB-E8A37B5B8187}
-//
 DEFINE_GUID( GUID_ALLOW_AWAYMODE, 0x25dfa149, 0x5dd1, 0x4736, 0xb5, 0xab, 0xe8, 0xa3, 0x7b, 0x5b, 0x81, 0x87 );
 
-//
-// Defines a guid to control User Presence Prediction mode.
-//
-// {82011705-FB95-4D46-8D35-4042B1D20DEF}
-//
 DEFINE_GUID( GUID_USER_PRESENCE_PREDICTION, 0x82011705, 0xfb95, 0x4d46, 0x8d, 0x35, 0x40, 0x42, 0xb1, 0xd2, 0xd, 0xef );
 
-//
-// Defines a guid to control Standby Budget Grace Period.
-//
-// {60C07FE1-0556-45CF-9903-D56E32210242}
-//
 DEFINE_GUID( GUID_STANDBY_BUDGET_GRACE_PERIOD, 0x60c07fe1, 0x0556, 0x45cf, 0x99, 0x03, 0xd5, 0x6e, 0x32, 0x21, 0x2, 0x42 );
 
-//
-// Defines a guid to control Standby Budget Percent.
-//
-// {9FE527BE-1B70-48DA-930D-7BCF17B44990}
-//
 DEFINE_GUID( GUID_STANDBY_BUDGET_PERCENT, 0x9fe527be, 0x1b70, 0x48da, 0x93, 0x0d, 0x7b, 0xcf, 0x17, 0xb4, 0x49, 0x90 );
 
-//
-// Defines a guid to control Standby Reserve Grace Period.
-//
-// {C763EE92-71E8-4127-84EB-F6ED043A3E3D}
-//
 DEFINE_GUID( GUID_STANDBY_RESERVE_GRACE_PERIOD, 0xc763ee92, 0x71e8, 0x4127, 0x84, 0xeb, 0xf6, 0xed, 0x04, 0x3a, 0x3e, 0x3d );
 
-//
-// Defines a guid to control Standby Reserve Time.
-//
-// {468FE7E5-1158-46EC-88BC-5B96C9E44FD0}
-//
 DEFINE_GUID( GUID_STANDBY_RESERVE_TIME, 0x468FE7E5, 0x1158, 0x46EC, 0x88, 0xbc, 0x5b, 0x96, 0xc9, 0xe4, 0x4f, 0xd0 );
 
-//
-// Defines a guid to control Standby Reset Percentage.
-//
-// {49CB11A5-56E2-4AFB-9D38-3DF47872E21B}
-//
 DEFINE_GUID(GUID_STANDBY_RESET_PERCENT, 0x49cb11a5, 0x56e2, 0x4afb, 0x9d, 0x38, 0x3d, 0xf4, 0x78, 0x72, 0xe2, 0x1b);
 
-//
-// Defines a guid for enabling/disabling standby (S1-S3) states. This does not
-// affect hibernation (S4).
-//
-// {abfc2519-3608-4c2a-94ea-171b0ed546ab}
-//
 DEFINE_GUID( GUID_ALLOW_STANDBY_STATES, 0xabfc2519, 0x3608, 0x4c2a, 0x94, 0xea, 0x17, 0x1b, 0x0e, 0xd5, 0x46, 0xab );
 
-//
-// Defines a guid for enabling/disabling the ability to wake via RTC.
-//
-// {BD3B718A-0680-4D9D-8AB2-E1D2B4AC806D}
-//
 DEFINE_GUID( GUID_ALLOW_RTC_WAKE, 0xBD3B718A, 0x0680, 0x4D9D, 0x8A, 0xB2, 0xE1, 0xD2, 0xB4, 0xAC, 0x80, 0x6D );
 
-//
-// Defines a guid for enabling/disabling the ability to create system required
-// power requests.
-//
-// {A4B195F5-8225-47D8-8012-9D41369786E2}
-//
 DEFINE_GUID( GUID_ALLOW_SYSTEM_REQUIRED, 0xA4B195F5, 0x8225, 0x47D8, 0x80, 0x12, 0x9D, 0x41, 0x36, 0x97, 0x86, 0xE2 );
 
-// Energy Saver settings
-// ---------------------
-//
-// Indicates if Enegry Saver is ON or OFF.
-//
-// {E00958C0-C213-4ACE-AC77-FECCED2EEEA5}
-//
 DEFINE_GUID( GUID_POWER_SAVING_STATUS, 0xe00958c0, 0xc213, 0x4ace, 0xac, 0x77, 0xfe, 0xcc, 0xed, 0x2e, 0xee, 0xa5);
 
-//
-// Specifies the subgroup which will contain all of the Energy Saver settings
-// for a single policy.
-//
-// {DE830923-A562-41AF-A086-E3A2C6BAD2DA}
-//
 DEFINE_GUID( GUID_ENERGY_SAVER_SUBGROUP, 0xDE830923, 0xA562, 0x41AF, 0xA0, 0x86, 0xE3, 0xA2, 0xC6, 0xBA, 0xD2, 0xDA );
 
-//
-// Defines a guid to engage Energy Saver at specific battery charge level
-//
-// {E69653CA-CF7F-4F05-AA73-CB833FA90AD4}
-//
 DEFINE_GUID( GUID_ENERGY_SAVER_BATTERY_THRESHOLD, 0xE69653CA, 0xCF7F, 0x4F05, 0xAA, 0x73, 0xCB, 0x83, 0x3F, 0xA9, 0x0A, 0xD4 );
 
-//
-// Defines a guid to specify display brightness weight when Energy Saver is engaged
-//
-// {13D09884-F74E-474A-A852-B6BDE8AD03A8}
-//
 DEFINE_GUID( GUID_ENERGY_SAVER_BRIGHTNESS, 0x13D09884, 0xF74E, 0x474A, 0xA8, 0x52, 0xB6, 0xBD, 0xE8, 0xAD, 0x03, 0xA8 );
 
-//
-// Defines a guid to specify the Energy Saver policy
-//
-// {5C5BB349-AD29-4ee2-9D0B-2B25270F7A81}
-//
 DEFINE_GUID( GUID_ENERGY_SAVER_POLICY, 0x5c5bb349, 0xad29, 0x4ee2, 0x9d, 0xb, 0x2b, 0x25, 0x27, 0xf, 0x7a, 0x81 );
 
-// System button actions
-// ---------------------
-//
-//
-// Specifies the subgroup which will contain all of the system button
-// settings for a single policy.
-//
 DEFINE_GUID( GUID_SYSTEM_BUTTON_SUBGROUP, 0x4F971E89, 0xEEBD, 0x4455, 0xA8, 0xDE, 0x9E, 0x59, 0x04, 0x0E, 0x73, 0x47 );
 
+
+--[==[
 #define POWERBUTTON_ACTION_INDEX_NOTHING                0
 #define POWERBUTTON_ACTION_INDEX_SLEEP                  1
 #define POWERBUTTON_ACTION_INDEX_HIBERNATE              2
@@ -13143,50 +12786,19 @@ DEFINE_GUID( GUID_SYSTEM_BUTTON_SUBGROUP, 0x4F971E89, 0xEEBD, 0x4455, 0xA8, 0xDE
 #define POWERBUTTON_ACTION_VALUE_SHUTDOWN               6
 #define POWERBUTTON_ACTION_VALUE_TURN_OFF_THE_DISPLAY   8
 
-// Specifies (in a POWER_ACTION_POLICY structure) the appropriate action to
-// take when the system power button is pressed.
-//
+
 DEFINE_GUID( GUID_POWERBUTTON_ACTION, 0x7648EFA3, 0xDD9C, 0x4E3E, 0xB5, 0x66, 0x50, 0xF9, 0x29, 0x38, 0x62, 0x80 );
 
-//
-// Specifies (in a POWER_ACTION_POLICY structure) the appropriate action to
-// take when the system sleep button is pressed.
-//
+
 DEFINE_GUID( GUID_SLEEPBUTTON_ACTION, 0x96996BC0, 0xAD50, 0x47EC, 0x92, 0x3B, 0x6F, 0x41, 0x87, 0x4D, 0xD9, 0xEB );
 
-//
-// Specifies (in a POWER_ACTION_POLICY structure) the appropriate action to
-// take when the system sleep button is pressed.
-// { A7066653-8D6C-40A8-910E-A1F54B84C7E5 }
-//
 DEFINE_GUID( GUID_USERINTERFACEBUTTON_ACTION, 0xA7066653, 0x8D6C, 0x40A8, 0x91, 0x0E, 0xA1, 0xF5, 0x4B, 0x84, 0xC7, 0xE5 );
 
-//
-// Specifies (in a POWER_ACTION_POLICY structure) the appropriate action to
-// take when the system lid is closed.
-//
 DEFINE_GUID( GUID_LIDCLOSE_ACTION, 0x5CA83367, 0x6E45, 0x459F, 0xA2, 0x7B, 0x47, 0x6B, 0x1D, 0x01, 0xC9, 0x36 );
 DEFINE_GUID( GUID_LIDOPEN_POWERSTATE, 0x99FF10E7, 0x23B1, 0x4C07, 0xA9, 0xD1, 0x5C, 0x32, 0x06, 0xD7, 0x41, 0xB4 );
 
-
-// Battery Discharge Settings
-// --------------------------
-//
-// Specifies the subgroup which will contain all of the battery discharge
-// settings for a single policy.
-//
 DEFINE_GUID( GUID_BATTERY_SUBGROUP, 0xE73A048D, 0xBF27, 0x4F12, 0x97, 0x31, 0x8B, 0x20, 0x76, 0xE8, 0x89, 0x1F );
 
-//
-// 4 battery discharge alarm settings.
-//
-// GUID_BATTERY_DISCHARGE_ACTION_x - This is the action to take.  It is a value
-//                                   of type POWER_ACTION
-// GUID_BATTERY_DISCHARGE_LEVEL_x  - This is the battery level (%)
-// GUID_BATTERY_DISCHARGE_FLAGS_x  - Flags defined below:
-//                                   POWER_ACTION_POLICY->EventCode flags
-//                                   BATTERY_DISCHARGE_FLAGS_EVENTCODE_MASK
-//                                   BATTERY_DISCHARGE_FLAGS_ENABLE
 DEFINE_GUID( GUID_BATTERY_DISCHARGE_ACTION_0, 0x637EA02F, 0xBBCB, 0x4015, 0x8E, 0x2C, 0xA1, 0xC7, 0xB9, 0xC0, 0xB5, 0x46 );
 DEFINE_GUID( GUID_BATTERY_DISCHARGE_LEVEL_0, 0x9A66D8D7, 0x4FF7, 0x4EF9, 0xB5, 0xA2, 0x5A, 0x32, 0x6C, 0xA2, 0xA4, 0x69 );
 DEFINE_GUID( GUID_BATTERY_DISCHARGE_FLAGS_0, 0x5dbb7c9f, 0x38e9, 0x40d2, 0x97, 0x49, 0x4f, 0x8a, 0x0e, 0x9f, 0x64, 0x0f );
@@ -13203,227 +12815,71 @@ DEFINE_GUID( GUID_BATTERY_DISCHARGE_ACTION_3, 0x80472613, 0x9780, 0x455E, 0xB3, 
 DEFINE_GUID( GUID_BATTERY_DISCHARGE_LEVEL_3, 0x58AFD5A6, 0xC2DD, 0x47D2, 0x9F, 0xBF, 0xEF, 0x70, 0xCC, 0x5C, 0x59, 0x65 );
 DEFINE_GUID( GUID_BATTERY_DISCHARGE_FLAGS_3, 0x73613ccf, 0xdbfa, 0x4279, 0x83, 0x56, 0x49, 0x35, 0xf6, 0xbf, 0x62, 0xf3 );
 
-// Processor power settings
-// ------------------------
-//
-
-// Specifies the subgroup which will contain all of the processor
-// settings for a single policy.
-//
-// {54533251-82be-4824-96c1-47b60b740d00}
-//
 DEFINE_GUID( GUID_PROCESSOR_SETTINGS_SUBGROUP, 0x54533251, 0x82BE, 0x4824, 0x96, 0xC1, 0x47, 0xB6, 0x0B, 0x74, 0x0D, 0x00 );
 
-//
-// Specifies various attributes that control processor performance/throttle
-// states.
-//
 DEFINE_GUID( GUID_PROCESSOR_THROTTLE_POLICY, 0x57027304, 0x4AF6, 0x4104, 0x92, 0x60, 0xE3, 0xD9, 0x52, 0x48, 0xFC, 0x36 );
 
-#define PERFSTATE_POLICY_CHANGE_IDEAL  0
-#define PERFSTATE_POLICY_CHANGE_SINGLE 1
-#define PERFSTATE_POLICY_CHANGE_ROCKET 2
-#define PERFSTATE_POLICY_CHANGE_IDEAL_AGGRESSIVE 3
+static const int PERFSTATE_POLICY_CHANGE_IDEAL  =0;
+static const int PERFSTATE_POLICY_CHANGE_SINGLE =1;
+static const int PERFSTATE_POLICY_CHANGE_ROCKET =2;
+static const int PERFSTATE_POLICY_CHANGE_IDEAL_AGGRESSIVE =3;
 
-#define PERFSTATE_POLICY_CHANGE_DECREASE_MAX PERFSTATE_POLICY_CHANGE_ROCKET
-#define PERFSTATE_POLICY_CHANGE_INCREASE_MAX PERFSTATE_POLICY_CHANGE_IDEAL_AGGRESSIVE
+static const int PERFSTATE_POLICY_CHANGE_DECREASE_MAX =PERFSTATE_POLICY_CHANGE_ROCKET;
+static const int PERFSTATE_POLICY_CHANGE_INCREASE_MAX =PERFSTATE_POLICY_CHANGE_IDEAL_AGGRESSIVE;
 
-//
-// Specifies a percentage (between 0 and 100) that the processor frequency
-// should never go above.  For example, if this value is set to 80, then
-// the processor frequency will never be throttled above 80 percent of its
-// maximum frequency by the system.
-//
-// {bc5038f7-23e0-4960-96da-33abaf5935ec}
-//
+
 DEFINE_GUID( GUID_PROCESSOR_THROTTLE_MAXIMUM, 0xBC5038F7, 0x23E0, 0x4960, 0x96, 0xDA, 0x33, 0xAB, 0xAF, 0x59, 0x35, 0xEC );
 
-//
-// Specifies a percentage (between 0 and 100) that the processor frequency
-// should never go above for Processor Power Efficiency Class 1.
-// For example, if this value is set to 80, then the processor frequency will 
-// never be throttled above 80 percent of its maximum frequency by the system.
-//
-// {bc5038f7-23e0-4960-96da-33abaf5935ed}
-//
 DEFINE_GUID( GUID_PROCESSOR_THROTTLE_MAXIMUM_1, 0xBC5038F7, 0x23E0, 0x4960, 0x96, 0xDA, 0x33, 0xAB, 0xAF, 0x59, 0x35, 0xED );
 
-//
-// Specifies a percentage (between 0 and 100) that the processor frequency
-// should not drop below.  For example, if this value is set to 50, then the
-// processor frequency will never be throttled below 50 percent of its
-// maximum frequency by the system.
-//
-// {893dee8e-2bef-41e0-89c6-b55d0929964c}
-//
 DEFINE_GUID( GUID_PROCESSOR_THROTTLE_MINIMUM, 0x893DEE8E, 0x2BEF, 0x41E0, 0x89, 0xC6, 0xB5, 0x5D, 0x09, 0x29, 0x96, 0x4C );
 
-//
-// Specifies a percentage (between 0 and 100) that the processor frequency
-// should not drop below for Processor Power Efficiency Class 1.
-// For example, if this value is set to 50, then the processor frequency will
-// never be throttled below 50 percent of its maximum frequency by the system.
-//
-// {893dee8e-2bef-41e0-89c6-b55d0929964d}
-//
 DEFINE_GUID( GUID_PROCESSOR_THROTTLE_MINIMUM_1, 0x893DEE8E, 0x2BEF, 0x41E0, 0x89, 0xC6, 0xB5, 0x5D, 0x09, 0x29, 0x96, 0x4D );
 
-//
-// Specifies whether throttle states are allowed to be used even when
-// performance states are available.
-//
-// {3b04d4fd-1cc7-4f23-ab1c-d1337819c4bb}
-//
 DEFINE_GUID( GUID_PROCESSOR_ALLOW_THROTTLING, 0x3b04d4fd, 0x1cc7, 0x4f23, 0xab, 0x1c, 0xd1, 0x33, 0x78, 0x19, 0xc4, 0xbb );
 
 #define PROCESSOR_THROTTLE_DISABLED  0
 #define PROCESSOR_THROTTLE_ENABLED   1
 #define PROCESSOR_THROTTLE_AUTOMATIC 2
 
-//
-// Specifies processor power settings for CState policy data
-// {68F262A7-F621-4069-B9A5-4874169BE23C}
-//
+
 DEFINE_GUID( GUID_PROCESSOR_IDLESTATE_POLICY, 0x68f262a7, 0xf621, 0x4069, 0xb9, 0xa5, 0x48, 0x74, 0x16, 0x9b, 0xe2, 0x3c);
 
-//
-// Specifies processor power settings for PerfState policy data
-// {BBDC3814-18E9-4463-8A55-D197327C45C0}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERFSTATE_POLICY, 0xBBDC3814, 0x18E9, 0x4463, 0x8A, 0x55, 0xD1, 0x97, 0x32, 0x7C, 0x45, 0xC0);
 
-//
-// Specifies the increase busy percentage threshold that must be met before
-// increasing the processor performance state.
-//
-// {06cadf0e-64ed-448a-8927-ce7bf90eb35d}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_THRESHOLD, 0x06cadf0e, 0x64ed, 0x448a, 0x89, 0x27, 0xce, 0x7b, 0xf9, 0x0e, 0xb3, 0x5d );
 
-//
-// Specifies the increase busy percentage threshold that must be met before
-// increasing the processor performance state for Processor Power Efficiency
-// Class 1.
-//
-// {06cadf0e-64ed-448a-8927-ce7bf90eb35e}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_THRESHOLD_1, 0x06cadf0e, 0x64ed, 0x448a, 0x89, 0x27, 0xce, 0x7b, 0xf9, 0x0e, 0xb3, 0x5e );
 
-//
-// Specifies the decrease busy percentage threshold that must be met before
-// decreasing the processor performance state.
-//
-// {12a0ab44-fe28-4fa9-b3bd-4b64f44960a6}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_THRESHOLD, 0x12a0ab44, 0xfe28, 0x4fa9, 0xb3, 0xbd, 0x4b, 0x64, 0xf4, 0x49, 0x60, 0xa6 );
 
-//
-// Specifies the decrease busy percentage threshold that must be met before
-// decreasing the processor performance state for Processor Power Efficiency
-// Class 1.
-//
-// {12a0ab44-fe28-4fa9-b3bd-4b64f44960a7}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_THRESHOLD_1, 0x12a0ab44, 0xfe28, 0x4fa9, 0xb3, 0xbd, 0x4b, 0x64, 0xf4, 0x49, 0x60, 0xa7 );
 
-//
-// Specifies, either as ideal, single or rocket, how aggressive performance
-// states should be selected when increasing the processor performance state.
-//
-// {465E1F50-B610-473a-AB58-00D1077DC418}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_POLICY, 0x465e1f50, 0xb610, 0x473a, 0xab, 0x58, 0x0, 0xd1, 0x7, 0x7d, 0xc4, 0x18);
 
-//
-// Specifies, either as ideal, single or rocket, how aggressive performance
-// states should be selected when increasing the processor performance state
-// for Processor Power Efficiency Class 1.
-//
-// {465E1F50-B610-473a-AB58-00D1077DC419}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_POLICY_1, 0x465e1f50, 0xb610, 0x473a, 0xab, 0x58, 0x0, 0xd1, 0x7, 0x7d, 0xc4, 0x19);
 
-//
-// Specifies, either as ideal, single or rocket, how aggressive performance
-// states should be selected when decreasing the processor performance state.
-//
-// {40FBEFC7-2E9D-4d25-A185-0CFD8574BAC6}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_POLICY, 0x40fbefc7, 0x2e9d, 0x4d25, 0xa1, 0x85, 0xc, 0xfd, 0x85, 0x74, 0xba, 0xc6);
 
-//
-// Specifies, either as ideal, single or rocket, how aggressive performance
-// states should be selected when decreasing the processor performance state for
-// Processor Power Efficiency Class 1.
-//
-// {40FBEFC7-2E9D-4d25-A185-0CFD8574BAC7}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_POLICY_1, 0x40fbefc7, 0x2e9d, 0x4d25, 0xa1, 0x85, 0xc, 0xfd, 0x85, 0x74, 0xba, 0xc7);
 
-//
-// Specifies, in milliseconds, the minimum amount of time that must elapse after
-// the last processor performance state change before increasing the processor
-// performance state.
-//
-// {984CF492-3BED-4488-A8F9-4286C97BF5AA}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_TIME, 0x984cf492, 0x3bed, 0x4488, 0xa8, 0xf9, 0x42, 0x86, 0xc9, 0x7b, 0xf5, 0xaa);
 
-//
-// Specifies, in milliseconds, the minimum amount of time that must elapse after
-// the last processor performance state change before increasing the processor
-// performance state for Processor Power Efficiency Class 1.
-//
-// {984CF492-3BED-4488-A8F9-4286C97BF5AB}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_TIME_1, 0x984cf492, 0x3bed, 0x4488, 0xa8, 0xf9, 0x42, 0x86, 0xc9, 0x7b, 0xf5, 0xab);
 
-//
-// Specifies, in milliseconds, the minimum amount of time that must elapse after
-// the last processor performance state change before increasing the processor
-// performance state.
-//
-// {D8EDEB9B-95CF-4f95-A73C-B061973693C8}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_TIME, 0xd8edeb9b, 0x95cf, 0x4f95, 0xa7, 0x3c, 0xb0, 0x61, 0x97, 0x36, 0x93, 0xc8);
 
-//
-// Specifies, in milliseconds, the minimum amount of time that must elapse after
-// the last processor performance state change before increasing the processor
-// performance state for Processor Power Efficiency Class 1.
-//
-// {D8EDEB9B-95CF-4f95-A73C-B061973693C9}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_TIME_1, 0xd8edeb9b, 0x95cf, 0x4f95, 0xa7, 0x3c, 0xb0, 0x61, 0x97, 0x36, 0x93, 0xc9);
 
-//
-// Specifies the time, in milliseconds, that must expire before considering
-// a change in the processor performance states or parked core set.
-//
-// {4D2B0152-7D5C-498b-88E2-34345392A2C5}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_TIME_CHECK, 0x4d2b0152, 0x7d5c, 0x498b, 0x88, 0xe2, 0x34, 0x34, 0x53, 0x92, 0xa2, 0xc5);
 
-//
-// Specifies how the processor should manage performance and efficiency
-// tradeoffs when boosting frequency above the maximum.
-//
-// {45BCC044-D885-43e2-8605-EE0EC6E96B59}
-//
-DEFINE_GUID(GUID_PROCESSOR_PERF_BOOST_POLICY,
-0x45bcc044, 0xd885, 0x43e2, 0x86, 0x5, 0xee, 0xe, 0xc6, 0xe9, 0x6b, 0x59);
+DEFINE_GUID(GUID_PROCESSOR_PERF_BOOST_POLICY,0x45bcc044, 0xd885, 0x43e2, 0x86, 0x5, 0xee, 0xe, 0xc6, 0xe9, 0x6b, 0x59);
 
 #define PROCESSOR_PERF_BOOST_POLICY_DISABLED 0
 #define PROCESSOR_PERF_BOOST_POLICY_MAX 100
 
-//
-// Specifies how a processor opportunistically increases frequency above
-// the maximum when operating contitions allow it to do so safely.
-//
-// {BE337238-0D82-4146-A960-4F3749D470C7}
-//
-DEFINE_GUID(GUID_PROCESSOR_PERF_BOOST_MODE,
-0xbe337238, 0xd82, 0x4146, 0xa9, 0x60, 0x4f, 0x37, 0x49, 0xd4, 0x70, 0xc7);
+
+DEFINE_GUID(GUID_PROCESSOR_PERF_BOOST_MODE,0xbe337238, 0xd82, 0x4146, 0xa9, 0x60, 0x4f, 0x37, 0x49, 0xd4, 0x70, 0xc7);
 
 #define PROCESSOR_PERF_BOOST_MODE_DISABLED 0
 #define PROCESSOR_PERF_BOOST_MODE_ENABLED 1
@@ -13553,521 +13009,143 @@ DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_DECREASE_THRESHOLD, 0x68dd2f27, 0xa4ce,
 //
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_INCREASE_POLICY, 0xc7be0679, 0x2817, 0x4d69, 0x9d, 0x02, 0x51, 0x9a, 0x53, 0x7e, 0xd0, 0xc6);
 
-#define CORE_PARKING_POLICY_CHANGE_IDEAL  0
-#define CORE_PARKING_POLICY_CHANGE_SINGLE 1
-#define CORE_PARKING_POLICY_CHANGE_ROCKET 2
-#define CORE_PARKING_POLICY_CHANGE_MULTISTEP 3
-#define CORE_PARKING_POLICY_CHANGE_MAX CORE_PARKING_POLICY_CHANGE_MULTISTEP
+static const int CORE_PARKING_POLICY_CHANGE_IDEAL = 0;
+static const int CORE_PARKING_POLICY_CHANGE_SINGLE = 1;
+static const int CORE_PARKING_POLICY_CHANGE_ROCKET = 2;
+static const int CORE_PARKING_POLICY_CHANGE_MULTISTEP = 3;
+static const int CORE_PARKING_POLICY_CHANGE_MAX = CORE_PARKING_POLICY_CHANGE_MULTISTEP;
 
-//
-// Specifies, either as ideal, single or rocket, how aggressive core parking is when cores must be parked.
-//
-// {71021b41-c749-4d21-be74-a00f335d582b}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_DECREASE_POLICY, 0x71021b41, 0xc749, 0x4d21, 0xbe, 0x74, 0xa0, 0x0f, 0x33, 0x5d, 0x58, 0x2b);
 
-//
-// Specifies, on a per processor group basis, the maximum number of cores that can be kept unparked.
-//
-// {ea062031-0e34-4ff1-9b6d-eb1059334028}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_MAX_CORES, 0xea062031, 0x0e34, 0x4ff1, 0x9b, 0x6d, 0xeb, 0x10, 0x59, 0x33, 0x40, 0x28);
 
-//
-// Specifies, on a per processor group basis, the maximum number of cores that 
-// can be kept unparked for Processor Power Efficiency Class 1.
-//
-// {ea062031-0e34-4ff1-9b6d-eb1059334029}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_MAX_CORES_1, 0xea062031, 0x0e34, 0x4ff1, 0x9b, 0x6d, 0xeb, 0x10, 0x59, 0x33, 0x40, 0x29);
 
-//
-// Specifies, on a per processor group basis, the minimum number of cores that must be kept unparked.
-//
-// {0cc5b647-c1df-4637-891a-dec35c318583}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_MIN_CORES, 0x0cc5b647, 0xc1df, 0x4637, 0x89, 0x1a, 0xde, 0xc3, 0x5c, 0x31, 0x85, 0x83);
 
-//
-// Specifies, on a per processor group basis, the minimum number of cores that
-// must be kept unparked in Processor Power Efficiency Class 1.
-//
-// {0cc5b647-c1df-4637-891a-dec35c318584}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_MIN_CORES_1, 0x0cc5b647, 0xc1df, 0x4637, 0x89, 0x1a, 0xde, 0xc3, 0x5c, 0x31, 0x85, 0x84);
 
-//
-// Specifies, in milliseconds, the minimum amount of time a core must be parked before it can be unparked.
-//
-// {2ddd5a84-5a71-437e-912a-db0b8c788732}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_INCREASE_TIME, 0x2ddd5a84, 0x5a71, 0x437e, 0x91, 0x2a, 0xdb, 0x0b, 0x8c, 0x78, 0x87, 0x32);
 
-//
-// Specifies, in milliseconds, the minimum amount of time a core must be unparked before it can be parked.
-//
-// {dfd10d17-d5eb-45dd-877a-9a34ddd15c82}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_DECREASE_TIME, 0xdfd10d17, 0xd5eb, 0x45dd, 0x87, 0x7a, 0x9a, 0x34, 0xdd, 0xd1, 0x5c, 0x82);
 
-//
-// Specifies the factor by which to decrease affinity history on each core after each check.
-//
-// {8f7b45e3-c393-480a-878c-f67ac3d07082}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_AFFINITY_HISTORY_DECREASE_FACTOR, 0x8f7b45e3, 0xc393, 0x480a, 0x87, 0x8c, 0xf6, 0x7a, 0xc3, 0xd0, 0x70, 0x82);
 
-//
-// Specifies the threshold above which a core is considered to have had significant affinitized work scheduled to it while parked.
-//
-// {5b33697b-e89d-4d38-aa46-9e7dfb7cd2f9}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_AFFINITY_HISTORY_THRESHOLD, 0x5b33697b, 0xe89d, 0x4d38, 0xaa, 0x46, 0x9e, 0x7d, 0xfb, 0x7c, 0xd2, 0xf9);
 
-//
-// Specifies the weighting given to each occurence where affinitized work was scheduled to a parked core.
-//
-// {e70867f1-fa2f-4f4e-aea1-4d8a0ba23b20}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_AFFINITY_WEIGHTING, 0xe70867f1, 0xfa2f, 0x4f4e, 0xae, 0xa1, 0x4d, 0x8a, 0x0b, 0xa2, 0x3b, 0x20);
 
-//
-// Specifies the factor by which to decrease the over utilization history on each core after the current performance check.
-//
-// {1299023c-bc28-4f0a-81ec-d3295a8d815d}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_OVER_UTILIZATION_HISTORY_DECREASE_FACTOR, 0x1299023c, 0xbc28, 0x4f0a, 0x81, 0xec, 0xd3, 0x29, 0x5a, 0x8d, 0x81, 0x5d);
 
-//
-// Specifies the threshold above which a core is considered to have been recently over utilized while parked.
-//
-// {9ac18e92-aa3c-4e27-b307-01ae37307129}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_OVER_UTILIZATION_HISTORY_THRESHOLD, 0x9ac18e92, 0xaa3c, 0x4e27, 0xb3, 0x07, 0x01, 0xae, 0x37, 0x30, 0x71, 0x29);
 
-//
-// Specifies the weighting given to each occurence where a parked core is found to be over utilized.
-//
-// {8809c2d8-b155-42d4-bcda-0d345651b1db}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_OVER_UTILIZATION_WEIGHTING, 0x8809c2d8, 0xb155, 0x42d4, 0xbc, 0xda, 0x0d, 0x34, 0x56, 0x51, 0xb1, 0xdb);
 
-//
-// Specifies, in percentage, the busy threshold that must be met before a parked core is considered over utilized.
-//
-// {943c8cb6-6f93-4227-ad87-e9a3feec08d1}
-//
 DEFINE_GUID( GUID_PROCESSOR_CORE_PARKING_OVER_UTILIZATION_THRESHOLD, 0x943c8cb6, 0x6f93, 0x4227, 0xad, 0x87, 0xe9, 0xa3, 0xfe, 0xec, 0x08, 0xd1);
-
-//
-// Specifies if at least one processor per core should always remain unparked.
-//
-// {a55612aa-f624-42c6-a443-7397d064c04f}
-//
 
 DEFINE_GUID( GUID_PROCESSOR_PARKING_CORE_OVERRIDE, 0xa55612aa, 0xf624, 0x42c6, 0xa4, 0x43, 0x73, 0x97, 0xd0, 0x64, 0xc0, 0x4f);
 
-//
-// Specifies what performance state a processor should enter when first parked.
-//
-// {447235c7-6a8d-4cc0-8e24-9eaf70b96e2b}
-//
-
 DEFINE_GUID( GUID_PROCESSOR_PARKING_PERF_STATE, 0x447235c7, 0x6a8d, 0x4cc0, 0x8e, 0x24, 0x9e, 0xaf, 0x70, 0xb9, 0x6e, 0x2b);
 
-//
-// Specifies what performance state a processor should enter when first parked
-// for Processor Power Efficiency Class 1.
-//
-// {447235c7-6a8d-4cc0-8e24-9eaf70b96e2c}
-//
 DEFINE_GUID( GUID_PROCESSOR_PARKING_PERF_STATE_1, 0x447235c7, 0x6a8d, 0x4cc0, 0x8e, 0x24, 0x9e, 0xaf, 0x70, 0xb9, 0x6e, 0x2c);
-
-//
-// Specify the busy threshold that must be met when calculating the concurrency of a node's workload.
-//
-// {2430ab6f-a520-44a2-9601-f7f23b5134b1}
-//
 
 DEFINE_GUID( GUID_PROCESSOR_PARKING_CONCURRENCY_THRESHOLD, 0x2430ab6f, 0xa520, 0x44a2, 0x96, 0x01, 0xf7, 0xf2, 0x3b, 0x51, 0x34, 0xb1);
 
-//
-// Specify the busy threshold that must be met by all cores in a concurrency set to unpark an extra core.
-//
-// {f735a673-2066-4f80-a0c5-ddee0cf1bf5d}
-//
-
 DEFINE_GUID( GUID_PROCESSOR_PARKING_HEADROOM_THRESHOLD, 0xf735a673, 0x2066, 0x4f80, 0xa0, 0xc5, 0xdd, 0xee, 0x0c, 0xf1, 0xbf, 0x5d);
-
-//
-// Specify the percentage utilization used to calculate the distribution concurrency.
-//
-// {4bdaf4e9-d103-46d7-a5f0-6280121616ef}
-//
 
 DEFINE_GUID( GUID_PROCESSOR_PARKING_DISTRIBUTION_THRESHOLD, 0x4bdaf4e9, 0xd103, 0x46d7, 0xa5, 0xf0, 0x62, 0x80, 0x12, 0x16, 0x16, 0xef);
 
-//
-// Specifies the number of perf time check intervals to average utility over.
-//
-// {7d24baa7-0b84-480f-840c-1b0743c00f5f}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_HISTORY, 0x7d24baa7, 0x0b84, 0x480f, 0x84, 0x0c, 0x1b, 0x07, 0x43, 0xc0, 0x0f, 0x5f);
 
-//
-// Specifies the number of perf time check intervals to average utility over in
-// Processor Power Efficiency Class 1.
-//
-// {7d24baa7-0b84-480f-840c-1b0743c00f60}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_HISTORY_1, 0x7d24baa7, 0x0b84, 0x480f, 0x84, 0x0c, 0x1b, 0x07, 0x43, 0xc0, 0x0f, 0x60);
 
-//
-// Specifies the number of perf time check intervals to average utility over to
-// determine performance increase.
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {99B3EF01-752F-46a1-80FB-7730011F2354}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_INCREASE_HISTORY, 0x99b3ef01, 0x752f, 0x46a1, 0x80, 0xfb, 0x77, 0x30, 0x1, 0x1f, 0x23, 0x54);
 
-//
-// Specifies the number of perf time check intervals to average utility over to
-// determine performance decrease.
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {0300F6F8-ABD6-45a9-B74F-4908691A40B5}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_DECREASE_HISTORY, 0x300f6f8, 0xabd6, 0x45a9, 0xb7, 0x4f, 0x49, 0x8, 0x69, 0x1a, 0x40, 0xb5);
 
-//
-// Specifies the number of perf time check intervals to average utility over for
-// core parking.
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {77D7F282-8F1A-42cd-8537-45450A839BE8}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_CORE_PARKING_HISTORY, 0x77d7f282, 0x8f1a, 0x42cd, 0x85, 0x37, 0x45, 0x45, 0xa, 0x83, 0x9b, 0xe8);
 
-//
-// Specifies whether latency sensitivity hints should be taken into account by
-// the perf state engine.
-//
-// N.B. This power setting is DEPRECATED.
-//
-// {0822df31-9c83-441c-a079-0de4cf009c7b}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_LATENCY_HINT, 0x0822df31, 0x9c83, 0x441c, 0xa0, 0x79, 0x0d, 0xe4, 0xcf, 0x00, 0x9c, 0x7b);
 
-//
-// Specifies the processor performance state in response to latency sensitivity hints.
-//
-// {619b7505-003b-4e82-b7a6-4dd29c300971}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_LATENCY_HINT_PERF, 0x619b7505, 0x3b, 0x4e82, 0xb7, 0xa6, 0x4d, 0xd2, 0x9c, 0x30, 0x9, 0x71);
 
-//
-// Specifies the processor performance state in response to latency sensitivity 
-// hints for Processor Power Efficiency Class 1.
-//
-// {619b7505-003b-4e82-b7a6-4dd29c300972}
-//
 DEFINE_GUID( GUID_PROCESSOR_PERF_LATENCY_HINT_PERF_1, 0x619b7505, 0x3b, 0x4e82, 0xb7, 0xa6, 0x4d, 0xd2, 0x9c, 0x30, 0x9, 0x72);
 
-//
-// Specifies the minimum unparked processors when a latency hint is active
-// (in a percentage).
-//
-// {616cdaa5-695e-4545-97ad-97dc2d1bdd88}
-//
 DEFINE_GUID( GUID_PROCESSOR_LATENCY_HINT_MIN_UNPARK, 0x616cdaa5, 0x695e, 0x4545, 0x97, 0xad, 0x97, 0xdc, 0x2d, 0x1b, 0xdd, 0x88);
 
-//
-// Specifies the minimum unparked processors when a latency hint is active
-// for Processor Power Efficiency Class 1 (in a percentage).
-//
-// {616cdaa5-695e-4545-97ad-97dc2d1bdd89}
-//
 DEFINE_GUID( GUID_PROCESSOR_LATENCY_HINT_MIN_UNPARK_1, 0x616cdaa5, 0x695e, 0x4545, 0x97, 0xad, 0x97, 0xdc, 0x2d, 0x1b, 0xdd, 0x89);
 
-//
-// Specifies whether the core parking engine should distribute processor
-// utility.
-//
-// {e0007330-f589-42ed-a401-5ddb10e785d3}
-//
 DEFINE_GUID( GUID_PROCESSOR_DISTRIBUTE_UTILITY, 0xe0007330, 0xf589, 0x42ed, 0xa4, 0x01, 0x5d, 0xdb, 0x10, 0xe7, 0x85, 0xd3);
 
-//
-// GUIDS to control PPM settings on computer system with more than one
-// Processor Power Efficiency Classes (heterogeneous system).
-// -----------------
-//
-// Specifies the current active heterogeneous policy.
-//
-// {7f2f5cfa-f10c-4823-b5e1-e93ae85f46b5}
-//
 DEFINE_GUID( GUID_PROCESSOR_HETEROGENEOUS_POLICY, 0x7f2f5cfa, 0xf10c, 0x4823, 0xb5, 0xe1, 0xe9, 0x3a, 0xe8, 0x5f, 0x46, 0xb5);
 
-//
-// Specifies the number of perf check cycles required to decrease the number of
-// Processor Power Efficiency Class 1 processors.
-//
-// {7f2492b6-60b1-45e5-ae55-773f8cd5caec}
-//
 DEFINE_GUID( GUID_PROCESSOR_HETERO_DECREASE_TIME, 0x7f2492b6, 0x60b1, 0x45e5, 0xae, 0x55, 0x77, 0x3f, 0x8c, 0xd5, 0xca, 0xec);
 
-//
-// Specifies the number of perf check cycles required to increase the number of
-// Processor Power Efficiency Class 1 processors.
-//
-// {4009efa7-e72d-4cba-9edf-91084ea8cbc3}
-//
 DEFINE_GUID( GUID_PROCESSOR_HETERO_INCREASE_TIME, 0x4009efa7, 0xe72d, 0x4cba, 0x9e, 0xdf, 0x91, 0x08, 0x4e, 0xa8, 0xcb, 0xc3);
 
-//
-// Specifies the performance level (in units of Processor Power Efficiency
-// Class 0 processor performance) at which the number of Processor Power
-// Efficiency Class 1 processors is decreased.
-//
-// {f8861c27-95e7-475c-865b-13c0cb3f9d6b}
-//
 DEFINE_GUID( GUID_PROCESSOR_HETERO_DECREASE_THRESHOLD, 0xf8861c27, 0x95e7, 0x475c, 0x86, 0x5b, 0x13, 0xc0, 0xcb, 0x3f, 0x9d, 0x6b);
 
-//
-// Specifies the performance level (in units of Processor Power Efficiency
-// Class 0 processor performance) at which the number of Processor Power
-// Efficiency Class 1 processors is increased.
-//
-// {b000397d-9b0b-483d-98c9-692a6060cfbf}
-//
 DEFINE_GUID( GUID_PROCESSOR_HETERO_INCREASE_THRESHOLD, 0xb000397d, 0x9b0b, 0x483d, 0x98, 0xc9, 0x69, 0x2a, 0x60, 0x60, 0xcf, 0xbf);
 
-//
-// Specifies the performance target floor of a Processor Power Efficiency
-// Class 0 processor when the system unparks Processor Power Efficiency Class 1
-// processor(s).
-//
-// {fddc842b-8364-4edc-94cf-c17f60de1c80}
-//
 DEFINE_GUID( GUID_PROCESSOR_CLASS0_FLOOR_PERF, 0xfddc842b, 0x8364, 0x4edc, 0x94, 0xcf, 0xc1, 0x7f, 0x60, 0xde, 0x1c, 0x80);
 
-//
-// Specifies the initial performance target of a Processor Power Efficiency
-// Class 1 processor when the system makes a transition up from zero Processor
-// Power Efficiency Class 1 processors.
-//
-// {1facfc65-a930-4bc5-9f38-504ec097bbc0}
-//
 DEFINE_GUID( GUID_PROCESSOR_CLASS1_INITIAL_PERF, 0x1facfc65, 0xa930, 0x4bc5, 0x9f, 0x38, 0x50, 0x4e, 0xc0, 0x97, 0xbb, 0xc0);
 
-//
-// Specifies active vs passive cooling.  Although not directly related to
-// processor settings, it is the processor that gets throttled if we're doing
-// passive cooling, so it is fairly strongly related.
-// {94D3A615-A899-4AC5-AE2B-E4D8F634367F}
-//
 DEFINE_GUID( GUID_SYSTEM_COOLING_POLICY, 0x94D3A615, 0xA899, 0x4AC5, 0xAE, 0x2B, 0xE4, 0xD8, 0xF6, 0x34, 0x36, 0x7F);
 
-// Lock Console on Wake
-// --------------------
-//
-
-// Specifies the behavior of the system when we wake from standby or
-// hibernate.  If this is set, then we will cause the console to lock
-// after we resume.
-//
 DEFINE_GUID( GUID_LOCK_CONSOLE_ON_WAKE, 0x0E796BDB, 0x100D, 0x47D6, 0xA2, 0xD5, 0xF7, 0xD2, 0xDA, 0xA5, 0x1F, 0x51 );
 
-// Device idle characteristics
-// ---------------------------
-//
-// Specifies whether to use the "performance" or "conservative" timeouts for
-// device idle management.
-//
-// 4faab71a-92e5-4726-b531-224559672d19
-//
 DEFINE_GUID( GUID_DEVICE_IDLE_POLICY, 0x4faab71a, 0x92e5, 0x4726, 0xb5, 0x31, 0x22, 0x45, 0x59, 0x67, 0x2d, 0x19 );
 
-#define POWER_DEVICE_IDLE_POLICY_PERFORMANCE  0
-#define POWER_DEVICE_IDLE_POLICY_CONSERVATIVE 1
+static const int POWER_DEVICE_IDLE_POLICY_PERFORMANCE  =0;
+static const int POWER_DEVICE_IDLE_POLICY_CONSERVATIVE =1;
 
-//
-// Specifies standby connectivity preference.
-//
-// F15576E8-98B7-4186-B944-EAFA664402D9
+
 DEFINE_GUID( GUID_CONNECTIVITY_IN_STANDBY, 0xF15576E8, 0x98B7, 0x4186, 0xB9, 0x44, 0xEA, 0xFA, 0x66, 0x44, 0x02, 0xD9 );
+--]==]
 
-#define POWER_CONNECTIVITY_IN_STANDBY_DISABLED 0
-#define POWER_CONNECTIVITY_IN_STANDBY_ENABLED 1
+ffi.cdef[[
+static const int POWER_CONNECTIVITY_IN_STANDBY_DISABLED =0;
+static const int POWER_CONNECTIVITY_IN_STANDBY_ENABLED =1;
+]]
 
-// AC/DC power source
-// ------------------
-//
-
-// Specifies the power source for the system.  consumers may register for
-// notification when the power source changes and will be notified with
-// one of 3 values:
-// 0 - Indicates the system is being powered by an AC power source.
-// 1 - Indicates the system is being powered by a DC power source.
-// 2 - Indicates the system is being powered by a short-term DC power
-//     source.  For example, this would be the case if the system is
-//     being powed by a short-term battery supply in a backing UPS
-//     system.  When this value is recieved, the consumer should make
-//     preparations for either a system hibernate or system shutdown.
-//
-// { 5D3E9A59-E9D5-4B00-A6BD-FF34FF516548 }
+--[==[
 DEFINE_GUID( GUID_ACDC_POWER_SOURCE, 0x5D3E9A59, 0xE9D5, 0x4B00, 0xA6, 0xBD, 0xFF, 0x34, 0xFF, 0x51, 0x65, 0x48 );
-
-// Lid state changes
-// -----------------
-//
-// Specifies the current state of the lid (open or closed). The callback won't
-// be called at all until a lid device is found and its current state is known.
-//
-// Values:
-//
-// 0 - closed
-// 1 - opened
-//
-// { BA3E0F4D-B817-4094-A2D1-D56379E6A0F3 }
-//
 
 DEFINE_GUID( GUID_LIDSWITCH_STATE_CHANGE,  0xBA3E0F4D, 0xB817, 0x4094, 0xA2, 0xD1, 0xD5, 0x63, 0x79, 0xE6, 0xA0, 0xF3 );
 
-// Battery status changes
-// ----------------------
-//
-
-// Specifies the percentage of battery life remaining.  The consumer
-// may register for notification in order to track battery life in
-// a fine-grained manner.
-//
-// Once registered, the consumer can expect to be notified as the battery
-// life percentage changes.
-//
-// The consumer will recieve a value between 0 and 100 (inclusive) which
-// indicates percent battery life remaining.
-//
-// { A7AD8041-B45A-4CAE-87A3-EECBB468A9E1 }
 DEFINE_GUID( GUID_BATTERY_PERCENTAGE_REMAINING, 0xA7AD8041, 0xB45A, 0x4CAE, 0x87, 0xA3, 0xEE, 0xCB, 0xB4, 0x68, 0xA9, 0xE1 );
 
-// Specifies change in number of batteries present on the system. The consumer
-// may register for notification in order to track change in number of batteries
-// available on a system.
-//
-// Once registered, the consumer can expect to be notified whenever the
-// batteries are added or removed from the system.
-//
-// The consumer will recieve a value indicating number of batteries currently
-// present on the system.
-//
-// {7D263F15-FCA4-49E5-854B-A9F2BFBD5C24}
 DEFINE_GUID( GUID_BATTERY_COUNT, 0x7d263f15, 0xfca4, 0x49e5, 0x85, 0x4b, 0xa9, 0xf2, 0xbf, 0xbd, 0x5c, 0x24 );
 
-//
-// Global notification indicating to listeners user activity/presence accross
-// all sessions in the system (Present, NotPresent, Inactive)
-//
-// {786E8A1D-B427-4344-9207-09E70BDCBEA9}
 DEFINE_GUID( GUID_GLOBAL_USER_PRESENCE, 0x786e8a1d, 0xb427, 0x4344, 0x92, 0x7, 0x9, 0xe7, 0xb, 0xdc, 0xbe, 0xa9 );
 
-//
-// Session specific notification indicating to listeners whether or not the display
-// related to the given session is on/off/dim
-//
-// N.B. This is a session-specific notification, sent only to interactive
-//      session registrants. Session 0 and kernel mode consumers do not receive
-//      this notification.
-//
-// {2B84C20E-AD23-4ddf-93DB-05FFBD7EFCA5}
 DEFINE_GUID( GUID_SESSION_DISPLAY_STATUS, 0x2b84c20e, 0xad23, 0x4ddf, 0x93, 0xdb, 0x5, 0xff, 0xbd, 0x7e, 0xfc, 0xa5 );
 
-//
-// Session specific notification indicating to listeners user activity/presence
-//(Present, NotPresent, Inactive)
-//
-// N.B. This is a session-specific notification, sent only to interactive
-//      session registrants. Session 0 and kernel mode consumers do not receive
-//      this notification.
-// {3C0F4548-C03F-4c4d-B9F2-237EDE686376}
 DEFINE_GUID( GUID_SESSION_USER_PRESENCE, 0x3c0f4548, 0xc03f, 0x4c4d, 0xb9, 0xf2, 0x23, 0x7e, 0xde, 0x68, 0x63, 0x76 );
 
-
-// Notification to listeners that the system is fairly busy and won't be moving
-// into an idle state any time soon.  This can be used as a hint to listeners
-// that now might be a good time to do background tasks.
-//
 DEFINE_GUID( GUID_IDLE_BACKGROUND_TASK, 0x515C31D8, 0xF734, 0x163D, 0xA0, 0xFD, 0x11, 0xA0, 0x8C, 0x91, 0xE8, 0xF1 );
 
-// Notification to listeners that the system is fairly busy and won't be moving
-// into an idle state any time soon.  This can be used as a hint to listeners
-// that now might be a good time to do background tasks.
-//
-// { CF23F240-2A54-48D8-B114-DE1518FF052E }
 DEFINE_GUID( GUID_BACKGROUND_TASK_NOTIFICATION, 0xCF23F240, 0x2A54, 0x48D8, 0xB1, 0x14, 0xDE, 0x15, 0x18, 0xFF, 0x05, 0x2E );
 
-// Define a GUID that will represent the action of a direct experience button
-// on the platform.  Users will register for this DPPE setting and recieve
-// notification when the h/w button is pressed.
-//
-// { 1A689231-7399-4E9A-8F99-B71F999DB3FA }
-//
 DEFINE_GUID( GUID_APPLAUNCH_BUTTON, 0x1A689231, 0x7399, 0x4E9A, 0x8F, 0x99, 0xB7, 0x1F, 0x99, 0x9D, 0xB3, 0xFA );
 
-// PCI Express power settings
-// ------------------------
-//
-
-// Specifies the subgroup which will contain all of the PCI Express
-// settings for a single policy.
-//
-// {501a4d13-42af-4429-9fd1-a8218c268e20}
-//
 DEFINE_GUID( GUID_PCIEXPRESS_SETTINGS_SUBGROUP, 0x501a4d13, 0x42af,0x4429, 0x9f, 0xd1, 0xa8, 0x21, 0x8c, 0x26, 0x8e, 0x20 );
 
-// Specifies the PCI Express ASPM power policy.
-//
-// {ee12f906-d277-404b-b6da-e5fa1a576df5}
-//
 DEFINE_GUID( GUID_PCIEXPRESS_ASPM_POLICY, 0xee12f906, 0xd277, 0x404b, 0xb6, 0xda, 0xe5, 0xfa, 0x1a, 0x57, 0x6d, 0xf5 );
-
-// POWER Shutdown settings
-// ------------------------
-//
-
-// Specifies if forced shutdown should be used for all button and lid initiated
-// shutdown actions.
-//
-// {833a6b62-dfa4-46d1-82f8-e09e34d029d6}
-//
 
 DEFINE_GUID( GUID_ENABLE_SWITCH_FORCED_SHUTDOWN, 0x833a6b62, 0xdfa4, 0x46d1, 0x82, 0xf8, 0xe0, 0x9e, 0x34, 0xd0, 0x29, 0xd6 );
 
-// Interrupt Steering power settings
-// ------------------------
-//
+DEFINE_GUID(GUID_INTSTEER_SUBGROUP,0x48672f38, 0x7a9a, 0x4bb2, 0x8b, 0xf8, 0x3d, 0x85, 0xbe, 0x19, 0xde, 0x4e);
 
-// {48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E}
-DEFINE_GUID(GUID_INTSTEER_SUBGROUP,
-0x48672f38, 0x7a9a, 0x4bb2, 0x8b, 0xf8, 0x3d, 0x85, 0xbe, 0x19, 0xde, 0x4e);
+DEFINE_GUID(GUID_INTSTEER_MODE,0x2bfc24f9, 0x5ea2, 0x4801, 0x82, 0x13, 0x3d, 0xba, 0xe0, 0x1a, 0xa3, 0x9d);
 
-// {2BFC24F9-5EA2-4801-8213-3DBAE01AA39D}
-DEFINE_GUID(GUID_INTSTEER_MODE,
-0x2bfc24f9, 0x5ea2, 0x4801, 0x82, 0x13, 0x3d, 0xba, 0xe0, 0x1a, 0xa3, 0x9d);
+DEFINE_GUID(GUID_INTSTEER_LOAD_PER_PROC_TRIGGER,0x73cde64d, 0xd720, 0x4bb2, 0xa8, 0x60, 0xc7, 0x55, 0xaf, 0xe7, 0x7e, 0xf2);
 
-// {73CDE64D-D720-4bb2-A860-C755AFE77EF2}
-DEFINE_GUID(GUID_INTSTEER_LOAD_PER_PROC_TRIGGER,
-0x73cde64d, 0xd720, 0x4bb2, 0xa8, 0x60, 0xc7, 0x55, 0xaf, 0xe7, 0x7e, 0xf2);
+DEFINE_GUID(GUID_INTSTEER_TIME_UNPARK_TRIGGER,0xd6ba4903, 0x386f, 0x4c2c, 0x8a, 0xdb, 0x5c, 0x21, 0xb3, 0x32, 0x8d, 0x25);
+--]==]
 
-// {D6BA4903-386F-4c2c-8ADB-5C21B3328D25}
-DEFINE_GUID(GUID_INTSTEER_TIME_UNPARK_TRIGGER,
-0xd6ba4903, 0x386f, 0x4c2c, 0x8a, 0xdb, 0x5c, 0x21, 0xb3, 0x32, 0x8d, 0x25);
-
-
+--[==[
 typedef enum _SYSTEM_POWER_STATE {
     PowerSystemUnspecified = 0,
     PowerSystemWorking     = 1,
@@ -14733,52 +13811,32 @@ typedef struct {
 #define PPM_IDLE_IMPLEMENTATION_CSTATES          0x00000001
 #define PPM_IDLE_IMPLEMENTATION_PEP              0x00000002
 #define PPM_IDLE_IMPLEMENTATION_MICROPEP         0x00000003
+--]==]
 
-//
-// Processor Power Management WMI interface.
-//
+--[==[
 
-// {A5B32DDD-7F39-4abc-B892-900E43B59EBB}
-DEFINE_GUID(PPM_PERFSTATE_CHANGE_GUID,
-0xa5b32ddd, 0x7f39, 0x4abc, 0xb8, 0x92, 0x90, 0xe, 0x43, 0xb5, 0x9e, 0xbb);
+DEFINE_GUID(PPM_PERFSTATE_CHANGE_GUID,0xa5b32ddd, 0x7f39, 0x4abc, 0xb8, 0x92, 0x90, 0xe, 0x43, 0xb5, 0x9e, 0xbb);
 
-// {995e6b7f-d653-497a-b978-36a30c29bf01}
-DEFINE_GUID(PPM_PERFSTATE_DOMAIN_CHANGE_GUID,
-0x995e6b7f, 0xd653, 0x497a, 0xb9, 0x78, 0x36, 0xa3, 0xc, 0x29, 0xbf, 0x1);
+DEFINE_GUID(PPM_PERFSTATE_DOMAIN_CHANGE_GUID,0x995e6b7f, 0xd653, 0x497a, 0xb9, 0x78, 0x36, 0xa3, 0xc, 0x29, 0xbf, 0x1);
 
-// {4838fe4f-f71c-4e51-9ecc-8430a7ac4c6c}
-DEFINE_GUID(PPM_IDLESTATE_CHANGE_GUID,
-0x4838fe4f, 0xf71c, 0x4e51, 0x9e, 0xcc, 0x84, 0x30, 0xa7, 0xac, 0x4c, 0x6c);
+DEFINE_GUID(PPM_IDLESTATE_CHANGE_GUID,0x4838fe4f, 0xf71c, 0x4e51, 0x9e, 0xcc, 0x84, 0x30, 0xa7, 0xac, 0x4c, 0x6c);
 
-// {5708cc20-7d40-4bf4-b4aa-2b01338d0126}
-DEFINE_GUID(PPM_PERFSTATES_DATA_GUID,
-0x5708cc20, 0x7d40, 0x4bf4, 0xb4, 0xaa, 0x2b, 0x01, 0x33, 0x8d, 0x01, 0x26);
+DEFINE_GUID(PPM_PERFSTATES_DATA_GUID,0x5708cc20, 0x7d40, 0x4bf4, 0xb4, 0xaa, 0x2b, 0x01, 0x33, 0x8d, 0x01, 0x26);
 
-// {ba138e10-e250-4ad7-8616-cf1a7ad410e7}
-DEFINE_GUID(PPM_IDLESTATES_DATA_GUID,
-0xba138e10, 0xe250, 0x4ad7, 0x86, 0x16, 0xcf, 0x1a, 0x7a, 0xd4, 0x10, 0xe7);
+DEFINE_GUID(PPM_IDLESTATES_DATA_GUID,0xba138e10, 0xe250, 0x4ad7, 0x86, 0x16, 0xcf, 0x1a, 0x7a, 0xd4, 0x10, 0xe7);
 
-// {e2a26f78-ae07-4ee0-a30f-ce354f5a94cd}
-DEFINE_GUID(PPM_IDLE_ACCOUNTING_GUID,
-0xe2a26f78, 0xae07, 0x4ee0, 0xa3, 0x0f, 0xce, 0x54, 0xf5, 0x5a, 0x94, 0xcd);
+DEFINE_GUID(PPM_IDLE_ACCOUNTING_GUID,0xe2a26f78, 0xae07, 0x4ee0, 0xa3, 0x0f, 0xce, 0x54, 0xf5, 0x5a, 0x94, 0xcd);
 
-// {d67abd39-81f8-4a5e-8152-72e31ec912ee}
-DEFINE_GUID(PPM_IDLE_ACCOUNTING_EX_GUID,
-0xd67abd39, 0x81f8, 0x4a5e, 0x81, 0x52, 0x72, 0xe3, 0x1e, 0xc9, 0x12, 0xee);
+DEFINE_GUID(PPM_IDLE_ACCOUNTING_EX_GUID,0xd67abd39, 0x81f8, 0x4a5e, 0x81, 0x52, 0x72, 0xe3, 0x1e, 0xc9, 0x12, 0xee);
 
-// {a852c2c8-1a4c-423b-8c2c-f30d82931a88}
-DEFINE_GUID(PPM_THERMALconstRAINT_GUID,
-0xa852c2c8, 0x1a4c, 0x423b, 0x8c, 0x2c, 0xf3, 0x0d, 0x82, 0x93, 0x1a, 0x88);
+DEFINE_GUID(PPM_THERMALconstRAINT_GUID,0xa852c2c8, 0x1a4c, 0x423b, 0x8c, 0x2c, 0xf3, 0x0d, 0x82, 0x93, 0x1a, 0x88);
 
-// {7fd18652-0cfe-40d2-b0a1-0b066a87759e}
-DEFINE_GUID(PPM_PERFMON_PERFSTATE_GUID,
-0x7fd18652, 0xcfe, 0x40d2, 0xb0, 0xa1, 0xb, 0x6, 0x6a, 0x87, 0x75, 0x9e);
+DEFINE_GUID(PPM_PERFMON_PERFSTATE_GUID,0x7fd18652, 0xcfe, 0x40d2, 0xb0, 0xa1, 0xb, 0x6, 0x6a, 0x87, 0x75, 0x9e);
 
-// {48f377b8-6880-4c7b-8bdc-380176c6654d}
-DEFINE_GUID(PPM_THERMAL_POLICY_CHANGE_GUID,
-0x48f377b8, 0x6880, 0x4c7b, 0x8b, 0xdc, 0x38, 0x1, 0x76, 0xc6, 0x65, 0x4d);
+DEFINE_GUID(PPM_THERMAL_POLICY_CHANGE_GUID,0x48f377b8, 0x6880, 0x4c7b, 0x8b, 0xdc, 0x38, 0x1, 0x76, 0xc6, 0x65, 0x4d);
+--]==]
 
-
+ffi.cdef[[
 typedef struct {
     DWORD State;
     DWORD Status;
@@ -14804,16 +13862,14 @@ typedef struct {
     DWORD ThermalConstraint;
     DWORD64 Processors;
 } PPM_THERMALCHANGE_EVENT, *PPPM_THERMALCHANGE_EVENT;
+]]
 
-#pragma warning(push)
-#pragma warning(disable:4121)
-
+--[==[
 typedef struct {
     BYTE  Mode;
     DWORD64 Processors;
 } PPM_THERMAL_POLICY_EVENT, *PPPM_THERMAL_POLICY_EVENT;
 
-#pragma warning(pop)
 
 // Power Policy Management interfaces
 //

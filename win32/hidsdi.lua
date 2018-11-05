@@ -10,13 +10,16 @@ typedef  LONG NTSTATUS;
 require("win32.hidusage")
 require("win32.hidpi")
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _HIDD_CONFIGURATION {
     PVOID    cookie;
     ULONG    size;
     ULONG    RingBufferSize;
-} HIDD_CONFIGURATION, *PHIDD_CONFIGURATION;
+} HIDD_CONFIGURATION, *PHIDD_CONFIGURATION
+__attribute__((__packed__));
+]]
 
+ffi.cdef[[
 typedef struct _HIDD_ATTRIBUTES {
     ULONG   Size; // = sizeof (struct _HIDD_ATTRIBUTES)
 
@@ -30,8 +33,10 @@ typedef struct _HIDD_ATTRIBUTES {
     //
     // Additional fields will be added to the end of this structure.
     //
-} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES
+__attribute__((__packed__));
+]]
+
 
 ffi.cdef[[
 BOOLEAN __stdcall

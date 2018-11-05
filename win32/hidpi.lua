@@ -28,16 +28,18 @@ typedef enum _HIDP_REPORT_TYPE
 } HIDP_REPORT_TYPE;
 ]]
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _USAGE_AND_PAGE
 {
     USAGE Usage;
     USAGE UsagePage;
-} USAGE_AND_PAGE, *PUSAGE_AND_PAGE;
-__attribute__((__packed__));]])
---..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} USAGE_AND_PAGE, *PUSAGE_AND_PAGE
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+
+
+ffi.cdef[[
 typedef struct _HIDP_BUTTON_CAPS
 {
     USAGE    UsagePage;
@@ -71,10 +73,11 @@ typedef struct _HIDP_BUTTON_CAPS
         } NotRange;
     };
 
-} HIDP_BUTTON_CAPS, *PHIDP_BUTTON_CAPS;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_BUTTON_CAPS, *PHIDP_BUTTON_CAPS
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _HIDP_VALUE_CAPS
 {
     USAGE    UsagePage;
@@ -120,10 +123,12 @@ typedef struct _HIDP_VALUE_CAPS
             USHORT   DataIndex,        Reserved4;
         } NotRange;
     };
-} HIDP_VALUE_CAPS, *PHIDP_VALUE_CAPS;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_VALUE_CAPS, *PHIDP_VALUE_CAPS
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+
+ffi.cdef[[
 typedef struct _HIDP_LINK_COLLECTION_NODE
 {
     USAGE    LinkUsage;
@@ -136,15 +141,16 @@ typedef struct _HIDP_LINK_COLLECTION_NODE
     ULONG    IsAlias : 1; // This link node is an allias of the next link node.
     ULONG    Reserved: 23;
     PVOID    UserContext; // The user can hang his coat here.
-} HIDP_LINK_COLLECTION_NODE, *PHIDP_LINK_COLLECTION_NODE;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_LINK_COLLECTION_NODE, *PHIDP_LINK_COLLECTION_NODE
+__attribute__((__packed__));
+]]
 
 ffi.cdef[[
 typedef PUCHAR  PHIDP_REPORT_DESCRIPTOR;
 typedef struct _HIDP_PREPARSED_DATA * PHIDP_PREPARSED_DATA;
 ]]
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _HIDP_CAPS
 {
     USAGE    Usage;
@@ -167,10 +173,11 @@ typedef struct _HIDP_CAPS
     USHORT   NumberFeatureButtonCaps;
     USHORT   NumberFeatureValueCaps;
     USHORT   NumberFeatureDataIndices;
-} HIDP_CAPS, *PHIDP_CAPS;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_CAPS, *PHIDP_CAPS
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _HIDP_DATA
 {
     USHORT  DataIndex;
@@ -179,19 +186,23 @@ typedef struct _HIDP_DATA
         ULONG   RawValue; // for values
         BOOLEAN On; // for buttons MUST BE TRUE for buttons.
     };
-} HIDP_DATA, *PHIDP_DATA;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_DATA, *PHIDP_DATA
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+
+ffi.cdef[[
 typedef struct _HIDP_UNKNOWN_TOKEN
 {
     UCHAR  Token;
     UCHAR  Reserved[3];
     ULONG  BitField;
-} HIDP_UNKNOWN_TOKEN, *PHIDP_UNKNOWN_TOKEN;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_UNKNOWN_TOKEN, *PHIDP_UNKNOWN_TOKEN
+__attribute__((__packed__));
+]]
 
-ffi.cdef([[
+
+ffi.cdef[[
 typedef struct _HIDP_EXTENDED_ATTRIBUTES
 {
     UCHAR   NumGlobalUnknowns;
@@ -199,8 +210,9 @@ typedef struct _HIDP_EXTENDED_ATTRIBUTES
     PHIDP_UNKNOWN_TOKEN  GlobalUnknowns;
     // ... Additional attributes
     ULONG   Data [1]; // variableLength  DO NOT ACCESS THIS FIELD
-} HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES
+__attribute__((__packed__));
+]]
 
 ffi.cdef[[
 NTSTATUS __stdcall
@@ -209,18 +221,12 @@ HidP_GetCaps (
        PHIDP_CAPS                Capabilities
    );
 
-
-
-
 NTSTATUS __stdcall
 HidP_GetLinkCollectionNodes (
    PHIDP_LINK_COLLECTION_NODE LinkCollectionNodes,
      PULONG                     LinkCollectionNodesLength,
         PHIDP_PREPARSED_DATA       PreparsedData
    );
-
-
-
 
 NTSTATUS __stdcall
 HidP_GetSpecificButtonCaps (
@@ -233,8 +239,6 @@ HidP_GetSpecificButtonCaps (
          PHIDP_PREPARSED_DATA PreparsedData
    );
 
-
-
 NTSTATUS __stdcall
 HidP_GetButtonCaps (
          HIDP_REPORT_TYPE     ReportType,
@@ -242,8 +246,6 @@ HidP_GetButtonCaps (
       PUSHORT              ButtonCapsLength,
          PHIDP_PREPARSED_DATA PreparsedData
 );
-
-
 
 NTSTATUS __stdcall
 HidP_GetSpecificValueCaps (
@@ -255,9 +257,6 @@ HidP_GetSpecificValueCaps (
       PUSHORT              ValueCapsLength,
          PHIDP_PREPARSED_DATA PreparsedData
    );
-
-
-
 
 NTSTATUS __stdcall
 HidP_GetValueCaps (
@@ -305,16 +304,11 @@ HidP_GetData (
     ULONG ReportLength
     );
 
-
-
 ULONG __stdcall
 HidP_MaxDataListLength (
    HIDP_REPORT_TYPE      ReportType,
    PHIDP_PREPARSED_DATA  PreparsedData
    );
-
-
-
 
 NTSTATUS __stdcall
 HidP_SetUsages (
@@ -327,8 +321,6 @@ HidP_SetUsages (
    PCHAR   Report,
    ULONG   ReportLength 
    );
-
-
 
 NTSTATUS __stdcall
 HidP_UnsetUsages (
@@ -405,7 +397,7 @@ HidP_SetUsageValueArray (
     PCHAR UsageValue,
     USHORT UsageValueByteLength,
     PHIDP_PREPARSED_DATA PreparsedData,
-    (ReportLength) PCHAR Report,
+    PCHAR Report,
     ULONG ReportLength
     );
 
@@ -472,7 +464,7 @@ typedef enum _HIDP_KEYBOARD_DIRECTION {
 } HIDP_KEYBOARD_DIRECTION;
 ]]
 
-ffi.cdef([[
+ffi.cdef[[
 typedef struct _HIDP_KEYBOARD_MODIFIER_STATE {
    union {
       struct {
@@ -492,8 +484,10 @@ typedef struct _HIDP_KEYBOARD_MODIFIER_STATE {
       ULONG ul;
    };
 
-} HIDP_KEYBOARD_MODIFIER_STATE, * PHIDP_KEYBOARD_MODIFIER_STATE;
-]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
+} HIDP_KEYBOARD_MODIFIER_STATE, * PHIDP_KEYBOARD_MODIFIER_STATE
+__attribute__((__packed__));
+]]
+
 --#include <poppack.h>
 
 ffi.cdef[[
@@ -569,7 +563,7 @@ ffi.cdef[[
 //
 // We blundered this status code.
 //
-static const int HIDP_STATUS_I8242_TRANS_UNKNOWN = HIDP_STATUS_I8042_TRANS_UNKNOWN;
+//static const int HIDP_STATUS_I8242_TRANS_UNKNOWN = HIDP_STATUS_I8042_TRANS_UNKNOWN;
 ]]
 
 --[[
