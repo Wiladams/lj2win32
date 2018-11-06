@@ -6215,7 +6215,9 @@ MsgWaitForMultipleObjectsEx(
 
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]=]
 
+ffi.cdef[[
 /*
  * Windows Functions
  */
@@ -6229,13 +6231,13 @@ SetTimer(
      UINT uElapse,
      TIMERPROC lpTimerFunc);
 
-#if(WINVER >= 0x0601)
 
-#define TIMERV_DEFAULT_COALESCING   (0)
-#define TIMERV_NO_COALESCING        (0xFFFFFFFF)
 
-#define TIMERV_COALESCING_MIN       (1)
-#define TIMERV_COALESCING_MAX       (0x7FFFFFF5)
+static const int TIMERV_DEFAULT_COALESCING  = (0);
+static const int TIMERV_NO_COALESCING       = (0xFFFFFFFF);
+
+static const int TIMERV_COALESCING_MIN      = (1);
+static const int TIMERV_COALESCING_MAX      = (0x7FFFFFF5);
 
 
 UINT_PTR
@@ -6246,8 +6248,6 @@ SetCoalescableTimer(
      UINT uElapse,
      TIMERPROC lpTimerFunc,
      ULONG uToleranceDelay);
-
-#endif /* WINVER >= 0x0601 */
 
 
 BOOL
@@ -6287,31 +6287,39 @@ __stdcall
 LoadAcceleratorsW(
      HINSTANCE hInstance,
      LPCWSTR lpTableName);
+]]
+
+--[[
 #ifdef UNICODE
 #define LoadAccelerators  LoadAcceleratorsW
 #else
 #define LoadAccelerators  LoadAcceleratorsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HACCEL
 __stdcall
 CreateAcceleratorTableA(
-    _In_reads_(cAccel) LPACCEL paccel,
+    LPACCEL paccel,
      int cAccel);
 
 HACCEL
 __stdcall
 CreateAcceleratorTableW(
-    _In_reads_(cAccel) LPACCEL paccel,
+    LPACCEL paccel,
      int cAccel);
+]]
+
+--[[
 #ifdef UNICODE
 #define CreateAcceleratorTable  CreateAcceleratorTableW
 #else
 #define CreateAcceleratorTable  CreateAcceleratorTableA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 DestroyAcceleratorTable(
@@ -6322,25 +6330,27 @@ int
 __stdcall
 CopyAcceleratorTableA(
      HACCEL hAccelSrc,
-    _Out_writes_to_opt_(cAccelEntries, return) LPACCEL lpAccelDst,
+    LPACCEL lpAccelDst,
      int cAccelEntries);
 
 int
 __stdcall
 CopyAcceleratorTableW(
      HACCEL hAccelSrc,
-    _Out_writes_to_opt_(cAccelEntries, return) LPACCEL lpAccelDst,
+     LPACCEL lpAccelDst,
      int cAccelEntries);
+]]
 
+--[[
 #ifdef UNICODE
 #define CopyAcceleratorTable  CopyAcceleratorTableW
 #else
 #define CopyAcceleratorTable  CopyAcceleratorTableA
 #endif // !UNICODE
+--]]
 
-#ifndef NOMSG
 
-
+ffi.cdef[[
 int
 __stdcall
 TranslateAcceleratorA(
@@ -6354,7 +6364,7 @@ TranslateAcceleratorW(
      HWND hWnd,
      HACCEL hAccTable,
      LPMSG lpMsg);
---]=]
+]]
 
 --[[
 #ifdef UNICODE
@@ -7361,7 +7371,7 @@ DrawTextExW(
 
 
 
---[=[
+ffi.cdef[[
 BOOL
 __stdcall
 GrayStringA(
@@ -7387,16 +7397,18 @@ GrayStringW(
      int Y,
      int nWidth,
      int nHeight);
+]]
 
+--[[
 #ifdef UNICODE
 #define GrayString  GrayStringW
 #else
 #define GrayString  GrayStringA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
+--[[
 #if(WINVER >= 0x0400)
 /* Monolithic state-drawing routine */
 /* Image type */
@@ -7411,22 +7423,21 @@ GrayStringW(
 #define DSS_UNION       0x0010  /* Gray string appearance */
 #define DSS_DISABLED    0x0020
 #define DSS_MONO        0x0080
-#if(_WIN32_WINNT >= 0x0500)
+
 #define DSS_HIDEPREFIX  0x0200
 #define DSS_PREFIXONLY  0x0400
-#endif /* _WIN32_WINNT >= 0x0500 */
+
 #define DSS_RIGHT       0x8000
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 DrawStateA(
      HDC hdc,
      HBRUSH hbrFore,
-     DRAWSTATEPROC qfn__stdcall,
+     DRAWSTATEPROC qfnCallBack,
      LPARAM lData,
      WPARAM wData,
      int x,
@@ -7440,7 +7451,7 @@ __stdcall
 DrawStateW(
      HDC hdc,
      HBRUSH hbrFore,
-     DRAWSTATEPROC qfn__stdcall,
+     DRAWSTATEPROC qfnCallBack,
      LPARAM lData,
      WPARAM wData,
      int x,
@@ -7448,32 +7459,28 @@ DrawStateW(
      int cx,
      int cy,
      UINT uFlags);
+]]
 
+--[[
 #ifdef UNICODE
 #define DrawState  DrawStateW
 #else
 #define DrawState  DrawStateA
 #endif // !UNICODE
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0400 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--]]
 
 
+ffi.cdef[[
 LONG
 __stdcall
 TabbedTextOutA(
      HDC hdc,
      int x,
      int y,
-    _In_reads_(chCount) LPCSTR lpString,
+    LPCSTR lpString,
      int chCount,
      int nTabPositions,
-    _In_reads_opt_(nTabPositions) const INT *lpnTabStopPositions,
+     const INT *lpnTabStopPositions,
      int nTabOrigin);
 
 LONG
@@ -7482,44 +7489,50 @@ TabbedTextOutW(
      HDC hdc,
      int x,
      int y,
-    _In_reads_(chCount) LPCWSTR lpString,
+     LPCWSTR lpString,
      int chCount,
      int nTabPositions,
-    _In_reads_opt_(nTabPositions) const INT *lpnTabStopPositions,
+     const INT *lpnTabStopPositions,
      int nTabOrigin);
+]]
 
+--[[
 #ifdef UNICODE
 #define TabbedTextOut  TabbedTextOutW
 #else
 #define TabbedTextOut  TabbedTextOutA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetTabbedTextExtentA(
      HDC hdc,
-    _In_reads_(chCount) LPCSTR lpString,
+    LPCSTR lpString,
      int chCount,
      int nTabPositions,
-    _In_reads_opt_(nTabPositions) const INT *lpnTabStopPositions);
+     const INT *lpnTabStopPositions);
 
 DWORD
 __stdcall
 GetTabbedTextExtentW(
      HDC hdc,
-    _In_reads_(chCount) LPCWSTR lpString,
+     LPCWSTR lpString,
      int chCount,
      int nTabPositions,
-    _In_reads_opt_(nTabPositions) const INT *lpnTabStopPositions);
+     const INT *lpnTabStopPositions);
+]]
 
+--[[
 #ifdef UNICODE
 #define GetTabbedTextExtent  GetTabbedTextExtentW
 #else
 #define GetTabbedTextExtent  GetTabbedTextExtentA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 UpdateWindow(
@@ -7535,36 +7548,28 @@ __stdcall
 GetForegroundWindow(
     VOID);
 
-#if(WINVER >= 0x0400)
-
 BOOL
 __stdcall
 PaintDesktop(
      HDC hdc);
-
 
 VOID
 __stdcall
 SwitchToThisWindow(
      HWND hwnd,
      BOOL fUnknown);
-#endif /* WINVER >= 0x0400 */
-
-
 
 BOOL
 __stdcall
 SetForegroundWindow(
      HWND hWnd);
 
-#if(_WIN32_WINNT >= 0x0500)
-
 BOOL
 __stdcall
 AllowSetForegroundWindow(
      DWORD dwProcessId);
 
-#define ASFW_ANY    ((DWORD)-1)
+static const int ASFW_ANY   = ((DWORD)-1);
 
 
 BOOL
@@ -7572,11 +7577,9 @@ __stdcall
 LockSetForegroundWindow(
      UINT uLockCode);
 
-#define LSFW_LOCK       1
-#define LSFW_UNLOCK     2
-
-#endif /* _WIN32_WINNT >= 0x0500 */
---]=]
+static const int LSFW_LOCK     =  1;
+static const int LSFW_UNLOCK   =  2;
+]]
 
 ffi.cdef[[
 HWND
@@ -7600,24 +7603,21 @@ GetDCEx(
 ]]
 
 
---[[
-/*
- * GetDCEx() flags
- */
-#define DCX_WINDOW           0x00000001L
-#define DCX_CACHE            0x00000002L
-#define DCX_NORESETATTRS     0x00000004L
-#define DCX_CLIPCHILDREN     0x00000008L
-#define DCX_CLIPSIBLINGS     0x00000010L
-#define DCX_PARENTCLIP       0x00000020L
-#define DCX_EXCLUDERGN       0x00000040L
-#define DCX_INTERSECTRGN     0x00000080L
-#define DCX_EXCLUDEUPDATE    0x00000100L
-#define DCX_INTERSECTUPDATE  0x00000200L
-#define DCX_LOCKWINDOWUPDATE 0x00000400L
+ffi.cdef[[
+static const int DCX_WINDOW          = 0x00000001L;
+static const int DCX_CACHE           = 0x00000002L;
+static const int DCX_NORESETATTRS    = 0x00000004L;
+static const int DCX_CLIPCHILDREN    = 0x00000008L;
+static const int DCX_CLIPSIBLINGS    = 0x00000010L;
+static const int DCX_PARENTCLIP      = 0x00000020L;
+static const int DCX_EXCLUDERGN      = 0x00000040L;
+static const int DCX_INTERSECTRGN    = 0x00000080L;
+static const int DCX_EXCLUDEUPDATE   = 0x00000100L;
+static const int DCX_INTERSECTUPDATE = 0x00000200L;
+static const int DCX_LOCKWINDOWUPDATE= 0x00000400L;
 
-#define DCX_VALIDATE         0x00200000L
---]]
+static const int DCX_VALIDATE        = 0x00200000L;
+]]
 
 
 ffi.cdef[[
