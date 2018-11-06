@@ -39,9 +39,9 @@ function exports.command(params)
         caption = caption..'\t'..params.accel;
     end
     mItem.fMask = bor(ffi.C.MIIM_STRING, ffi.C.MIIM_ID);
-    mItem.cch = #params.caption;
+    mItem.cch = #caption;
     mItem.dwTypeData = ffi.cast("char *", caption)
-    mItem.wID = params.ID or 0;
+    mItem.wID = params.id or 0;
 
     return mItem;
 end

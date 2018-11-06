@@ -42,6 +42,7 @@ local GDISurface = require("GDISurface")
 
 
 local exports = {}
+local lonMessage = false;
 
 MemoryDC = nil;
 ClientDC = nil;
@@ -162,7 +163,10 @@ local function msgLoop()
         -- we use peekmessage, so we don't stall on a GetMessage
         while (ffi.C.PeekMessageA(msg, nil, 0, 0, ffi.C.PM_REMOVE) ~= 0) do
             --print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg.message])            
-
+            if lonMessage then
+                lonMessage(msg);
+            end
+            
             -- If we see a quit message, it's time to stop the program
             -- ideally we'd call an 'onQuit' and wait for that to return
             -- before actually halting.  That will give the app a chance
@@ -248,8 +252,14 @@ local function setupUIHandlers()
 
 end
 
+
+
 local function main(params)
-    
+    -- make a local for 'onMessage' global function
+    if onMessage then
+        lonMessage = onMessage;
+    end
+
     spawn(msgLoop);
     yield();
     spawn(createWindow, params);
