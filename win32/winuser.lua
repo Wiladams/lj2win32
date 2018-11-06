@@ -11620,17 +11620,14 @@ typedef struct tagTouchPredictionParameters
 /*
  * Flags
  */
-#define SPIF_UPDATEINIFILE    0x0001
-#define SPIF_SENDWININICHANGE 0x0002
-#define SPIF_SENDCHANGE       SPIF_SENDWININICHANGE
+static const int SPIF_UPDATEINIFILE    = 0x0001;
+static const int SPIF_SENDWININICHANGE = 0x0002;
+static const int SPIF_SENDCHANGE       = SPIF_SENDWININICHANGE;
+--]=]
 
+ffi.cdef[[
+static const int METRICS_USEDEFAULT = -1;
 
-#define METRICS_USEDEFAULT -1
-#ifdef _WINGDI_
-#ifndef NOGDI
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagNONCLIENTMETRICSA
 {
@@ -11649,10 +11646,11 @@ typedef struct tagNONCLIENTMETRICSA
     LOGFONTA lfMenuFont;
     LOGFONTA lfStatusFont;
     LOGFONTA lfMessageFont;
-#if(WINVER >= 0x0600)
+
     int     iPaddedBorderWidth;
-#endif /* WINVER >= 0x0600 */
-}   NONCLIENTMETRICSA, *PNONCLIENTMETRICSA, FAR* LPNONCLIENTMETRICSA;
+
+}   NONCLIENTMETRICSA, *PNONCLIENTMETRICSA, * LPNONCLIENTMETRICSA;
+
 typedef struct tagNONCLIENTMETRICSW
 {
     UINT    cbSize;
@@ -11670,10 +11668,12 @@ typedef struct tagNONCLIENTMETRICSW
     LOGFONTW lfMenuFont;
     LOGFONTW lfStatusFont;
     LOGFONTW lfMessageFont;
-#if(WINVER >= 0x0600)
+
     int     iPaddedBorderWidth;
-#endif /* WINVER >= 0x0600 */
-}   NONCLIENTMETRICSW, *PNONCLIENTMETRICSW, FAR* LPNONCLIENTMETRICSW;
+}   NONCLIENTMETRICSW, *PNONCLIENTMETRICSW, * LPNONCLIENTMETRICSW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef NONCLIENTMETRICSW NONCLIENTMETRICS;
 typedef PNONCLIENTMETRICSW PNONCLIENTMETRICS;
@@ -11683,30 +11683,27 @@ typedef NONCLIENTMETRICSA NONCLIENTMETRICS;
 typedef PNONCLIENTMETRICSA PNONCLIENTMETRICS;
 typedef LPNONCLIENTMETRICSA LPNONCLIENTMETRICS;
 #endif // UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#endif /* NOGDI */
-#endif /* _WINGDI_ */
 
-#define ARW_BOTTOMLEFT              0x0000L
-#define ARW_BOTTOMRIGHT             0x0001L
-#define ARW_TOPLEFT                 0x0002L
-#define ARW_TOPRIGHT                0x0003L
-#define ARW_STARTMASK               0x0003L
-#define ARW_STARTRIGHT              0x0001L
-#define ARW_STARTTOP                0x0002L
+ffi.cdef[[
+static const int ARW_BOTTOMLEFT              = 0x0000L;
+static const int ARW_BOTTOMRIGHT             = 0x0001L;
+static const int ARW_TOPLEFT                 = 0x0002L;
+static const int ARW_TOPRIGHT                = 0x0003L;
+static const int ARW_STARTMASK               = 0x0003L;
+static const int ARW_STARTRIGHT              = 0x0001L;
+static const int ARW_STARTTOP                = 0x0002L;
 
-#define ARW_LEFT                    0x0000L
-#define ARW_RIGHT                   0x0000L
-#define ARW_UP                      0x0004L
-#define ARW_DOWN                    0x0004L
-#define ARW_HIDE                    0x0008L
+static const int ARW_LEFT                    = 0x0000L;
+static const int ARW_RIGHT                   = 0x0000L;
+static const int ARW_UP                      = 0x0004L;
+static const int ARW_DOWN                    = 0x0004L;
+static const int ARW_HIDE                    = 0x0008L;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+ffi.cdef[[
 typedef struct tagMINIMIZEDMETRICS
 {
     UINT    cbSize;
@@ -11715,9 +11712,9 @@ typedef struct tagMINIMIZEDMETRICS
     int     iVertGap;
     int     iArrange;
 }   MINIMIZEDMETRICS, *PMINIMIZEDMETRICS, *LPMINIMIZEDMETRICS;
+]]
 
-#ifdef _WINGDI_
-#ifndef NOGDI
+ffi.cdef[[
 typedef struct tagICONMETRICSA
 {
     UINT    cbSize;
@@ -11734,6 +11731,9 @@ typedef struct tagICONMETRICSW
     int     iTitleWrap;
     LOGFONTW lfFont;
 }   ICONMETRICSW, *PICONMETRICSW, *LPICONMETRICSW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef ICONMETRICSW ICONMETRICS;
 typedef PICONMETRICSW PICONMETRICS;
@@ -11743,9 +11743,9 @@ typedef ICONMETRICSA ICONMETRICS;
 typedef PICONMETRICSA PICONMETRICS;
 typedef LPICONMETRICSA LPICONMETRICS;
 #endif // UNICODE
-#endif /* NOGDI */
-#endif /* _WINGDI_ */
+--]]
 
+--[=[
 typedef struct tagANIMATIONINFO
 {
     UINT    cbSize;
@@ -11772,6 +11772,9 @@ typedef struct tagSERIALKEYSW
     UINT    iPortState;
     UINT    iActive;
 }   SERIALKEYSW, *LPSERIALKEYSW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef SERIALKEYSW SERIALKEYS;
 typedef LPSERIALKEYSW LPSERIALKEYS;
@@ -11779,6 +11782,7 @@ typedef LPSERIALKEYSW LPSERIALKEYS;
 typedef SERIALKEYSA SERIALKEYS;
 typedef LPSERIALKEYSA LPSERIALKEYS;
 #endif // UNICODE
+--]]
 
 /* flags for SERIALKEYS dwFlags field */
 #define SERKF_SERIALKEYSON  0x00000001
@@ -12664,46 +12668,39 @@ static const int EVENT_AIA_END                     =  0xAFFF;
 ]]
 
 
---[=[
-/*
- * Child IDs
- */
 
-
-/*
- * System Sounds (idChild of system SOUND notification)
- */
-#define SOUND_SYSTEM_STARTUP            1
-#define SOUND_SYSTEM_SHUTDOWN           2
-#define SOUND_SYSTEM_BEEP               3
-#define SOUND_SYSTEM_ERROR              4
-#define SOUND_SYSTEM_QUESTION           5
-#define SOUND_SYSTEM_WARNING            6
-#define SOUND_SYSTEM_INFORMATION        7
-#define SOUND_SYSTEM_MAXIMIZE           8
-#define SOUND_SYSTEM_MINIMIZE           9
-#define SOUND_SYSTEM_RESTOREUP          10
-#define SOUND_SYSTEM_RESTOREDOWN        11
-#define SOUND_SYSTEM_APPSTART           12
-#define SOUND_SYSTEM_FAULT              13
-#define SOUND_SYSTEM_APPEND             14
-#define SOUND_SYSTEM_MENUCOMMAND        15
-#define SOUND_SYSTEM_MENUPOPUP          16
-#define CSOUND_SYSTEM                   16
+ffi.cdef[[
+static const int SOUND_SYSTEM_STARTUP           = 1;
+static const int SOUND_SYSTEM_SHUTDOWN          = 2;
+static const int SOUND_SYSTEM_BEEP              = 3;
+static const int SOUND_SYSTEM_ERROR             = 4;
+static const int SOUND_SYSTEM_QUESTION          = 5;
+static const int SOUND_SYSTEM_WARNING           = 6;
+static const int SOUND_SYSTEM_INFORMATION       = 7;
+static const int SOUND_SYSTEM_MAXIMIZE          = 8;
+static const int SOUND_SYSTEM_MINIMIZE          = 9;
+static const int SOUND_SYSTEM_RESTOREUP         = 10;
+static const int SOUND_SYSTEM_RESTOREDOWN       = 11;
+static const int SOUND_SYSTEM_APPSTART          = 12;
+static const int SOUND_SYSTEM_FAULT             = 13;
+static const int SOUND_SYSTEM_APPEND            = 14;
+static const int SOUND_SYSTEM_MENUCOMMAND       = 15;
+static const int SOUND_SYSTEM_MENUPOPUP         = 16;
+static const int CSOUND_SYSTEM                  = 16;
 
 /*
  * System Alerts (indexChild of system ALERT notification)
  */
-#define ALERT_SYSTEM_INFORMATIONAL      1       // MB_INFORMATION
-#define ALERT_SYSTEM_WARNING            2       // MB_WARNING
-#define ALERT_SYSTEM_ERROR              3       // MB_ERROR
-#define ALERT_SYSTEM_QUERY              4       // MB_QUESTION
-#define ALERT_SYSTEM_CRITICAL           5       // HardSysErrBox
-#define CALERT_SYSTEM                   6
+static const int ALERT_SYSTEM_INFORMATIONAL     = 1;       // MB_INFORMATION
+static const int ALERT_SYSTEM_WARNING           = 2;       // MB_WARNING
+static const int ALERT_SYSTEM_ERROR             = 3;       // MB_ERROR
+static const int ALERT_SYSTEM_QUERY             = 4;       // MB_QUESTION
+static const int ALERT_SYSTEM_CRITICAL          = 5;       // HardSysErrBox
+static const int CALERT_SYSTEM                  = 6;
+]]
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+ffi.cdef[[
 typedef struct tagGUITHREADINFO
 {
     DWORD   cbSize;
@@ -12716,39 +12713,39 @@ typedef struct tagGUITHREADINFO
     HWND    hwndCaret;
     RECT    rcCaret;
 } GUITHREADINFO, *PGUITHREADINFO, * LPGUITHREADINFO;
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+ffi.cdef[[
+static const int GUI_CARETBLINKING  = 0x00000001;
+static const int GUI_INMOVESIZE     = 0x00000002;
+static const int GUI_INMENUMODE     = 0x00000004;
+static const int GUI_SYSTEMMENUMODE = 0x00000008;
+static const int GUI_POPUPMENUMODE  = 0x00000010;
+]]
 
-#define GUI_CARETBLINKING   0x00000001
-#define GUI_INMOVESIZE      0x00000002
-#define GUI_INMENUMODE      0x00000004
-#define GUI_SYSTEMMENUMODE  0x00000008
-#define GUI_POPUPMENUMODE   0x00000010
-#if(_WIN32_WINNT >= 0x0501)
-#if defined(_WIN64)
-#define GUI_16BITTASK       0x00000000
-#else
-#define GUI_16BITTASK       0x00000020
-#endif
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if _WIN64 then
+ffi.cdef[[
+static const int GUI_16BITTASK    =   0x00000000;
+]]
+else
+ffi.cdef[[
+static const int GUI_16BITTASK    =   0x00000020;
+]]
+end
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 GetGUIThreadInfo(
      DWORD idThread,
      PGUITHREADINFO pgui);
 
-
 BOOL
 __stdcall
 BlockInput(
     BOOL fBlockIt);
---]=]
+]]
 
 ffi.cdef[[
 static const int USER_DEFAULT_SCREEN_DPI = 96;
@@ -12849,42 +12846,40 @@ GetWindowModuleFileNameW(
 --]]
 
 
---[=[
-#ifndef NO_STATE_FLAGS
-#define STATE_SYSTEM_UNAVAILABLE        0x00000001  // Disabled
-#define STATE_SYSTEM_SELECTED           0x00000002
-#define STATE_SYSTEM_FOCUSED            0x00000004
-#define STATE_SYSTEM_PRESSED            0x00000008
-#define STATE_SYSTEM_CHECKED            0x00000010
-#define STATE_SYSTEM_MIXED              0x00000020  // 3-state checkbox or toolbar button
-#define STATE_SYSTEM_INDETERMINATE      STATE_SYSTEM_MIXED
-#define STATE_SYSTEM_READONLY           0x00000040
-#define STATE_SYSTEM_HOTTRACKED         0x00000080
-#define STATE_SYSTEM_DEFAULT            0x00000100
-#define STATE_SYSTEM_EXPANDED           0x00000200
-#define STATE_SYSTEM_COLLAPSED          0x00000400
-#define STATE_SYSTEM_BUSY               0x00000800
-#define STATE_SYSTEM_FLOATING           0x00001000  // Children "owned" not "contained" by parent
-#define STATE_SYSTEM_MARQUEED           0x00002000
-#define STATE_SYSTEM_ANIMATED           0x00004000
-#define STATE_SYSTEM_INVISIBLE          0x00008000
-#define STATE_SYSTEM_OFFSCREEN          0x00010000
-#define STATE_SYSTEM_SIZEABLE           0x00020000
-#define STATE_SYSTEM_MOVEABLE           0x00040000
-#define STATE_SYSTEM_SELFVOICING        0x00080000
-#define STATE_SYSTEM_FOCUSABLE          0x00100000
-#define STATE_SYSTEM_SELECTABLE         0x00200000
-#define STATE_SYSTEM_LINKED             0x00400000
-#define STATE_SYSTEM_TRAVERSED          0x00800000
-#define STATE_SYSTEM_MULTISELECTABLE    0x01000000  // Supports multiple selection
-#define STATE_SYSTEM_EXTSELECTABLE      0x02000000  // Supports extended selection
-#define STATE_SYSTEM_ALERT_LOW          0x04000000  // This information is of low priority
-#define STATE_SYSTEM_ALERT_MEDIUM       0x08000000  // This information is of medium priority
-#define STATE_SYSTEM_ALERT_HIGH         0x10000000  // This information is of high priority
-#define STATE_SYSTEM_PROTECTED          0x20000000  // access to this is restricted
-#define STATE_SYSTEM_VALID              0x3FFFFFFF
-#endif
---]=]
+ffi.cdef[[
+static const int STATE_SYSTEM_UNAVAILABLE        = 0x00000001;  // Disabled
+static const int STATE_SYSTEM_SELECTED           = 0x00000002;
+static const int STATE_SYSTEM_FOCUSED            = 0x00000004;
+static const int STATE_SYSTEM_PRESSED            = 0x00000008;
+static const int STATE_SYSTEM_CHECKED            = 0x00000010;
+static const int STATE_SYSTEM_MIXED              = 0x00000020;  // 3-state checkbox or toolbar button
+static const int STATE_SYSTEM_INDETERMINATE      = STATE_SYSTEM_MIXED;
+static const int STATE_SYSTEM_READONLY           = 0x00000040;
+static const int STATE_SYSTEM_HOTTRACKED         = 0x00000080;
+static const int STATE_SYSTEM_DEFAULT            = 0x00000100;
+static const int STATE_SYSTEM_EXPANDED           = 0x00000200;
+static const int STATE_SYSTEM_COLLAPSED          = 0x00000400;
+static const int STATE_SYSTEM_BUSY               = 0x00000800;
+static const int STATE_SYSTEM_FLOATING           = 0x00001000; // Children "owned" not "contained" by parent
+static const int STATE_SYSTEM_MARQUEED           = 0x00002000;
+static const int STATE_SYSTEM_ANIMATED           = 0x00004000;
+static const int STATE_SYSTEM_INVISIBLE          = 0x00008000;
+static const int STATE_SYSTEM_OFFSCREEN          = 0x00010000;
+static const int STATE_SYSTEM_SIZEABLE           = 0x00020000;
+static const int STATE_SYSTEM_MOVEABLE           = 0x00040000;
+static const int STATE_SYSTEM_SELFVOICING        = 0x00080000;
+static const int STATE_SYSTEM_FOCUSABLE          = 0x00100000;
+static const int STATE_SYSTEM_SELECTABLE         = 0x00200000;
+static const int STATE_SYSTEM_LINKED             = 0x00400000;
+static const int STATE_SYSTEM_TRAVERSED          = 0x00800000;
+static const int STATE_SYSTEM_MULTISELECTABLE    = 0x01000000;  // Supports multiple selection
+static const int STATE_SYSTEM_EXTSELECTABLE      = 0x02000000;  // Supports extended selection
+static const int STATE_SYSTEM_ALERT_LOW          = 0x04000000;  // This information is of low priority
+static const int STATE_SYSTEM_ALERT_MEDIUM       = 0x08000000;  // This information is of medium priority
+static const int STATE_SYSTEM_ALERT_HIGH         = 0x10000000;  // This information is of high priority
+static const int STATE_SYSTEM_PROTECTED          = 0x20000000;  // access to this is restricted
+static const int STATE_SYSTEM_VALID              = 0x3FFFFFFF;
+]]
 
 ffi.cdef[[
 static const int CCHILDREN_TITLEBAR   =           5;
@@ -13694,21 +13689,21 @@ DECLARE_HANDLE(HGESTUREINFO);
 /*
  * Gesture flags - GESTUREINFO.dwFlags
  */
-#define GF_BEGIN                        0x00000001
-#define GF_INERTIA                      0x00000002
-#define GF_END                          0x00000004
+#define GF_BEGIN                       = 0x00000001;
+#define GF_INERTIA                     = 0x00000002;
+#define GF_END                         = 0x00000004;
 
 /*
  * Gesture IDs
  */
-#define GID_BEGIN                       1
-#define GID_END                         2
-#define GID_ZOOM                        3
-#define GID_PAN                         4
-#define GID_ROTATE                      5
-#define GID_TWOFINGERTAP                6
-#define GID_PRESSANDTAP                 7
-#define GID_ROLLOVER                    GID_PRESSANDTAP
+#define GID_BEGIN                      = 1;
+#define GID_END                        = 2;
+#define GID_ZOOM                       = 3;
+#define GID_PAN                        = 4;
+#define GID_ROTATE                     = 5;
+#define GID_TWOFINGERTAP               = 6;
+#define GID_PRESSANDTAP                = 7;
+#define GID_ROLLOVER                   = GID_PRESSANDTAP;
 
 
 /*
@@ -13767,12 +13762,6 @@ GetGestureInfo(
      HGESTUREINFO hGestureInfo,
      PGESTUREINFO pGestureInfo);
 
-/*
- * Gesture extra arguments retrieval
- *   - HGESTUREINFO is received by a window in the lParam of a WM_GESTURE message.
- *   - Size, in bytes, of the extra argument data is available in the cbExtraArgs
- *     field of the GESTUREINFO structure retrieved using the GetGestureInfo function.
- */
 
 BOOL
 __stdcall
@@ -13781,16 +13770,6 @@ GetGestureExtraArgs(
      UINT cbExtraArgs,
     _Out_writes_bytes_(cbExtraArgs) PBYTE pExtraArgs);
 
-/*
- * Gesture information handle management
- *   - If an application processes the WM_GESTURE message, then once it is done
- *     with the associated HGESTUREINFO, the application is responsible for
- *     closing the handle using this function. Failure to do so may result in
- *     process memory leaks.
- *   - If the message is instead passed to DefWindowProc, or is forwarded using
- *     one of the PostMessage or SendMessage class of API functions, the handle
- *     is transfered with the message and need not be closed by the application.
- */
 
 BOOL
 __stdcall
@@ -13798,29 +13777,15 @@ CloseGestureInfoHandle(
      HGESTUREINFO hGestureInfo);
 
 
-/*
- * Gesture configuration structure
- *   - Used in SetGestureConfig and GetGestureConfig
- *   - Note that any setting not included in either GESTURECONFIG.dwWant or
- *     GESTURECONFIG.dwBlock will use the parent window's preferences or
- *     system defaults.
- */
+
 typedef struct tagGESTURECONFIG {
     DWORD dwID;                     // gesture ID
     DWORD dwWant;                   // settings related to gesture ID that are to be turned on
     DWORD dwBlock;                  // settings related to gesture ID that are to be turned off
 } GESTURECONFIG, *PGESTURECONFIG;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-/*
- * Gesture configuration flags - GESTURECONFIG.dwWant or GESTURECONFIG.dwBlock
- */
 
-/*
- * Common gesture configuration flags - set GESTURECONFIG.dwID to zero
- */
 #define GC_ALLGESTURES                              0x00000001
 
 /*

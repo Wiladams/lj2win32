@@ -6,8 +6,8 @@ local bor = bit.bor;
 local errorhandling = require("win32.errhandlingapi");
 local core_library = require("experimental.apiset.libraryloader_l1_1_1");
 
-local User32 = require("win32.winuser");
-
+local winuser = require("win32.winuser");
+local menu = require("menu")
 
 
 ffi.cdef[[
@@ -121,6 +121,11 @@ function NativeWindow.redraw(self, flags)
 	return true;
 end
 
+function NativeWindow.menuBar(self, params)
+	local hMenuBar = menu.menubar(params)
+	ffi.C.SetMenu(self.Handle.Handle, hMenuBar);
+end
+
 function NativeWindow.show(self, kind)
 	kind = kind or ffi.C.SW_SHOWNORMAL;
 
@@ -133,7 +138,7 @@ end
 
 function NativeWindow.getClientSize(self)
 	local csize = ffi.new( "RECT[1]" )
-	User32.GetClientRect(self:getNativeHandle(), csize);
+	ffi.C.GetClientRect(self:getNativeHandle(), csize);
 	csize = csize[0]
 	local width = csize.right-csize.left
 	local height = csize.bottom-csize.top
@@ -144,7 +149,7 @@ end
 function NativeWindow.getTitle(self)
 	local buf = ffi.new("char[?]", 256)
 	local lbuf = ffi.cast("intptr_t", buf)
-	if User32.SendMessageA(self:getNativeHandle(), ffi.C.WM_GETTEXT, 255, lbuf) ~= 0 then
+	if ffi.C.SendMessageA(self:getNativeHandle(), ffi.C.WM_GETTEXT, 255, lbuf) ~= 0 then
 		return ffi.string(buf)
 	end
 
