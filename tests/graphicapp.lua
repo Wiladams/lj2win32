@@ -54,6 +54,13 @@ height = 768;
 mouseX = false;
 mouseY = false;
 
+local function HIWORD(val)
+    return band(rshift(val, 16), 0xffff)
+end
+
+local function LOWORD(val)
+    return band(val, 0xffff)
+end
 
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)
@@ -113,6 +120,12 @@ function KeyboardActivity(hwnd, msg, wparam, lparam)
     return res;
 end
 
+function CommandActivity(hwnd, msg, wparam, lparam)
+    if onCommand then
+        onCommand({source = tonumber(HIWORD(wparam)), id=tonumber(LOWORD(wparam))})
+    end
+end
+
 
 function WindowProc(hwnd, msg, wparam, lparam)
     --print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]), wparam, lparam)
@@ -120,7 +133,9 @@ function WindowProc(hwnd, msg, wparam, lparam)
     local res = 1;
 
     -- If the window has been destroyed, then post a quit message
-    if msg == ffi.C.WM_DESTROY then
+    if msg == ffi.C.WM_COMMAND then
+        CommandActivity(hwnd, msg, wparam, lparam)
+    elseif msg == ffi.C.WM_DESTROY then
         ffi.C.PostQuitMessage(0);
         signalAllImmediate('gap-quitting');
         return 0;
