@@ -48,16 +48,21 @@ MemoryDC = nil;
 ClientDC = nil;
 
 -- static Global variables
+RGB = wingdi.RGB;
 width = 1024;
 height = 768;
-RGB = wingdi.RGB;
+mouseX = false;
+mouseY = false;
 
 
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)
+    mouseX = tonumber(band(lparam,0x0000ffff));
+    mouseY = tonumber(rshift(band(lparam, 0xffff0000),16));
+
     local event = {
-        x = tonumber(band(lparam,0x0000ffff));
-        y = tonumber(rshift(band(lparam, 0xffff0000),16));
+        x = mouseX;
+        y = mouseY;
         control = band(wparam, ffi.C.MK_CONTROL) ~= 0;
         shift = band(wparam, ffi.C.MK_SHIFT) ~= 0;
         lbutton = band(wparam, ffi.C.MK_LBUTTON) ~= 0;
