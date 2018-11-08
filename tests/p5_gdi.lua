@@ -2,7 +2,8 @@
     This must be required by p5.lua, do not use it directly
     as it utilizes globals found in there.
 ]]
-local surfaceDC = surface.DC
+--local surfaceDC = surface.DC
+local wingdi = require("win32.wingdi")
 
 
 
@@ -27,9 +28,6 @@ function alpha(c)
 end
 
 
-function color(...)
-	return Color(unpack(arg))
-end
 
 function background(...)
 	if arg.n == 1 and type(arg[1]) == "table" then
@@ -43,9 +41,10 @@ end
 
 function colorMode(amode)
 	-- if it's not valid input, just return
-	if amode ~= RGB and amode ~= HSB then return end
-
-	--return Processing.SetColorMode(amode)
+	if amode ~= RGB and amode ~= HSB then 
+		return 
+	end
+	ColorMode = amode;
 end
 
 function fill(...)
@@ -70,49 +69,47 @@ end
 function noStroke(...)
 	local acolor = Color(0,0)
 
-	return Processing.Renderer:SetStrokeColor(acolor)
 
 	--return Processing.SetStrokeColor(acolor)
 end
 
 function stroke(...)
-	if arg.n == 1 and type(arg[1]) == "table" then
-		-- We already have a color structure
-		-- so just set it
-		return Processing.Renderer:SetStrokeColor(arg[1])
-	end
+	StrokeColor = color(...);
+	surface.DC:SetDCPenColor(StrokeColor.cref);
 
-	-- Otherwise, construct a new color object
-	-- and set it
-	local acolor = color(unpack(arg))
-
-	return Processing.Renderer:SetStrokeColor(acolor)
+	return true;
 end
 
 
 function point(x,y,z)
-    surfaceDC:SetPixel(self, x, y, color)
+	surface.DC:SetPixel(x, y, StrokeColor.cref)
+	
+	return true;
 end
 
 function line(...)
 	-- We either have 4, or 6 parameters
+	local nargs = select('#',...)
 	local x1, y1, z1, x2, y2, z2
 
-	if arg.n == 4 then
-		x1 = arg[1]
-		y1 = arg[2]
-		x2 = arg[3]
-		y2 = arg[4]
-	elseif arg.n == 6 then
-		x1 = arg[1]
-		y1 = arg[2]
-		z1 = arg[3]
-		x2 = arg[4]
-		y2 = arg[5]
-		z2 = arg[6]
-	end
 
-	Processing.Renderer:DrawLine(x1, y1, x2, y2)
+	if nargs == 4 then
+		x1 = select(1, ...)
+		y1 = select(2, ...)
+		x2 = select(3, ...)
+		y2 = select(4, ...)
+	elseif arg.n == 6 then
+		x1 = select(1, ...)
+		y1 = select(2, ...)
+		z1 = select(3, ...)
+		x2 = select(4, ...)
+		y2 = select(5, ...)
+		z2 = select(6, ...)
+	end
+	surface.DC:MoveTo(x1,y1);
+	surface.DC:LineTo(x2, y2);
+
+	return true;
 end
 
 function rect(x, y, w, h)

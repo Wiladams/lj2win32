@@ -36,7 +36,7 @@ local exports = {}
 local lonMessage = false;
 
 -- internal constants
-ClientDC = nil;
+--ClientDC = nil;
 GDIRGB = wingdi.RGB;
 
 
@@ -88,28 +88,72 @@ key = false;
 keyCode = false;
 
 -- Initial State
-ColorMode = RGB,
+ColorMode = RGB;
 
-BackgroundColor = Color(127, 127, 127, 255),
-FillColor = Color(255,255,255,255),
-StrokeColor = Color(0,0,0,255),
 
-Running = false,
-FrameRate = 20,
+--BackgroundColor = Color(127, 127, 127, 255),
+--FillColor = Color(255,255,255,255),
+--StrokeColor = Color(0,0,0,255),
+
+Running = false;
+FrameRate = 20;
 
 -- Typography
-TextSize = 12,
-TextAlignment = LEFT,
-TextYAlignment = BASELINE,
-TextLeading = 0,
-TextMode = SCREEN,
-TextSize = 12,
+TextSize = 12;
+TextAlignment = LEFT;
+TextYAlignment = BASELINE;
+TextLeading = 0;
+TextMode = SCREEN;
+TextSize = 12;
 
 
 
 
 
 
+function color(...)
+	local nargs = select('#', ...)
+	local self = {}
+
+	-- There can be 1, 2, 3, or 4, arguments
+	--	print("Color.new - ", nargs)
+	
+	local r = 0
+	local g = 0
+	local b = 0
+	local a = 0
+	
+	if (nargs == 1) then
+			r = select(1,...)
+			g = select(1,...)
+			b = select(1,...)
+			a = 255;
+	elseif nargs == 2 then
+			r = select(1,...)
+			g = select(1,...)
+			b = select(1,...)
+			a = select(2,...)
+	elseif nargs == 3 then
+			r = select(1,...)
+			g = select(2,...)
+			b = select(3,...)
+			a = 255
+	elseif nargs == 4 then
+		r = select(1,...)
+		g = select(2,...)
+		b = select(3,...)
+		a = select(4,...)
+	end
+	
+	self.cref = wingdi.RGB(r,g,b)
+	
+	self.R = r
+	self.G = g
+	self.B = b
+	self.A = a
+
+	return self;
+end
 
 
 local function HIWORD(val)
@@ -289,8 +333,7 @@ local function createWindow(params)
 
     -- create an instance of a window
     appWindow = NativeWindow:create(winkind.ClassName, params.width, params.height,  params.title);
-    --MemoryDC = DeviceContext:CreateForMemory(appWindow.ClientDC);
-    ClientDC = DeviceContext:init(appWindow.ClientDC);
+    --ClientDC = DeviceContext:init(appWindow.ClientDC);
 
     appWindow:show();
 end
@@ -342,13 +385,21 @@ local function main(params)
         lonMessage = onMessage;
     end
 
+	BackgroundColor = color(127, 127, 127, 255);
+	FillColor = color(255,255,255,255);
+	StrokeColor = color(0,0,0,255);
+
     spawn(msgLoop);
     yield();
-    spawn(createWindow, params);
-    yield();
+    --spawn(createWindow, params);
+	--yield();
+	createWindow(params);
     setupUIHandlers();
     yield();
-    surface = GDISurface(params)
+	surface = GDISurface(params)
+	surface.DC:SetDCPenColor(StrokeColor.cref)
+	surface.DC:SetDCBrushColor(wingdi.RGB(225,225,225))
+	surface.DC:Rectangle(0, 0, params.width-1, params.height-1)
 
     if setup then
         --on('gap-ready', setup);
@@ -372,3 +423,4 @@ function go(params)
     run(main, params)
 end
 
+require("p5_gdi")

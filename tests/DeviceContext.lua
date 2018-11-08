@@ -44,7 +44,9 @@ function DeviceContext.init(self, rawhandle)
 
 	-- default to advanced graphics mode instead of GM_COMPATIBLE
 	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
-	
+	obj:UseDCBrush(true);
+	obj:UseDCPen(true);
+
 	return obj;
 end
 
@@ -185,7 +187,7 @@ function DeviceContext.Ellipse(self, nLeftRect, nTopRect, nRightRect, nBottomRec
 	return ffi.C.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect);
 end
 
-DeviceContext.Polygon = function(self, lpPoints, nCount)
+function DeviceContext.Polygon(self, lpPoints, nCount)
 	local res = ffi.C.Polygon(self.Handle,lpPoints, nCount);
 
 	return true;
@@ -214,6 +216,10 @@ function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXS
 	dwRop = dwRop or ffi.C.SRCCOPY
 	
 	return ffi.C.BitBlt(self.Handle,nXDest,nYDest,nWidth,nHeight,hdcSrc,nXSrc,nYSrc,dwRop);
+end
+
+function DeviceContext.SetBkColor(self, cref)
+	return ffi.C.SetBkColor(self.Handle, cref);
 end
 
 function DeviceContext.StretchDIBits(self, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, lpBitsInfo, iUsage, dwRop)
@@ -249,6 +255,40 @@ function DeviceContext.StretchBlt(self, img, XDest, YDest,DestWidth,DestHeight)
 				0,0,img.Width, img.Height,
 				img.Data,
 				bmInfo);
+end
+
+--[[
+	Path handling
+	Within a Begin/EndPath, you can use the following drawing commands
+
+AngleArc 
+Arc 
+ArcTo 
+Chord 
+CloseFigure 
+Ellipse 
+ExtTextOut 
+LineTo 
+MoveToEx 
+Pie 
+PolyBezier 
+PolyBezierTo 
+PolyDraw 
+Polygon 
+Polyline 
+PolylineTo 
+PolyPolygon 
+PolyPolyline 
+Rectangle 
+RoundRect 
+TextOut 
+]]
+function DeviceContext.BeginPath(self)
+	return ffi.C.BeginPath(self.Handle);
+end
+
+function DeviceContext.EndPath(self)
+	return ffi.C.EndPath(self.Handle)
 end
 
 
