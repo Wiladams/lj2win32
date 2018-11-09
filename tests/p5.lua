@@ -35,12 +35,10 @@ local GDISurface = require("GDISurface")
 
 local exports = {}
 local lonMessage = false;
-
--- internal constants
 local SWatch = stopwatch();
 
 
--- Global variables
+-- Global things
 -- Constants
 HALF_PI = math.pi / 2
 PI = math.pi
@@ -147,8 +145,8 @@ ColorMode = RGB;
 RectMode = CORNER;
 EllipseMode = CORNER;
 
-Running = false;
-FrameRate = 20;
+
+FrameRate = 60;
 
 -- Typography
 TextSize = 12;
@@ -160,16 +158,13 @@ TextSize = 12;
 
 
 
+--[[
+    These are functions that are globally available, so user code
+    can use them.  These functions don't rely specifically on the 
+    drawing interface, so that can remain here in case the drawing
+    driver changes.
+]]
 
-function angleMode(newMode)
-    if newMode ~= DEGREES and newMode ~= RADIANS then 
-        return false 
-    end
-
-    AngleMode = newMode;
-
-    return true;
-end
 
 function color(...)
 	local nargs = select('#', ...)
@@ -232,25 +227,62 @@ function alpha(c)
 	return c.A
 end
 
+-- Modes to be honored by various drawing APIs
+function angleMode(newMode)
+    if newMode ~= DEGREES and newMode ~= RADIANS then 
+        return false 
+    end
+
+    AngleMode = newMode;
+
+    return true;
+end
 
 function ellipseMode(newMode)
     EllipseMode = newMode;
-end
-
-function millis()
-    -- get millis from p5 stopwatch
-    SWatch:millis();
 end
 
 function rectMode(newMode)
     RectMode = newMode;
 end
 
+-- timing
+function millis()
+    -- get millis from p5 stopwatch
+    SWatch:millis();
+end
+
+function frameRate(...)
+    if select('#', ...) == 0 then
+        return FrameRate;
+    end
+
+    if type(select(1,...)) ~= "number" then
+        return false, 'must specify a numeric frame rate'
+    end
+
+    FrameRate = select(1,...);
+
+    -- reset frame timer
+end
+
+-- Drawing and canvas management
 function redraw()
     appWindow:redraw(ffi.C.RDW_INVALIDATE)
 
     return true;
 end
+
+function createCanvas(width, height)
+    return false;
+end
+
+
+
+
+
+
+
 
 
 -- Very Windows specific
