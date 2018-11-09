@@ -399,7 +399,8 @@ local function main(params)
 	surface = GDISurface(params)
 	surface.DC:SetDCPenColor(StrokeColor.cref)
 	surface.DC:SetDCBrushColor(wingdi.RGB(225,225,225))
-	surface.DC:Rectangle(0, 0, params.width-1, params.height-1)
+    surface.DC:Rectangle(0, 0, params.width-1, params.height-1)
+    surface.DC:SetDCBrushColor(FillColor.cref)
 
     if setup then
         --on('gap-ready', setup);

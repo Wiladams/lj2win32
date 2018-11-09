@@ -112,8 +112,18 @@ function line(...)
 	return true;
 end
 
-function rect(x, y, w, h)
-	Processing.Renderer:DrawRect(x, y, w, h)
+function rect(...)
+	local nargs = select('#',...)
+	local x = select(1,...)
+	local y = select(2,...)
+	local w = select(3,...)
+	local h = select(4,...)
+	
+	if nargs == 4 then
+		surface.DC:Rectangle(x,y,x+w-1,y+h-1)
+	elseif nargs == 5 then
+		surface.DC:RoundRect(x,y,x+w-1, y+h-1, select(5,...), select(5,...))
+	end
 end
 
 function triangle(x1, y1, x2, y2, x3, y3)
@@ -135,20 +145,18 @@ function quad(x1, y1, x2, y2, x3, y3, x4, y4)
 	polygon(pts)
 end
 
-function ellipse(centerx, centery, awidth, aheight)
-	local steps = 30
-	local pts = {}
-
-	for i = 0, steps do
-		local u = i/steps
-		local angle = u * 2*PI
-		local x = awidth/2 * cos(angle)
-		local y = aheight/2 * sin(angle)
-		local pt = Point3D(x+centerx, y+centery, 0)
-		table.insert(pts, pt)
+function ellipse(...)
+	local nargs = select('#',...)
+	local x = select(1,...)
+	local y = select(2,...)
+	local w = select(3,...)
+	local h = select(4,...)
+	
+	if nargs == 4 then
+		surface.DC:Ellipse(x,y,x+w-1,y+h-1)
+	elseif nargs == 5 then
+		surface.DC:RoundRect(x,y,x+w-1, y+h-1, select(5,...), select(5,...))
 	end
-
-	polygon(pts)
 end
 
 --[====================================[
