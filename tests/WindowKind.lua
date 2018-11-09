@@ -20,8 +20,7 @@ local bit = require("bit");
 local bor = bit.bor;
 
 local errorhandling = require("win32.errhandlingapi");
-local libraryloader = require("experimental.apiset.libraryloader_l1_1_1");
-
+local libraryloader = require("win32.libloaderapi");
 local winuser = require("win32.winuser");
 
 
@@ -51,7 +50,7 @@ function WindowKind.create(self, classname, msgproc, style)
 	msgproc = msgproc or ffi.C.DefWindowProcA;
 	style = style or bor(ffi.C.CS_HREDRAW,ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
 
-	local appInstance = libraryloader.GetModuleHandleA(nil);
+	local appInstance = ffi.C.GetModuleHandleA(nil);
 
 	local wcex = ffi.new("WNDCLASSEXA");
     wcex.cbSize = ffi.sizeof(wcex);

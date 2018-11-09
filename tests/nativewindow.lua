@@ -4,8 +4,8 @@ local bit = require("bit");
 local bor = bit.bor;
 
 local errorhandling = require("win32.errhandlingapi");
-local core_library = require("experimental.apiset.libraryloader_l1_1_1");
-
+--local core_library = require("experimental.apiset.libraryloader_l1_1_1");
+local libloader = require("win32.libloaderapi")
 local winuser = require("win32.winuser");
 local menu = require("menu")
 
@@ -54,7 +54,7 @@ function NativeWindow.create(self, className, width, height, title)
 
 	--print("  Style: ", string.format("0x%x",dwExStyle), string.format("0x%x",dwStyle))
 
-	local appInstance = core_library.GetModuleHandleA(nil);
+	local appInstance = ffi.C.GetModuleHandleA(nil);
 
 	local hwnd = ffi.C.CreateWindowExA(
 		dwExStyle,

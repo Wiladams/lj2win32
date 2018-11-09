@@ -146,16 +146,14 @@ ffi.cdef[[
 ]]
 end
 
---[[
+if not _FILETIME_ then
+_FILETIME_ = true;
+
 ffi.cdef[[
-//
-//  File System time stamps are represented with the following structure:
-//
 typedef struct _FILETIME {
     DWORD dwLowDateTime;
     DWORD dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
-
 ]]
 
---]]
+end

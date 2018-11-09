@@ -1,3 +1,10 @@
+--[[
+    In the earliest incarnations of this FFI binding, the wtypes
+    file was a dumping ground for stuff that was actually in other files
+    As those other files, such as minwindef come online, this file can
+    truly represent what's in the win32 wtypes.h file instead
+]]
+
 local ffi = require"ffi"
 local bit = require"bit"
 
@@ -251,65 +258,10 @@ ffi.cdef[[
 typedef LONGLONG USN;
 ]]
 
---[=[
+
+
+-- BUGBUG, these probably don't belong here
 ffi.cdef[[
-typedef union _LARGE_INTEGER {
-	struct {
-		DWORD LowPart;
-		LONG HighPart;
-	};
-	struct {
-		DWORD LowPart;
-		LONG HighPart;
-	} u;
-	LONGLONG QuadPart;
-} LARGE_INTEGER,  *PLARGE_INTEGER;
-
-typedef struct _ULARGE_INTEGER
-{
-    ULONGLONG QuadPart;
-} 	ULARGE_INTEGER;
-
-typedef ULARGE_INTEGER *PULARGE_INTEGER;
-
-]]
---]=]
-
-ffi.cdef[[
-typedef struct _FILETIME
-{
-    DWORD dwLowDateTime;
-    DWORD dwHighDateTime;
-} 	FILETIME;
-
-typedef struct _FILETIME *PFILETIME;
-
-typedef struct _FILETIME *LPFILETIME;
-]]
-
-
-ffi.cdef[[
-typedef struct _SYSTEMTIME
-{
-    WORD wYear;
-    WORD wMonth;
-    WORD wDayOfWeek;
-    WORD wDay;
-    WORD wHour;
-    WORD wMinute;
-    WORD wSecond;
-    WORD wMilliseconds;
-} 	SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
-]]
-
-ffi.cdef[[
-typedef struct _SECURITY_ATTRIBUTES {
-	DWORD nLength;
-	LPVOID lpSecurityDescriptor;
-	BOOL bInheritHandle;
-} SECURITY_ATTRIBUTES,  *PSECURITY_ATTRIBUTES,  *LPSECURITY_ATTRIBUTES;
-
-
 typedef USHORT SECURITY_DESCRIPTOR_CONTROL;
 
 typedef USHORT *PSECURITY_DESCRIPTOR_CONTROL;

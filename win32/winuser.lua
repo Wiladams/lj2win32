@@ -8,11 +8,11 @@ local exports = {}
 exports.Lib = ffi.load("user32");
 
 --#include <stdarg.h>
---[[
-#ifndef NOAPISET
-#include <libloaderapi.h> // LoadString%
-#endif
---]]
+
+if not NOAPISET then
+require("win32.libloaderapi") -- LoadString%
+end
+
 require("win32.wtypes")
 local wingdi = require("win32.wingdi")
 
@@ -131,7 +131,7 @@ end
 exports.MAKEINTRESOURCE = MAKEINTRESOURCE;
 
 --[=[
-#ifndef NORESOURCE
+--#ifndef NORESOURCE
 
 /*
  * Predefined Resource Types
@@ -153,28 +153,35 @@ exports.MAKEINTRESOURCE = MAKEINTRESOURCE;
 #define RT_GROUP_ICON   MAKEINTRESOURCE((ULONG_PTR)(RT_ICON) + DIFFERENCE)
 #define RT_VERSION      MAKEINTRESOURCE(16)
 #define RT_DLGINCLUDE   MAKEINTRESOURCE(17)
-#if(WINVER >= 0x0400)
+
 #define RT_PLUGPLAY     MAKEINTRESOURCE(19)
 #define RT_VXD          MAKEINTRESOURCE(20)
 #define RT_ANICURSOR    MAKEINTRESOURCE(21)
 #define RT_ANIICON      MAKEINTRESOURCE(22)
-#endif /* WINVER >= 0x0400 */
+
 #define RT_HTML         MAKEINTRESOURCE(23)
-#ifdef RC_INVOKED
+--]=]
+
+--[=[
+if RC_INVOKED then
+ffi.cdef[[
 #define RT_MANIFEST                        24
 #define CREATEPROCESS_MANIFEST_RESOURCE_ID  1
 #define ISOLATIONAWARE_MANIFEST_RESOURCE_ID 2
 #define ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID 3
 #define MINIMUM_RESERVED_MANIFEST_RESOURCE_ID 1   /* inclusive */
 #define MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID 16  /* inclusive */
-#else  /* RC_INVOKED */
+]]
+else  -- RC_INVOKED
+ffi.cdef[[
 #define RT_MANIFEST                        MAKEINTRESOURCE(24)
 #define CREATEPROCESS_MANIFEST_RESOURCE_ID MAKEINTRESOURCE( 1)
 #define ISOLATIONAWARE_MANIFEST_RESOURCE_ID MAKEINTRESOURCE(2)
 #define ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID MAKEINTRESOURCE(3)
 #define MINIMUM_RESERVED_MANIFEST_RESOURCE_ID MAKEINTRESOURCE( 1 /*inclusive*/)
 #define MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID MAKEINTRESOURCE(16 /*inclusive*/)
-#endif /* RC_INVOKED */
+]]
+end -- RC_INVOKED
 --]=]
 
 
@@ -10022,7 +10029,7 @@ static const int IDI_INFORMATION = IDI_ASTERISK;
 ]]
 
 
-
+if NOAPISET then
 ffi.cdef[[
 int
 __stdcall
@@ -10048,7 +10055,7 @@ LoadStringW(
 #define LoadString  LoadStringA
 #endif // !UNICODE
 --]]
-
+end     -- NOAPISET
 
 --[[
 /*
