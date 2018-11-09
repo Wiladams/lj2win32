@@ -277,8 +277,15 @@ function noLoop()
 end
 
 -- Drawing and canvas management
-function redraw()
+function refreshWindow()
     appWindow:redraw(ffi.C.RDW_INVALIDATE)
+
+    return true;
+end
+
+function redraw()
+    draw();
+    refreshWindow();
 
     return true;
 end
@@ -457,7 +464,7 @@ local function msgLoop()
             --signalAll("gap_frame")
             if draw then
                 draw(); 
-                redraw();
+                refreshWindow();
             end
         end
 
@@ -555,7 +562,7 @@ local function main(params)
     if setup then
         setup();
     end
-    redraw();
+    refreshWindow();
     yield();
 
     signalAll("gap_ready");
