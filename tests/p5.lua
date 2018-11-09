@@ -49,23 +49,43 @@ TWO_PI = math.pi * 2
 
 
 -- Constants related to colors
+-- colorMode
 RGB = 1;
 HSB = 2;
 
+-- rectMode, ellipseMode
+CORNER = 1;
+CORNERS = 2;
+RADIUS = 3;
+CENTER = 4;
+
+-- kind of close (for polygon)
+STROKE = 0;
 CLOSE = 1;
 
-LEFT        = 1;
-CENTER      = 2;
-RIGHT       = 4;
-
-TOP         = 0x08;
-BOTTOM      = 0x10;
-BASELINE    = 0x20;
+-- alignment
+CENTER      = 0x00;
+LEFT        = 0x01;
+RIGHT       = 0x04;
+TOP         = 0x10;
+BOTTOM      = 0x40;
+BASELINE    = 0x80;
 
 MODEL = 1;
 SCREEN = 2;
 SHAPE = 3;
 
+-- GEOMETRY
+POINTS          = 0;
+LINES           = 1;
+LINE_STRIP      = 2;
+LINE_LOOP       = 3;
+POLYGON         = 4;
+QUADS           = 5;
+QUAD_STRIP      = 6;
+TRIANGLES       = 7;
+TRIANGLE_STRIP  = 8;
+TRIANGLE_FAN    = 9;
 
 
 
@@ -88,7 +108,7 @@ keyCode = false;
 
 -- Initial State
 ColorMode = RGB;
-
+RectMode = ;
 
 Running = false;
 FrameRate = 20;
