@@ -24,7 +24,12 @@ end
 function background(...)
 	BackgroundColor = color(...)
 
+	-- need to reset brush after this as 
+	-- the user might have specified something else
 	surface.DC:SetDCBrushColor(BackgroundColor.cref)
+
+	-- whenever background is called, update the surface
+	-- immediately
 	surface.DC:Rectangle(0, 0, width-1, height-1)
 	
 	redraw();

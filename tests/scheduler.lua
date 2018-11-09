@@ -16,7 +16,100 @@
 local floor = math.floor;
 local insert = table.insert;
 
-local Queue = require("queue")
+
+--[[
+squeue
+
+The squeue is a simple data structure that represents a 
+first in first out behavior.
+--]]
+
+local squeue = {}
+setmetatable(squeue, {
+	__call = function(self, ...)
+		return self:create(...);
+	end,
+});
+
+local Queue_mt = {
+	__index = squeue;
+}
+
+function squeue.init(self, first, last, name)
+	first = first or 1;
+	last = last or 0;
+
+	local obj = {
+		first=first, 
+		last=last, 
+		name=name};
+
+	setmetatable(obj, Queue_mt);
+
+	return obj
+end
+
+function squeue.create(self, first, last, name)
+	first = first or 1
+	last = last or 0
+
+	return self:init(first, last, name);
+end
+
+function squeue:pushFront(value)
+	-- PushLeft
+	local first = self.first - 1;
+	self.first = first;
+	self[first] = value;
+end
+
+function squeue:pinsert(value, fcomp)
+	binsert(self, value, fcomp)
+	self.last = self.last + 1;
+end
+
+function squeue:enqueue(value)
+	--self.MyList:PushRight(value)
+	local last = self.last + 1
+	self.last = last
+	self[last] = value
+
+	return value
+end
+
+function squeue:dequeue()
+	-- return self.MyList:PopLeft()
+	local first = self.first
+
+	if first > self.last then
+		return nil, "list is empty"
+	end
+	
+	local value = self[first]
+	self[first] = nil        -- to allow garbage collection
+	self.first = first + 1
+
+	return value	
+end
+
+function squeue:length()
+	return self.last - self.first+1
+end
+
+-- Returns an iterator over all the current 
+-- values in the queue
+function squeue:Entries(func, param)
+	local starting = self.first-1;
+	local len = self:length();
+
+	local closure = function()
+		starting = starting + 1;
+		return self[starting];
+	end
+
+	return closure;
+end
+
 
 
 local function fcomp_default( a,b ) 
@@ -127,7 +220,7 @@ local Scheduler_mt = {
 
 function Scheduler.init(self, ...)
 	local obj = {
-		TasksReadyToRun = Queue();
+		TasksReadyToRun = squeue();
 	}
 	setmetatable(obj, Scheduler_mt)
 	
@@ -381,7 +474,7 @@ local function on(sigName, func)
 	if not func then
 		return false;
 	end
-	
+
 	local function watchit(sigName, func)
 		while true do
 			func(waitForSignal(sigName))
