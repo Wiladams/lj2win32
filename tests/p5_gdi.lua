@@ -31,8 +31,6 @@ function background(...)
 	-- whenever background is called, update the surface
 	-- immediately
 	surface.DC:Rectangle(0, 0, width-1, height-1)
-	
-	redraw();
 end
 
 

@@ -147,6 +147,8 @@ EllipseMode = CORNER;
 
 
 FrameRate = 60;
+LoopActive = true;
+EnvironmentReady = false;
 
 -- Typography
 TextSize = 12;
@@ -266,6 +268,14 @@ function frameRate(...)
     -- reset frame timer
 end
 
+function loop()
+    LoopActive = true;
+end
+
+function noLoop()
+    LoopActive = false;
+end
+
 -- Drawing and canvas management
 function redraw()
     appWindow:redraw(ffi.C.RDW_INVALIDATE)
@@ -330,22 +340,22 @@ function MouseActivity(hwnd, msg, wparam, lparam)
 
     if msg == ffi.C.WM_MOUSEMOVE  then
         event.activity = 'mousemove' 
-        signalAll('gap-mousemove', event)
+        signalAll('gap_mousemove', event)
     elseif msg == ffi.C.WM_LBUTTONDOWN or 
         msg == ffi.C.WM_RBUTTONDOWN or
         msg == ffi.C.WM_MBUTTONDOWN or
         msg == ffi.C.WM_XBUTTONDOWN then
         event.activity = 'mousedown';
-        signalAll('gap-mousedown', event)
+        signalAll('gap_mousedown', event)
     elseif msg == ffi.C.WM_LBUTTONUP or
         msg == ffi.C.WM_RBUTTONUP or
         msg == ffi.C.WM_MBUTTONUP or
         msg == ffi.C.WM_XBUTTONUP then
         event.activity = 'mouseup'
-        signalAll('gap-mouseup', event)
+        signalAll('gap_mouseup', event)
     elseif msg == ffi.C.WM_MOUSEWHEEL then
         event.activity = 'mousewheel';
-        signalAll('gap-mousewheel', event)
+        signalAll('gap_mousewheel', event)
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -379,7 +389,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
         CommandActivity(hwnd, msg, wparam, lparam)
     elseif msg == ffi.C.WM_DESTROY then
         ffi.C.PostQuitMessage(0);
-        signalAllImmediate('gap-quitting');
+        signalAllImmediate('gap_quitting');
         return 0;
     elseif msg == ffi.C.WM_PAINT then
         local ps = ffi.new("PAINTSTRUCT");
@@ -441,7 +451,16 @@ local function msgLoop()
             res = ffi.C.TranslateMessage(msg)
             res = ffi.C.DispatchMessageA(msg)
         end
-        signalAll("gap-idle")
+        --signalAll("gap_idle")
+
+        if LoopActive and EnvironmentReady then
+            --signalAll("gap_frame")
+            if draw then
+                draw(); 
+                redraw();
+            end
+        end
+
         yield();
     end
 
@@ -480,22 +499,18 @@ end
 -- in their code
 local function setupUIHandlers()
     local handlers = {
-        {activity = 'gap-mousedown', response = "onMouseActivity"};
-        {activity = 'gap-mouseup', response = "onMouseActivity"};
-        {activity = 'gap-mousemove', response = "onMouseActivity"};
-        {activity = 'gap-mousewheel', response = "onMouseActivity"};
+        {activity = 'gap_mousemove', response = "mouseMoved"};
+        {activity = 'gap_mouseup', response = "mouseReleased"};
+        {activity = 'gap_mousedown', response = "mousePressed"};
+        {activity = 'gap_mousewheel', response = "mouseWheel"};
 
-        {activity = 'gap-mousemove', response = "onMouseMove"};
-        {activity = 'gap-mouseup', response = "onMouseUp"};
-        {activity = 'gap-mousedown', response = "onMouseDown"};
-        {activity = 'gap-mousewheel', response = "onMouseWheel"};
+        {activity = 'gap_keydown', response = "onKeyboardActivity"};
+        {activity = 'gap_keyup', response = "onKeyboardActivity"};
+        {activity = 'gap_syskeydown', response = "onKeyboardActivity"};
+        {activity = 'gap_syskeyup', response = "onKeyboardActivity"};
 
-        {activity = 'gap-keydown', response = "onKeyboardActivity"};
-        {activity = 'gap-keyup', response = "onKeyboardActivity"};
-        {activity = 'gap-syskeydown', response = "onKeyboardActivity"};
-        {activity = 'gap-syskeyup', response = "onKeyboardActivity"};
-
-        {activity = 'gap-idle', response = "onIdle"};
+        {activity = 'gap_idle', response = "onIdle"};
+        {activity = 'gap_frame', response = "draw"};
     }
 
     for i, handler in ipairs(handlers) do
@@ -535,13 +550,15 @@ local function main(params)
     surface.DC:SetDCPenColor(StrokeColor.cref)
     surface.DC:SetDCBrushColor(FillColor.cref)
 
+    EnvironmentReady = true;
+
     if setup then
         setup();
     end
     redraw();
     yield();
 
-    signalAll("gap-ready");
+    signalAll("gap_ready");
 end
 
 
