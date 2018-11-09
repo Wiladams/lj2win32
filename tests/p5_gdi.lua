@@ -11,42 +11,26 @@ local wingdi = require("win32.wingdi")
 --[==================================================[
 		LANGUAGE COMMANDS
 --]==================================================]
-
-function blue(c)
-	return c.B
-end
-
-function green(c)
-	return c.G
-end
-
-function red(c)
-	return c.R
-end
-
-function alpha(c)
-	return c.A
-end
-
-
-
-function background(...)
-	if arg.n == 1 and type(arg[1]) == "table" then
-		return Processing.SetBackgroundColor(arg[1])
-	end
-
-	local acolor = Color(unpack(arg))
---print("background: ", acolor[1], acolor[2], acolor[3], acolor[4])
-	return Processing.SetBackgroundColor(acolor)
-end
-
 function colorMode(amode)
 	-- if it's not valid input, just return
 	if amode ~= RGB and amode ~= HSB then 
 		return 
 	end
 	ColorMode = amode;
+
+	return true;
 end
+
+function background(...)
+	BackgroundColor = color(...)
+
+	surface.DC:SetDCBrushColor(BackgroundColor.cref)
+	surface.DC:Rectangle(0, 0, width-1, height-1)
+	
+	redraw();
+end
+
+
 
 function fill(...)
 	FillColor = color(...)

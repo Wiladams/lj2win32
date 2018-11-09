@@ -94,25 +94,54 @@ TRIANGLE_FAN    = 9;
 
 
 
--- Set once, then never changed
-width = 1024;
-height = 768;
+
+-- environment
+frameCount = false;
+focused = false;
+displayWidth = false;
+displayHeight = false;
+windowWidth = false;
+windowHeight = false;
+width = false;
+height = false;
 
 -- Mouse state changing live
 mouseX = false;
 mouseY = false;
-mouseButton = false;
-mouseIsPressed = false;
-
--- mouse position from previous frame
 pMouseX = false;
 pMouseY = false;
+winMouseX = false;
+winMouseY = false;
+pwinMouseX = false;
+pwinMouseY = false;
+mouseButton = false;
+mouseIsPressed = false;
+-- to be implemented by user code
+-- mouseMoved()
+-- mouseDragged()
+-- mousePressed()
+-- mouseReleased()
+-- mouseClicked()
+-- doubleClicked()
+-- mouseWheel()
 
+-- Keyboard state changing live
 keyIsPressed = false;
 key = false;
 keyCode = false;
+-- to be implemented by client code
+-- keyPressed()
+-- keyReleased()
+-- keyTyped()
+-- keyIsDown()
 
--- Initial State
+-- Touch events
+touches = false;
+-- touchStarted()
+-- touchMoved()
+-- touchEnded()
+
+-- Initial State for modes
 AngleMode = RADIANS;
 ColorMode = RGB;
 RectMode = CORNER;
@@ -185,6 +214,24 @@ function color(...)
 
 	return self;
 end
+
+
+function blue(c)
+	return c.B
+end
+
+function green(c)
+	return c.G
+end
+
+function red(c)
+	return c.R
+end
+
+function alpha(c)
+	return c.A
+end
+
 
 function ellipseMode(newMode)
     EllipseMode = newMode;
@@ -457,7 +504,6 @@ local function main(params)
     surface.DC:SetDCBrushColor(FillColor.cref)
 
     if setup then
-        --on('gap-ready', setup);
         setup();
     end
     redraw();

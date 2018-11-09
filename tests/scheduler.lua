@@ -378,6 +378,10 @@ end
 
 -- continuous signal activation
 local function on(sigName, func)
+	if not func then
+		return false;
+	end
+	
 	local function watchit(sigName, func)
 		while true do
 			func(waitForSignal(sigName))
