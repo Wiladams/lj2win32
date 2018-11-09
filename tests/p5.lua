@@ -97,18 +97,20 @@ height = 768;
 mouseX = false;
 mouseY = false;
 mouseButton = false;
-isMousePressed = false;
+mouseIsPressed = false;
 
 -- mouse position from previous frame
 pMouseX = false;
 pMouseY = false;
 
+keyIsPressed = false;
 key = false;
 keyCode = false;
 
 -- Initial State
 ColorMode = RGB;
-RectMode = ;
+RectMode = CORNER;
+EllipseMode = CORNER;
 
 Running = false;
 FrameRate = 20;
@@ -120,7 +122,6 @@ TextYAlignment = BASELINE;
 TextLeading = 0;
 TextMode = SCREEN;
 TextSize = 12;
-
 
 
 
@@ -170,6 +171,15 @@ function color(...)
 	return self;
 end
 
+function ellipseMode(newMode)
+    EllipseMode = newMode;
+end
+
+function rectMode(newMode)
+    RectMode = newMode;
+end
+
+
 
 local function HIWORD(val)
     return band(rshift(val, 16), 0xffff)
@@ -181,6 +191,11 @@ end
 
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)
+    -- assign previous mouse position
+    if mouseX then pmouseX = mouseX end
+    if mouseY then pmouseY = mouseY end
+
+    -- assign new mouse position
     mouseX = tonumber(band(lparam,0x0000ffff));
     mouseY = tonumber(rshift(band(lparam, 0xffff0000),16));
 

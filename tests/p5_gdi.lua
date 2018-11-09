@@ -49,22 +49,15 @@ function colorMode(amode)
 end
 
 function fill(...)
-	-- See if we're being passed a 'Color'
-	-- type
-	if arg.n == 1 and type(arg[1]) == "table" then
-		return Processing.Renderer:SetFillColor(arg[1])
-		--return Processing.SetFillColor(arg[1])
-	end
-
-	local acolor = Color(unpack(arg))
-
-	return Processing.Renderer:SetFillColor(acolor)
+	FillColor = color(...)
+	surface.DC:SetDCBrushColor(FillColor.cref);
 end
 
 function noFill()
-	local acolor = Color(0,0)
+	FillColor = color(0,0)
+	surface.DC:SelectStockObject(ffi.C.NULL_BRUSH)
 
-	return Processing.Renderer:SetFillColor(acolor)
+	return true;
 end
 
 function noStroke()
@@ -115,16 +108,50 @@ end
 
 function rect(...)
 	local nargs = select('#',...)
-	local x = select(1,...)
-	local y = select(2,...)
-	local w = select(3,...)
-	local h = select(4,...)
+	if nargs < 4 then return false end
+
+	local a = select(1, ...)
+	local b = select(2, ...)
+	local c = select(3,...)
+	local d = select(4,...)
+
+	local x1 = 0;
+	local y1 = 0;
+	local rwidth = 0;
+	local rheight = 0;
 	
-	if nargs == 4 then
-		surface.DC:Rectangle(x,y,x+w-1,y+h-1)
-	elseif nargs == 5 then
-		surface.DC:RoundRect(x,y,x+w-1, y+h-1, select(5,...), select(5,...))
+	if RectMode == CORNER then
+		x1 = a;
+		y1 = b;
+		rwidth = c;
+		rheight = d;
+
+	elseif RectMode == CORNERS then
+		x1 = a;
+		y1 = b;
+		rwidth = c - a + 1;
+		rheight = d - b + 1;
+
+	elseif RectMode == CENTER then
+		x1 = a - c / 2;
+		y1 = b - d / 2;
+		rwidth = c;
+		rheight = d;
+
+	elseif RectMode == RADIUS then
+		x1 = a - c;
+		y1 = b - d;
+		rwidth = c * 2;
+		rheight = d * 2;
 	end
+
+	if nargs == 4 then
+		surface.DC:Rectangle(x1,y1,x1+rwidth-1,y1+rheight-1)
+	elseif nargs == 5 then
+		surface.DC:RoundRect(x1,y1,x1+rwidth-1, y1+rheight-1, select(5,...), select(5,...))
+	end
+
+	return true;
 end
 
 function triangle(x1, y1, x2, y2, x3, y3)
