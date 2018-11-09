@@ -22,6 +22,7 @@ local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
 
 local sched = require("scheduler")
+local stopwatch = require("stopwatch")
 local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
 local WindowKind = require("WindowKind")
@@ -36,7 +37,7 @@ local exports = {}
 local lonMessage = false;
 
 -- internal constants
-
+local SWatch = stopwatch();
 
 
 -- Global variables
@@ -187,6 +188,11 @@ end
 
 function ellipseMode(newMode)
     EllipseMode = newMode;
+end
+
+function millis()
+    -- get millis from p5 stopwatch
+    SWatch:millis();
 end
 
 function rectMode(newMode)
@@ -410,7 +416,6 @@ local function setupUIHandlers()
         {activity = 'gap-syskeydown', response = "onKeyboardActivity"};
         {activity = 'gap-syskeyup', response = "onKeyboardActivity"};
 
-        {activity = 'gap-idle', response = "loop"};
         {activity = 'gap-idle', response = "onIdle"};
     }
 
@@ -464,11 +469,13 @@ end
 
 function go(params)
     params = params or {
-        width = 640;
-        height = 480;
+        width = 320;
+        height = 240;
+        title = "p5"
     }
     params.width = params.width or 640;
     params.height = params.height or 480;
+    params.title = params.title or "p5"
 
     run(main, params)
 end

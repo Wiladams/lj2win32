@@ -44,6 +44,10 @@ function StopWatch.seconds(self)
 	return currentTime - self.starttime;
 end
 
+function StopWatch.millis(self)
+	return self:seconds()*1000;
+end
+
 function StopWatch.reset(self)
 	self.starttime = timeticker.seconds();
 end
