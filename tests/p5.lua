@@ -45,7 +45,11 @@ HALF_PI = math.pi / 2
 PI = math.pi
 QUARTER_PI = math.pi/4
 TWO_PI = math.pi * 2
+TAU = TWO_PI
 
+-- angleMode
+DEGREES = 1;
+RADIANS = 2;
 
 
 -- Constants related to colors
@@ -108,6 +112,7 @@ key = false;
 keyCode = false;
 
 -- Initial State
+AngleMode = RADIANS;
 ColorMode = RGB;
 RectMode = CORNER;
 EllipseMode = CORNER;
@@ -126,6 +131,15 @@ TextSize = 12;
 
 
 
+function angleMode(newMode)
+    if newMode ~= DEGREES and newMode ~= RADIANS then 
+        return false 
+    end
+
+    AngleMode = newMode;
+
+    return true;
+end
 
 function color(...)
 	local nargs = select('#', ...)
@@ -179,7 +193,14 @@ function rectMode(newMode)
     RectMode = newMode;
 end
 
+function redraw()
+    appWindow:redraw(ffi.C.RDW_INVALIDATE)
 
+    return true;
+end
+
+
+-- Very Windows specific
 
 local function HIWORD(val)
     return band(rshift(val, 16), 0xffff)
@@ -367,11 +388,7 @@ local function createWindow(params)
     appWindow:show();
 end
 
-function drawNow()
-    appWindow:redraw(ffi.C.RDW_INVALIDATE)
 
-    return true;
-end
 
 -- Register UI event handler global functions
 -- These are the functions that the user should implement
@@ -438,7 +455,7 @@ local function main(params)
         --on('gap-ready', setup);
         setup();
     end
-    drawNow();
+    redraw();
     yield();
 
     signalAll("gap-ready");
