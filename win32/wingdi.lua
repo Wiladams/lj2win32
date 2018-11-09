@@ -1801,8 +1801,6 @@ static const int SYSTEM_FONT       =  13;
 static const int DEVICE_DEFAULT_FONT= 14;
 static const int DEFAULT_PALETTE    = 15;
 static const int SYSTEM_FIXED_FONT  = 16;
-
-
 static const int DEFAULT_GUI_FONT   = 17;
 
 
@@ -4755,7 +4753,6 @@ typedef struct tagDIBSECTION {
 ]]
 
 ffi.cdef[[
-
  BOOL __stdcall AngleArc(  HDC hdc,  int x,  int y,  DWORD r,  FLOAT StartAngle,  FLOAT SweepAngle);
  BOOL __stdcall PolyPolyline( HDC hdc,  const POINT *apt, const DWORD *asz,  DWORD csz);
  BOOL __stdcall GetWorldTransform(  HDC hdc, LPXFORM lpxf);
@@ -4872,26 +4869,24 @@ ffi.cdef[[
 typedef BOOL (__stdcall* ABORTPROC)(  HDC,  int);
 ]]
 
---[=[
+ffi.cdef[[
 typedef struct _DOCINFOA {
     int     cbSize;
     LPCSTR   lpszDocName;
     LPCSTR   lpszOutput;
-#if (WINVER >= 0x0400)
     LPCSTR   lpszDatatype;
     DWORD    fwType;
-#endif /* WINVER */
 } DOCINFOA, *LPDOCINFOA;
+
 
 typedef struct _DOCINFOW {
     int     cbSize;
     LPCWSTR  lpszDocName;
     LPCWSTR  lpszOutput;
-#if (WINVER >= 0x0400)
     LPCWSTR  lpszDatatype;
     DWORD    fwType;
-#endif /* WINVER */
 } DOCINFOW, *LPDOCINFOW;
+]]
 
 --[[
 #ifdef UNICODE
@@ -4903,24 +4898,30 @@ typedef LPDOCINFOA LPDOCINFO;
 #endif // UNICODE
 --]]
 
-#if(WINVER >= 0x0400)
-#define DI_APPBANDING               0x00000001
-#define DI_ROPS_READ_DESTINATION    0x00000002
-#endif /* WINVER >= 0x0400 */
+ffi.cdef[[
+static const int DI_APPBANDING              = 0x00000001;
+static const int DI_ROPS_READ_DESTINATION   = 0x00000002;
+
 
   int __stdcall StartDocA( HDC hdc,  const DOCINFOA *lpdi);
   int __stdcall StartDocW( HDC hdc,  const DOCINFOW *lpdi);
+]]
+
+--[[
 #ifdef UNICODE
 #define StartDoc  StartDocW
 #else
 #define StartDoc  StartDocA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
   int __stdcall EndDoc( HDC hdc);
   int __stdcall StartPage( HDC hdc);
   int __stdcall EndPage( HDC hdc);
   int __stdcall AbortDoc( HDC hdc);
  int __stdcall SetAbortProc( HDC hdc,  ABORTPROC proc);
---]=]
+]]
 
 ffi.cdef[[
  BOOL __stdcall AbortPath( HDC hdc);

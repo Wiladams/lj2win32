@@ -133,7 +133,7 @@ function DeviceContext.SelectObject(self, gdiobj)
 	return true;
 end
 
-DeviceContext.SelectStockObject = function(self, objectIndex)
+function DeviceContext.SelectStockObject(self, objectIndex)
     -- First get a handle on the object
     local objHandle = ffi.C.GetStockObject(objectIndex);
 
@@ -158,6 +158,7 @@ end
 function DeviceContext.SetDCPenColor(self, color)
 	return ffi.C.SetDCPenColor(self.Handle, color)
 end
+
 
 
 -- Drawing routines

@@ -36,8 +36,7 @@ local exports = {}
 local lonMessage = false;
 
 -- internal constants
---ClientDC = nil;
-GDIRGB = wingdi.RGB;
+
 
 
 -- Global variables
@@ -90,10 +89,6 @@ keyCode = false;
 -- Initial State
 ColorMode = RGB;
 
-
---BackgroundColor = Color(127, 127, 127, 255),
---FillColor = Color(255,255,255,255),
---StrokeColor = Color(0,0,0,255),
 
 Running = false;
 FrameRate = 20;
@@ -333,7 +328,6 @@ local function createWindow(params)
 
     -- create an instance of a window
     appWindow = NativeWindow:create(winkind.ClassName, params.width, params.height,  params.title);
-    --ClientDC = DeviceContext:init(appWindow.ClientDC);
 
     appWindow:show();
 end
@@ -385,21 +379,24 @@ local function main(params)
         lonMessage = onMessage;
     end
 
-	BackgroundColor = color(127, 127, 127, 255);
+	BackgroundColor = color(225, 225, 225, 255);
 	FillColor = color(255,255,255,255);
 	StrokeColor = color(0,0,0,255);
 
     spawn(msgLoop);
     yield();
-    --spawn(createWindow, params);
-	--yield();
+
 	createWindow(params);
     setupUIHandlers();
     yield();
 	surface = GDISurface(params)
-	surface.DC:SetDCPenColor(StrokeColor.cref)
-	surface.DC:SetDCBrushColor(wingdi.RGB(225,225,225))
+
+    surface.DC:SelectStockObject(ffi.C.NULL_PEN)
+	surface.DC:SetDCBrushColor(BackgroundColor.cref)
     surface.DC:Rectangle(0, 0, params.width-1, params.height-1)
+
+    surface.DC:UseDCPen(true);
+    surface.DC:SetDCPenColor(StrokeColor.cref)
     surface.DC:SetDCBrushColor(FillColor.cref)
 
     if setup then

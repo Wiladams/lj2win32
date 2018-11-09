@@ -2,7 +2,8 @@
     This must be required by p5.lua, do not use it directly
     as it utilizes globals found in there.
 ]]
---local surfaceDC = surface.DC
+
+local ffi = require("ffi")
 local wingdi = require("win32.wingdi")
 
 
@@ -66,11 +67,11 @@ function noFill()
 	return Processing.Renderer:SetFillColor(acolor)
 end
 
-function noStroke(...)
-	local acolor = Color(0,0)
+function noStroke()
+	StrokeColor = color(0,0)
+	surface.DC:SelectStockObject(ffi.C.NULL_PEN);
 
-
-	--return Processing.SetStrokeColor(acolor)
+	return true;
 end
 
 function stroke(...)
@@ -127,7 +128,8 @@ function rect(...)
 end
 
 function triangle(x1, y1, x2, y2, x3, y3)
-	Processing.Renderer:DrawTriangle(x1, y1, x2, y2, x3, y3)
+	local pts = ffi.new("POINT[3]", {{x1,y1},{x2,y2},{x3,y3}})
+	surface.DC:Polygon(pts, 3)
 end
 
 function polygon(pts)
@@ -135,14 +137,8 @@ function polygon(pts)
 end
 
 function quad(x1, y1, x2, y2, x3, y3, x4, y4)
-	local pts = {
-		Point3D(x1, y1, 0),
-		Point3D(x2, y2, 0),
-		Point3D(x3, y3, 0),
-		Point3D(x4, y4, 0),
-	}
-
-	polygon(pts)
+	local pts = ffi.new("POINT[4]", {{x1,y1},{x2,y2},{x3,y3},{x4,y4}})
+	surface.DC:Polygon(pts, 4)
 end
 
 function ellipse(...)
