@@ -12,6 +12,14 @@ local solidPens = {}
 --[==================================================[
 		LANGUAGE COMMANDS
 --]==================================================]
+function push()
+	surface.DC:save();
+end
+
+function pop()
+	surface.DC:restore();
+end
+
 local function solidBrush(...)
 	local c = color(...)
 	local abrush = false;
@@ -61,10 +69,9 @@ function colorMode(amode)
 end
 
 
-
-
 function background(...)
 	local bbrush, c = solidBrush(...)
+	BackgroundColor = c;
 
 	if not bbrush then
 		return false;
@@ -88,7 +95,7 @@ end
 
 function fill(...)
 	local abrush, c = solidBrush(...)
-
+	FillColor = c;
 	if not abrush then
 		return false;
 	end
@@ -99,17 +106,6 @@ function fill(...)
 end
 
 function noFill()
---[[
-	local plbrush = ffi.new("LOGBRUSH", {ffi.C.BS_NULL, 0, nil})
-	FillBrush = ffi.C.CreateBrushIndicect(plbrush);
-	FillColor = false;
-
-	local oldbrush = surface.DC:SelectObject(FillBrush);
-
-	if oldbrush then
-		ffi.C.DeleteObject(oldbrush)
-	end
---]]
 	local oldbrush = surface.DC:SelectStockObject(ffi.C.NULL_BRUSH)
 
 	return true;
@@ -320,7 +316,9 @@ function strokeJoin(join)
 end
 
 function strokeWeight(weight)
-	Processing.Renderer:SetLineWidth(weight)
+	StrokeWeight = weight;
+	-- need to create a new pen with 
+	-- this specified weight
 end
 
 function size(awidth, aheight, MODE)
@@ -404,12 +402,12 @@ end
 
 -- Matrix Stack
 function popMatrix()
-	Processing.Renderer:PopMatrix();
+	
 end
 
 
 function pushMatrix()
-	Processing.Renderer:PushMatrix();
+	
 end
 
 function applyMatrix()
@@ -424,11 +422,11 @@ end
 
 -- Simple transforms
 function translate(x, y, z)
-	Processing.Renderer:Translate(x, y, z)
+	-- SetWorldTransform
 end
 
 function rotate(rads)
-	Processing.Renderer:Rotate(rads)
+	
 end
 
 function rotateX(rad)
@@ -441,7 +439,7 @@ function rotateZ(rad)
 end
 
 function scale(sx, sy, sz)
-	Processing.Renderer:Scale(sx, sy, sz)
+	
 end
 
 function shearX()
