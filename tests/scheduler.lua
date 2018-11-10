@@ -487,6 +487,71 @@ local function on(sigName, func)
 	return res;
 end
 
+--[[
+	predicates
+	
+	Predicates are a new form of cooperative flow control.
+	The routines essentially wrap basic signaling with convenient words
+	and spawning operations.
+
+	The fundamental building block is the 'predicate', which is nothing more
+	than a function which returns a boolean value.
+
+	The typical usage will be to block a task with 'waitForPredicate', which will
+	suspend the current task until the specified predicate returns a value of 'true'.
+	It will then be resumed from that point.
+
+	waitForPredicate
+	signalOnPredicate
+	when
+	whenever
+--]]
+
+
+local function signalOnPredicate(pred, signalName)
+	local function closure(lpred)
+		local res = nil;
+		repeat
+			res = lpred();
+			if res then 
+				return signalAllImmediate(signalName, res) 
+			end;
+
+			yield();
+		until res == nil
+	end
+
+	return spawn(closure, pred)
+end
+
+local function waitForPredicate(pred)
+	local signalName = "predicate-"..tostring(getCurrentTaskID());
+	signalOnPredicate(pred, signalName);
+	return waitForSignal(signalName);
+end
+
+local function when(pred, func)
+	local function closure(lpred, lfunc)
+		lfunc(waitForPredicate(lpred))
+	end
+
+	return spawn(closure, pred, func)
+end
+
+local function whenever(pred, func)
+	local function closure(lpred, lfunc)
+		local signalName = "whenever-"..tostring(getCurrentTaskID());
+		local res = true;
+		repeat
+			signalOnPredicate(lpred, signalName);
+			res = waitForSignal(signalName);
+			lfunc(res)
+		until false
+	end
+
+	return spawn(closure, pred, func)
+end
+
 
 
 local function run(func, ...)
@@ -524,6 +589,12 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"waitForSignal", waitForSignal);
 	rawset(tbl,"onOnce", onOnce);
 	rawset(tbl,"on", on);
+
+	-- predicates
+	rawset(tbl,"signalOnPredicate", signalOnPredicate);
+	rawset(tbl,"waitForPredicate", waitForPredicate);
+	rawset(tbl,"when", when);
+	rawset(tbl,"whenever", whenever);
 
 	-- extras
 	rawset(tbl,"getCurrentTaskID", getCurrentTaskID);
