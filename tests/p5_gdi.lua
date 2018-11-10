@@ -6,11 +6,50 @@
 local ffi = require("ffi")
 local wingdi = require("win32.wingdi")
 
-
+local solidBrushes = {}
+local solidPens = {}
 
 --[==================================================[
 		LANGUAGE COMMANDS
 --]==================================================]
+local function solidBrush(...)
+	local c = color(...)
+	local abrush = false;
+	
+	abrush = solidBrushes[tonumber(c.cref)]
+	--print("solidBrush: ", c.cref, abrush)
+	
+	if abrush then
+		return abrush;
+	end
+
+	abrush = ffi.C.CreateSolidBrush(c.cref);
+	solidBrushes[tonumber(c.cref)] = abrush;
+
+	return abrush, c;
+end
+
+local function solidPen(...)
+	local c = color(...)
+
+	local apen = solidPens[tonumber(c.cref)]
+
+	if apen then
+		return apen, c
+	end
+
+
+	apen = ffi.C.CreatePen(ffi.C.PS_SOLID, StrokeWidth, c.cref);
+	if not apen then 
+		return false, 'could not create solid pen'
+	end
+
+	solidPens[tonumber(c.cref)] = apen
+
+	return apen, c
+end
+
+
 function colorMode(amode)
 	-- if it's not valid input, just return
 	if amode ~= RGB and amode ~= HSB then 
@@ -21,42 +60,77 @@ function colorMode(amode)
 	return true;
 end
 
+
+
+
 function background(...)
-	BackgroundColor = color(...)
+	local bbrush, c = solidBrush(...)
 
-	-- need to reset brush after this as 
-	-- the user might have specified something else
-	surface.DC:SetDCBrushColor(BackgroundColor.cref)
+	if not bbrush then
+		return false;
+	end
 
-	-- whenever background is called, update the surface
-	-- immediately
+	local oldbrush = surface.DC:SelectObject(bbrush);
+	local oldpen = surface.DC:SelectStockObject(ffi.C.NULL_PEN);
+
+
+	-- whenever background is called, fill the surface
+	-- with the new color immediately
 	surface.DC:Rectangle(0, 0, width-1, height-1)
+	surface.DC:flush();
+
+	-- restore the old stuff
+	surface.DC:SelectObject(oldbrush);
+	surface.DC:SelectObject(oldpen);
 end
 
 
 
 function fill(...)
-	FillColor = color(...)
-	surface.DC:SetDCBrushColor(FillColor.cref);
+	local abrush, c = solidBrush(...)
+
+	if not abrush then
+		return false;
+	end
+
+	local oldbrush = surface.DC:SelectObject(abrush);
+	
+	return true;
 end
 
 function noFill()
-	FillColor = color(0,0)
-	surface.DC:SelectStockObject(ffi.C.NULL_BRUSH)
+--[[
+	local plbrush = ffi.new("LOGBRUSH", {ffi.C.BS_NULL, 0, nil})
+	FillBrush = ffi.C.CreateBrushIndicect(plbrush);
+	FillColor = false;
+
+	local oldbrush = surface.DC:SelectObject(FillBrush);
+
+	if oldbrush then
+		ffi.C.DeleteObject(oldbrush)
+	end
+--]]
+	local oldbrush = surface.DC:SelectStockObject(ffi.C.NULL_BRUSH)
 
 	return true;
 end
 
 function noStroke()
-	StrokeColor = color(0,0)
 	surface.DC:SelectStockObject(ffi.C.NULL_PEN);
 
 	return true;
 end
 
 function stroke(...)
-	StrokeColor = color(...);
-	surface.DC:SetDCPenColor(StrokeColor.cref);
+	local pen, c = solidPen(...);
+	StrokeColor = c;
+
+	if pen == nil then
+		print("NO SOLID PEN")
+		return false;
+	end
+
+	local oldPen = surface.DC:SelectObject(pen)
 
 	return true;
 end
@@ -93,7 +167,25 @@ function line(...)
 	return true;
 end
 
-function rect(...)
+
+
+function triangle(x1, y1, x2, y2, x3, y3)
+	local pts = ffi.new("POINT[3]", {{x1,y1},{x2,y2},{x3,y3}})
+	surface.DC:Polygon(pts, 3)
+end
+
+function polygon(pts)
+	local npts = #pts
+	local apts = ffi.new("POINT[?]", npts)
+	surface.DC:Polygon(apts, npts)
+end
+
+function quad(x1, y1, x2, y2, x3, y3, x4, y4)
+	local pts = ffi.new("POINT[4]", {{x1,y1},{x2,y2},{x3,y3},{x4,y4}})
+	surface.DC:Polygon(pts, 4)
+end
+
+local function calcModeRect(mode, ...)
 	local nargs = select('#',...)
 	if nargs < 4 then return false end
 
@@ -106,31 +198,41 @@ function rect(...)
 	local y1 = 0;
 	local rwidth = 0;
 	local rheight = 0;
-	
-	if RectMode == CORNER then
+
+	if mode == CORNER then
 		x1 = a;
 		y1 = b;
 		rwidth = c;
 		rheight = d;
 
-	elseif RectMode == CORNERS then
+	elseif mode == CORNERS then
 		x1 = a;
 		y1 = b;
 		rwidth = c - a + 1;
 		rheight = d - b + 1;
 
-	elseif RectMode == CENTER then
+	elseif mode == CENTER then
 		x1 = a - c / 2;
 		y1 = b - d / 2;
 		rwidth = c;
 		rheight = d;
 
-	elseif RectMode == RADIUS then
+	elseif mode == RADIUS then
 		x1 = a - c;
 		y1 = b - d;
 		rwidth = c * 2;
 		rheight = d * 2;
 	end
+
+	return x1, y1, rwidth, rheight;
+end
+
+function rect(...)
+	local nargs = select('#',...)
+	if nargs < 4 then return false end
+
+	local x1, y1, rwidth, rheight = calcModeRect(RectMode, ...)
+
 
 	if nargs == 4 then
 		surface.DC:Rectangle(x1,y1,x1+rwidth-1,y1+rheight-1)
@@ -141,32 +243,17 @@ function rect(...)
 	return true;
 end
 
-function triangle(x1, y1, x2, y2, x3, y3)
-	local pts = ffi.new("POINT[3]", {{x1,y1},{x2,y2},{x3,y3}})
-	surface.DC:Polygon(pts, 3)
-end
-
-function polygon(pts)
-	Processing.Renderer:DrawPolygon(pts)
-end
-
-function quad(x1, y1, x2, y2, x3, y3, x4, y4)
-	local pts = ffi.new("POINT[4]", {{x1,y1},{x2,y2},{x3,y3},{x4,y4}})
-	surface.DC:Polygon(pts, 4)
-end
-
 function ellipse(...)
 	local nargs = select('#',...)
-	local x = select(1,...)
-	local y = select(2,...)
-	local w = select(3,...)
-	local h = select(4,...)
+
+	local x1, y1, rwidth, rheight = calcModeRect(EllipseMode, ...)
 	
-	if nargs == 4 then
-		surface.DC:Ellipse(x,y,x+w-1,y+h-1)
-	elseif nargs == 5 then
-		surface.DC:RoundRect(x,y,x+w-1, y+h-1, select(5,...), select(5,...))
-	end
+	local xradius = rwidth / 2;
+	local yradius = rheight / 2;
+
+	surface.DC:Ellipse(x1,y1,x1+rwidth-1,y1+rheight-1)
+
+	return true;
 end
 
 --[====================================[
@@ -221,7 +308,7 @@ function noSmooth()
 end
 
 function pointSize(ptSize)
-	Processing.Renderer:SetPointSize(ptSize)
+	PointSize = ptSize;
 end
 
 function strokeCap(cap)

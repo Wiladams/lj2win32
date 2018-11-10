@@ -44,8 +44,8 @@ function DeviceContext.init(self, rawhandle)
 
 	-- default to advanced graphics mode instead of GM_COMPATIBLE
 	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
-	obj:UseDCBrush(true);
-	obj:UseDCPen(true);
+	--obj:UseDCBrush(true);
+	--obj:UseDCPen(true);
 
 	return obj;
 end
@@ -128,9 +128,14 @@ end
 
 -- Object Management
 function DeviceContext.SelectObject(self, gdiobj)
-	ffi.C.SelectObject(self.Handle, gdiobj)
+	if not gdiobj then return false end
 	
-	return true;
+	local res = ffi.C.SelectObject(self.Handle, gdiobj)
+	if res == nil then
+		return false
+	end
+
+	return res;
 end
 
 function DeviceContext.SelectStockObject(self, objectIndex)

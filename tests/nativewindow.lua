@@ -1,7 +1,7 @@
 
 local ffi = require("ffi");
 local bit = require("bit");
-local bor = bit.bor;
+local bor, band = bit.bor, bit.band;
 
 local errorhandling = require("win32.errhandlingapi");
 --local core_library = require("experimental.apiset.libraryloader_l1_1_1");
@@ -107,17 +107,26 @@ function NativeWindow.maximize(self)
 	return self:Show(ffi.C.SW_MAXIMIZE);
 end
 
+function NativeWindow.invalidate(self, lpRect, bErase)
+	bErase = bErase or 0;
+
+	local res = ffi.C.InvalidateRect(self:getNativeHandle(), r, bErase)
+end
+
 function NativeWindow.redraw(self, flags)
+	self:invalidate();
+	self:update();
+	--[[
 	local lprcUpdate = nil;	-- const RECT *
 	local hrgnUpdate = nil; -- HRGN
-	flags = flags or ffi.C.RDW_UPDATENOW;
+	flags = flags or bor(ffi.C.RDW_UPDATENOW, ffi.C.RDW_INTERNALPAINT);
 
 	local res = ffi.C.RedrawWindow(
   		self:getNativeHandle(),
   		lprcUpdate,
    		hrgnUpdate,
   		flags);
-
+--]]
 	return true;
 end
 

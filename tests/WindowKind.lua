@@ -48,7 +48,8 @@ end
 
 function WindowKind.create(self, classname, msgproc, style)
 	msgproc = msgproc or ffi.C.DefWindowProcA;
-	style = style or bor(ffi.C.CS_HREDRAW,ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
+	--style = style or bor(ffi.C.CS_HREDRAW,ffi.C.CS_VREDRAW, ffi.C.CS_OWNDC);
+	style = style or bor(ffi.C.CS_HREDRAW,ffi.C.CS_VREDRAW);
 
 	local appInstance = ffi.C.GetModuleHandleA(nil);
 

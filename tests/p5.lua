@@ -94,7 +94,7 @@ TRIANGLE_FAN    = 9;
 
 
 -- environment
-frameCount = false;
+frameCount = 0;
 focused = false;
 displayWidth = false;
 displayHeight = false;
@@ -143,7 +143,7 @@ touches = false;
 AngleMode = RADIANS;
 ColorMode = RGB;
 RectMode = CORNER;
-EllipseMode = CORNER;
+EllipseMode = CENTER;
 
 
 FrameRate = 60;
@@ -159,6 +159,8 @@ TextMode = SCREEN;
 TextSize = 12;
 
 
+StrokeWidth = 0;
+StrokeWeight = 1;
 
 --[[
     These are functions that are globally available, so user code
@@ -278,13 +280,19 @@ end
 
 -- Drawing and canvas management
 function refreshWindow()
-    appWindow:redraw(ffi.C.RDW_INVALIDATE)
+    --appWindow:redraw(bor(ffi.C.RDW_UPDATENOW, ffi.C.RDW_INTERNALPAINT))
+    --appWindow:redraw(bor(ffi.C.RDW_INTERNALPAINT))
+    appWindow:invalidate();
 
     return true;
 end
 
 function redraw()
-    draw();
+    if draw then
+        draw();
+        surface.DC:flush();
+    end
+
     refreshWindow();
 
     return true;
@@ -294,7 +302,7 @@ function createCanvas(width, height)
     return false;
 end
 
-
+random = math.random
 
 
 
@@ -363,6 +371,8 @@ function MouseActivity(hwnd, msg, wparam, lparam)
     elseif msg == ffi.C.WM_MOUSEWHEEL then
         event.activity = 'mousewheel';
         signalAll('gap_mousewheel', event)
+    elseif msg == ffi.C.WM_MOUSELEAVE then
+        print("WM_MOUSELEAVE")
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -404,15 +414,15 @@ function WindowProc(hwnd, msg, wparam, lparam)
 --print("PAINT: ", ps.rcPaint.left, ps.rcPaint.top,ps.rcPaint.right, ps.rcPaint.bottom)
 		-- bitblt backing store to client area
 
-        if (nil ~= surface) then
+        if (surface  == nil) then
+            print("NO SURFACE YET")
+        else
 			ret = ffi.C.BitBlt(hdc,
 				ps.rcPaint.left, ps.rcPaint.top,
 				ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top,
 				surface.DC.Handle,
 				ps.rcPaint.left, ps.rcPaint.top,
                 ffi.C.SRCCOPY);
-        else
-            --print("NO SURFACE YET")
         end
 
 		ffi.C.EndPaint(hwnd, ps);
@@ -420,6 +430,12 @@ function WindowProc(hwnd, msg, wparam, lparam)
         res = MouseActivity(hwnd, msg, wparam, lparam)
     elseif msg >= ffi.C.WM_KEYFIRST and msg <= ffi.C.WM_KEYLAST then
         res = KeyboardActivity(hwnd, msg, wparam, lparam)  
+    elseif msg == ffi.C.WM_SETFOCUS then
+        --print("WM_SETFOCUS")
+        focused = true;
+    elseif msg == ffi.C.WM_KILLFOCUS then
+        --print("WM_KILLFOCUS")
+        focused = false;
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -461,11 +477,11 @@ local function msgLoop()
         --signalAll("gap_idle")
 
         if LoopActive and EnvironmentReady then
-            --signalAll("gap_frame")
+
             if draw then
-                draw(); 
-                refreshWindow();
+                redraw();
             end
+            frameCount = frameCount + 1;
         end
 
         yield();
@@ -537,9 +553,8 @@ local function main(params)
         lonMessage = onMessage;
     end
 
-	BackgroundColor = color(225, 225, 225, 255);
-	FillColor = color(255,255,255,255);
-	StrokeColor = color(0,0,0,255);
+
+	surface = GDISurface(params)
 
     spawn(msgLoop);
     yield();
@@ -547,22 +562,19 @@ local function main(params)
 	createWindow(params);
     setupUIHandlers();
     yield();
-	surface = GDISurface(params)
 
-    surface.DC:SelectStockObject(ffi.C.NULL_PEN)
-	surface.DC:SetDCBrushColor(BackgroundColor.cref)
-    surface.DC:Rectangle(0, 0, params.width-1, params.height-1)
 
-    surface.DC:UseDCPen(true);
-    surface.DC:SetDCPenColor(StrokeColor.cref)
-    surface.DC:SetDCBrushColor(FillColor.cref)
+    background(225, 225, 225, 255)
+    fill(255,255,255)
+    stroke(0,0,0)
+
 
     EnvironmentReady = true;
 
     if setup then
         setup();
     end
-    refreshWindow();
+    redraw();
     yield();
 
     signalAll("gap_ready");
@@ -575,8 +587,8 @@ function go(params)
         height = 240;
         title = "p5"
     }
-    params.width = params.width or 640;
-    params.height = params.height or 480;
+    params.width = params.width or 320;
+    params.height = params.height or 240;
     params.title = params.title or "p5"
 
     run(main, params)

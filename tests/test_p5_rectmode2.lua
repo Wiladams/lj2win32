@@ -13,4 +13,4 @@ function setup()
 end
 
 
-go({width=640, height=480, title="test_p5_rectmode2"});
+go({title="test_p5_rectmode2"});
