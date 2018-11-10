@@ -458,7 +458,7 @@ end
 
 
 -- One shot signal activation
-local function onOnce(sigName, func)
+local function onSignal(sigName, func)
 	local function watchit(sigName, func)
 		func(waitForSignal(sigName));
 	end
@@ -587,7 +587,8 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"signalAllImmediate", signalAllImmediate);
 	rawset(tbl,"signalOne", signalOne);
 	rawset(tbl,"waitForSignal", waitForSignal);
-	rawset(tbl,"onOnce", onOnce);
+	rawset(tbl,"onOnce", onSignal);
+	rawset(tbl,"onSignal", onSignal);
 	rawset(tbl,"on", on);
 
 	-- predicates

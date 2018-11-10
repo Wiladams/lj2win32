@@ -62,7 +62,7 @@ local function main()
 
 
 	-- setup to call halt when counting is finished
-	onOnce("counter-finished", halt)
+	onSignal("counter-finished", halt)
 end
 
 run(main)
