@@ -13,6 +13,10 @@
 	With this base of spawning, and signaling, fairly complex
 	cooperative multi-tasking can be constructed.
 ]]
+
+local ffi = require("ffi")
+local profileapi = require("win32.profileapi")
+
 local floor = math.floor;
 local insert = table.insert;
 
@@ -148,6 +152,87 @@ local function binsert(tbl, value, fcomp)
    return idx;
 end
 
+--[[
+    A simple stopwatch.
+    This stopwatch is independent of wall clock time.  It sets a relative
+    start position whenever you call 'reset()'.
+    
+    The only function it serves is to tell you the number of seconds since
+    the reset() method was called.
+--]]
+
+
+
+local function GetPerformanceFrequency(anum)
+	anum = anum or ffi.new("int64_t[1]");
+	local success = ffi.C.QueryPerformanceFrequency(anum)
+	if success == 0 then
+		return false;   --, errorhandling.GetLastError(); 
+	end
+
+	return tonumber(anum[0])
+end
+
+local function GetPerformanceCounter(anum)
+	anum = anum or ffi.new("int64_t[1]")
+	local success = ffi.C.QueryPerformanceCounter(anum)
+	if success == 0 then 
+		return false; --, errorhandling.GetLastError();
+	end
+
+	return tonumber(anum[0])
+end
+
+local function GetCurrentTickTime()
+	local frequency = 1/GetPerformanceFrequency();
+	local currentCount = GetPerformanceCounter();
+	local seconds = currentCount * frequency;
+
+	return seconds;
+end
+
+
+local StopWatch = {}
+setmetatable(StopWatch, {
+	__call = function(self, ...)
+		return self:new(...);
+	end;
+
+})
+
+local StopWatch_mt = {
+	__index = StopWatch;
+}
+
+function StopWatch.init(self, obj)
+    obj = obj or {
+        starttime = 0;
+    }
+
+	setmetatable(obj, StopWatch_mt);
+	obj:reset();
+
+	return obj;
+end
+
+function StopWatch.new(self, ...)
+	return self:init(...);
+end
+
+function StopWatch.seconds(self)
+	local currentTime = GetCurrentTickTime();
+	return currentTime - self.starttime;
+end
+
+function StopWatch.millis(self)
+	return self:seconds()*1000;
+end
+
+function StopWatch.reset(self)
+	self.starttime = GetCurrentTickTime();
+end
+
+
 
 
 --[[
@@ -193,7 +278,7 @@ end
 
 -- A function that can be used as a predicate
 function Task.isFinished(self)
-	return task:getStatus() == "dead"
+	return self:getStatus() == "dead"
 end
 
 
@@ -203,11 +288,19 @@ function Task.setParams(self, params)
 	return self;
 end
 
+function Task.cancel(self)
+end
+
 function Task.resume(self)
 --print("Task, RESUMING: ", unpack(self.params));
 	return coroutine.resume(self.routine, unpack(self.params));
 end
 
+
+
+--[[
+	Scheduler, the heart of the kernel
+]]
 local Scheduler = {}
 setmetatable(Scheduler, {
 	__call = function(self, ...)
@@ -552,7 +645,116 @@ local function whenever(pred, func)
 	return spawn(closure, pred, func)
 end
 
+--[[
+	Alarm Clock
 
+	These routines implement time based flow control
+]]
+
+local	SignalsWaitingForTime = {};
+local	SignalWatch = StopWatch();
+
+local function runningTime()
+	return SignalWatch:seconds();
+end
+
+local function compareDueTime(task1, task2)
+	if task1.DueTime < task2.DueTime then
+		return true
+	end
+	
+	return false;
+end
+
+
+function waitUntilTime(atime)
+	-- create a signal
+	local taskID = getCurrentTaskID();
+	local signalName = "sleep-"..tostring(taskID);
+	local fiber = {DueTime = atime, SignalName = signalName};
+
+	-- put time/signal into list so watchdog will pick it up
+	binsert(SignalsWaitingForTime, fiber, compareDueTime)
+
+	-- put the current task to wait on signal
+	waitForSignal(signalName);
+end
+
+-- suspend the current task for the 
+-- specified number of milliseconds
+local function sleep(millis)
+	-- figure out the time in the future
+	local currentTime = SignalWatch:seconds();
+	local futureTime = currentTime + (millis / 1000);
+	
+	return waitUntilTime(futureTime);
+end
+
+local function delay(millis, func)
+	millis = millis or 1000
+
+	local function closure()
+		sleep(millis)
+		func();
+	end
+
+	return spawn(closure)
+end
+
+local function periodic(millis, func)
+	millis = millis or 1000
+
+	local function closure()
+		while true do
+			sleep(millis)
+			func();
+		end
+	end
+
+	return spawn(closure)
+end
+
+-- The routine task which checks the list of waiting tasks to see
+-- if any of them need to be signaled to wakeup
+local function taskReadyToRun()
+	local currentTime = SignalWatch:seconds();
+	
+	-- traverse through the fibers that are waiting
+	-- on time
+	local nAwaiting = #SignalsWaitingForTime;
+
+	for i=1,nAwaiting do
+		local task = SignalsWaitingForTime[1]; 
+		if not task then
+			return false;
+		end
+
+		if task.DueTime <= currentTime then
+			return task
+		else
+			return false
+		end
+	end
+
+	return false;
+end
+
+local function runTask(task)
+	signalOne(task.SignalName);
+	table.remove(SignalsWaitingForTime, 1);
+end
+
+
+-- This is a global variable because These routines
+-- MUST be a singleton within a lua state
+Alarm = whenever(taskReadyToRun, runTask)
+
+
+
+
+--[[
+	Main kernel control routines
+]]
 
 local function run(func, ...)
 
@@ -587,7 +789,6 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"signalAllImmediate", signalAllImmediate);
 	rawset(tbl,"signalOne", signalOne);
 	rawset(tbl,"waitForSignal", waitForSignal);
-	rawset(tbl,"onOnce", onSignal);
 	rawset(tbl,"onSignal", onSignal);
 	rawset(tbl,"on", on);
 
@@ -596,6 +797,12 @@ local function globalizeKernel(tbl)
 	rawset(tbl,"waitForPredicate", waitForPredicate);
 	rawset(tbl,"when", when);
 	rawset(tbl,"whenever", whenever);
+
+	-- alarm clock
+	rawset(tbl,"delay",delay);
+	rawset(tbl,"periodic",periodic);
+	rawset(tbl,"runningTime",runningTime);
+	rawset(tbl,"sleep",sleep);
 
 	-- extras
 	rawset(tbl,"getCurrentTaskID", getCurrentTaskID);
