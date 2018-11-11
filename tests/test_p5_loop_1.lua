@@ -10,8 +10,9 @@ function setup()
 end
 
 function draw()
+    --print("Frame Count: ", frameCount)
     background(204);
-    x = x + 0.2;
+    x = x + 0.5;
     if (x > width) then
         x = 0;
     end

@@ -146,7 +146,7 @@ RectMode = CORNER;
 EllipseMode = CENTER;
 
 
-FrameRate = 60;
+FrameRate = 20;
 LoopActive = true;
 EnvironmentReady = false;
 
@@ -475,7 +475,7 @@ local function msgLoop()
             res = ffi.C.DispatchMessageA(msg)
         end
         --signalAll("gap_idle")
-
+--[[
         if LoopActive and EnvironmentReady then
 
             if draw then
@@ -483,7 +483,7 @@ local function msgLoop()
             end
             frameCount = frameCount + 1;
         end
-
+--]]
         yield();
     end
 
@@ -533,7 +533,7 @@ local function setupUIHandlers()
         {activity = 'gap_syskeyup', response = "onKeyboardActivity"};
 
         {activity = 'gap_idle', response = "onIdle"};
-        {activity = 'gap_frame', response = "draw"};
+        --{activity = 'gap_frame', response = "draw"};
     }
 
     for i, handler in ipairs(handlers) do
@@ -545,14 +545,24 @@ local function setupUIHandlers()
 
 end
 
+local function handleFrame()
+    if LoopActive and EnvironmentReady then
+        if draw then
+            redraw();
+        end
+        frameCount = frameCount + 1;
+    end
+end
 
 
 local function main(params)
-    -- make a local for 'onMessage' global function
+
+    FrameRate = params.frameRate or 15;
+
+    -- make a local for 'onMessage' global function    
     if onMessage then
         lonMessage = onMessage;
     end
-
 
 	surface = GDISurface(params)
 
@@ -568,7 +578,6 @@ local function main(params)
     fill(255,255,255)
     stroke(0,0,0)
 
-
     EnvironmentReady = true;
 
     if setup then
@@ -576,6 +585,11 @@ local function main(params)
     end
     redraw();
     yield();
+
+    -- setup the periodic frame calling
+    local framePeriod = math.floor((1/FrameRate)*1000)
+    print("Frame Period: ", framePeriod)
+    periodic(framePeriod, handleFrame)
 
     signalAll("gap_ready");
 end
@@ -589,7 +603,8 @@ function go(params)
     }
     params.width = params.width or 320;
     params.height = params.height or 240;
-    params.title = params.title or "p5"
+    params.title = params.title or "p5";
+    params.frameRate = params.frameRate or 15;
 
     run(main, params)
 end

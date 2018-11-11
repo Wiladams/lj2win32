@@ -525,6 +525,10 @@ local function signalOne(eventName, ...)
 	return signalTasks(eventName, 100, false, ...)
 end
 
+local function signalOneImmediate(eventName, ...)
+	return signalTasks(eventName, 0, false, ...)
+end
+
 local function signalAll(eventName, ...)
 	return signalTasks(eventName, 100, true, ...)
 end
@@ -716,7 +720,7 @@ end
 
 -- The routine task which checks the list of waiting tasks to see
 -- if any of them need to be signaled to wakeup
-local function taskReadyToRun()
+local function alarm_taskReadyToRun()
 	local currentTime = SignalWatch:seconds();
 	
 	-- traverse through the fibers that are waiting
@@ -739,15 +743,10 @@ local function taskReadyToRun()
 	return false;
 end
 
-local function runTask(task)
-	signalOne(task.SignalName);
+local function alarm_runTask(task)
+	signalOneImmediate(task.SignalName);
 	table.remove(SignalsWaitingForTime, 1);
 end
-
-
--- This is a global variable because These routines
--- MUST be a singleton within a lua state
-Alarm = whenever(taskReadyToRun, runTask)
 
 
 
@@ -764,6 +763,13 @@ local function run(func, ...)
 
 	while (Kernel.ContinueRunning) do
 		Kernel.Scheduler:step();		
+		-- This is a global variable because These routines
+		-- MUST be a singleton within a lua state
+		--Alarm = whenever(alarm_taskReadyToRun, alarm_runTask)
+		local alarmTask = alarm_taskReadyToRun()
+		if alarmTask then
+			alarm_runTask(alarmTask)
+		end
 	end
 end
 

@@ -3,10 +3,6 @@ package.path = "../?.lua;"..package.path;
 require("p5")
 local wmmsgs = require("wm_reserved")
 
-local function onMessage(msg)
-    print(string.format("Loop Message: 0x%x", msg.message), wmmsgs[msg.message])  
-end
-
 
 
 -- To demonstrate, put two windows side by side.
