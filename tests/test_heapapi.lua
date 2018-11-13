@@ -70,7 +70,10 @@ local function heapWalk(hHeap)
     print(" -- REGIONS --")
     ffi.C.HeapLock(hHeap)
     while ffi.C.HeapWalk(hHeap, hEntry) ~= 0 do 
-        print(string.format("{size =%d, region=%d};", hEntry.cbData, hEntry.iRegionIndex))
+        print(string.format("{size =%d, overhead=%d, region=%d, committed=%d, uncommitted=%d };", 
+            hEntry.cbData, hEntry.cbOverhead, 
+            hEntry.iRegionIndex, 
+            hEntry.Region.dwCommittedSize, hEntry.Region.dwUnCommittedSize))
     end
     ffi.C.HeapUnlock(hHeap)
 
