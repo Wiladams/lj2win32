@@ -1,6 +1,8 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local bit = require("bit")
+local band, bor = bit.band, bit.bor
 
 local heapapi = require("win32.heapapi")
 
@@ -58,34 +60,64 @@ end
 ]]
 
 local function heapWalk(hHeap)
+	local heapEntry = ffi.new("PROCESS_HEAP_ENTRY");
+    heapEntry.lpData = nil;
 
-    print("== heapWalk ==")
-
-    -- Get the regions
-    local hEntry = ffi.new("PROCESS_HEAP_ENTRY");
-    hEntry.lpData = nil;    -- to start, just to be sure
-    hEntry.wFlags = ffi.C.PROCESS_HEAP_REGION;
-
-    -- Get allocated chunks of memory
-    print(" -- REGIONS --")
+    local res = {};
+    
     ffi.C.HeapLock(hHeap)
-    while ffi.C.HeapWalk(hHeap, hEntry) ~= 0 do 
-        print(string.format("{size =%d, overhead=%d, region=%d, committed=%d, uncommitted=%d };", 
-            hEntry.cbData, hEntry.cbOverhead, 
-            hEntry.iRegionIndex, 
-            hEntry.Region.dwCommittedSize, hEntry.Region.dwUnCommittedSize))
-    end
-    ffi.C.HeapUnlock(hHeap)
 
---[[
-    ffi.C.HeapLock(hHeap)
-    while ffi.C.HeapWalk(hHeap, hEntry) ~= 0 do 
-        print(string.format("{size =%d, region=%d};", hEntry.cbData, hEntry.iRegionIndex))
+
+	while ffi.C.HeapWalk(hHeap, heapEntry) ~= 0 do
+		if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_BUSY) > 0 then
+			-- Allocated block
+			table.insert(res, {
+						Kind = "allocated",
+						Size = heapEntry.cbData,
+						});
+		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_REGION) > 0 then
+			table.insert(res, {
+                        index = heapEntry.iRegionIndex,
+						Kind = "region",
+						Committed = heapEntry.Region.dwCommittedSize, 
+						uncommitted=heapEntry.Region.dwUnCommittedSize});
+		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_UNCOMMITTED_RANGE) > 0 then
+			table.insert(res, {
+						Kind = "uncommitted",
+						});
+		else
+			table.insert(res, {
+						Kind = "block",
+						}); 
+		end
+				
+	end
+
+	ffi.C.HeapUnlock(hHeap);
+
+	return res;
+end
+
+local function printRegion(entry)
+    print("Region: ", entry.index)
+    print(string.format("         Size: 0x%08x", entry.Committed + entry.uncommitted));
+    print(string.format("    Committed: 0x%08x", entry.Committed))
+    print(string.format("  UnCommitted: 0x%08x", entry.uncommitted))
+end
+
+local function test_heapWalk()
+    local procHeap = ffi.C.GetProcessHeap();
+    local entries = heapWalk(procHeap)
+
+    for i, entry in ipairs(entries) do
+        if entry.Kind == "region" then
+            printRegion(entry)
+        else
+            print(entry.Kind)
+        end
     end
-    ffi.C.HeapUnlock(hHeap)
---]]
 end
 
 
-heapInformation(procHeap)
-heapWalk(procHeap)
+--heapInformation(procHeap)
+test_heapWalk(procHeap)
