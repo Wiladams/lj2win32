@@ -117,7 +117,7 @@ function iocompletionset.wait(self, timeout)
     	BOOL fAlertable
     );
 --]]
-	local status = core_io.GetQueuedCompletionStatus(self:getNativeHandle(),
+	local status = ffi.C.GetQueuedCompletionStatus(self:getNativeHandle(),
     	lpNumberOfBytesTransferred,
     	lpCompletionKey,
     	lpOverlapped,

@@ -17899,42 +17899,29 @@ VOID
 
 
 ffi.cdef[[
-typedef LONG (__stdcall *PVECTORED_EXCEPTION_HANDLER)(
-    struct _EXCEPTION_POINTERS *ExceptionInfo
-    );
+typedef LONG (__stdcall *PVECTORED_EXCEPTION_HANDLER)(struct _EXCEPTION_POINTERS *ExceptionInfo);
 ]]
 
---[==[
+ffi.cdef[[
 typedef enum _HEAP_INFORMATION_CLASS {
-
     HeapCompatibilityInformation = 0,
-    HeapEnableTerminationOnCorruption = 1
-
-
-#if ((NTDDI_VERSION > NTDDI_WINBLUE) || \
-     (NTDDI_VERSION == NTDDI_WINBLUE && defined(WINBLUE_KBSPRING14)))
-    ,
-
+    HeapEnableTerminationOnCorruption = 1,
     HeapOptimizeResources = 3
-
-#endif
-
-
 } HEAP_INFORMATION_CLASS;
+]]
 
-#if ((NTDDI_VERSION > NTDDI_WINBLUE) || \
-     (NTDDI_VERSION == NTDDI_WINBLUE && defined(WINBLUE_KBSPRING14)))
 
-#define HEAP_OPTIMIZE_RESOURCES_CURRENT_VERSION  1
+ffi.cdef[[
+static const int HEAP_OPTIMIZE_RESOURCES_CURRENT_VERSION = 1;
 
 typedef struct _HEAP_OPTIMIZE_RESOURCES_INFORMATION {
     DWORD Version;
     DWORD Flags;
 } HEAP_OPTIMIZE_RESOURCES_INFORMATION, *PHEAP_OPTIMIZE_RESOURCES_INFORMATION;
+]]
 
-#endif
 
-
+--[==[
 #define WT_EXECUTEDEFAULT       0x00000000                           
 #define WT_EXECUTEINIOTHREAD    0x00000001                           
 #define WT_EXECUTEINUITHREAD    0x00000002                           

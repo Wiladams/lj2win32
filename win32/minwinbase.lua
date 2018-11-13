@@ -115,17 +115,21 @@ typedef struct _WIN32_FIND_DATAW {
 } WIN32_FIND_DATAW, *PWIN32_FIND_DATAW, *LPWIN32_FIND_DATAW;
 ]]
 
---[[
-#ifdef UNICODE
+
+if UNICODE then
+ffi.cdef[[
 typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
 typedef PWIN32_FIND_DATAW PWIN32_FIND_DATA;
 typedef LPWIN32_FIND_DATAW LPWIN32_FIND_DATA;
-#else
+]]
+else
+ffi.cdef[[
 typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
 typedef PWIN32_FIND_DATAA PWIN32_FIND_DATA;
 typedef LPWIN32_FIND_DATAA LPWIN32_FIND_DATA;
-#endif // UNICODE
---]]
+]]
+end -- UNICODE
+
 
 ffi.cdef[[
 typedef enum _FINDEX_INFO_LEVELS {
@@ -169,17 +173,13 @@ typedef enum _FILE_INFO_BY_HANDLE_CLASS {
     FileRemoteProtocolInfo,
     FileFullDirectoryInfo,
     FileFullDirectoryRestartInfo,
-//#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
     FileStorageInfo,
     FileAlignmentInfo,
     FileIdInfo,
     FileIdExtdDirectoryInfo,
     FileIdExtdDirectoryRestartInfo,
-//#endif
-//#if (_WIN32_WINNT >= _WIN32_WINNT_WIN10_RS1)
     FileDispositionInfoEx,
     FileRenameInfoEx,
-//#endif
     MaximumFileInfoByHandleClass
 } FILE_INFO_BY_HANDLE_CLASS, *PFILE_INFO_BY_HANDLE_CLASS;
 ]]
@@ -231,14 +231,16 @@ typedef struct _PROCESS_HEAP_ENTRY {
 } PROCESS_HEAP_ENTRY, *LPPROCESS_HEAP_ENTRY, *PPROCESS_HEAP_ENTRY;
 ]]
 
---[[
-#define PROCESS_HEAP_REGION             0x0001
-#define PROCESS_HEAP_UNCOMMITTED_RANGE  0x0002
-#define PROCESS_HEAP_ENTRY_BUSY         0x0004
-#define PROCESS_HEAP_SEG_ALLOC          0x0008
-#define PROCESS_HEAP_ENTRY_MOVEABLE     0x0010
-#define PROCESS_HEAP_ENTRY_DDESHARE     0x0020
+ffi.cdef[[
+static const int PROCESS_HEAP_REGION            = 0x0001;
+static const int PROCESS_HEAP_UNCOMMITTED_RANGE = 0x0002;
+static const int PROCESS_HEAP_ENTRY_BUSY        = 0x0004;
+static const int PROCESS_HEAP_SEG_ALLOC         = 0x0008;
+static const int PROCESS_HEAP_ENTRY_MOVEABLE    = 0x0010;
+static const int PROCESS_HEAP_ENTRY_DDESHARE    = 0x0020;
+]]
 
+--[[
 typedef struct _REASON_CONTEXT {
     ULONG Version;
     DWORD Flags;
