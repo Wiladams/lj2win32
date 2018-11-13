@@ -7,7 +7,7 @@ local ffi = require("ffi")
 if not _ERRHANDLING_H_ then
 _ERRHANDLING_H_ = true
 
---require("win32.apiset")
+
 require("win32.minwindef")
 
 ffi.cdef[[

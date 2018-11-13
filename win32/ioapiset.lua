@@ -3,14 +3,15 @@
 --]]
 
 
+local ffi = require ("ffi")
 
-require("minwindef")
-require("minwinbase")
+require("win32.minwindef")
+require("win32.minwinbase")
 
 
 ffi.cdef[[
 
-_Ret_maybenull_
+
 HANDLE
 __stdcall
 CreateIoCompletionPort(

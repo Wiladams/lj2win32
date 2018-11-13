@@ -196,6 +196,7 @@ typedef DWORD (* PTHREAD_START_ROUTINE)(LPVOID lpThreadParameter);
 typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 ]]
 
+
 ffi.cdef[[
 typedef struct _OVERLAPPED {
     ULONG_PTR Internal;
