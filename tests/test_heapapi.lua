@@ -25,16 +25,6 @@ local function heapInformation(handle)
     print("  Info: ", HeapInformation[0])
 end
 
---[[
-local function heapSummary(handle)
-    local res = ffi.C.HeapSummary(
-        handle,
-        DWORD dwFlags,
-        LPHEAP_SUMMARY lpSummary
-       ) == 1;
-   print("summarize heap: ", res)
-end
---]]
 
 
 --[[
@@ -68,29 +58,31 @@ local function heapWalk(hHeap)
     ffi.C.HeapLock(hHeap)
 
 
-	while ffi.C.HeapWalk(hHeap, heapEntry) ~= 0 do
-		if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_BUSY) > 0 then
-			-- Allocated block
-			table.insert(res, {
-						Kind = "allocated",
-						Size = heapEntry.cbData,
-						});
-		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_REGION) > 0 then
-			table.insert(res, {
-                        index = heapEntry.iRegionIndex,
-						Kind = "region",
-						Committed = heapEntry.Region.dwCommittedSize, 
-						uncommitted=heapEntry.Region.dwUnCommittedSize});
-		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_UNCOMMITTED_RANGE) > 0 then
-			table.insert(res, {
-						Kind = "uncommitted",
-						});
+    while ffi.C.HeapWalk(hHeap, heapEntry) ~= 0 do
+        local newEntry = {};
+        newEntry.size = heapEntry.cbData
+        newEntry.data = tonumber(ffi.cast("intptr_t",heapEntry.lpData))
+        newEntry.flags = heapEntry.wFlags
+
+		if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_BUSY) ~= 0 then
+            -- Allocated block
+            newEntry.kind = "allocated"
+             if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_MOVEABLE) ~= 0 then
+                newEntry.moveable = tonumber(ffi.cast("intptr_t",heapEntry.Block.hMem))
+            end
+		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_REGION) ~= 0 then
+            newEntry.index = heapEntry.iRegionIndex;
+			newEntry.kind = "region";
+			newEntry.committed = heapEntry.Region.dwCommittedSize; 
+			newEntry.uncommitted = heapEntry.Region.dwUnCommittedSize;
+		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_UNCOMMITTED_RANGE) ~= 0 then
+			newEntry.kind = "uncommitted";
 		else
-			table.insert(res, {
-						Kind = "block",
-						}); 
-		end
-				
+            newEntry.kind = "block";
+            
+        end
+        
+        table.insert(res, newEntry)
 	end
 
 	ffi.C.HeapUnlock(hHeap);
@@ -100,9 +92,10 @@ end
 
 local function printRegion(entry)
     print("Region: ", entry.index)
-    print(string.format("         Size: 0x%08x", entry.Committed + entry.uncommitted));
-    print(string.format("    Committed: 0x%08x", entry.Committed))
+    print(string.format("         Size: 0x%08x", entry.committed + entry.uncommitted));
+    print(string.format("    Committed: 0x%08x", entry.committed))
     print(string.format("  UnCommitted: 0x%08x", entry.uncommitted))
+    print("__________________________")
 end
 
 local function test_heapWalk()
@@ -110,10 +103,17 @@ local function test_heapWalk()
     local entries = heapWalk(procHeap)
 
     for i, entry in ipairs(entries) do
-        if entry.Kind == "region" then
+        if entry.kind == "region" then
             printRegion(entry)
+        elseif entry.kind == "allocated" then
+            print(string.format("{kind = '%s', data = 0x%x, size = 0x%x};",
+                entry.kind, entry.data, entry.size))
+        elseif entry.kind == "uncommitted" then
+            print(string.format("{kind='%s', data = 0x%x, size = 0x%x};",
+                entry.kind, entry.data, entry.size))
         else
-            print(entry.Kind)
+            print(string.format("{kind = '%s', data = 0x%x, size = 0x%x, flags = 0x%x};",
+                entry.kind, entry.data, entry.size, entry.flags))
         end
     end
 end
