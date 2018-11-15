@@ -167,25 +167,27 @@ local function GetPerformanceFrequency(anum)
 	anum = anum or ffi.new("int64_t[1]");
 	local success = ffi.C.QueryPerformanceFrequency(anum)
 	if success == 0 then
-		return false;   --, errorhandling.GetLastError(); 
+		return false;   --, ffi.C.GetLastError(); 
 	end
 
 	return tonumber(anum[0])
 end
 
-local function GetPerformanceCounter(anum)
-	anum = anum or ffi.new("int64_t[1]")
-	local success = ffi.C.QueryPerformanceCounter(anum)
+local function GetPerformanceCounter(pnum)
+	pnum = pnum or ffi.new("int64_t[1]")
+	local success = ffi.C.QueryPerformanceCounter(pnum)
 	if success == 0 then 
-		return false; --, errorhandling.GetLastError();
+		return false; --, ffi.C.GetLastError();
 	end
 
-	return tonumber(anum[0])
+	return tonumber(pnum[0])
 end
 
 local function GetCurrentTickTime()
-	local frequency = 1/GetPerformanceFrequency();
-	local currentCount = GetPerformanceCounter();
+	local pnum = ffi.new("int64_t[1]")
+
+	local frequency = 1/GetPerformanceFrequency(pnum);
+	local currentCount = GetPerformanceCounter(pnum);
 	local seconds = currentCount * frequency;
 
 	return seconds;
