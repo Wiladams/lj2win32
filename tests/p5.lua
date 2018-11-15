@@ -253,7 +253,7 @@ end
 -- timing
 function millis()
     -- get millis from p5 stopwatch
-    SWatch:millis();
+    return SWatch:millis();
 end
 
 function frameRate(...)
@@ -354,7 +354,10 @@ function MouseActivity(hwnd, msg, wparam, lparam)
 
 
     if msg == ffi.C.WM_MOUSEMOVE  then
-        event.activity = 'mousemove' 
+        event.activity = 'mousemove'
+        if mousePressed then
+            signalAll('gap_mousedrag')
+        end
         signalAll('gap_mousemove', event)
     elseif msg == ffi.C.WM_LBUTTONDOWN or 
         msg == ffi.C.WM_RBUTTONDOWN or
@@ -372,7 +375,7 @@ function MouseActivity(hwnd, msg, wparam, lparam)
         event.activity = 'mousewheel';
         signalAll('gap_mousewheel', event)
     elseif msg == ffi.C.WM_MOUSELEAVE then
-        print("WM_MOUSELEAVE")
+        --print("WM_MOUSELEAVE")
     else
         res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
     end
@@ -474,20 +477,11 @@ local function msgLoop()
             res = ffi.C.TranslateMessage(msg)
             res = ffi.C.DispatchMessageA(msg)
         end
-        --signalAll("gap_idle")
---[[
-        if LoopActive and EnvironmentReady then
 
-            if draw then
-                redraw();
-            end
-            frameCount = frameCount + 1;
-        end
---]]
         yield();
     end
 
-    print("msgLoop - END")        
+    --print("msgLoop - END")        
 end
 
 
@@ -525,6 +519,7 @@ local function setupUIHandlers()
         {activity = 'gap_mousemove', response = "mouseMoved"};
         {activity = 'gap_mouseup', response = "mouseReleased"};
         {activity = 'gap_mousedown', response = "mousePressed"};
+        {activity = 'gap_mousedrag', response = 'mouseDragged'};
         {activity = 'gap_mousewheel', response = "mouseWheel"};
 
         {activity = 'gap_keydown', response = "onKeyboardActivity"};
@@ -574,7 +569,7 @@ local function main(params)
     yield();
 
 
-    background(225, 225, 225, 255)
+    background(0xCC)        -- light gray
     fill(255,255,255)
     stroke(0,0,0)
 
