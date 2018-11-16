@@ -83,16 +83,3 @@ GetDurationFormatEx(
     );
 ]]
 
-
-local k32Lib = ffi.load("kernel32");
-
-return {
-    Lib = k32Lib,
-    
-    GetDateFormatA = k32Lib.GetDateFormatA,
-    GetDateFormatEx = k32Lib.GetDateFormatEx,
-    GetDateFormatW = k32Lib.GetDateFormatW,
-    GetTimeFormatA = k32Lib.GetTimeFormatA,
-    GetTimeFormatEx = k32Lib.GetTimeFormatEx,
-    GetTimeFormatW = k32Lib.GetTimeFormatW,
-}
