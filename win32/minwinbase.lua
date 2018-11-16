@@ -240,7 +240,7 @@ static const int PROCESS_HEAP_ENTRY_MOVEABLE    = 0x0010;
 static const int PROCESS_HEAP_ENTRY_DDESHARE    = 0x0020;
 ]]
 
---[[
+ffi.cdef[[
 typedef struct _REASON_CONTEXT {
     ULONG Version;
     DWORD Flags;
@@ -256,7 +256,9 @@ typedef struct _REASON_CONTEXT {
         LPWSTR SimpleReasonString;
     } Reason;
 } REASON_CONTEXT, *PREASON_CONTEXT;
+]]
 
+--[[
 //
 // Debug APIs
 //
@@ -269,12 +271,16 @@ typedef struct _REASON_CONTEXT {
 #define UNLOAD_DLL_DEBUG_EVENT      7
 #define OUTPUT_DEBUG_STRING_EVENT   8
 #define RIP_EVENT                   9
+--]]
 
-typedef DWORD (WINAPI *PTHREAD_START_ROUTINE)(
+ffi.cdef[[
+typedef DWORD (__stdcall *PTHREAD_START_ROUTINE)(
     LPVOID lpThreadParameter
     );
 typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
+]]
 
+ffi.cdef[[
 typedef struct _EXCEPTION_DEBUG_INFO {
     EXCEPTION_RECORD ExceptionRecord;
     DWORD dwFirstChance;
@@ -298,15 +304,21 @@ typedef struct _CREATE_PROCESS_DEBUG_INFO {
     LPVOID lpImageName;
     WORD fUnicode;
 } CREATE_PROCESS_DEBUG_INFO, *LPCREATE_PROCESS_DEBUG_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _EXIT_THREAD_DEBUG_INFO {
     DWORD dwExitCode;
 } EXIT_THREAD_DEBUG_INFO, *LPEXIT_THREAD_DEBUG_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _EXIT_PROCESS_DEBUG_INFO {
     DWORD dwExitCode;
 } EXIT_PROCESS_DEBUG_INFO, *LPEXIT_PROCESS_DEBUG_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _LOAD_DLL_DEBUG_INFO {
     HANDLE hFile;
     LPVOID lpBaseOfDll;
@@ -315,23 +327,30 @@ typedef struct _LOAD_DLL_DEBUG_INFO {
     LPVOID lpImageName;
     WORD fUnicode;
 } LOAD_DLL_DEBUG_INFO, *LPLOAD_DLL_DEBUG_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _UNLOAD_DLL_DEBUG_INFO {
     LPVOID lpBaseOfDll;
 } UNLOAD_DLL_DEBUG_INFO, *LPUNLOAD_DLL_DEBUG_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _OUTPUT_DEBUG_STRING_INFO {
     LPSTR lpDebugStringData;
     WORD fUnicode;
     WORD nDebugStringLength;
 } OUTPUT_DEBUG_STRING_INFO, *LPOUTPUT_DEBUG_STRING_INFO;
+]]
 
+ffi.cdef[[
 typedef struct _RIP_INFO {
     DWORD dwError;
     DWORD dwType;
 } RIP_INFO, *LPRIP_INFO;
+]]
 
-
+ffi.cdef[[
 typedef struct _DEBUG_EVENT {
     DWORD dwDebugEventCode;
     DWORD dwProcessId;
@@ -348,8 +367,9 @@ typedef struct _DEBUG_EVENT {
         RIP_INFO RipInfo;
     } u;
 } DEBUG_EVENT, *LPDEBUG_EVENT;
+]]
 
-
+--[[
 //
 // Context definitions
 //

@@ -7,7 +7,7 @@
 
 local ffi = require("ffi")
 
---require("win32.intsafe")
+
 require("win32.minwindef")
 
 
@@ -82,7 +82,7 @@ static const int LIST_MODULES_ALL  = (LIST_MODULES_32BIT | LIST_MODULES_64BIT);
 
 ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 K32EnumProcesses(
      DWORD* lpidProcess,
      DWORD cb,
@@ -93,7 +93,7 @@ K32EnumProcesses(
 
 ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 K32EnumProcessModules(
      HANDLE hProcess,
      HMODULE* lphModule,
@@ -103,7 +103,7 @@ K32EnumProcessModules(
 
 
 BOOL
-WINAPI
+__stdcall
 K32EnumProcessModulesEx(
      HANDLE hProcess,
      HMODULE* lphModule,
@@ -116,7 +116,7 @@ K32EnumProcessModulesEx(
 
 ffi.cdef[[
 DWORD
-WINAPI
+__stdcall
 K32GetModuleBaseNameA(
      HANDLE hProcess,
      HMODULE hModule,
@@ -125,7 +125,7 @@ K32GetModuleBaseNameA(
     );
 
 DWORD
-WINAPI
+__stdcall
 K32GetModuleBaseNameW(
      HANDLE hProcess,
      HMODULE hModule,
@@ -144,7 +144,7 @@ K32GetModuleBaseNameW(
 
 ffi.cdef[[
 DWORD
-WINAPI
+__stdcall
 K32GetModuleFileNameExA(
      HANDLE hProcess,
      HMODULE hModule,
@@ -156,7 +156,7 @@ K32GetModuleFileNameExA(
 
 
 DWORD
-WINAPI
+__stdcall
 K32GetModuleFileNameExW(
      HANDLE hProcess,
      HMODULE hModule,
@@ -183,7 +183,7 @@ typedef struct _MODULEINFO {
 } MODULEINFO, *LPMODULEINFO;
 
 BOOL
-WINAPI
+__stdcall
 K32GetModuleInformation(
      HANDLE hProcess,
      HMODULE hModule,
@@ -194,12 +194,13 @@ K32GetModuleInformation(
 
 
 BOOL
-WINAPI
+__stdcall
 K32EmptyWorkingSet(
      HANDLE hProcess
     );
 ]]
 
+--[[
 //
 // Working set information structures. All non-specified bits are reserved.
 //
@@ -273,10 +274,11 @@ typedef struct _PSAPI_WORKING_SET_EX_INFORMATION {
 #pragma warning(default:4214)
 #pragma warning(default:4201)
 #endif
+--]]
 
 ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 K32QueryWorkingSet(
      HANDLE hProcess,
      PVOID pv,
@@ -284,7 +286,7 @@ K32QueryWorkingSet(
     );
 
 BOOL
-WINAPI
+__stdcall
 K32QueryWorkingSetEx(
      HANDLE hProcess,
      PVOID pv,
@@ -292,7 +294,7 @@ K32QueryWorkingSetEx(
     );
 
 BOOL
-WINAPI
+__stdcall
 K32InitializeProcessForWsWatch(
      HANDLE hProcess
     );
@@ -312,7 +314,7 @@ typedef struct _PSAPI_WS_WATCH_INFORMATION_EX {
 } PSAPI_WS_WATCH_INFORMATION_EX, *PPSAPI_WS_WATCH_INFORMATION_EX;
 
 BOOL
-WINAPI
+__stdcall
 K32GetWsChanges(
      HANDLE hProcess,
      PPSAPI_WS_WATCH_INFORMATION lpWatchInfo,
@@ -320,7 +322,7 @@ K32GetWsChanges(
     );
 
 BOOL
-WINAPI
+__stdcall
 K32GetWsChangesEx(
      HANDLE hProcess,
      PPSAPI_WS_WATCH_INFORMATION_EX lpWatchInfoEx,
@@ -328,7 +330,7 @@ K32GetWsChangesEx(
     );
 
 DWORD
-WINAPI
+__stdcall
 K32GetMappedFileNameW (
      HANDLE hProcess,
      LPVOID lpv,
@@ -337,8 +339,8 @@ K32GetMappedFileNameW (
     );
 
 DWORD
-WINAPI
-GetMappedFileNameA (
+__stdcall
+K32GetMappedFileNameA (
      HANDLE hProcess,
      LPVOID lpv,
      LPSTR lpFilename,
@@ -356,7 +358,7 @@ GetMappedFileNameA (
 
 ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 K32EnumDeviceDrivers (
      LPVOID *lpImageBase,
      DWORD cb,
@@ -365,7 +367,7 @@ K32EnumDeviceDrivers (
 
 
 DWORD
-WINAPI
+__stdcall
 K32GetDeviceDriverBaseNameA (
      LPVOID ImageBase,
      LPSTR lpFilename,
@@ -373,7 +375,7 @@ K32GetDeviceDriverBaseNameA (
     );
 
 DWORD
-WINAPI
+__stdcall
 K32GetDeviceDriverBaseNameW (
      LPVOID ImageBase,
      LPWSTR lpBaseName,
@@ -389,8 +391,9 @@ K32GetDeviceDriverBaseNameW (
 #endif // !UNICODE
 --]]
 
+ffi.cdef[[
 DWORD
-WINAPI
+__stdcall
 K32GetDeviceDriverFileNameA (
      LPVOID ImageBase,
      LPSTR lpFilename,
@@ -398,12 +401,13 @@ K32GetDeviceDriverFileNameA (
     );
 
 DWORD
-WINAPI
+__stdcall
 K32GetDeviceDriverFileNameW (
      LPVOID ImageBase,
      LPWSTR lpFilename,
      DWORD nSize
     );
+]]
 
 --[[
 #ifdef UNICODE
@@ -448,7 +452,7 @@ typedef PROCESS_MEMORY_COUNTERS_EX *PPROCESS_MEMORY_COUNTERS_EX;
 
 
 BOOL
-WINAPI
+__stdcall
 K32GetProcessMemoryInfo(
     HANDLE Process,
     PPROCESS_MEMORY_COUNTERS ppsmemCounters,
@@ -475,7 +479,7 @@ typedef struct _PERFORMANCE_INFORMATION {
 } PERFORMANCE_INFORMATION, *PPERFORMANCE_INFORMATION, PERFORMACE_INFORMATION, *PPERFORMACE_INFORMATION;
 
 BOOL
-WINAPI
+__stdcall
 K32GetPerformanceInfo (
     PPERFORMANCE_INFORMATION pPerformanceInformation,
     DWORD cb
@@ -494,14 +498,14 @@ typedef BOOL (__stdcall *PENUM_PAGE_FILE_CALLBACKW) (LPVOID pContext, PENUM_PAGE
 typedef BOOL (__stdcall *PENUM_PAGE_FILE_CALLBACKA) (LPVOID pContext, PENUM_PAGE_FILE_INFORMATION pPageFileInfo, LPCSTR lpFilename);
 
 BOOL
-WINAPI
+__stdcall
 K32EnumPageFilesW (
     PENUM_PAGE_FILE_CALLBACKW pCallBackRoutine,
     LPVOID pContext
     );
 
 BOOL
-WINAPI
+__stdcall
 K32EnumPageFilesA (
     PENUM_PAGE_FILE_CALLBACKA pCallBackRoutine,
     LPVOID pContext
@@ -520,7 +524,7 @@ K32EnumPageFilesA (
 
 ffi.cdef[[
 DWORD
-WINAPI
+__stdcall
 K32GetProcessImageFileNameA (
      HANDLE hProcess,
      LPSTR lpImageFileName,
@@ -528,7 +532,7 @@ K32GetProcessImageFileNameA (
     );
 
 DWORD
-WINAPI
+__stdcall
 K32GetProcessImageFileNameW (
      HANDLE hProcess,
      LPWSTR lpImageFileName,

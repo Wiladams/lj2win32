@@ -10574,30 +10574,29 @@ typedef struct _SECURITY_CAPABILITIES {
     DWORD CapabilityCount;
     DWORD Reserved;
 } SECURITY_CAPABILITIES, *PSECURITY_CAPABILITIES, *LPSECURITY_CAPABILITIES;
+--]==]
 
+ffi.cdef[[
+static const int PROCESS_TERMINATE                 = (0x0001);  
+static const int PROCESS_CREATE_THREAD             = (0x0002);  
+static const int PROCESS_SET_SESSIONID             = (0x0004);  
+static const int PROCESS_VM_OPERATION              = (0x0008);  
+static const int PROCESS_VM_READ                   = (0x0010);  
+static const int PROCESS_VM_WRITE                  = (0x0020);  
+static const int PROCESS_DUP_HANDLE                = (0x0040);  
+static const int PROCESS_CREATE_PROCESS            = (0x0080);  
+static const int PROCESS_SET_QUOTA                 = (0x0100);  
+static const int PROCESS_SET_INFORMATION           = (0x0200);  
+static const int PROCESS_QUERY_INFORMATION         = (0x0400);  
+static const int PROCESS_SUSPEND_RESUME            = (0x0800);  
+static const int PROCESS_QUERY_LIMITED_INFORMATION = (0x1000);  
+static const int PROCESS_SET_LIMITED_INFORMATION   = (0x2000);  
 
-#define PROCESS_TERMINATE                  (0x0001)  
-#define PROCESS_CREATE_THREAD              (0x0002)  
-#define PROCESS_SET_SESSIONID              (0x0004)  
-#define PROCESS_VM_OPERATION               (0x0008)  
-#define PROCESS_VM_READ                    (0x0010)  
-#define PROCESS_VM_WRITE                   (0x0020)  
-#define PROCESS_DUP_HANDLE                 (0x0040)  
-#define PROCESS_CREATE_PROCESS             (0x0080)  
-#define PROCESS_SET_QUOTA                  (0x0100)  
-#define PROCESS_SET_INFORMATION            (0x0200)  
-#define PROCESS_QUERY_INFORMATION          (0x0400)  
-#define PROCESS_SUSPEND_RESUME             (0x0800)  
-#define PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)  
-#define PROCESS_SET_LIMITED_INFORMATION    (0x2000)  
-#if (NTDDI_VERSION >= NTDDI_VISTA)
-#define PROCESS_ALL_ACCESS        (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | \
-                                   0xFFFF)
-#else
-#define PROCESS_ALL_ACCESS        (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | \
-                                   0xFFF)
-#endif
+static const int PROCESS_ALL_ACCESS      =  (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0xFFFF);
 
+]]
+
+--[==[
 #define THREAD_TERMINATE                 (0x0001)  
 #define THREAD_SUSPEND_RESUME            (0x0002)  
 #define THREAD_GET_CONTEXT               (0x0008)  
@@ -17889,13 +17888,12 @@ typedef struct _RTL_CONDITION_VARIABLE {
         PVOID Ptr;                                       
 } RTL_CONDITION_VARIABLE, *PRTL_CONDITION_VARIABLE;      
 #define RTL_CONDITION_VARIABLE_INIT {0}                 
-#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1     
-typedef
-VOID
-(NTAPI *PAPCFUNC)(
-    _In_ ULONG_PTR Parameter
-    );
+#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1    
 --]==]
+
+ffi.cdef[[
+typedef void (* PAPCFUNC)(ULONG_PTR Parameter);
+]]
 
 
 ffi.cdef[[
