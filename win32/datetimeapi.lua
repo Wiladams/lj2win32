@@ -3,7 +3,8 @@
 
 local ffi = require("ffi");
 
-require("win32.wtypes");
+require("win32.minwindef")
+require("win32.minwinbase")
 
 
 ffi.cdef[[
@@ -67,6 +68,21 @@ GetDateFormatEx(
     LPCWSTR lpCalendar
 );
 ]]
+
+ffi.cdef[[
+int
+__stdcall
+GetDurationFormatEx(
+     LPCWSTR lpLocaleName,
+     DWORD dwFlags,
+     const SYSTEMTIME* lpDuration,
+     ULONGLONG ullDuration,
+     LPCWSTR lpFormat,
+    LPWSTR lpDurationStr,
+     int cchDuration
+    );
+]]
+
 
 local k32Lib = ffi.load("kernel32");
 
