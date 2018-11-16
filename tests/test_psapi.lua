@@ -8,22 +8,19 @@ local psapi = require("win32.psapi")
 require("win32.processthreadsapi")
 require("win32.handleapi")
 
+local function handleNumber(handle)
+    return tonumber(ffi.cast("intptr_t", handle))
+end
+
 local function PrintModules(processID)
---[[
-
-    DWORD cbNeeded;
-    unsigned int i;
---]]
-    -- Print the process identifier.
-
-    print(string.format("\nProcess ID: %u\n", processID ));
-
     -- Get a handle to the process.
     local hProcess = ffi.C.OpenProcess( bor(ffi.C.PROCESS_QUERY_INFORMATION,ffi.C.PROCESS_VM_READ), 0, processID );
     if (nil == hProcess) then
-        print("OpenProcess FAILED")
-        return false;
+        return false, "OpenProcess FAILED";
     end
+    
+    -- Print the process identifier.
+    print(string.format("\nProcess ID: %u\n", processID ));
 
    -- Get a list of all the modules in this process.
     local  hMods = ffi.new("HMODULE[1024]");
@@ -31,25 +28,18 @@ local function PrintModules(processID)
     if( ffi.C.K32EnumProcessModules(hProcess, hMods, ffi.sizeof(hMods), cbNeeded) ~= 0) then
         local nmodules = cbNeeded[0] / ffi.sizeof("HMODULE")
         for i = 0, nmodules-1 do
---[[        
-            TCHAR szModName[MAX_PATH];
+            local szModName = ffi.new("char[?]", ffi.C.MAX_PATH);
 
             -- Get the full path to the module's file.
-
-            if ( GetModuleFileNameEx( hProcess, hMods[i], szModName,
-                                      sizeof(szModName) / sizeof(TCHAR))) then
-            
-                -- Print the module name and handle value.
-
-                _tprintf( TEXT("\t%s (0x%08X)\n"), szModName, hMods[i] );
+            local success = ffi.C.K32GetModuleFileNameExA( hProcess, hMods[i], szModName, ffi.sizeof(szModName) / ffi.sizeof("char")) ~= 0
+            if success then
+                print(string.format("\t0x%8x\t%s", handleNumber(hMods[i]), ffi.string(szModName)))
             end
---]]
         end
     end
 
     -- Release the handle to the process.
-
-    ffi.C.CloseHandle( hProcess );
+    ffi.C.CloseHandle(hProcess);
 
     return true;
 end
