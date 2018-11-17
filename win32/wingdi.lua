@@ -2217,10 +2217,11 @@ ffi.cdef[[
 /* current version of specification */
 static const int DM_SPECVERSION = 0x0401;
 ]]
-
+--[[
 ffi.cdef[[
 static const int DM_SPECVERSION = 0x0400;
 ]]
+--]]
 
 --[=[
 /* field selection bits */

@@ -917,7 +917,7 @@ typedef struct _THREAD_POWER_THROTTLING_STATE {
     ULONG StateMask;
 } THREAD_POWER_THROTTLING_STATE;
 --]]
---[=[
+
 ffi.cdef[[
 BOOL
 __stdcall
@@ -944,7 +944,7 @@ QueryProtectedPolicy(
      LPCGUID PolicyGuid,
      PULONG_PTR PolicyValue
     );
---]=]
+]]
 
 ffi.cdef[[
 DWORD

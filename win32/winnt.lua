@@ -736,27 +736,33 @@ typedef struct LIST_ENTRY64 {
 typedef LIST_ENTRY64 *PLIST_ENTRY64;
 ]]
 
---[==[
-#include <guiddef.h>
 
-#ifndef __OBJECTID_DEFINED
-#define __OBJECTID_DEFINED
+require("win32.guiddef")
 
+
+if not __OBJECTID_DEFINED then
+__OBJECTID_DEFINED = true
+ffi.cdef[[
 typedef struct  _OBJECTID {     // size is 20
     GUID Lineage;
     DWORD Uniquifier;
 } OBJECTID;
-#endif // !_OBJECTID_DEFINED
+]]
+end -- !_OBJECTID_DEFINED
 
-#define MINCHAR     0x80        
-#define MAXCHAR     0x7f        
-#define MINSHORT    0x8000      
-#define MAXSHORT    0x7fff      
-#define MINLONG     0x80000000  
-#define MAXLONG     0x7fffffff  
-#define MAXBYTE     0xff        
-#define MAXWORD     0xffff      
-#define MAXDWORD    0xffffffff  
+ffi.cdef[[
+static const int MINCHAR    = 0x80;        
+static const int MAXCHAR    = 0x7f;        
+static const int MINSHORT   = 0x8000;      
+static const int MAXSHORT   = 0x7fff;      
+static const int MINLONG    = 0x80000000;  
+static const int MAXLONG    = 0x7fffffff;  
+static const int MAXBYTE    = 0xff;        
+static const int MAXWORD    = 0xffff;      
+static const int MAXDWORD    0xffffffff;  
+]]
+
+--[=[
 // begin_ntoshvp
 //
 // Calculate the byte offset of a field in a structure of type type.
