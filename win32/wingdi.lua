@@ -1872,62 +1872,62 @@ static const int AD_COUNTERCLOCKWISE =1;
 static const int AD_CLOCKWISE        =2;
 ]]
 
---[=[
+ffi.cdef[[
 /* Device Parameters for GetDeviceCaps() */
-#define DRIVERVERSION 0     /* Device driver version                    */
-#define TECHNOLOGY    2     /* Device classification                    */
-#define HORZSIZE      4     /* Horizontal size in millimeters           */
-#define VERTSIZE      6     /* Vertical size in millimeters             */
-#define HORZRES       8     /* Horizontal width in pixels               */
-#define VERTRES       10    /* Vertical height in pixels                */
-#define BITSPIXEL     12    /* Number of bits per pixel                 */
-#define PLANES        14    /* Number of planes                         */
-#define NUMBRUSHES    16    /* Number of brushes the device has         */
-#define NUMPENS       18    /* Number of pens the device has            */
-#define NUMMARKERS    20    /* Number of markers the device has         */
-#define NUMFONTS      22    /* Number of fonts the device has           */
-#define NUMCOLORS     24    /* Number of colors the device supports     */
-#define PDEVICESIZE   26    /* Size required for device descriptor      */
-#define CURVECAPS     28    /* Curve capabilities                       */
-#define LINECAPS      30    /* Line capabilities                        */
-#define POLYGONALCAPS 32    /* Polygonal capabilities                   */
-#define TEXTCAPS      34    /* Text capabilities                        */
-#define CLIPCAPS      36    /* Clipping capabilities                    */
-#define RASTERCAPS    38    /* Bitblt capabilities                      */
-#define ASPECTX       40    /* Length of the X leg                      */
-#define ASPECTY       42    /* Length of the Y leg                      */
-#define ASPECTXY      44    /* Length of the hypotenuse                 */
+static const int DRIVERVERSION =0;     /* Device driver version                    */
+static const int TECHNOLOGY    =2;     /* Device classification                    */
+static const int HORZSIZE      =4;     /* Horizontal size in millimeters           */
+static const int VERTSIZE      =6;     /* Vertical size in millimeters             */
+static const int HORZRES       =8;     /* Horizontal width in pixels               */
+static const int VERTRES       =10;    /* Vertical height in pixels                */
+static const int BITSPIXEL     =12;    /* Number of bits per pixel                 */
+static const int PLANES        =14;    /* Number of planes                         */
+static const int NUMBRUSHES    =16;    /* Number of brushes the device has         */
+static const int NUMPENS       =18;    /* Number of pens the device has            */
+static const int NUMMARKERS    =20;    /* Number of markers the device has         */
+static const int NUMFONTS      =22;    /* Number of fonts the device has           */
+static const int NUMCOLORS     =24;    /* Number of colors the device supports     */
+static const int PDEVICESIZE   =26;    /* Size required for device descriptor      */
+static const int CURVECAPS     =28;    /* Curve capabilities                       */
+static const int LINECAPS      =30;    /* Line capabilities                        */
+static const int POLYGONALCAPS =32;    /* Polygonal capabilities                   */
+static const int TEXTCAPS      =34;    /* Text capabilities                        */
+static const int CLIPCAPS      =36;    /* Clipping capabilities                    */
+static const int RASTERCAPS    =38;    /* Bitblt capabilities                      */
+static const int ASPECTX       =40;    /* Length of the X leg                      */
+static const int ASPECTY       =42;    /* Length of the Y leg                      */
+static const int ASPECTXY      =44;    /* Length of the hypotenuse                 */
 
-#define LOGPIXELSX    88    /* Logical pixels/inch in X                 */
-#define LOGPIXELSY    90    /* Logical pixels/inch in Y                 */
+static const int LOGPIXELSX    =88;    /* Logical pixels/inch in X                 */
+static const int LOGPIXELSY    =90;    /* Logical pixels/inch in Y                 */
 
-#define SIZEPALETTE  104    /* Number of entries in physical palette    */
-#define NUMRESERVED  106    /* Number of reserved entries in palette    */
-#define COLORRES     108    /* Actual color resolution                  */
+static const int SIZEPALETTE  =104;    /* Number of entries in physical palette    */
+static const int NUMRESERVED  =106;    /* Number of reserved entries in palette    */
+static const int COLORRES     =108;    /* Actual color resolution                  */
 
 // Printing related DeviceCaps. These replace the appropriate Escapes
 
-#define PHYSICALWIDTH   110 /* Physical Width in device units           */
-#define PHYSICALHEIGHT  111 /* Physical Height in device units          */
-#define PHYSICALOFFSETX 112 /* Physical Printable Area x margin         */
-#define PHYSICALOFFSETY 113 /* Physical Printable Area y margin         */
-#define SCALINGFACTORX  114 /* Scaling factor x                         */
-#define SCALINGFACTORY  115 /* Scaling factor y                         */
+static const int PHYSICALWIDTH   =110; /* Physical Width in device units           */
+static const int PHYSICALHEIGHT  =111; /* Physical Height in device units          */
+static const int PHYSICALOFFSETX =112; /* Physical Printable Area x margin         */
+static const int PHYSICALOFFSETY =113; /* Physical Printable Area y margin         */
+static const int SCALINGFACTORX  =114; /* Scaling factor x                         */
+static const int SCALINGFACTORY  =115; /* Scaling factor y                         */
 
 // Display driver specific
 
-#define VREFRESH        116  /* Current vertical refresh rate of the    */
+static const int VREFRESH        =116;  /* Current vertical refresh rate of the    */
                              /* display device (for displays only) in Hz*/
-#define DESKTOPVERTRES  117  /* Horizontal width of entire desktop in   */
+static const int DESKTOPVERTRES  =117;  /* Horizontal width of entire desktop in   */
                              /* pixels                                  */
-#define DESKTOPHORZRES  118  /* Vertical height of entire desktop in    */
+static const int DESKTOPHORZRES  =118;  /* Vertical height of entire desktop in    */
                              /* pixels                                  */
-#define BLTALIGNMENT    119  /* Preferred blt alignment                 */
+static const int BLTALIGNMENT    =119;  /* Preferred blt alignment                 */
 
 
-#define SHADEBLENDCAPS  120  /* Shading and blending caps               */
-#define COLORMGMTCAPS   121  /* Color Management caps                   */
-]=]
+static const int SHADEBLENDCAPS  =120;  /* Shading and blending caps               */
+static const int COLORMGMTCAPS   =121;  /* Color Management caps                   */
+]]
 
 --[[
 #ifndef NOGDICAPMASKS
@@ -2006,44 +2006,43 @@ static const int AD_CLOCKWISE        =2;
 #endif /* NOGDICAPMASKS */
 --]]
 
---[=[
+ffi.cdef[[
 /* Raster Capabilities */
-#define RC_NONE
-#define RC_BITBLT           1       /* Can do standard BLT.             */
-#define RC_BANDING          2       /* Device requires banding support  */
-#define RC_SCALING          4       /* Device requires scaling support  */
-#define RC_BITMAP64         8       /* Device can support >64K bitmap   */
-#define RC_GDI20_OUTPUT     0x0010      /* has 2.0 output calls         */
-#define RC_GDI20_STATE      0x0020
-#define RC_SAVEBITMAP       0x0040
-#define RC_DI_BITMAP        0x0080      /* supports DIB to memory       */
-#define RC_PALETTE          0x0100      /* supports a palette           */
-#define RC_DIBTODEV         0x0200      /* supports DIBitsToDevice      */
-#define RC_BIGFONT          0x0400      /* supports >64K fonts          */
-#define RC_STRETCHBLT       0x0800      /* supports StretchBlt          */
-#define RC_FLOODFILL        0x1000      /* supports FloodFill           */
-#define RC_STRETCHDIB       0x2000      /* supports StretchDIBits       */
-#define RC_OP_DX_OUTPUT     0x4000
-#define RC_DEVBITS          0x8000
+//static const int RC_NONE          = 0;
+static const int RC_BITBLT           = 1;       /* Can do standard BLT.             */
+static const int RC_BANDING          = 2;       /* Device requires banding support  */
+static const int RC_SCALING          = 4;       /* Device requires scaling support  */
+static const int RC_BITMAP64         = 8;       /* Device can support >64K bitmap   */
+static const int RC_GDI20_OUTPUT     = 0x0010;      /* has 2.0 output calls         */
+static const int RC_GDI20_STATE      = 0x0020;
+static const int RC_SAVEBITMAP       = 0x0040;
+static const int RC_DI_BITMAP        = 0x0080;      /* supports DIB to memory       */
+static const int RC_PALETTE          = 0x0100;      /* supports a palette           */
+static const int RC_DIBTODEV         = 0x0200;      /* supports DIBitsToDevice      */
+static const int RC_BIGFONT          = 0x0400;      /* supports >64K fonts          */
+static const int RC_STRETCHBLT       = 0x0800;      /* supports StretchBlt          */
+static const int RC_FLOODFILL        = 0x1000;      /* supports FloodFill           */
+static const int RC_STRETCHDIB       = 0x2000;      /* supports StretchDIBits       */
+static const int RC_OP_DX_OUTPUT     = 0x4000;
+static const int RC_DEVBITS          = 0x8000;
 
 
 
 /* Shading and blending caps */
-#define SB_NONE             0x00000000
-#define SB_CONST_ALPHA      0x00000001
-#define SB_PIXEL_ALPHA      0x00000002
-#define SB_PREMULT_ALPHA    0x00000004
+static const int SB_NONE             = 0x00000000;
+static const int SB_CONST_ALPHA      = 0x00000001;
+static const int SB_PIXEL_ALPHA      = 0x00000002;
+static const int SB_PREMULT_ALPHA    = 0x00000004;
 
-#define SB_GRAD_RECT        0x00000010
-#define SB_GRAD_TRI         0x00000020
+static const int SB_GRAD_RECT        = 0x00000010;
+static const int SB_GRAD_TRI         = 0x00000020;
 
 /* Color Management caps */
-#define CM_NONE             0x00000000
-#define CM_DEVICE_ICM       0x00000001
-#define CM_GAMMA_RAMP       0x00000002
-#define CM_CMYK_COLOR       0x00000004
-
---]=]
+static const int CM_NONE             = 0x00000000;
+static const int CM_DEVICE_ICM       = 0x00000001;
+static const int CM_GAMMA_RAMP       = 0x00000002;
+static const int CM_CMYK_COLOR       = 0x00000004;
+]]
 
 ffi.cdef[[
 /* DIB color table identifiers */
@@ -2219,13 +2218,9 @@ ffi.cdef[[
 static const int DM_SPECVERSION = 0x0401;
 ]]
 
---[[
-#elif (WINVER >= 0x0400)
-#define DM_SPECVERSION 0x0400
-#else
-#define DM_SPECVERSION 0x0320
-#endif /* WINVER */
---]]
+ffi.cdef[[
+static const int DM_SPECVERSION = 0x0400;
+]]
 
 --[=[
 /* field selection bits */
