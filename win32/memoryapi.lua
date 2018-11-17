@@ -4,8 +4,7 @@
 
 local ffi = require("ffi")
 
---#include <apiset.h>
---#include <apisetcconv.h>
+
 require("win32.minwindef")
 require("win32.minwinbase")
 
