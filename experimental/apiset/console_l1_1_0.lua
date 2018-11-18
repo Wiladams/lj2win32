@@ -3,7 +3,8 @@
 
 local ffi = require("ffi");
 
-require ("win32.wtypes");
+
+require("minwindef")
 local WinCon = require("win32.core.wincon");
 
 

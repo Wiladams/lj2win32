@@ -72,6 +72,18 @@ local function test_systemDirectory()
     print(ffi.string(lpBuffer, res))
 end
 
+local function test_windowsDirectory()
+    local uSize = ffi.C.MAX_PATH
+    local lpBuffer = ffi.new("char[?]", uSize)
+    local res = ffi.C.GetWindowsDirectoryA(
+        lpBuffer,
+        uSize);
+
+    print("Windows: ", ffi.string(lpBuffer, res))
+end
+
+
 --test_computername();
 test_systime();
 test_systemDirectory()
+test_windowsDirectory()

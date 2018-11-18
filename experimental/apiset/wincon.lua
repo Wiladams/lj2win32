@@ -2,7 +2,7 @@ local ffi = require("ffi");
 
 local NOGDI = true;
 
-local basetsd = require("win32.basetsd");
+local basetsd = require("win32.minwindef");
 
 
 ffi.cdef[[
