@@ -58,8 +58,20 @@ local function test_systime()
     ffi.C.GetSystemTime(aTime)
 
     -- print it out
-    print(aTime)
+    print("GMT: ", aTime)
+
+    ffi.C.GetLocalTime(aTime)
+    print("LOCAL: ", aTime)
+end
+
+local function test_systemDirectory()
+    local uSize = ffi.C.MAX_PATH;
+    local lpBuffer = ffi.new("char[?]", uSize)
+    local res = ffi.C.GetSystemDirectoryA(lpBuffer,uSize);
+
+    print(ffi.string(lpBuffer, res))
 end
 
 --test_computername();
 test_systime();
+test_systemDirectory()
