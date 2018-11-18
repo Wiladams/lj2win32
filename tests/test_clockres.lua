@@ -4,7 +4,7 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
-local sysinfo = require("win32.core.sysinfo_l1_2_0")
+require("win32.sysinfoapi")
 
 --[[
 BOOL
@@ -19,7 +19,7 @@ local lpTimeAdjustment = ffi.new("DWORD[1]")
 local lpTimeIncrement = ffi.new("DWORD[1]")
 local lpTimeAdjustmentDisabled = ffi.new("BOOL[1]")
 
-local result = sysinfo.GetSystemTimeAdjustment(lpTimeAdjustment, lpTimeIncrement, lpTimeAdjustmentDisabled);
+local result = ffi.C.GetSystemTimeAdjustment(lpTimeAdjustment, lpTimeIncrement, lpTimeAdjustmentDisabled);
 
 print("GetSystemTimeAdjustment: ", result == 1)
 print("    Adjustment Disabled: ", lpTimeAdjustmentDisabled[0] == 1);

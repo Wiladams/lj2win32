@@ -4,7 +4,7 @@
     Deprecated interfaces are not included*
 --]]
 
-
+local ffi = require("ffi")
 
 require("win32.minwindef")
 require("win32.minwinbase")
@@ -97,12 +97,8 @@ GetLocalTime(
     );
 ]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-
+--[[
 NOT_BUILD_WINDOWS_DEPRECATE
 
 __drv_preferredFunction("IsWindows*", "Deprecated. Use VerifyVersionInfo* or IsWindows* macros from VersionHelpers.")
@@ -111,13 +107,13 @@ __stdcall
 GetVersion(
     VOID
     );
+--]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetLocalTime(
-    CONST SYSTEMTIME* lpSystemTime
+    const SYSTEMTIME* lpSystemTime
     );
 ]]
 
@@ -145,14 +141,9 @@ GetTickCount64(
 
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetSystemTimeAdjustment(
@@ -317,7 +308,7 @@ ffi.cdef[[
 BOOL
 __stdcall
 SetSystemTime(
-    CONST SYSTEMTIME* lpSystemTime
+    const SYSTEMTIME* lpSystemTime
     );
 ]]
 
@@ -404,7 +395,6 @@ GetProductInfo(
 ffi.cdef[[
 
 ULONGLONG
-NTAPI
 VerSetConditionMask(
     ULONGLONG ConditionMask,
     ULONG TypeMask,

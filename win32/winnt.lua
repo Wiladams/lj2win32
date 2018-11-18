@@ -759,10 +759,10 @@ static const int MINLONG    = 0x80000000;
 static const int MAXLONG    = 0x7fffffff;  
 static const int MAXBYTE    = 0xff;        
 static const int MAXWORD    = 0xffff;      
-static const int MAXDWORD    0xffffffff;  
+static const int MAXDWORD   = 0xffffffff;  
 ]]
 
---[=[
+--[==[
 // begin_ntoshvp
 //
 // Calculate the byte offset of a field in a structure of type type.
@@ -11597,13 +11597,14 @@ struct _SYSTEM_CPU_SET_INFORMATION {
 typedef struct _SYSTEM_CPU_SET_INFORMATION SYSTEM_CPU_SET_INFORMATION, *PSYSTEM_CPU_SET_INFORMATION;
 ]]
 
---[==[
-// end_wdm end_ntminiport
 
+ffi.cdef[[
 typedef struct _SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION {
     DWORD64 CycleTime;
 } SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION, *PSYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION;
+]]
 
+--[==[
 #define PROCESSOR_INTEL_386     386
 #define PROCESSOR_INTEL_486     486
 #define PROCESSOR_INTEL_PENTIUM 586
