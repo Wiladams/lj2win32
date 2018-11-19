@@ -3,10 +3,13 @@
 
 local ffi = require("ffi");
 
+require("win32.minwindef")
 
+--[[
 local WTypes = require("win32.wtypes");
 local WinNT = require("win32.winnt");
 local WinBase = require("win32.winbase");
+--]]
 
 ffi.cdef[[
 typedef struct _RTL_SRWLOCK {                            

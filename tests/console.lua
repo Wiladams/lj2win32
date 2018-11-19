@@ -1,73 +1,78 @@
+--[[
+	Provide some convenience to the various console api calls
+]]
+
 local ffi = require("ffi");
-local core_processenvironment = require("core_processenvironment");
-local core_console = require("core_console_l1_1_0");
-local core_console2 = require("core_console_l2_1_0");
-local error_handling = require("core_errorhandling_l1_1_1");
+require("win32.consoleapi")
+require("win32.consoleapi2")
+require("win32.errhandlingapi")
+require("win32.processenv")
 
 
-local AllocConsole = function()
-	local res = core_console.AllocConsole();
+
+local function AllocConsole()
+	local res = ffi.C.AllocConsole();
 
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return true;
 end
 
-local GetConsoleCP = function()
-	local res = core_console.GetConsoleCP();
+local function GetConsoleCP()
+	local res = ffi.C.GetConsoleCP();
 
 	return res
 end
 
 local GetConsoleMode = function(hConsoleHandle)
 	local lpMode = ffi.new("DWORD[1]");
-	local res = core_console.GetConsoleMode(hConsoleHandle, lpMode);
+	local res = ffi.C.GetConsoleMode(hConsoleHandle, lpMode);
 	
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return lpMode[0];
 end
 
 local GetConsoleOutputCP = function()
-	local res = core_console.GetConsoleOutputCP();
+	local res = ffi.C.GetConsoleOutputCP();
 
 	return res;
 end
 
 local GetNumberOfConsoleInputEvents = function(hConsoleInput)
 	local lpNumberOfEvents = ffi.new("DWORD[1]");
-	local res = core_console.GetNumberOfConsoleInputEvents(hConsoleInput,lpNumberOfEvents);
+	local res = ffi.C.GetNumberOfConsoleInputEvents(hConsoleInput,lpNumberOfEvents);
 
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return lpNumberOfEvents[0];
 end
 
-local PeekConsoleInputA = function(hConsoleInput, lpBuffer, nLength)
+local function PeekConsoleInputA(hConsoleInput, lpBuffer, nLength)
 	local lpNumberOfEventsRead = ffi.new("DWORD[1]");
-	local res = core_console.PeekConsoleInputA(
+	local res = ffi.C.PeekConsoleInputA(
     	hConsoleInput,
     	lpBuffer,
     	nLength,
     	lpNumberOfEventsRead);
 
     if res == 0 then
-    	return false, error_handling.GetLastError();
+    	return false, ffi.C.GetLastError();
     end
 
     return lpNumberOfEventsRead[0];
 end
 
-local ReadConsole = function(hConsoleInput, lpBuffer, nNumberOfCharsToRead)
+local function ReadConsole(hConsoleInput, lpBuffer, nNumberOfCharsToRead)
 	local lpNumberOfCharsRead = ffi.new("DWORD[1]");
 
-	local res = core_console.ReadConsoleA(
+	local res = ffi.C.ReadConsoleA(
     	hConsoleInput,
     	lpBuffer,
     	nNumberOfCharsToRead,
@@ -75,7 +80,7 @@ local ReadConsole = function(hConsoleInput, lpBuffer, nNumberOfCharsToRead)
     	pInputControl);
 
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return lpNumberOfCharsRead[0];
@@ -85,33 +90,36 @@ local ReadConsoleInput = function(hConsoleInput, lpBuffer, nLength)
 
 	local lpNumberOfEventsRead = ffi.new("DWORD[1]");
 
-	local res = core_console.ReadConsoleInputA(hConsoleInput,
+	local res = ffi.C.ReadConsoleInputA(hConsoleInput,
     	lpBuffer,
     	nLength,
     	lpNumberOfEventsRead);
 
     if res == 0 then
-    	return false, error_handling.GetLastError();
+    	return false, ffi.C.GetLastError();
     end
 
     return lpNumberOfEventsRead[0];
 end
 
-local SetConsoleCtrlHandler = function(HandlerRoutine, Add)
+local function SetConsoleCtrlHandler(HandlerRoutine, Add)
+	local addin = 0;
+	if Add then addin = 1; end
+
 	Add = Add or false;
-	local res = core_console.SetConsoleCtrlHandler(HandlerRoutine, Add);
+	local res = ffi.C.SetConsoleCtrlHandler(HandlerRoutine, addin);
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return true;
 end
 
-local SetConsoleMode = function(hConsoleHandle, dwMode)
+local function SetConsoleMode(hConsoleHandle, dwMode)
 	dwMode = dwMode or 0;
-	local res = core_console.SetConsoleMode(hConsoleHandle, dwMode);
+	local res = ffi.C.SetConsoleMode(hConsoleHandle, dwMode);
 	if res == 0 then
-		return false, error_handling.GetLastError();
+		return false, ffi.C.GetLastError();
 	end
 
 	return true;
@@ -121,21 +129,21 @@ local WriteConsole = function(hConsoleOutput, lpBuffer, nNumberOfCharsToWrite)
 	nNumberOfCharsToWrite = nNumberOfCharsToWrite or #lpBuffer;
 
 	local lpNumberOfCharsWritten = ffi.new("DWORD[1]");
-	local res =  core_console.WriteConsoleA(hConsoleOutput,
+	local res =  ffi.C.WriteConsoleA(hConsoleOutput,
     	lpBuffer,
     	nNumberOfCharsToWrite,
      	lpNumberOfCharsWritten,
      	lpReserved);
 
      if res == 0 then
-     	return false, error_handling.GetLastError();
+     	return false, ffi.C.GetLastError();
      end
 
      return lpNumberOfCharsWritten[0];
 end
 
-local hwrite = function(handle, ...)
-	handle = handle or core_console.GetStdHandle (ffi.C.STD_OUTPUT_HANDLE);
+local function hwrite(handle, ...)
+	handle = handle or ffi.C.GetStdHandle (ffi.C.STD_OUTPUT_HANDLE);
 
 	local nargs = select('#',...);
 	if nargs > 0 then
@@ -145,7 +153,7 @@ local hwrite = function(handle, ...)
 	end
 end
 
-local output = function(...)
+local function output(...)
 	hwrite(nil, ...);
 end
 

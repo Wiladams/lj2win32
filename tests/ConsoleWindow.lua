@@ -5,19 +5,19 @@ local band = bit.band;
 local bor = bit.bor;
 local bxor = bit.bxor;
 
-local core_console1 = require("core_console_l1_1_0");
-local core_console2 = require("core_console_l2_1_0");
-local processenviron = require("core_processenvironment");
 
-local console = require("console");
-local core_string = require("core_string_l1_1_0");
-local core_synch = require("core_synch_l1_2_0");
+--local console = require("console");
+--local core_string = require("experimental.apiset.string_l1_1_0");
+
+require("win32.synchapi");
+require("win32.consoleapi")
+require("win32.consoleapi2")
+require("win32.errhandlingapi")
+require("win32.processenv")
 
 
-
-local Console = {}
-local Console_t = {}
-setmetatable(Console, {
+local ConsoleWindow = {}
+setmetatable(ConsoleWindow, {
 	__call = function(self,...)
 		return self:create(...);
 	end,
@@ -25,37 +25,41 @@ setmetatable(Console, {
 	__index = {
 		CreateNew = function(self, ...)
 			-- Detach from current console if attached
-			core_console2.FreeConsole();
+			--ffi.C.FreeConsole();
 
 
 			-- Allocate new console
-			local status = console.AllocConsole();
+			local res = ffi.C.AllocConsole();
 
-			return Console();
+			if res == 0 then
+				return false, ffi.C.GetLastError();
+			end
+
+			return ConsoleWindow();
 		end,
 	},
 })
 
--- Metatable for Console instances
-local Console_mt = {
-	__index = Console,
+-- Metatable for ConsoleWindow instances
+local ConsoleWindow_mt = {
+	__index = ConsoleWindow,
 }
 
-Console.init = function(self, ...)
+function ConsoleWindow.init(self, ...)
 	local obj = {}
 	setmetatable(obj, Console_mt);
 
 	return obj;
 end
 
-Console.create = function(self, ...)
+function ConsoleWindow.create(self, ...)
 	return self:init(...);
 end
 
 --[[
 	Input Mode attributes
 --]]
-Console.setMode = function(self, mode, handle)
+ConsoleWindow.setMode = function(self, mode, handle)
 	handle = handle or self:getStdIn();
 	local status = core_console1.SetConsoleMode(handle, mode);
 
@@ -66,7 +70,7 @@ Console.setMode = function(self, mode, handle)
 	return true;
 end
 
-Console.getMode = function(self, handle)
+ConsoleWindow.getMode = function(self, handle)
 	handle = handle or self:getStdIn();
 	local lpMode = ffi.new("DWORD[1]");
 	local status = core_console1.GetConsoleMode(handle, lpMode);
@@ -78,7 +82,7 @@ Console.getMode = function(self, handle)
 	return lpMode[0];
 end
 
-Console.disableMode = function(self, mode, handle)
+ConsoleWindow.disableMode = function(self, mode, handle)
 	handle = handle or self:getStdIn();
 
 	-- get current input mode
@@ -91,7 +95,7 @@ Console.disableMode = function(self, mode, handle)
 	return self:setMode(mode);
 end
 
-Console.enableMode = function(self, mode, handle)
+ConsoleWindow.enableMode = function(self, mode, handle)
 	handle = handle or self:getStdIn();
 
 	-- get current input mode
@@ -105,39 +109,39 @@ Console.enableMode = function(self, mode, handle)
 end
 
 
-Console.enableEchoInput = function(self)
+ConsoleWindow.enableEchoInput = function(self)
 	return self:enableMode(ffi.C.ENABLE_ECHO_INPUT);
 end
 
-Console.enableInsertMode = function(self)
+ConsoleWindow.enableInsertMode = function(self)
 	return self:enableMode(ffi.C.ENABLE_INSERT_MODE);
 end
 
-Console.enableLineInput = function(self)
+ConsoleWindow.enableLineInput = function(self)
 	return self:enableMode(ffi.C.ENABLE_LINE_INPUT);
 end
 
-Console.enableLineWrap = function(self)
+ConsoleWindow.enableLineWrap = function(self)
 	return self:enableMode(ffi.C.ENABLE_WRAP_AT_EOL_OUTPUT, self:getStdOut());
 end
 
-Console.enableMouseInput = function(self)
+ConsoleWindow.enableMouseInput = function(self)
 	return self:enableMode(ffi.C.ENABLE_MOUSE_INPUT);
 end
 
-Console.enableProcessedInput = function(self)
+ConsoleWindow.enableProcessedInput = function(self)
 	return self:enableMode(ffi.C.ENABLE_PROCESSED_INPUT);
 end
 
-Console.enableProcessedOutput = function(self)
+ConsoleWindow.enableProcessedOutput = function(self)
 	return self:enableMode(ffi.C.ENABLE_PROCESSED_OUTPUT, self:getStdOut());
 end
 
-Console.enableQuickEditMode = function(self)
+ConsoleWindow.enableQuickEditMode = function(self)
 	return self:enableMode(ffi.C.ENABLE_QUICK_EDIT_MODE);
 end
 
-Console.enableWindowEvents = function(self)
+ConsoleWindow.enableWindowEvents = function(self)
 	return self:enableMode(ffi.C.ENABLE_WINDOW_INPUT);
 end
 
@@ -145,26 +149,26 @@ end
 --[[
 	Get Standard I/O handles
 --]]
-Console.getStdOut = function(self)
+ConsoleWindow.getStdOut = function(self)
 	return processenviron.GetStdHandle(ffi.C.STD_OUTPUT_HANDLE);
 end
 
-Console.getStdIn = function(self)
+ConsoleWindow.getStdIn = function(self)
 	return processenviron.GetStdHandle(ffi.C.STD_INPUT_HANDLE);
 end
 
-Console.getStdErr = function(self)
+ConsoleWindow.getStdErr = function(self)
 	return processenviron.GetStdHandle(ffi.C.STD_ERROR_HANDLE);
 end
 
 
-Console.setTitle = function(self, title)
-	local lpConsoleTitle = core_string.toUnicode(title);
+ConsoleWindow.setTitle = function(self, title)
+	--local lpConsoleTitle = core_string.toUnicode(title);
 
-	local status = core_console2.SetConsoleTitleW(lpConsoleTitle);
+	local status = ffi.C.SetConsoleTitleA(title);
 end
 
-Console.ReadBytes = function(self, lpBuffer, nNumberOfCharsToRead, offset)
+ConsoleWindow.ReadBytes = function(self, lpBuffer, nNumberOfCharsToRead, offset)
 	local lpNumberOfCharsRead = ffi.new("DWORD[1]");
 
 	local status = core_console1.ReadConsoleA(self:getStdIn(),
@@ -178,4 +182,4 @@ Console.ReadBytes = function(self, lpBuffer, nNumberOfCharsToRead, offset)
 	return lpNumberOfCharsRead[0];
 end
 
-return Console
+return ConsoleWindow

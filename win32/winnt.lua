@@ -17249,20 +17249,23 @@ RtlQueryDepthSList (
 #define RTL_RUN_ONCE_CHECK_ONLY     0x00000001UL
 #define RTL_RUN_ONCE_ASYNC          0x00000002UL
 #define RTL_RUN_ONCE_INIT_FAILED    0x00000004UL
+--]==]
 
+ffi.cdef[[
 //
 // The context stored in the run once structure must leave the following number
 // of low order bits unused.
 //
 
-#define RTL_RUN_ONCE_CTX_RESERVED_BITS 2
+static const int RTL_RUN_ONCE_CTX_RESERVED_BITS = 2;
 
 typedef union _RTL_RUN_ONCE {       
     PVOID Ptr;                      
 } RTL_RUN_ONCE, *PRTL_RUN_ONCE;     
+]]
 
-#endif // _RTL_RUN_ONCE_DEF
 
+--[==[
 typedef struct _RTL_BARRIER {                       
             DWORD Reserved1;                        
             DWORD Reserved2;                        
@@ -17851,7 +17854,7 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG {
 } RTL_CRITICAL_SECTION_DEBUG, *PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, *PRTL_RESOURCE_DEBUG;
 ]]
 
---[==[
+--[=[
 //
 // These flags define the upper byte of the critical section SpinCount field
 //
@@ -17862,13 +17865,15 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG {
 #define RTL_CRITICAL_SECTION_FLAG_FORCE_DEBUG_INFO      0x10000000
 #define RTL_CRITICAL_SECTION_ALL_FLAG_BITS              0xFF000000
 #define RTL_CRITICAL_SECTION_FLAG_RESERVED              (RTL_CRITICAL_SECTION_ALL_FLAG_BITS & (~(RTL_CRITICAL_SECTION_FLAG_NO_DEBUG_INFO | RTL_CRITICAL_SECTION_FLAG_DYNAMIC_SPIN | RTL_CRITICAL_SECTION_FLAG_STATIC_INIT | RTL_CRITICAL_SECTION_FLAG_RESOURCE_TYPE | RTL_CRITICAL_SECTION_FLAG_FORCE_DEBUG_INFO)))
+--]=]
 
+ffi.cdef[[
 //
 // These flags define possible values stored in the Flags field of a critsec debuginfo.
 //
-#define RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT     0x00000001
+static const int RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT   =  0x00000001;
 
-#pragma pack(push, 8)
+//#pragma pack(push, 8)
 
 typedef struct _RTL_CRITICAL_SECTION {
     PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
@@ -17880,23 +17885,28 @@ typedef struct _RTL_CRITICAL_SECTION {
 
     LONG LockCount;
     LONG RecursionCount;
-    HANDLE OwningThread;        // from the thread's ClientId->UniqueThread
+    HANDLE OwningThread;        // from the threads ClientId->UniqueThread
     HANDLE LockSemaphore;
     ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
-#pragma pack(pop)
+//#pragma pack(pop)
+]]
 
+ffi.cdef[[
 typedef struct _RTL_SRWLOCK {                            
         PVOID Ptr;                                       
-} RTL_SRWLOCK, *PRTL_SRWLOCK;                            
-#define RTL_SRWLOCK_INIT {0}                            
+} RTL_SRWLOCK, *PRTL_SRWLOCK;
+
+//#define RTL_SRWLOCK_INIT {0}                            
+
 typedef struct _RTL_CONDITION_VARIABLE {                    
         PVOID Ptr;                                       
 } RTL_CONDITION_VARIABLE, *PRTL_CONDITION_VARIABLE;      
-#define RTL_CONDITION_VARIABLE_INIT {0}                 
-#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1    
---]==]
+
+//#define RTL_CONDITION_VARIABLE_INIT {0}                 
+static const int RTL_CONDITION_VARIABLE_LOCKMODE_SHARED = 0x1;    
+]]
 
 ffi.cdef[[
 typedef void (* PAPCFUNC)(ULONG_PTR Parameter);

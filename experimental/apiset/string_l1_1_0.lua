@@ -3,9 +3,8 @@
 
 local ffi = require("ffi");
 
-local WTypes = require("win32.wtypes");
+local WTypes = require("win32.minwindef");
 
-local k32Lib = ffi.load("kernel32")
 
 ffi.cdef[[
 static const int CP_ACP 		= 0;	// default to ANSI code page
@@ -41,7 +40,7 @@ local function toUnicode(in_Src, nsrcBytes)
 	nsrcBytes = nsrcBytes or #in_Src
 
 	-- find out how many characters needed
-	local charsneeded = k32Lib.MultiByteToWideChar(ffi.C.CP_ACP, 0, ffi.cast("const char *",in_Src), nsrcBytes, nil, 0);
+	local charsneeded = ffi.C.MultiByteToWideChar(ffi.C.CP_ACP, 0, ffi.cast("const char *",in_Src), nsrcBytes, nil, 0);
 
 	if charsneeded < 0 then
 		return nil;
@@ -50,7 +49,7 @@ local function toUnicode(in_Src, nsrcBytes)
 
 	local buff = ffi.new("uint16_t[?]", charsneeded+1)
 
-	local charswritten = k32Lib.MultiByteToWideChar(ffi.C.CP_ACP, 0, in_Src, nsrcBytes, buff, charsneeded)
+	local charswritten = ffi.C.MultiByteToWideChar(ffi.C.CP_ACP, 0, in_Src, nsrcBytes, buff, charsneeded)
 	buff[charswritten] = 0
 
 
@@ -65,7 +64,7 @@ local function toAnsi(in_Src, nsrcBytes)
 	local cchWideChar = nsrcBytes or -1;
 
 	-- find out how many characters needed
-	local bytesneeded = k32Lib.WideCharToMultiByte(
+	local bytesneeded = ffi.C.WideCharToMultiByte(
 		ffi.C.CP_ACP, 
 		0, 
 		ffi.cast("const uint16_t *", in_Src), 
@@ -85,7 +84,7 @@ local function toAnsi(in_Src, nsrcBytes)
 	local buff = ffi.new("uint8_t[?]", bytesneeded)
 
 	-- do the actual string conversion
-	local byteswritten = k32Lib.WideCharToMultiByte(
+	local byteswritten = ffi.C.WideCharToMultiByte(
 		ffi.C.CP_ACP, 
 		0, 
 		ffi.cast("const uint16_t *", in_Src), 
@@ -112,8 +111,6 @@ end
 
 
 return {
-	Lib = k32Lib,
-	
 	toUnicode = toUnicode,
 	toAnsi = toAnsi,
 	TEXT = TEXT,
@@ -124,6 +121,6 @@ return {
 	--FoldStringW = k32Lib.FoldStringW,
 	--GetStringTypeExW = k32Lib.GetStringTypeExW,
 	--GetStringTypeW = k32Lib.GetStringTypeW,
-	MultiByteToWideChar = k32Lib.MultiByteToWideChar,
-	WideCharToMultiByte = k32Lib.WideCharToMultiByte,
+	MultiByteToWideChar = ffi.C.MultiByteToWideChar,
+	WideCharToMultiByte = ffi.C.WideCharToMultiByte,
 }
