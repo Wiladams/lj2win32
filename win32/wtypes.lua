@@ -525,6 +525,7 @@ typedef union tagCY {
 } CY;
 ]]
 
+--[=[
 ffi.cdef[[
 enum {
 	MAXSHORT = 32767,
@@ -539,7 +540,7 @@ enum {
 	};
 
 ]]
-
+--]=]
 
 
 if not _WINDEF_ then

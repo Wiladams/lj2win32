@@ -208,6 +208,10 @@ function DeviceContext.RoundRect(self, left, top, right, bottom, width, height)
 end
 
 -- Text Drawing
+function DeviceContext.SetTextColor(self, cref)
+	return ffi.C.SetTextColor(self.Handle, cref);
+end
+
 function DeviceContext.Text(self, txt, x, y)
 	x = x or 0
 	y = y or 0

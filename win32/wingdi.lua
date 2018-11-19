@@ -1502,42 +1502,43 @@ typedef LPENUMLOGFONTEXA LPENUMLOGFONTEX;
                                     /* Pica, Elite, Courier, etc. */
 #define FF_SCRIPT           (4<<4)  /* Cursive, etc. */
 #define FF_DECORATIVE       (5<<4)  /* Old English, etc. */
-
-/* Font Weights */
-#define FW_DONTCARE         0
-#define FW_THIN             100
-#define FW_EXTRALIGHT       200
-#define FW_LIGHT            300
-#define FW_NORMAL           400
-#define FW_MEDIUM           500
-#define FW_SEMIBOLD         600
-#define FW_BOLD             700
-#define FW_EXTRABOLD        800
-#define FW_HEAVY            900
-
-#define FW_ULTRALIGHT       FW_EXTRALIGHT
-#define FW_REGULAR          FW_NORMAL
-#define FW_DEMIBOLD         FW_SEMIBOLD
-#define FW_ULTRABOLD        FW_EXTRABOLD
-#define FW_BLACK            FW_HEAVY
-
-#define PANOSE_COUNT               10
-#define PAN_FAMILYTYPE_INDEX        0
-#define PAN_SERIFSTYLE_INDEX        1
-#define PAN_WEIGHT_INDEX            2
-#define PAN_PROPORTION_INDEX        3
-#define PAN_CONTRAST_INDEX          4
-#define PAN_STROKEVARIATION_INDEX   5
-#define PAN_ARMSTYLE_INDEX          6
-#define PAN_LETTERFORM_INDEX        7
-#define PAN_MIDLINE_INDEX           8
-#define PAN_XHEIGHT_INDEX           9
-
-#define PAN_CULTURE_LATIN           0
-
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 --]=]
+
+ffi.cdef[[
+/* Font Weights */
+static const int FW_DONTCARE       =  0;
+static const int FW_THIN           =  100;
+static const int FW_EXTRALIGHT     =  200;
+static const int FW_LIGHT          =  300;
+static const int FW_NORMAL         =  400;
+static const int FW_MEDIUM         =  500;
+static const int FW_SEMIBOLD       =  600;
+static const int FW_BOLD           =  700;
+static const int FW_EXTRABOLD      =  800;
+static const int FW_HEAVY          =  900;
+
+static const int FW_ULTRALIGHT     =  FW_EXTRALIGHT;
+static const int FW_REGULAR        =  FW_NORMAL;
+static const int FW_DEMIBOLD       =  FW_SEMIBOLD;
+static const int FW_ULTRABOLD      =  FW_EXTRABOLD;
+static const int FW_BLACK          =  FW_HEAVY;
+]]
+
+ffi.cdef[[
+static const int PANOSE_COUNT               = 10;
+static const int PAN_FAMILYTYPE_INDEX       = 0;
+static const int PAN_SERIFSTYLE_INDEX       = 1;
+static const int PAN_WEIGHT_INDEX           = 2;
+static const int PAN_PROPORTION_INDEX       = 3;
+static const int PAN_CONTRAST_INDEX         = 4;
+static const int PAN_STROKEVARIATION_INDEX  = 5;
+static const int PAN_ARMSTYLE_INDEX         = 6;
+static const int PAN_LETTERFORM_INDEX       = 7;
+static const int PAN_MIDLINE_INDEX          = 8;
+static const int PAN_XHEIGHT_INDEX          = 9;
+
+static const int PAN_CULTURE_LATIN          = 0;
+]]
 
 ffi.cdef[[
 typedef struct tagPANOSE

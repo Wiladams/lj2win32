@@ -152,8 +152,8 @@ EnvironmentReady = false;
 
 -- Typography
 TextSize = 12;
-TextAlignment = LEFT;
-TextYAlignment = BASELINE;
+TextHAlignment = LEFT;
+TextVAlignment = BASELINE;
 TextLeading = 0;
 TextMode = SCREEN;
 TextSize = 12;
@@ -570,7 +570,7 @@ local function main(params)
 
 
     background(0xCC)        -- light gray
-    fill(255,255,255)
+    fill(0,0,0)             -- black
     stroke(0,0,0)
 
     EnvironmentReady = true;

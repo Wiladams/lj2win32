@@ -8,6 +8,7 @@ local wingdi = require("win32.wingdi")
 
 local solidBrushes = {}
 local solidPens = {}
+local fontCache ={}			-- cache of fonts
 
 --[==================================================[
 		LANGUAGE COMMANDS
@@ -20,15 +21,56 @@ function pop()
 	surface.DC:restore();
 end
 
-local function solidBrush(...)
-	local c = color(...)
+local function getFont(name, size)
+	local namecache = fontCache[name];
+	if namecache then
+		local afont = namecache[size]
+		if afont then
+			return afont
+		end
+	else
+		namecache = {}
+		fontCache[name] = namecache
+	end
+
+	-- create a new font of the specified size
+	--[[
+	local afont = ffi.C.CreateFontA(  int cHeight,  int cWidth,  int cEscapement,  int cOrientation,  int cWeight,  DWORD bItalic,
+	DWORD bUnderline,  DWORD bStrikeOut,  DWORD iCharSet,  DWORD iOutPrecision,  DWORD iClipPrecision,
+	DWORD iQuality,  DWORD iPitchAndFamily,  LPCSTR pszFaceName);
+--]]
+	local cHeight = size;
+	local cWidth = 0;
+	local cEscapement = 0;
+	local cOrientation = 0;
+	local cWeight = ffi.C.FW_BOLD;
+	local bItalic = 0;
+	local bUnderline = 0;
+	local bStrikeOut = 0;
+	local iCharSet = 0;
+	local iOutPrecision = 0;
+	local iClipPrecision = 0;
+	local iQuality = 2;
+	local iPitchAndFamily = 0;
+	local pszFaceName = name
+	local afont = ffi.C.CreateFontA(cHeight, cWidth, cEscapement, cOrientation,  cWeight,  bItalic,
+	bUnderline,  bStrikeOut,  iCharSet,  iOutPrecision,  iClipPrecision,
+	iQuality,  iPitchAndFamily,  pszFaceName);
+	
+	-- add it to the name cache
+	namecache[size] = afont;
+
+	return afont;
+end
+
+local function solidBrush(c)
 	local abrush = false;
 	
 	abrush = solidBrushes[tonumber(c.cref)]
 	--print("solidBrush: ", c.cref, abrush)
 	
 	if abrush then
-		return abrush;
+		return abrush, c;
 	end
 
 	abrush = ffi.C.CreateSolidBrush(c.cref);
@@ -70,7 +112,8 @@ end
 
 
 function background(...)
-	local bbrush, c = solidBrush(...)
+	local c = color(...)
+	local bbrush = solidBrush(c)
 	BackgroundColor = c;
 
 	if not bbrush then
@@ -80,6 +123,7 @@ function background(...)
 	local oldbrush = surface.DC:SelectObject(bbrush);
 	local oldpen = surface.DC:SelectStockObject(ffi.C.NULL_PEN);
 
+	surface.DC:SetBkColor(c.cref);
 
 	-- whenever background is called, fill the surface
 	-- with the new color immediately
@@ -94,7 +138,8 @@ end
 
 
 function fill(...)
-	local abrush, c = solidBrush(...)
+	local c = color(...)
+	local abrush = solidBrush(c)
 	FillColor = c;
 	if not abrush then
 		return false;
@@ -102,6 +147,9 @@ function fill(...)
 
 	local oldbrush = surface.DC:SelectObject(abrush);
 	
+	-- set the text color as well
+	surface.DC:SetTextColor(c.cref)
+
 	return true;
 end
 
@@ -496,22 +544,17 @@ end
 function loadFont()
 end
 
-function text(x, y, txt)
-	--Processing.Renderer:Scale(1, -1)
-	Processing.Renderer:DrawText(x, y, txt)
-	--Processing.Renderer:Scale(1, -1)
+function text(txt, x, y)
+	surface.DC:Text(txt, x, y);
+	--surface.DC:ExtTextOutA(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect,  LPCSTR lpString,  UINT c,  const INT * lpDx)
 end
 
 -- Attributes
 
-function textAlign(align, yalign)
-	yalign = yalign or Processing.TextYAlignment
+function textAlign(halign, valign)
+	TextHAlignment = halign
+	TextVAlignment = valign
 
-	Processing.TextAlignment = align
-	Processing.TextYAlignment = yalign
-	--Processing.SetTextAlignment(align, yalign)
-
-	Processing.Renderer:SetTextAlignment(align)
 end
 
 function textLeading(leading)
@@ -524,6 +567,13 @@ end
 
 function textSize(asize)
 	TextSize = asize
+	FontName = "SYSTEM_FIXED_FONT"
+	local afont = getFont(FontName, asize)
+	if not afont then
+		return false, 'could not find font'
+	end
+
+	surface.DC:SelectObject(afont);
 end
 
 function textWidth(txt)
