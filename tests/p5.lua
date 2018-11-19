@@ -371,6 +371,7 @@ function MouseActivity(hwnd, msg, wparam, lparam)
         msg == ffi.C.WM_XBUTTONUP then
         event.activity = 'mouseup'
         signalAll('gap_mouseup', event)
+        signalAll('gap_mouseclick', event)
     elseif msg == ffi.C.WM_MOUSEWHEEL then
         event.activity = 'mousewheel';
         signalAll('gap_mousewheel', event)
@@ -521,6 +522,7 @@ local function setupUIHandlers()
         {activity = 'gap_mousedown', response = "mousePressed"};
         {activity = 'gap_mousedrag', response = 'mouseDragged'};
         {activity = 'gap_mousewheel', response = "mouseWheel"};
+        {activity = 'gap_mouseclick', response = "mouseClicked"};
 
         {activity = 'gap_keydown', response = "onKeyboardActivity"};
         {activity = 'gap_keyup', response = "onKeyboardActivity"};
