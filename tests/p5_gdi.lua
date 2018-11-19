@@ -123,7 +123,8 @@ function background(...)
 	local oldbrush = surface.DC:SelectObject(bbrush);
 	local oldpen = surface.DC:SelectStockObject(ffi.C.NULL_PEN);
 
-	surface.DC:SetBkColor(c.cref);
+	--surface.DC:SetBkColor(c.cref);
+	--surface.DC:SetBkMode(ffi.C.TRANSPARENT);
 
 	-- whenever background is called, fill the surface
 	-- with the new color immediately

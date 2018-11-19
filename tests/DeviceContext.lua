@@ -42,10 +42,10 @@ function DeviceContext.init(self, rawhandle)
 	}
 	setmetatable(obj, DeviceContext_mt)
 
-	-- default to advanced graphics mode instead of GM_COMPATIBLE
+	-- Set some default state
 	ffi.C.SetGraphicsMode(rawhandle, ffi.C.GM_ADVANCED)
-	--obj:UseDCBrush(true);
-	--obj:UseDCPen(true);
+	ffi.C.SetBkMode(rawhandle, ffi.C.TRANSPARENT);
+
 
 	return obj;
 end
@@ -230,6 +230,10 @@ end
 
 function DeviceContext.SetBkColor(self, cref)
 	return ffi.C.SetBkColor(self.Handle, cref);
+end
+
+function DeviceContext.SetBkMode(self, mode)
+	return ffi.C.SetBkMode(self.Handle, mode)
 end
 
 function DeviceContext.StretchDIBits(self, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, lpBitsInfo, iUsage, dwRop)
