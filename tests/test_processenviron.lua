@@ -2,7 +2,21 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
-local environ = require("win32.core.processenvironment")
+local environ = require("win32.processenv")
+local strdelim = require("strdelim")
+
+
+
+
+local function getEnvironment()
+    local environs = ffi.C.GetEnvironmentStrings()
+    print("environs: ", environs)
+    if environs == nil then
+        return false, "failed"
+    end
+
+    return strdelim.splitmultinull(environs)
+end
 
 local function getCommandLine()
     local res = environ.GetCommandLineA();
@@ -28,7 +42,18 @@ local function getCurrentDirectory()
     return false;
 end
 
-print("     Command Line: ", getCommandLine());
-print("Working Directory: ", getCurrentDirectory());
 
-print(coroutine.running())
+--print("     Command Line: ", getCommandLine());
+--print("Working Directory: ", getCurrentDirectory());
+
+--print(coroutine.running())
+
+local function test_envvars()
+    local vars = getEnvironment()
+    for k,v in pairs(vars) do
+        print(string.format("%32s  %s", k,v))
+    end
+end
+
+test_envvars()
+
