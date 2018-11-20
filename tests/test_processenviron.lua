@@ -15,7 +15,10 @@ local function getEnvironment()
         return false, "failed"
     end
 
-    return strdelim.splitmultinull(environs)
+    local res =  strdelim.splitmultinull(environs)
+    ffi.C.FreeEnvironmentStringsA(environs)
+
+    return res;
 end
 
 local function getCommandLine()
