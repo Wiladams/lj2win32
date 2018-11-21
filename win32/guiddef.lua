@@ -83,7 +83,7 @@ typedef GUID FMTID;
 typedef FMTID *LPFMTID;
 ]]
 
---[=[
+--[[
 #define IID_NULL            GUID_NULL
 #define CLSID_NULL          GUID_NULL
 #define FMTID_NULL          GUID_NULL
@@ -92,6 +92,7 @@ typedef FMTID *LPFMTID;
 #define IsEqualIID(riid1, riid2) IsEqualGUID(riid1, riid2)
 #define IsEqualCLSID(rclsid1, rclsid2) IsEqualGUID(rclsid1, rclsid2)
 #define IsEqualFMTID(rfmtid1, rfmtid2) IsEqualGUID(rfmtid1, rfmtid2)
+--]]
 
 --[[
 #ifdef __midl_proxy
@@ -108,16 +109,16 @@ typedef FMTID *LPFMTID;
 #define REFGUID const GUID * __MIDL_CONST
 #endif
 #endif
+--]]
 
-#ifndef _REFIID_DEFINED
-#define _REFIID_DEFINED
-#ifdef __cplusplus
-#define REFIID const IID &
-#else
-#define REFIID const IID * __MIDL_CONST
-#endif
-#endif
+if not _REFIID_DEFINED then
+_REFIID_DEFINED = true;
+ffi.cdef[[
+typedef  const IID *  REFIID;
+]]
+end 
 
+--[[
 #ifndef _REFCLSID_DEFINED
 #define _REFCLSID_DEFINED
 #ifdef __cplusplus
@@ -139,7 +140,7 @@ typedef FMTID *LPFMTID;
 #endif // !__IID_DEFINED__
 --]]
 
-
+--[=[
 #if !defined (__midl)
 #if !defined (_SYS_GUID_OPERATORS_)
 #define _SYS_GUID_OPERATORS_
