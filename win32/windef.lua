@@ -177,5 +177,3 @@ typedef enum DPI_HOSTING_BEHAVIOR {
 ]]
 
 return exports
-
-

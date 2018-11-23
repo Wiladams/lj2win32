@@ -25,9 +25,11 @@ NT_INCLUDED = true;
 #include <winapifamily.h>  
 --]]
 
+if not ANYSIZE_ARRAY then
 ffi.cdef[[
 static const int ANYSIZE_ARRAY = 1;       
 ]]
+end
 
 --[[
 #include <specstrings.h>
@@ -1930,7 +1932,7 @@ inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) throw() { return (ENUMTYP
 
 
 #ifndef UMDF_USING_NTSTATUS 
-#ifndef WIN32_NO_STATUS 
+if not WIN32_NO_STATUS then 
 /*lint -save -e767 */  
 #define STATUS_WAIT_0                           ((DWORD   )0x00000000L) 
 #define STATUS_ABANDONED_WAIT_0          ((DWORD   )0x00000080L)    
@@ -1994,7 +1996,7 @@ inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) throw() { return (ENUMTYP
 #define STATUS_SXS_INVALID_DEACTIVATION  ((DWORD   )0xC0150010L)    
 #endif 
 /*lint -restore */  
-#endif 
+end
 #endif /* UMDF_USING_NTSTATUS */
 
 #define MAXIMUM_WAIT_OBJECTS 64     // Maximum number of wait objects
