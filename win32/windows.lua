@@ -125,7 +125,7 @@ require("win32.wingdi")
 require("win32.winuser")
 
 if not _MAC or _WIN32NLS then
-require("win32.winnls")
+require("win32.winnls")         -- NYI
 end
 
 if not _MAC then
