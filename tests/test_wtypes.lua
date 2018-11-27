@@ -4,7 +4,7 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
-
+--[[
 require ("win32.basetsd")
 require ("win32.arch");
 
@@ -20,4 +20,5 @@ print("sizeof(ULONG): ", ffi.sizeof("ULONG"))
 end
 
 test_DECLARE_HANDLE();
+--]]
 
