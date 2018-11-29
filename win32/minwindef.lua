@@ -7,7 +7,7 @@ require("win32.winapifamily")
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP, WINAPI_PARTITION_SYSTEM) then
-print("minwindef, PARTITION")
+
 if not NO_STRICT then
 if not STRICT then
 STRICT  = 1

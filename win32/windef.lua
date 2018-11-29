@@ -4,7 +4,7 @@ local ffi = require("ffi")
 --if _WINDEF_ then
 --    return;
 --end
-print("==== WINDEF ====")
+
 _WINDEF_ = true;
 
 
