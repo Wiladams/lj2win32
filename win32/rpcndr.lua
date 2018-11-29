@@ -44,7 +44,7 @@ if __REQUIRED_RPCNDR_H_VERSION__ then
     end
 end
 
---#include <winapifamily.h>
+require("win32.winapifamily")
 --#include <pshpack8.h>
 require("win32.basetsd")
 --#if !defined(_KRPCENV_)
@@ -56,7 +56,7 @@ require("win32.basetsd")
 
 --[[
 #pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP, WINAPI_PARTITION_SYSTEM) then
 --]]
 
 --[[
@@ -2609,11 +2609,11 @@ NdrMesProcEncodeDecode4(
 
 #endif
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP, WINAPI_PARTITION_SYSTEM) then
 
 CLIENT_CALL_RETURN RPC_VAR_ENTRY
 NdrDcomAsyncClientCall(
@@ -2622,7 +2622,7 @@ NdrDcomAsyncClientCall(
     ...
     );
 
-#if ( !defined(_WIN64) && !defined(_ARM_) )
+if ( !defined(_WIN64) && !defined(_ARM_) ) then
 
 CLIENT_CALL_RETURN  RPC_VAR_ENTRY
 NdrDcomAsyncClientCall2(
@@ -2631,13 +2631,12 @@ NdrDcomAsyncClientCall2(
     ...
     );
 
-#endif
+end
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP, WINAPI_PARTITION_SYSTEM) then
 
 /* server */
 typedef enum {
@@ -2677,11 +2676,11 @@ NdrAsyncStubCall(
     unsigned long *             pdwStubPhase
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP, WINAPI_PARTITION_SYSTEM) then
 
 // async uuid
 RPCRTAPI
@@ -2694,8 +2693,8 @@ NdrDcomAsyncStubCall(
     unsigned long            *  pdwStubPhase
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+
 
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)

@@ -3,11 +3,11 @@
 local ffi = require("ffi")
 
 --#include <specstrings.h>
---#include <winapifamily.h>
+require("win32.winapifamily")
 
---#pragma region Application Family or OneCore Family
---#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP, WINAPI_PARTITION_SYSTEM) then
+print("minwindef, PARTITION")
 if not NO_STRICT then
 if not STRICT then
 STRICT  = 1
@@ -287,6 +287,6 @@ _FILETIME_ = true;
 
 
 
---#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
---#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+
 

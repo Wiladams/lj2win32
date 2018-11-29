@@ -22,8 +22,9 @@ NT_INCLUDED = true;
 
 --[[
 #include <ctype.h>  
-#include <winapifamily.h>  
+
 --]]
+require("win32.winapifamily")  
 
 if not ANYSIZE_ARRAY then
 ffi.cdef[[

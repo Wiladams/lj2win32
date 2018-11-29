@@ -3,6 +3,7 @@ local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift
 
 
+require("win32.winapifamily")
 
 local exports = {}
 exports.Lib = ffi.load("user32");
