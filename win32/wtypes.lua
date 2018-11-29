@@ -22,14 +22,10 @@ local ffi = require("ffi")
 
 
 
-/* header files for imported files */
 require("win32.wtypesbase")
 
---[=[
-#ifndef __IWinTypes_INTERFACE_DEFINED__
-#define __IWinTypes_INTERFACE_DEFINED__
 
-
+ffi.cdef[[
 typedef struct tagRemHGLOBAL
    {
    LONG fNullHGlobal;
@@ -69,7 +65,9 @@ typedef struct tagRemBRUSH
    ULONG cbData;
    /* [size_is] */ byte data[ 1 ];
    } 	RemHBRUSH;
+]]
 
+--[[
 #if !defined(_WIN32) && !defined(_MPPC_)
 // The following code is for Win16 only
 #ifndef WINAPI          // If not included with 3.1 headers...
@@ -83,40 +81,49 @@ typedef struct tagRemBRUSH
 #define FALSE 0
 #define TRUE 1
 #endif // !FALSE
+
 #ifndef _BYTE_DEFINED
 #define _BYTE_DEFINED
 typedef byte BYTE;
 #endif // !_BYTE_DEFINED
+
 #ifndef _WORD_DEFINED
 #define _WORD_DEFINED
 typedef unsigned short WORD;
 #endif // !_WORD_DEFINED
+
 typedef unsigned int UINT;
 typedef int  INT;
 typedef long BOOL;
+
 #ifndef _LONG_DEFINED
 #define _LONG_DEFINED
 typedef long LONG;
 #endif // !_LONG_DEFINED
+
 #ifndef _WPARAM_DEFINED
 #define _WPARAM_DEFINED
 typedef UINT_PTR WPARAM;
 
 #endif // _WPARAM_DEFINED
+
 #ifndef _DWORD_DEFINED
 #define _DWORD_DEFINED
 typedef unsigned long DWORD;
 #endif // !_DWORD_DEFINED
+
 #ifndef _LPARAM_DEFINED
 #define _LPARAM_DEFINED
 typedef LONG_PTR LPARAM;
 
 #endif // !_LPARAM_DEFINED
+
 #ifndef _LRESULT_DEFINED
 #define _LRESULT_DEFINED
 typedef LONG_PTR LRESULT;
 
 #endif // !_LRESULT_DEFINED
+
 typedef void * HANDLE;
 typedef void *HMODULE;
 
@@ -151,36 +158,44 @@ typedef HANDLE HDWP;
 typedef INT HFILE;
 
 #endif // !_HFILE_DEFINED
+
 #ifndef _LPWORD_DEFINED
 #define _LPWORD_DEFINED
 typedef WORD *LPWORD;
 #endif // !_LPWORD_DEFINED
+
 #ifndef _LPDWORD_DEFINED
 #define _LPDWORD_DEFINED
 typedef DWORD *LPDWORD;
 #endif // !_LPDWORD_DEFINED
+
 typedef char CHAR;
 typedef CHAR *LPSTR;
 typedef const CHAR *LPCSTR;
+
 #ifndef _WCHAR_DEFINED
 #define _WCHAR_DEFINED
 typedef wchar_t WCHAR;
 typedef WCHAR   TCHAR;
 #endif // !_WCHAR_DEFINED
+
 typedef WCHAR *LPWSTR;
 typedef TCHAR *LPTSTR;
 typedef const WCHAR *LPCWSTR;
 typedef const TCHAR *LPCTSTR;
+
 #ifndef _COLORREF_DEFINED
 #define _COLORREF_DEFINED
 typedef DWORD COLORREF;
 
 #endif // !_COLORREF_DEFINED
+
 #ifndef _LPCOLORREF_DEFINED
 #define _LPCOLORREF_DEFINED
 typedef DWORD *LPCOLORREF;
 
 #endif // !_LPCOLORREF_DEFINED
+
 typedef HANDLE *LPHANDLE;
 typedef struct _RECTL
    {
@@ -230,6 +245,7 @@ typedef struct tagSIZE
    INT cy;
 } SIZE, *PSIZE, *LPSIZE;
 #endif // WIN16
+
 typedef struct tagSIZEL
    {
    LONG cx;
@@ -242,6 +258,9 @@ typedef struct tagSIZEL *LPSIZEL;
 
 #endif  //WINAPI
 #endif  //!WIN32 && !MPPC
+--]]
+
+--[[
 #ifndef _PALETTEENTRY_DEFINED
 #define _PALETTEENTRY_DEFINED
 typedef struct tagPALETTEENTRY
@@ -257,6 +276,9 @@ typedef struct tagPALETTEENTRY *PPALETTEENTRY;
 typedef struct tagPALETTEENTRY *LPPALETTEENTRY;
 
 #endif // !_PALETTEENTRY_DEFINED
+--]]
+
+--[[
 #ifndef _LOGPALETTE_DEFINED
 #define _LOGPALETTE_DEFINED
 typedef struct tagLOGPALETTE
@@ -271,8 +293,11 @@ typedef struct tagLOGPALETTE *PLOGPALETTE;
 typedef struct tagLOGPALETTE *LPLOGPALETTE;
 
 #endif // !_LOGPALETTE_DEFINED
-#ifndef _WINDEF_
-typedef const RECTL *LPCRECTL;
+--]]
+
+if not _WINDEF_ then
+ffi.cdef[[
+   typedef const RECTL *LPCRECTL;
 
 typedef struct tagRECT
    {
@@ -287,12 +312,11 @@ typedef struct tagRECT *PRECT;
 typedef struct tagRECT *LPRECT;
 
 typedef const RECT *LPCRECT;
+]]
+end  --_WINDEF_
 
-#endif  //_WINDEF_
-#if 0
-typedef FMTID *REFFMTID;
 
-#endif // 0
+--[=[
 #ifndef _ROTFLAGS_DEFINED
 #define _ROTFLAGS_DEFINED
 #define ROTFLAGS_REGISTRATIONKEEPSALIVE 0x1
@@ -495,31 +519,9 @@ typedef /* [unique] */  __RPC_unique_pointer RemotableHandle *wireHRGN;
 
 typedef /* [unique] */  __RPC_unique_pointer RemotableHandle *wireHMONITOR;
 
-#if 0
-typedef /* [wire_marshal] */ void *HWND;
 
-typedef /* [wire_marshal] */ void *HMENU;
 
-typedef /* [wire_marshal] */ void *HACCEL;
 
-typedef /* [wire_marshal] */ void *HBRUSH;
-
-typedef /* [wire_marshal] */ void *HFONT;
-
-typedef /* [wire_marshal] */ void *HDC;
-
-typedef /* [wire_marshal] */ void *HICON;
-
-typedef /* [wire_marshal] */ void *HRGN;
-
-typedef /* [wire_marshal] */ void *HMONITOR;
-
-#ifndef _HCURSOR_DEFINED
-#define _HCURSOR_DEFINED
-typedef HICON HCURSOR;
-
-#endif // !_HCURSOR_DEFINED
-#endif //0
 #ifndef _TEXTMETRIC_DEFINED
 #define _TEXTMETRIC_DEFINED
 typedef struct tagTEXTMETRICW
@@ -551,6 +553,7 @@ typedef struct tagTEXTMETRICW *PTEXTMETRICW;
 typedef struct tagTEXTMETRICW *LPTEXTMETRICW;
 
 #endif // !_TEXTMETRIC_DEFINED
+
 #ifndef _WIN32           // The following code is for Win16 only
 #ifndef WINAPI          // If not included with 3.1 headers...
 typedef struct tagMSG
@@ -571,6 +574,8 @@ typedef struct tagMSG *LPMSG;
 
 #endif // _WIN32
 #endif // WINAPI
+
+--[[
 typedef /* [unique] */  __RPC_unique_pointer userHBITMAP *wireHBITMAP;
 
 typedef /* [unique] */  __RPC_unique_pointer userHPALETTE *wireHPALETTE;
@@ -581,74 +586,40 @@ typedef /* [unique] */  __RPC_unique_pointer userHMETAFILE *wireHMETAFILE;
 
 typedef /* [unique] */  __RPC_unique_pointer userHMETAFILEPICT *wireHMETAFILEPICT;
 
-#if 0
-typedef /* [wire_marshal] */ void *HGLOBAL;
 
-typedef HGLOBAL HLOCAL;
-
-typedef /* [wire_marshal] */ void *HBITMAP;
-
-typedef /* [wire_marshal] */ void *HPALETTE;
-
-typedef /* [wire_marshal] */ void *HENHMETAFILE;
-
-typedef /* [wire_marshal] */ void *HMETAFILE;
-
-#endif //0
 typedef /* [wire_marshal] */ void *HMETAFILEPICT;
+--]]
 
 
 
-extern RPC_IF_HANDLE IWinTypes_v0_1_c_ifspec;
-extern RPC_IF_HANDLE IWinTypes_v0_1_s_ifspec;
 #endif /* __IWinTypes_INTERFACE_DEFINED__ */
+--]=]
 
-/* interface __MIDL_itf_wtypes_0000_0001 */
-/* [local] */ 
 
-#if ( _MSC_VER >= 800 )
-#if _MSC_VER >= 1200
-#pragma warning(push)
-#endif
-#pragma warning(disable:4201)
-#endif
+ffi.cdef[[
 typedef double DATE;
+]]
 
-#ifndef _tagCY_DEFINED
-#define _tagCY_DEFINED
-#define _CY_DEFINED
-#if 0
-/* the following isn't the real definition of CY, but it is */
-/* what RPC knows how to remote */
-typedef struct tagCY
-   {
-   LONGLONG int64;
-   } 	CY;
-
-#else /* 0 */
+if not _tagCY_DEFINED then
+_tagCY_DEFINED = true
+_CY_DEFINED = true
+ffi.cdef[[
 /* real definition that makes the C++ compiler happy */
 typedef union tagCY {
    struct {
        ULONG Lo;
        LONG      Hi;
-   } DUMMYSTRUCTNAME;
+   } ;
    LONGLONG int64;
 } CY;
-#endif /* 0 */
-#endif /* _tagCY_DEFINED */
-typedef CY *LPCY;
+]]
+end -- _tagCY_DEFINED */
+ffi.cdef[[
+   typedef CY *LPCY;
+]]
 
+--[=[
 #if 0 /* _tagDEC_DEFINED */
-/* The following isn't the real definition of Decimal type, */
-/* but it is what RPC knows how to remote */
-typedef struct tagDEC
-   {
-   USHORT wReserved;
-   BYTE scale;
-   BYTE sign;
-   ULONG Hi32;
-   ULONGLONG Lo64;
-   } 	DECIMAL;
 
 #else /* _tagDEC_DEFINED */
 /* real definition that makes the C++ compiler happy */
@@ -674,6 +645,7 @@ typedef struct tagDEC {
 #define DECIMAL_SETZERO(dec) \
        {(dec).Lo64 = 0; (dec).Hi32 = 0; (dec).signscale = 0;}
 #endif /* _tagDEC_DEFINED */
+
 typedef DECIMAL *LPDECIMAL;
 
 #if ( _MSC_VER >= 800 )
@@ -729,6 +701,9 @@ typedef struct tagCLIPDATA
 
 // Macro to calculate the size of the above pClipData
 #define CBPCLIPDATA(clipdata)    ( (clipdata).cbSize - sizeof((clipdata).ulClipFmt) )
+--]=]
+
+ffi.cdef[[
 typedef unsigned short VARTYPE;
 
 /*
@@ -845,6 +820,9 @@ enum VARENUM
        VT_ILLEGALMASKED	= 0xfff,
        VT_TYPEMASK	= 0xfff
    } ;
+]]
+
+--[=[
 typedef ULONG PROPID;
 
 #ifndef PROPERTYKEY_DEFINED

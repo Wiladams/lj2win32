@@ -2,20 +2,23 @@
 local ffi = require("ffi")
 
 
---[[
-/* verify that the <rpcndr.h> version is high enough to compile this file*/
-#ifndef __REQUIRED_RPCNDR_H_VERSION__
-#define __REQUIRED_RPCNDR_H_VERSION__ 500
-#endif
 
+--/* verify that the <rpcndr.h> version is high enough to compile this file*/
+if not __REQUIRED_RPCNDR_H_VERSION__ then
+__REQUIRED_RPCNDR_H_VERSION__ = 500
+end
+
+--[[
 /* verify that the <rpcsal.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCSAL_H_VERSION__
 #define __REQUIRED_RPCSAL_H_VERSION__ 100
 #endif
+--]]
 
-#include "rpc.h"
-#include "rpcndr.h"
+--require("win32.rpc")
+require("win32.rpcndr")
 
+--[[]
 #ifndef __RPCNDR_H_VERSION__
 #error this stub requires an updated version of <rpcndr.h>
 #endif /* __RPCNDR_H_VERSION__ */
@@ -29,13 +32,11 @@ require("win32.guiddef")
 
 
 
-if _WIN32) and not OLE2ANSI then
+if _WIN32 and not OLE2ANSI then
 ffi.cdef[[
 typedef WCHAR OLECHAR;
-
-typedef /* [string] */  __RPC_string OLECHAR *LPOLESTR;
-
-typedef /* [string] */  __RPC_string const OLECHAR *LPCOLESTR;
+typedef    OLECHAR *LPOLESTR;
+typedef    const OLECHAR *LPCOLESTR;
 ]]
 
 local function  OLESTR(str) 
@@ -101,7 +102,7 @@ typedef struct _FILETIME *PFILETIME;
 
 typedef struct _FILETIME *LPFILETIME;
 ]]
-end // !_FILETIME
+end -- !_FILETIME
 
 if not _SYSTEMTIME_ then
 _SYSTEMTIME_ = true;
@@ -237,7 +238,7 @@ enum tagMEMCTX
 if not _ROTREGFLAGS_DEFINED then
 _ROTREGFLAGS_DEFINED = true
 ffi.cdef[[
-static const int ROTREGFLAGS_ALLOWANYCLIENT 0x1
+static const int ROTREGFLAGS_ALLOWANYCLIENT = 0x1;
 ]]
 end -- !_ROTREGFLAGS_DEFINED
 
@@ -333,8 +334,7 @@ static const int CLSCTX_VALID_MASK = \
 ]]
 
 ffi.cdef[[
-typedef 
-enum tagMSHLFLAGS
+typedef enum tagMSHLFLAGS
    {
        MSHLFLAGS_NORMAL	= 0,
        MSHLFLAGS_TABLESTRONG	= 1,
@@ -346,8 +346,7 @@ enum tagMSHLFLAGS
        MSHLFLAGS_RESERVED4	= 64
    } 	MSHLFLAGS;
 
-typedef 
-enum tagMSHCTX
+typedef enum tagMSHCTX
    {
        MSHCTX_LOCAL	= 0,
        MSHCTX_NOSHAREDMEM	= 1,
@@ -362,69 +361,69 @@ ffi.cdef[[
 typedef struct _BYTE_BLOB
    {
    ULONG clSize;
-   /* [size_is] */ byte abData[ 1 ];
+    int8_t abData[ 1 ];
    } 	BYTE_BLOB;
 
-typedef /* [unique] */  __RPC_unique_pointer BYTE_BLOB *UP_BYTE_BLOB;
+typedef    BYTE_BLOB *UP_BYTE_BLOB;
 
 typedef struct _WORD_BLOB
    {
    ULONG clSize;
-   /* [size_is] */ unsigned short asData[ 1 ];
+    unsigned short asData[ 1 ];
    } 	WORD_BLOB;
 
-typedef /* [unique] */  __RPC_unique_pointer WORD_BLOB *UP_WORD_BLOB;
+typedef  WORD_BLOB *UP_WORD_BLOB;
 
 typedef struct _DWORD_BLOB
    {
    ULONG clSize;
-   /* [size_is] */ ULONG alData[ 1 ];
+    ULONG alData[ 1 ];
    } 	DWORD_BLOB;
 
-typedef /* [unique] */  __RPC_unique_pointer DWORD_BLOB *UP_DWORD_BLOB;
+typedef  DWORD_BLOB *UP_DWORD_BLOB;
 
 typedef struct _FLAGGED_BYTE_BLOB
    {
    ULONG fFlags;
    ULONG clSize;
-   /* [size_is] */ byte abData[ 1 ];
+    uint8_t abData[ 1 ];
    } 	FLAGGED_BYTE_BLOB;
 
-typedef /* [unique] */  __RPC_unique_pointer FLAGGED_BYTE_BLOB *UP_FLAGGED_BYTE_BLOB;
+typedef    FLAGGED_BYTE_BLOB *UP_FLAGGED_BYTE_BLOB;
 
 typedef struct _FLAGGED_WORD_BLOB
    {
    ULONG fFlags;
    ULONG clSize;
-   /* [size_is] */ unsigned short asData[ 1 ];
+    unsigned short asData[ 1 ];
    } 	FLAGGED_WORD_BLOB;
 
-typedef /* [unique] */  __RPC_unique_pointer FLAGGED_WORD_BLOB *UP_FLAGGED_WORD_BLOB;
+typedef    FLAGGED_WORD_BLOB *UP_FLAGGED_WORD_BLOB;
 ]]
 
 ffi.cdef[[
 typedef struct _BYTE_SIZEDARR
    {
    ULONG clSize;
-   /* [size_is] */ byte *pData;
+    uint8_t *pData;
    } 	BYTE_SIZEDARR;
 
 typedef struct _SHORT_SIZEDARR
    {
    ULONG clSize;
-   /* [size_is] */ unsigned short *pData;
+    unsigned short *pData;
    } 	WORD_SIZEDARR;
 
 typedef struct _LONG_SIZEDARR
    {
    ULONG clSize;
-   /* [size_is] */ ULONG *pData;
+    ULONG *pData;
    } 	DWORD_SIZEDARR;
 
 typedef struct _HYPER_SIZEDARR
    {
    ULONG clSize;
-   /* [size_is] */ hyper *pData;
+    int64_t *pData;
    } 	HYPER_SIZEDARR;
 ]]
 

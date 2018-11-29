@@ -6,6 +6,7 @@ local ffi = require("ffi")
 
 local User32 = require("win32.winuser")
 local WindowKind = require("WindowKind")
+local NativeWindow = require("NativeWindow")
 local wmmsgs = require("wmmsgs")
 --local wmmsgs = require("wm_reserved")
 
@@ -20,7 +21,7 @@ local continueRunning = true;
     a PostQuitMessage(), but for this simple test, we 
     just want the app to exit when we close the window.
 ]]
-jit.off(WindowProc)
+
 function WindowProc(hwnd, msg, wparam, lparam)
     print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
     --print(string.format("WindowProc, msg: 0x%x", msg))
@@ -36,6 +37,7 @@ function WindowProc(hwnd, msg, wparam, lparam)
 
 	return User32.DefWindowProcA(hwnd, msg, wparam, lparam);
 end
+jit.off(WindowProc)
 
 -- You MUST register a window class before you can use it.
 local winkind, err = WindowKind("NativeWindow", WindowProc);
@@ -46,7 +48,7 @@ if not winkind then
 end
 
 -- Create an actual instance of a window
-local win1 = winkind:createWindow(320, 240, "Native Window");
+local win1 = NativeWindow(winkind.ClassName, 320, 240, "Native Window");
 --print("win1: ", win1)
 win1:show();
 win1:update();

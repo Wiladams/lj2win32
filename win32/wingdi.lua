@@ -3428,7 +3428,7 @@ typedef FONTENUMPROCA FONTENUMPROC;
 
 ffi.cdef[[
 typedef int (__stdcall* GOBJENUMPROC)(LPVOID, LPARAM);
-typedef VOID (__stdcall* LINEDDAPROC)(int, int, LPARAM);
+typedef void (__stdcall* LINEDDAPROC)(int, int, LPARAM);
 ]]
 
 
@@ -3468,7 +3468,7 @@ ffi.cdef[[
 --]]
 
 ffi.cdef[[
-  HBITMAP __stdcall CreateBitmap(  int nWidth,  int nHeight,  UINT nPlanes,  UINT nBitCount,  const VOID *lpBits);
+  HBITMAP __stdcall CreateBitmap(  int nWidth,  int nHeight,  UINT nPlanes,  UINT nBitCount,  const void *lpBits);
   HBITMAP __stdcall CreateBitmapIndirect(  const BITMAP *pbm);
   HBRUSH  __stdcall CreateBrushIndirect(  const LOGBRUSH *plbrush);
  HBITMAP __stdcall CreateCompatibleBitmap(  HDC hdc,  int cx,  int cy);
@@ -3487,9 +3487,9 @@ ffi.cdef[[
 --]]
 
 ffi.cdef[[
- HBITMAP __stdcall CreateDIBitmap(  HDC hdc,  const BITMAPINFOHEADER *pbmih,  DWORD flInit,  const VOID *pjBits,  const BITMAPINFO *pbmi,  UINT iUsage);
+ HBITMAP __stdcall CreateDIBitmap(  HDC hdc,  const BITMAPINFOHEADER *pbmih,  DWORD flInit,  const void *pjBits,  const BITMAPINFO *pbmi,  UINT iUsage);
  HBRUSH  __stdcall CreateDIBPatternBrush(  HGLOBAL h,  UINT iUsage);
-  HBRUSH  __stdcall CreateDIBPatternBrushPt(  const VOID *lpPackedDIB,  UINT iUsage);
+  HBRUSH  __stdcall CreateDIBPatternBrushPt(  const void *lpPackedDIB,  UINT iUsage);
  HRGN    __stdcall CreateEllipticRgn(  int x1,  int y1,  int x2,  int y2);
  HRGN    __stdcall CreateEllipticRgnIndirect(  const RECT *lprect);
   HFONT   __stdcall CreateFontIndirectA(  const LOGFONTA *lplf);
@@ -4427,12 +4427,12 @@ LONG __stdcall
 SetBitmapBits(
      HBITMAP hbm,
      DWORD cb,
-    const VOID *pvBits);
+    const void *pvBits);
 
  UINT  __stdcall SetBoundsRect( HDC hdc,  const RECT * lprect,  UINT flags);
- int   __stdcall SetDIBits( HDC hdc,  HBITMAP hbm,  UINT start,  UINT cLines,  const VOID *lpBits,  const BITMAPINFO * lpbmi,  UINT ColorUse);
+ int   __stdcall SetDIBits( HDC hdc,  HBITMAP hbm,  UINT start,  UINT cLines,  const void *lpBits,  const BITMAPINFO * lpbmi,  UINT ColorUse);
   int   __stdcall SetDIBitsToDevice( HDC hdc,  int xDest,  int yDest,  DWORD w,  DWORD h,  int xSrc,
-         int ySrc,  UINT StartScan,  UINT cLines,  const VOID * lpvBits,  const BITMAPINFO * lpbmi,  UINT ColorUse);
+         int ySrc,  UINT StartScan,  UINT cLines,  const void * lpvBits,  const BITMAPINFO * lpbmi,  UINT ColorUse);
   DWORD __stdcall SetMapperFlags( HDC hdc,  DWORD flags);
  int   __stdcall SetGraphicsMode( HDC hdc,  int iMode);
   int   __stdcall SetMapMode( HDC hdc,  int iMode);
@@ -4459,7 +4459,7 @@ ffi.cdef[[
   BOOL  __stdcall StretchBlt( HDC hdcDest,  int xDest,  int yDest,  int wDest,  int hDest,  HDC hdcSrc,  int xSrc,  int ySrc,  int wSrc,  int hSrc,  DWORD rop);
  BOOL   __stdcall SetRectRgn( HRGN hrgn,  int left,  int top,  int right,  int bottom);
   int   __stdcall StretchDIBits( HDC hdc,  int xDest,  int yDest,  int DestWidth,  int DestHeight,  int xSrc,  int ySrc,  int SrcWidth,  int SrcHeight,
-         const VOID * lpBits,  const BITMAPINFO * lpbmi,  UINT iUsage,  DWORD rop);
+         const void * lpBits,  const BITMAPINFO * lpbmi,  UINT iUsage,  DWORD rop);
   int   __stdcall SetROP2( HDC hdc,  int rop2);
   int   __stdcall SetStretchBltMode( HDC hdc,  int mode);
  UINT  __stdcall SetSystemPaletteUse( HDC hdc,  UINT use);
@@ -4494,7 +4494,7 @@ typedef struct {
  BOOL    __stdcall   GdiRegisterDdraw( PGDIREGISTERDDRAWPACKET pPacket, GDIMARSHALLOC *ppfnGdiAlloc);
 
  ULONG   __stdcall   GdiMarshalSize(void);
- VOID    __stdcall   GdiMarshal(DWORD dwProcessIdTo,  HGDIOBJ hGdiObj, PVOID pData, ULONG ulFlags);
+ void    __stdcall   GdiMarshal(DWORD dwProcessIdTo,  HGDIOBJ hGdiObj, PVOID pData, ULONG ulFlags);
  HGDIOBJ __stdcall   GdiUnmarshal( PVOID pData, ULONG ulFlags);
 ]]
 
@@ -4785,7 +4785,7 @@ HBITMAP __stdcall CreateDIBSection(
             HDC               hdc,
             const BITMAPINFO *pbmi,
             UINT              usage,
-            VOID            **ppvBits,
+            void            **ppvBits,
             HANDLE            hSection,
             DWORD             offset);
 ]]
@@ -6162,9 +6162,15 @@ ffi.cdef[[
  HGLRC __stdcall wglCreateContext(HDC);
  HGLRC __stdcall wglCreateLayerContext(HDC, int);
  BOOL  __stdcall wglDeleteContext(HGLRC);
- HGLRC __stdcall wglGetCurrentContext(VOID);
- HDC   __stdcall wglGetCurrentDC(VOID);
+ HGLRC __stdcall wglGetCurrentContext(void);
+ HDC   __stdcall wglGetCurrentDC(void);
+]]
+ffi.cdef[[
+//typedef INT_PTR (__stdcall *PROC)();
  PROC  __stdcall wglGetProcAddress(LPCSTR);
+]]
+
+ffi.cdef[[
  BOOL  __stdcall wglMakeCurrent(HDC, HGLRC);
  BOOL  __stdcall wglShareLists(HGLRC, HGLRC);
  BOOL  __stdcall wglUseFontBitmapsA(HDC, DWORD, DWORD, DWORD);

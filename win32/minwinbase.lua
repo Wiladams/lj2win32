@@ -13,17 +13,16 @@ local exports = {}
 #define ZeroMemory RtlZeroMemory
 --]]
 
+if not _SECURITY_ATTRIBUTES_ then
+_SECURITY_ATTRIBUTES_ = true
 ffi.cdef[[
-//
-// Typedefs
-//
-
 typedef struct _SECURITY_ATTRIBUTES {
     DWORD nLength;
     LPVOID lpSecurityDescriptor;
     BOOL bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 ]]
+end
 
 ffi.cdef[[
 typedef struct _OVERLAPPED {
@@ -60,6 +59,8 @@ typedef struct _FILETIME {
 ]]
 end
 
+if not _SYSTEMTIME_ then
+_SYSTEMTIME_ = true;
 ffi.cdef[[
 typedef struct _SYSTEMTIME {
     WORD wYear;
@@ -72,6 +73,7 @@ typedef struct _SYSTEMTIME {
     WORD wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 ]]
+end
 
 
 ffi.cdef[[

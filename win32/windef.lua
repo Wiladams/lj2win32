@@ -1,16 +1,16 @@
-
--- windef.h -- Basic Windows Type Definitions                                *
-if _WINDEF_ then
-    return;
-end
-
-_WINDEF_ = true;
-
 local ffi = require("ffi")
 
+-- windef.h -- Basic Windows Type Definitions                                *
+--if _WINDEF_ then
+--    return;
+--end
+print("==== WINDEF ====")
+_WINDEF_ = true;
 
-local minwindef = require("win32.minwindef")
-local winnt = require("win32.winnt")
+
+
+require("win32.minwindef")
+require("win32.winnt")
 
 local DECLARE_HANDLE = DECLARE_HANDLE
 
@@ -156,6 +156,7 @@ typedef enum DPI_AWARENESS {
 ]]
 
 --[[
+    -- BUGBUG
 -- Problem I'm having is handles are pointers, and they differ
 -- between 32-bit and 64-bit, so making them static const int doesn't
 -- quite work I think.

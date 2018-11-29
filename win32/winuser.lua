@@ -18,8 +18,8 @@ local wingdi = require("win32.wingdi")
 
 ffi.cdef[[
 typedef HANDLE HDWP;
-typedef VOID MENUTEMPLATEA;
-typedef VOID MENUTEMPLATEW;
+typedef void MENUTEMPLATEA;
+typedef void MENUTEMPLATEW;
 ]]
 if UNICODE then
 ffi.cdef[[
@@ -2769,7 +2769,7 @@ ffi.cdef[[
 /*
  * Defines for the fVirt field of the Accelerator table structure.
  */
-static const int FVIRTKEY = TRUE;          /* Assumed to be == TRUE */
+static const int FVIRTKEY = 1;          /* Assumed to be == TRUE */
 static const int FNOINVERT= 0x02;
 static const int FSHIFT   = 0x04;
 static const int FCONTROL = 0x08;

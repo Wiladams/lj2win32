@@ -1,85 +1,181 @@
 
--- minwindef.h -- Basic Windows Type Definitions for minwin partition        *
+
 local ffi = require("ffi")
 
-require("win32.intsafe")
+--#include <specstrings.h>
+--#include <winapifamily.h>
+
+--#pragma region Application Family or OneCore Family
+--#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+
+if not NO_STRICT then
+if not STRICT then
+STRICT  = 1
+end
+end -- NO_STRICT */
+
+-- Win32 defines _WIN32 automatically,
+-- but Macintosh doesn't, so if we are using
+-- Win32 Functions, we must do it here
 
 
-_WIN32 = (ffi.os == "Windows") -- and ffi.abi("64bit");
-WIN32 = _WIN32;
-
-
-
-ffi.cdef[[
-    typedef void *HANDLE;
-    typedef HANDLE *PHANDLE;
-]]
-
-function DECLARE_HANDLE(name) 
-    ffi.cdef(string.format("typedef HANDLE %s",name));
+if not WIN32 then
+_WIN32 = true
+WIN32 = true
 end
 
+_WIN64 = (ffi.os == "Windows") and ffi.abi("64bit");
 
-ffi.cdef[[
+--[[
 /*
  * BASETYPES is defined in ntdef.h if these types are already defined
  */
+--]]
 
+if not BASETYPES then
+BASETYPES = true
 
+ffi.cdef[[
+typedef unsigned long ULONG;
 typedef ULONG *PULONG;
+typedef unsigned short USHORT;
 typedef USHORT *PUSHORT;
+typedef unsigned char UCHAR;
 typedef UCHAR *PUCHAR;
-typedef char *PSZ;
+typedef char *PSZ;      // null terminated
+]]
+end  --/* !BASETYPES */
 
-
-static const int MAX_PATH = 260;
+ffi.cdef[[
+static const int MAX_PATH  =  260;
 ]]
 
+-- not really
+-- ffi.cdef[[
+-- typedef (void *) NULL;
+-- ]]
 
 --[[
+#ifndef FALSE
+#define FALSE               0
+#endif
+
+#ifndef TRUE
+#define TRUE                1
+#endif
+--]]
+
+--[[
+#ifndef IN
+#define IN
+#endif
+
+#ifndef OUT
+#define OUT
+#endif
+
+#ifndef OPTIONAL
+#define OPTIONAL
+#endif
+--]]
+
+--[[]
+#undef far
+#undef near
+#undef pascal
+
+#define far
+#define near
+
+#if (!defined(_MAC)) && ((_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED))
+#define pascal __stdcall
+#else
+#define pascal
+#endif
+
+#if defined(DOSWIN32) || defined(_MAC)
+#define cdecl _cdecl
+#ifndef CDECL
+#define CDECL _cdecl
+#endif
+#else
+#define cdecl
+#ifndef CDECL
+#define CDECL
+#endif
+#endif
+
+#ifdef _MAC
+#define CALLBACK    PASCAL
+#define WINAPI      CDECL
+#define WINAPIV     CDECL
+#define APIENTRY    WINAPI
+#define APIPRIVATE  CDECL
+#ifdef _68K_
+#define PASCAL      __pascal
+#else
+#define PASCAL
+#endif
+#elif (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
 #define APIENTRY    WINAPI
 #define APIPRIVATE  __stdcall
 #define PASCAL      __stdcall
+#else
+#define CALLBACK
+#define WINAPI
+#define WINAPIV
+#define APIENTRY    WINAPI
+#define APIPRIVATE
+#define PASCAL      pascal
+#endif
+
+#ifndef _M_CEE_PURE
+#ifndef WINAPI_INLINE
+#define WINAPI_INLINE  WINAPI
+#endif
+#endif
+
+#undef FAR
+#undef  NEAR
+#define FAR                 far
+#define NEAR                near
+#ifndef CONST
+#define CONST               const
+#endif
 --]]
 
-
 ffi.cdef[[
-typedef BYTE			BOOLEAN;
+typedef unsigned long       DWORD;
 typedef int                 BOOL;
+typedef unsigned char       BYTE;
+typedef unsigned short      WORD;
 typedef float               FLOAT;
-]]
-
-ffi.cdef[[
 typedef FLOAT               *PFLOAT;
-typedef BOOL                *PBOOL;
-typedef BOOL                *LPBOOL;
-typedef BYTE                *PBYTE;
-typedef BYTE                *LPBYTE;
-typedef int                 *PINT;
-typedef int                 *LPINT;
-typedef WORD                *PWORD;
-typedef WORD                *LPWORD;
-typedef long                *LPLONG;
-typedef DWORD               *PDWORD;
-typedef DWORD               *LPDWORD;
-typedef void                *LPVOID;
-typedef const void          *LPCVOID;
+typedef BOOL            *PBOOL;
+typedef BOOL             *LPBOOL;
+typedef BYTE            *PBYTE;
+typedef BYTE             *LPBYTE;
+typedef int             *PINT;
+typedef int              *LPINT;
+typedef WORD            *PWORD;
+typedef WORD             *LPWORD;
+typedef long             *LPLONG;
+typedef DWORD           *PDWORD;
+typedef DWORD            *LPDWORD;
+typedef void             *LPVOID;
+typedef const void       *LPCVOID;
 
+typedef int                 INT;
+typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
 ]]
 
-ffi.cdef[[
-typedef void            VOID;
-typedef void *			PVOID;
-]]
-
-
 if not NT_INCLUDED then
-require "win32.winnt"
-end
+require("win32.winnt")
+end -- /* NT_INCLUDED */
 
 ffi.cdef[[
 /* Types use for passing & returning polymorphic values */
@@ -88,39 +184,79 @@ typedef LONG_PTR            LPARAM;
 typedef LONG_PTR            LRESULT;
 ]]
 
+--[[
+#ifndef NOMINMAX
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+#endif  /* NOMINMAX */
+--]]
 
 --[[
-exports.MAKEWORD = function(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8)) end
-exports.MAKELONG = function(a, b)      ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xffff)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xffff))) << 16)) end
-exports.LOWORD = function(l)           ((WORD)(((DWORD_PTR)(l)) & 0xffff)) end
-exports.HIWORD = function(l)           ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff)) end
-exports.LOBYTE = function(w)           ((BYTE)(((DWORD_PTR)(w)) & 0xff)) end
-exports.HIBYTE = function(w)           ((BYTE)((((DWORD_PTR)(w)) >> 8) & 0xff)) end
+#define MAKEWORD(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
+#define MAKELONG(a, b)      ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xffff)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xffff))) << 16))
+#define LOWORD(l)           ((WORD)(((DWORD_PTR)(l)) & 0xffff))
+#define HIWORD(l)           ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
+#define LOBYTE(w)           ((BYTE)(((DWORD_PTR)(w)) & 0xff))
+#define HIBYTE(w)           ((BYTE)((((DWORD_PTR)(w)) >> 8) & 0xff))
 --]]
 
 ffi.cdef[[
-typedef HANDLE         *SPHANDLE;
-typedef HANDLE          *LPHANDLE;
-typedef HANDLE           HGLOBAL;
-typedef HANDLE           HLOCAL;
-typedef HANDLE           GLOBALHANDLE;
-typedef HANDLE           LOCALHANDLE;
+typedef HANDLE          *SPHANDLE;
+typedef HANDLE           *LPHANDLE;
+typedef HANDLE              HGLOBAL;
+typedef HANDLE              HLOCAL;
+typedef HANDLE              GLOBALHANDLE;
+typedef HANDLE              LOCALHANDLE;
 ]]
 
+
+if not _MANAGED then
+
+if _WIN64 then
 ffi.cdef[[
-
-typedef INT_PTR (__stdcall *FARPROC)(void);
-typedef INT_PTR (__stdcall *NEARPROC)(void);
-typedef INT_PTR (__stdcall *PROC)(void);
+typedef INT_PTR ( __stdcall *FARPROC)();
+typedef INT_PTR ( __stdcall *NEARPROC)();
+typedef INT_PTR (__stdcall *PROC)();
 ]]
+else
+ffi.cdef[[
+typedef int ( __stdcall *FARPROC)();
+typedef int ( __stdcall *NEARPROC)();
+typedef int ( __stdcall *PROC)();
+]]
+end  -- _WIN64
+
+
+
+else
+ffi.cdef[[
+typedef INT_PTR ( *FARPROC)(void);
+typedef INT_PTR ( *NEARPROC)(void);
+typedef INT_PTR ( *PROC)(void);
+]]
+end
+
 
 ffi.cdef[[
 typedef WORD                ATOM;   //BUGBUG - might want to remove this from minwin
 ]]
 
 DECLARE_HANDLE("HKEY");
+ffi.cdef[[
+typedef HKEY *PHKEY;
+]]
 DECLARE_HANDLE("HMETAFILE");
 DECLARE_HANDLE("HINSTANCE");
+ffi.cdef[[
+typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
+]]
 DECLARE_HANDLE("HRGN");
 DECLARE_HANDLE("HRSRC");
 DECLARE_HANDLE("HSPRITE");
@@ -130,24 +266,16 @@ DECLARE_HANDLE("HTASK");
 DECLARE_HANDLE("HWINSTA");
 DECLARE_HANDLE("HKL");
 
+if not _MAC then
 ffi.cdef[[
-typedef HKEY *PHKEY;
-typedef HINSTANCE HMODULE;      /* HMODULEs can be used in place of HINSTANCEs */
-]]
-
-
-if _MAC then
-ffi.cdef[[
-    typedef int HFILE;
+typedef int HFILE;
 ]]
 else
 ffi.cdef[[
-    typedef short HFILE;
+typedef short HFILE;
 ]]
 end
 
-if not _FILETIME_ then
-_FILETIME_ = true;
 
 ffi.cdef[[
 typedef struct _FILETIME {
@@ -155,5 +283,10 @@ typedef struct _FILETIME {
     DWORD dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
 ]]
+_FILETIME_ = true;
 
-end
+
+
+--#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+--#pragma endregion
+

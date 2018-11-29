@@ -7,7 +7,7 @@ local ffi = require("ffi")
 --[[
 require ("win32.basetsd")
 require ("win32.arch");
-
+--]]
 local wtypes = require ("win32.wtypes");
 
 local function test_DECLARE_HANDLE()
@@ -19,6 +19,6 @@ local function test_sizeof()
 print("sizeof(ULONG): ", ffi.sizeof("ULONG"))
 end
 
-test_DECLARE_HANDLE();
---]]
+--test_DECLARE_HANDLE();
+
 

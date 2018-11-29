@@ -15,9 +15,9 @@ Abstract:
 Revision History:
 --]]
 local ffi = require("ffi")
---require("win32.wtypes")
 
---local _WIN64 = ffi.os == "Windows" and ffi.abi("64bit");
+
+
 NT_INCLUDED = true;
 
 --[[
@@ -95,14 +95,18 @@ typedef void *  PVOID64;
 --#define NTAPI __stdcall
 --#define NTAPI_INLINE    NTAPI
 
+if not VOID then
 
 ffi.cdef[[
+typedef void VOID;
 typedef char CHAR;
 typedef short SHORT;
 typedef long LONG;
 typedef int INT;
 typedef uint16_t WCHAR;    // wc,   16-bit UNICODE character
 ]]
+VOID = ffi.typeof("VOID")
+end
 
 ffi.cdef[[
 typedef WCHAR *PWCHAR, *LPWCH, *PWCH;
@@ -195,6 +199,8 @@ if  UNICODE  then
         _TCHAR_DEFINED = true;
     end
 
+local __TEXT = false;
+
 ffi.cdef[[
 typedef LPWCH LPTCH, PTCH;
 typedef LPCWCH LPCTCH, PCTCH;
@@ -213,7 +219,7 @@ typedef PCNZWCH PCNZTCH;
 typedef PUNZWCH PUNZTCH;
 typedef PCUNZWCH PCUNZTCH;
 ]]
---#define __TEXT(quote) L##quote      // r_winnt
+--__TEXT = function (quote) L##quote      // r_winnt
 
 else   -- UNICODE 
     if not _TCHAR_DEFINED then
@@ -234,10 +240,10 @@ typedef PZPSTR PZPTSTR;
 typedef PNZCH PNZTCH, PUNZTCH;
 typedef PCNZCH PCNZTCH, PCUNZTCH;
 ]]
---#define __TEXT(quote) quote   
+__TEXT = function(quote) return quote end   
 end
 
---function TEXT(quote) return __TEXT(quote)  end
+TEXT = __TEXT
 
 ffi.cdef[[
 typedef SHORT *PSHORT;  
@@ -690,14 +696,18 @@ _rotr64 (
 #ifdef __cplusplus
 }
 #endif
+--]==]
 
+--[[
 #define ANSI_NULL ((CHAR)0)     
 #define UNICODE_NULL ((WCHAR)0) 
 #define UNICODE_STRING_MAX_BYTES ((WORD  ) 65534) 
 #define UNICODE_STRING_MAX_CHARS (32767) 
+--]]
+ffi.cdef[[
 typedef BYTE  BOOLEAN;           
 typedef BOOLEAN *PBOOLEAN; 
---]==]
+]]
 
 ffi.cdef[[
 //
