@@ -96,7 +96,6 @@ typedef void *  PVOID64;
 --#define NTAPI_INLINE    NTAPI
 
 if not VOID then
-
 ffi.cdef[[
 typedef void VOID;
 typedef char CHAR;
