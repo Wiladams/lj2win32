@@ -1169,7 +1169,7 @@ static const int ERROR_SUBST_TO_SUBST             139L
 //
 // The system tried to join a drive to a directory on a substituted drive.
 //
-static const int ERROR_JOIN_TO_SUBST              140L
+static const int ERROR_JOIN_TO_SUBST             = 140L
 
 //
 // MessageId: ERROR_SUBST_TO_JOIN
@@ -1178,7 +1178,7 @@ static const int ERROR_JOIN_TO_SUBST              140L
 //
 // The system tried to SUBST a drive to a directory on a joined drive.
 //
-static const int ERROR_SUBST_TO_JOIN              141L
+static const int ERROR_SUBST_TO_JOIN             = 141L
 
 //
 // MessageId: ERROR_BUSY_DRIVE
@@ -1187,7 +1187,7 @@ static const int ERROR_SUBST_TO_JOIN              141L
 //
 // The system cannot perform a JOIN or SUBST at this time.
 //
-static const int ERROR_BUSY_DRIVE                 142L
+static const int ERROR_BUSY_DRIVE                = 142L
 
 //
 // MessageId: ERROR_SAME_DRIVE
@@ -1196,7 +1196,7 @@ static const int ERROR_BUSY_DRIVE                 142L
 //
 // The system cannot join or substitute a drive to or for a directory on the same drive.
 //
-static const int ERROR_SAME_DRIVE                 143L
+static const int ERROR_SAME_DRIVE                = 143L
 
 //
 // MessageId: ERROR_DIR_NOT_ROOT
@@ -1205,7 +1205,7 @@ static const int ERROR_SAME_DRIVE                 143L
 //
 // The directory is not a subdirectory of the root directory.
 //
-static const int ERROR_DIR_NOT_ROOT               144L
+static const int ERROR_DIR_NOT_ROOT              = 144L
 
 //
 // MessageId: ERROR_DIR_NOT_EMPTY
@@ -1214,7 +1214,7 @@ static const int ERROR_DIR_NOT_ROOT               144L
 //
 // The directory is not empty.
 //
-static const int ERROR_DIR_NOT_EMPTY              145L
+static const int ERROR_DIR_NOT_EMPTY             = 145L
 
 //
 // MessageId: ERROR_IS_SUBST_PATH
@@ -1223,7 +1223,7 @@ static const int ERROR_DIR_NOT_EMPTY              145L
 //
 // The path specified is being used in a substitute.
 //
-static const int ERROR_IS_SUBST_PATH              146L
+static const int ERROR_IS_SUBST_PATH             = 146L
 
 //
 // MessageId: ERROR_IS_JOIN_PATH
@@ -1232,7 +1232,7 @@ static const int ERROR_IS_SUBST_PATH              146L
 //
 // Not enough resources are available to process this command.
 //
-static const int ERROR_IS_JOIN_PATH               147L
+static const int ERROR_IS_JOIN_PATH              = 147L
 
 //
 // MessageId: ERROR_PATH_BUSY
@@ -1241,7 +1241,7 @@ static const int ERROR_IS_JOIN_PATH               147L
 //
 // The path specified cannot be used at this time.
 //
-static const int ERROR_PATH_BUSY                  148L
+static const int ERROR_PATH_BUSY                 = 148L
 
 //
 // MessageId: ERROR_IS_SUBST_TARGET
@@ -1250,7 +1250,7 @@ static const int ERROR_PATH_BUSY                  148L
 //
 // An attempt was made to join or substitute a drive for which a directory on the drive is the target of a previous substitute.
 //
-static const int ERROR_IS_SUBST_TARGET            149L
+static const int ERROR_IS_SUBST_TARGET           = 149L
 
 //
 // MessageId: ERROR_SYSTEM_TRACE
@@ -1259,7 +1259,7 @@ static const int ERROR_IS_SUBST_TARGET            149L
 //
 // System trace information was not specified in your CONFIG.SYS file, or tracing is disallowed.
 //
-static const int ERROR_SYSTEM_TRACE               150L
+static const int ERROR_SYSTEM_TRACE              = 150L
 
 //
 // MessageId: ERROR_INVALID_EVENT_COUNT
@@ -1268,7 +1268,7 @@ static const int ERROR_SYSTEM_TRACE               150L
 //
 // The number of specified semaphore events for DosMuxSemWait is not correct.
 //
-static const int ERROR_INVALID_EVENT_COUNT        151L
+static const int ERROR_INVALID_EVENT_COUNT       = 151L
 
 //
 // MessageId: ERROR_TOO_MANY_MUXWAITERS
@@ -1277,7 +1277,7 @@ static const int ERROR_INVALID_EVENT_COUNT        151L
 //
 // DosMuxSemWait did not execute; too many semaphores are already set.
 //
-static const int ERROR_TOO_MANY_MUXWAITERS        152L
+static const int ERROR_TOO_MANY_MUXWAITERS       = 152L
 
 //
 // MessageId: ERROR_INVALID_LIST_FORMAT
@@ -1286,7 +1286,7 @@ static const int ERROR_TOO_MANY_MUXWAITERS        152L
 //
 // The DosMuxSemWait list is not correct.
 //
-static const int ERROR_INVALID_LIST_FORMAT        153L
+static const int ERROR_INVALID_LIST_FORMAT       = 153L
 
 //
 // MessageId: ERROR_LABEL_TOO_LONG
@@ -1295,7 +1295,7 @@ static const int ERROR_INVALID_LIST_FORMAT        153L
 //
 // The volume label you entered exceeds the label character limit of the target file system.
 //
-static const int ERROR_LABEL_TOO_LONG             154L
+static const int ERROR_LABEL_TOO_LONG            = 154L
 
 //
 // MessageId: ERROR_TOO_MANY_TCBS
@@ -1304,7 +1304,7 @@ static const int ERROR_LABEL_TOO_LONG             154L
 //
 // Cannot create another thread.
 //
-static const int ERROR_TOO_MANY_TCBS              155L
+static const int ERROR_TOO_MANY_TCBS             = 155L
 
 //
 // MessageId: ERROR_SIGNAL_REFUSED
@@ -1313,7 +1313,7 @@ static const int ERROR_TOO_MANY_TCBS              155L
 //
 // The recipient process has refused the signal.
 //
-static const int ERROR_SIGNAL_REFUSED             156L
+static const int ERROR_SIGNAL_REFUSED            = 156L
 
 //
 // MessageId: ERROR_DISCARDED
@@ -1322,7 +1322,7 @@ static const int ERROR_SIGNAL_REFUSED             156L
 //
 // The segment is already discarded and cannot be locked.
 //
-static const int ERROR_DISCARDED                  157L
+static const int ERROR_DISCARDED                 = 157L
 
 //
 // MessageId: ERROR_NOT_LOCKED
@@ -1331,7 +1331,7 @@ static const int ERROR_DISCARDED                  157L
 //
 // The segment is already unlocked.
 //
-static const int ERROR_NOT_LOCKED                 158L
+static const int ERROR_NOT_LOCKED                = 158L
 
 //
 // MessageId: ERROR_BAD_THREADID_ADDR
@@ -1340,7 +1340,7 @@ static const int ERROR_NOT_LOCKED                 158L
 //
 // The address for the thread ID is not correct.
 //
-static const int ERROR_BAD_THREADID_ADDR          159L
+static const int ERROR_BAD_THREADID_ADDR         = 159L
 
 //
 // MessageId: ERROR_BAD_ARGUMENTS
@@ -1349,7 +1349,7 @@ static const int ERROR_BAD_THREADID_ADDR          159L
 //
 // One or more arguments are not correct.
 //
-static const int ERROR_BAD_ARGUMENTS              160L
+static const int ERROR_BAD_ARGUMENTS             = 160L
 
 //
 // MessageId: ERROR_BAD_PATHNAME
@@ -1358,7 +1358,7 @@ static const int ERROR_BAD_ARGUMENTS              160L
 //
 // The specified path is invalid.
 //
-static const int ERROR_BAD_PATHNAME               161L
+static const int ERROR_BAD_PATHNAME              = 161L
 
 //
 // MessageId: ERROR_SIGNAL_PENDING
@@ -1367,7 +1367,7 @@ static const int ERROR_BAD_PATHNAME               161L
 //
 // A signal is already pending.
 //
-static const int ERROR_SIGNAL_PENDING             162L
+static const int ERROR_SIGNAL_PENDING            = 162L
 
 //
 // MessageId: ERROR_MAX_THRDS_REACHED
@@ -1376,7 +1376,7 @@ static const int ERROR_SIGNAL_PENDING             162L
 //
 // No more threads can be created in the system.
 //
-static const int ERROR_MAX_THRDS_REACHED          164L
+static const int ERROR_MAX_THRDS_REACHED         = 164L
 
 //
 // MessageId: ERROR_LOCK_FAILED
@@ -1385,7 +1385,7 @@ static const int ERROR_MAX_THRDS_REACHED          164L
 //
 // Unable to lock a region of a file.
 //
-static const int ERROR_LOCK_FAILED                167L
+static const int ERROR_LOCK_FAILED               = 167L
 
 //
 // MessageId: ERROR_BUSY
@@ -1394,7 +1394,7 @@ static const int ERROR_LOCK_FAILED                167L
 //
 // The requested resource is in use.
 //
-static const int ERROR_BUSY                       170L    // dderror
+static const int ERROR_BUSY                      = 170L    // dderror
 
 //
 // MessageId: ERROR_DEVICE_SUPPORT_IN_PROGRESS
@@ -1403,7 +1403,7 @@ static const int ERROR_BUSY                       170L    // dderror
 //
 // Device's command support detection is in progress.
 //
-static const int ERROR_DEVICE_SUPPORT_IN_PROGRESS 171L
+static const int ERROR_DEVICE_SUPPORT_IN_PROGRESS =171L
 
 //
 // MessageId: ERROR_CANCEL_VIOLATION
@@ -1412,7 +1412,7 @@ static const int ERROR_DEVICE_SUPPORT_IN_PROGRESS 171L
 //
 // A lock request was not outstanding for the supplied cancel region.
 //
-static const int ERROR_CANCEL_VIOLATION           173L
+static const int ERROR_CANCEL_VIOLATION          = 173L
 
 //
 // MessageId: ERROR_ATOMIC_LOCKS_NOT_SUPPORTED
@@ -1421,7 +1421,7 @@ static const int ERROR_CANCEL_VIOLATION           173L
 //
 // The file system does not support atomic changes to the lock type.
 //
-static const int ERROR_ATOMIC_LOCKS_NOT_SUPPORTED 174L
+static const int ERROR_ATOMIC_LOCKS_NOT_SUPPORTED =174L
 
 //
 // MessageId: ERROR_INVALID_SEGMENT_NUMBER
@@ -1430,7 +1430,7 @@ static const int ERROR_ATOMIC_LOCKS_NOT_SUPPORTED 174L
 //
 // The system detected a segment number that was not correct.
 //
-static const int ERROR_INVALID_SEGMENT_NUMBER     180L
+static const int ERROR_INVALID_SEGMENT_NUMBER    = 180L
 
 //
 // MessageId: ERROR_INVALID_ORDINAL
@@ -1439,7 +1439,7 @@ static const int ERROR_INVALID_SEGMENT_NUMBER     180L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_ORDINAL            182L
+static const int ERROR_INVALID_ORDINAL           = 182L
 
 //
 // MessageId: ERROR_ALREADY_EXISTS
@@ -1448,7 +1448,7 @@ static const int ERROR_INVALID_ORDINAL            182L
 //
 // Cannot create a file when that file already exists.
 //
-static const int ERROR_ALREADY_EXISTS             183L
+static const int ERROR_ALREADY_EXISTS            = 183L
 
 //
 // MessageId: ERROR_INVALID_FLAG_NUMBER
@@ -1457,7 +1457,7 @@ static const int ERROR_ALREADY_EXISTS             183L
 //
 // The flag passed is not correct.
 //
-static const int ERROR_INVALID_FLAG_NUMBER        186L
+static const int ERROR_INVALID_FLAG_NUMBER       = 186L
 
 //
 // MessageId: ERROR_SEM_NOT_FOUND
@@ -1466,7 +1466,7 @@ static const int ERROR_INVALID_FLAG_NUMBER        186L
 //
 // The specified system semaphore name was not found.
 //
-static const int ERROR_SEM_NOT_FOUND              187L
+static const int ERROR_SEM_NOT_FOUND             = 187L
 
 //
 // MessageId: ERROR_INVALID_STARTING_CODESEG
@@ -1475,7 +1475,7 @@ static const int ERROR_SEM_NOT_FOUND              187L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_STARTING_CODESEG   188L
+static const int ERROR_INVALID_STARTING_CODESEG  = 188L
 
 //
 // MessageId: ERROR_INVALID_STACKSEG
@@ -1484,7 +1484,7 @@ static const int ERROR_INVALID_STARTING_CODESEG   188L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_STACKSEG           189L
+static const int ERROR_INVALID_STACKSEG          = 189L
 
 //
 // MessageId: ERROR_INVALID_MODULETYPE
@@ -1493,7 +1493,7 @@ static const int ERROR_INVALID_STACKSEG           189L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_MODULETYPE         190L
+static const int ERROR_INVALID_MODULETYPE        = 190L
 
 //
 // MessageId: ERROR_INVALID_EXE_SIGNATURE
@@ -1502,7 +1502,7 @@ static const int ERROR_INVALID_MODULETYPE         190L
 //
 // Cannot run %1 in Win32 mode.
 //
-static const int ERROR_INVALID_EXE_SIGNATURE      191L
+static const int ERROR_INVALID_EXE_SIGNATURE     = 191L
 
 //
 // MessageId: ERROR_EXE_MARKED_INVALID
@@ -1511,7 +1511,7 @@ static const int ERROR_INVALID_EXE_SIGNATURE      191L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_EXE_MARKED_INVALID         192L
+static const int ERROR_EXE_MARKED_INVALID        = 192L
 
 //
 // MessageId: ERROR_BAD_EXE_FORMAT
@@ -1520,7 +1520,7 @@ static const int ERROR_EXE_MARKED_INVALID         192L
 //
 // %1 is not a valid Win32 application.
 //
-static const int ERROR_BAD_EXE_FORMAT             193L
+static const int ERROR_BAD_EXE_FORMAT            = 193L
 
 //
 // MessageId: ERROR_ITERATED_DATA_EXCEEDS_64k
@@ -1529,7 +1529,7 @@ static const int ERROR_BAD_EXE_FORMAT             193L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_ITERATED_DATA_EXCEEDS_64k  194L
+static const int ERROR_ITERATED_DATA_EXCEEDS_64k = 194L
 
 //
 // MessageId: ERROR_INVALID_MINALLOCSIZE
@@ -1538,7 +1538,7 @@ static const int ERROR_ITERATED_DATA_EXCEEDS_64k  194L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_MINALLOCSIZE       195L
+static const int ERROR_INVALID_MINALLOCSIZE      = 195L
 
 //
 // MessageId: ERROR_DYNLINK_FROM_INVALID_RING
@@ -1547,7 +1547,7 @@ static const int ERROR_INVALID_MINALLOCSIZE       195L
 //
 // The operating system cannot run this application program.
 //
-static const int ERROR_DYNLINK_FROM_INVALID_RING  196L
+static const int ERROR_DYNLINK_FROM_INVALID_RING = 196L
 
 //
 // MessageId: ERROR_IOPL_NOT_ENABLED
@@ -1556,7 +1556,7 @@ static const int ERROR_DYNLINK_FROM_INVALID_RING  196L
 //
 // The operating system is not presently configured to run this application.
 //
-static const int ERROR_IOPL_NOT_ENABLED           197L
+static const int ERROR_IOPL_NOT_ENABLED          = 197L
 
 //
 // MessageId: ERROR_INVALID_SEGDPL
@@ -1565,7 +1565,7 @@ static const int ERROR_IOPL_NOT_ENABLED           197L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INVALID_SEGDPL             198L
+static const int ERROR_INVALID_SEGDPL            = 198L
 
 //
 // MessageId: ERROR_AUTODATASEG_EXCEEDS_64k
@@ -1574,7 +1574,7 @@ static const int ERROR_INVALID_SEGDPL             198L
 //
 // The operating system cannot run this application program.
 //
-static const int ERROR_AUTODATASEG_EXCEEDS_64k    199L
+static const int ERROR_AUTODATASEG_EXCEEDS_64k   = 199L
 
 //
 // MessageId: ERROR_RING2SEG_MUST_BE_MOVABLE
@@ -1583,7 +1583,7 @@ static const int ERROR_AUTODATASEG_EXCEEDS_64k    199L
 //
 // The code segment cannot be greater than or equal to 64K.
 //
-static const int ERROR_RING2SEG_MUST_BE_MOVABLE   200L
+static const int ERROR_RING2SEG_MUST_BE_MOVABLE  = 200L
 
 //
 // MessageId: ERROR_RELOC_CHAIN_XEEDS_SEGLIM
@@ -1592,7 +1592,7 @@ static const int ERROR_RING2SEG_MUST_BE_MOVABLE   200L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_RELOC_CHAIN_XEEDS_SEGLIM   201L
+static const int ERROR_RELOC_CHAIN_XEEDS_SEGLIM  = 201L
 
 //
 // MessageId: ERROR_INFLOOP_IN_RELOC_CHAIN
@@ -1601,7 +1601,7 @@ static const int ERROR_RELOC_CHAIN_XEEDS_SEGLIM   201L
 //
 // The operating system cannot run %1.
 //
-static const int ERROR_INFLOOP_IN_RELOC_CHAIN     202L
+static const int ERROR_INFLOOP_IN_RELOC_CHAIN    = 202L
 
 //
 // MessageId: ERROR_ENVVAR_NOT_FOUND
@@ -1610,7 +1610,7 @@ static const int ERROR_INFLOOP_IN_RELOC_CHAIN     202L
 //
 // The system could not find the environment option that was entered.
 //
-static const int ERROR_ENVVAR_NOT_FOUND           203L
+static const int ERROR_ENVVAR_NOT_FOUND          = 203L
 
 //
 // MessageId: ERROR_NO_SIGNAL_SENT
@@ -1619,7 +1619,7 @@ static const int ERROR_ENVVAR_NOT_FOUND           203L
 //
 // No process in the command subtree has a signal handler.
 //
-static const int ERROR_NO_SIGNAL_SENT             205L
+static const int ERROR_NO_SIGNAL_SENT            = 205L
 
 //
 // MessageId: ERROR_FILENAME_EXCED_RANGE
@@ -1628,7 +1628,7 @@ static const int ERROR_NO_SIGNAL_SENT             205L
 //
 // The filename or extension is too long.
 //
-static const int ERROR_FILENAME_EXCED_RANGE       206L
+static const int ERROR_FILENAME_EXCED_RANGE      = 206L
 
 //
 // MessageId: ERROR_RING2_STACK_IN_USE
@@ -1637,7 +1637,7 @@ static const int ERROR_FILENAME_EXCED_RANGE       206L
 //
 // The ring 2 stack is in use.
 //
-static const int ERROR_RING2_STACK_IN_USE         207L
+static const int ERROR_RING2_STACK_IN_USE        = 207L
 
 //
 // MessageId: ERROR_META_EXPANSION_TOO_LONG
@@ -1646,7 +1646,7 @@ static const int ERROR_RING2_STACK_IN_USE         207L
 //
 // The global filename characters, * or ?, are entered incorrectly or too many global filename characters are specified.
 //
-static const int ERROR_META_EXPANSION_TOO_LONG    208L
+static const int ERROR_META_EXPANSION_TOO_LONG   = 208L
 
 //
 // MessageId: ERROR_INVALID_SIGNAL_NUMBER
@@ -1655,7 +1655,7 @@ static const int ERROR_META_EXPANSION_TOO_LONG    208L
 //
 // The signal being posted is not correct.
 //
-static const int ERROR_INVALID_SIGNAL_NUMBER      209L
+static const int ERROR_INVALID_SIGNAL_NUMBER     = 209L
 
 //
 // MessageId: ERROR_THREAD_1_INACTIVE
@@ -1664,7 +1664,7 @@ static const int ERROR_INVALID_SIGNAL_NUMBER      209L
 //
 // The signal handler cannot be set.
 //
-static const int ERROR_THREAD_1_INACTIVE          210L
+static const int ERROR_THREAD_1_INACTIVE         = 210L
 
 //
 // MessageId: ERROR_LOCKED
@@ -1673,7 +1673,7 @@ static const int ERROR_THREAD_1_INACTIVE          210L
 //
 // The segment is locked and cannot be reallocated.
 //
-static const int ERROR_LOCKED                     212L
+static const int ERROR_LOCKED                    = 212L
 
 //
 // MessageId: ERROR_TOO_MANY_MODULES
@@ -1682,7 +1682,7 @@ static const int ERROR_LOCKED                     212L
 //
 // Too many dynamic-link modules are attached to this program or dynamic-link module.
 //
-static const int ERROR_TOO_MANY_MODULES           214L
+static const int ERROR_TOO_MANY_MODULES          = 214L
 
 //
 // MessageId: ERROR_NESTING_NOT_ALLOWED
@@ -1691,7 +1691,7 @@ static const int ERROR_TOO_MANY_MODULES           214L
 //
 // Cannot nest calls to LoadModule.
 //
-static const int ERROR_NESTING_NOT_ALLOWED        215L
+static const int ERROR_NESTING_NOT_ALLOWED       = 215L
 
 //
 // MessageId: ERROR_EXE_MACHINE_TYPE_MISMATCH
@@ -1700,7 +1700,7 @@ static const int ERROR_NESTING_NOT_ALLOWED        215L
 //
 // This version of %1 is not compatible with the version of Windows you're running. Check your computer's system information and then contact the software publisher.
 //
-static const int ERROR_EXE_MACHINE_TYPE_MISMATCH  216L
+static const int ERROR_EXE_MACHINE_TYPE_MISMATCH  =216L
 
 //
 // MessageId: ERROR_EXE_CANNOT_MODIFY_SIGNED_BINARY
@@ -1709,7 +1709,7 @@ static const int ERROR_EXE_MACHINE_TYPE_MISMATCH  216L
 //
 // The image file %1 is signed, unable to modify.
 //
-static const int ERROR_EXE_CANNOT_MODIFY_SIGNED_BINARY 217L
+static const int ERROR_EXE_CANNOT_MODIFY_SIGNED_BINARY =217L
 
 //
 // MessageId: ERROR_EXE_CANNOT_MODIFY_STRONG_SIGNED_BINARY
@@ -1718,7 +1718,7 @@ static const int ERROR_EXE_CANNOT_MODIFY_SIGNED_BINARY 217L
 //
 // The image file %1 is strong signed, unable to modify.
 //
-static const int ERROR_EXE_CANNOT_MODIFY_STRONG_SIGNED_BINARY 218L
+static const int ERROR_EXE_CANNOT_MODIFY_STRONG_SIGNED_BINARY =218L
 
 //
 // MessageId: ERROR_FILE_CHECKED_OUT
@@ -1727,7 +1727,7 @@ static const int ERROR_EXE_CANNOT_MODIFY_STRONG_SIGNED_BINARY 218L
 //
 // This file is checked out or locked for editing by another user.
 //
-static const int ERROR_FILE_CHECKED_OUT           220L
+static const int ERROR_FILE_CHECKED_OUT          = 220L
 
 //
 // MessageId: ERROR_CHECKOUT_REQUIRED
@@ -1736,7 +1736,7 @@ static const int ERROR_FILE_CHECKED_OUT           220L
 //
 // The file must be checked out before saving changes.
 //
-static const int ERROR_CHECKOUT_REQUIRED          221L
+static const int ERROR_CHECKOUT_REQUIRED         = 221L
 
 //
 // MessageId: ERROR_BAD_FILE_TYPE
@@ -1745,7 +1745,7 @@ static const int ERROR_CHECKOUT_REQUIRED          221L
 //
 // The file type being saved or retrieved has been blocked.
 //
-static const int ERROR_BAD_FILE_TYPE              222L
+static const int ERROR_BAD_FILE_TYPE            =  222L
 
 //
 // MessageId: ERROR_FILE_TOO_LARGE
@@ -1754,7 +1754,7 @@ static const int ERROR_BAD_FILE_TYPE              222L
 //
 // The file size exceeds the limit allowed and cannot be saved.
 //
-static const int ERROR_FILE_TOO_LARGE             223L
+static const int ERROR_FILE_TOO_LARGE            = 223L
 
 //
 // MessageId: ERROR_FORMS_AUTH_REQUIRED
@@ -1763,7 +1763,7 @@ static const int ERROR_FILE_TOO_LARGE             223L
 //
 // Access Denied. Before opening files in this location, you must first add the web site to your trusted sites list, browse to the web site, and select the option to login automatically.
 //
-static const int ERROR_FORMS_AUTH_REQUIRED        224L
+static const int ERROR_FORMS_AUTH_REQUIRED       = 224L
 
 //
 // MessageId: ERROR_VIRUS_INFECTED
@@ -1772,7 +1772,7 @@ static const int ERROR_FORMS_AUTH_REQUIRED        224L
 //
 // Operation did not complete successfully because the file contains a virus or potentially unwanted software.
 //
-static const int ERROR_VIRUS_INFECTED             225L
+static const int ERROR_VIRUS_INFECTED            = 225L
 
 //
 // MessageId: ERROR_VIRUS_DELETED
@@ -1781,7 +1781,7 @@ static const int ERROR_VIRUS_INFECTED             225L
 //
 // This file contains a virus or potentially unwanted software and cannot be opened. Due to the nature of this virus or potentially unwanted software, the file has been removed from this location.
 //
-static const int ERROR_VIRUS_DELETED              226L
+static const int ERROR_VIRUS_DELETED             = 226L
 
 //
 // MessageId: ERROR_PIPE_LOCAL
@@ -1790,7 +1790,7 @@ static const int ERROR_VIRUS_DELETED              226L
 //
 // The pipe is local.
 //
-static const int ERROR_PIPE_LOCAL                 229L
+static const int ERROR_PIPE_LOCAL                = 229L
 
 //
 // MessageId: ERROR_BAD_PIPE
@@ -1799,7 +1799,7 @@ static const int ERROR_PIPE_LOCAL                 229L
 //
 // The pipe state is invalid.
 //
-static const int ERROR_BAD_PIPE                   230L
+static const int ERROR_BAD_PIPE                  = 230L
 
 //
 // MessageId: ERROR_PIPE_BUSY
@@ -1808,7 +1808,7 @@ static const int ERROR_BAD_PIPE                   230L
 //
 // All pipe instances are busy.
 //
-static const int ERROR_PIPE_BUSY                  231L
+static const int ERROR_PIPE_BUSY                 = 231L
 
 //
 // MessageId: ERROR_NO_DATA
@@ -1817,7 +1817,7 @@ static const int ERROR_PIPE_BUSY                  231L
 //
 // The pipe is being closed.
 //
-static const int ERROR_NO_DATA                    232L
+static const int ERROR_NO_DATA                   = 232L
 
 //
 // MessageId: ERROR_PIPE_NOT_CONNECTED
@@ -1826,7 +1826,7 @@ static const int ERROR_NO_DATA                    232L
 //
 // No process is on the other end of the pipe.
 //
-static const int ERROR_PIPE_NOT_CONNECTED         233L
+static const int ERROR_PIPE_NOT_CONNECTED        = 233L
 
 //
 // MessageId: ERROR_MORE_DATA
@@ -1835,7 +1835,7 @@ static const int ERROR_PIPE_NOT_CONNECTED         233L
 //
 // More data is available.
 //
-static const int ERROR_MORE_DATA                  234L    // dderror
+static const int ERROR_MORE_DATA                 = 234L    // dderror
 
 //
 // MessageId: ERROR_NO_WORK_DONE
@@ -1844,7 +1844,7 @@ static const int ERROR_MORE_DATA                  234L    // dderror
 //
 // The action requested resulted in no work being done. Error-style clean-up has been performed.
 //
-static const int ERROR_NO_WORK_DONE               235L
+static const int ERROR_NO_WORK_DONE              = 235L
 
 //
 // MessageId: ERROR_VC_DISCONNECTED
@@ -1853,7 +1853,7 @@ static const int ERROR_NO_WORK_DONE               235L
 //
 // The session was canceled.
 //
-static const int ERROR_VC_DISCONNECTED            240L
+static const int ERROR_VC_DISCONNECTED           = 240L
 
 //
 // MessageId: ERROR_INVALID_EA_NAME
@@ -1862,7 +1862,7 @@ static const int ERROR_VC_DISCONNECTED            240L
 //
 // The specified extended attribute name was invalid.
 //
-static const int ERROR_INVALID_EA_NAME            254L
+static const int ERROR_INVALID_EA_NAME           = 254L
 
 //
 // MessageId: ERROR_EA_LIST_INCONSISTENT
@@ -1871,7 +1871,7 @@ static const int ERROR_INVALID_EA_NAME            254L
 //
 // The extended attributes are inconsistent.
 //
-static const int ERROR_EA_LIST_INCONSISTENT       255L
+static const int ERROR_EA_LIST_INCONSISTENT      = 255L
 
 //
 // MessageId: WAIT_TIMEOUT
@@ -1880,7 +1880,7 @@ static const int ERROR_EA_LIST_INCONSISTENT       255L
 //
 // The wait operation timed out.
 //
-static const int WAIT_TIMEOUT                     258L    // dderror
+static const int WAIT_TIMEOUT                    = 258L    // dderror
 --]=]
 
 ffi.cdef[[
@@ -1902,7 +1902,7 @@ static const int ERROR_NO_MORE_ITEMS             = 259L;
 //
 // The copy functions cannot be used.
 //
-static const int ERROR_CANNOT_COPY                266L
+static const int ERROR_CANNOT_COPY               = 266L
 
 //
 // MessageId: ERROR_DIRECTORY
@@ -1911,7 +1911,7 @@ static const int ERROR_CANNOT_COPY                266L
 //
 // The directory name is invalid.
 //
-static const int ERROR_DIRECTORY                  267L
+static const int ERROR_DIRECTORY                 = 267L
 
 //
 // MessageId: ERROR_EAS_DIDNT_FIT
@@ -1920,7 +1920,7 @@ static const int ERROR_DIRECTORY                  267L
 //
 // The extended attributes did not fit in the buffer.
 //
-static const int ERROR_EAS_DIDNT_FIT              275L
+static const int ERROR_EAS_DIDNT_FIT             = 275L
 
 //
 // MessageId: ERROR_EA_FILE_CORRUPT
@@ -1929,7 +1929,7 @@ static const int ERROR_EAS_DIDNT_FIT              275L
 //
 // The extended attribute file on the mounted file system is corrupt.
 //
-static const int ERROR_EA_FILE_CORRUPT            276L
+static const int ERROR_EA_FILE_CORRUPT           = 276L
 
 //
 // MessageId: ERROR_EA_TABLE_FULL
@@ -1938,7 +1938,7 @@ static const int ERROR_EA_FILE_CORRUPT            276L
 //
 // The extended attribute table file is full.
 //
-static const int ERROR_EA_TABLE_FULL              277L
+static const int ERROR_EA_TABLE_FULL             = 277L
 
 //
 // MessageId: ERROR_INVALID_EA_HANDLE
@@ -1947,7 +1947,7 @@ static const int ERROR_EA_TABLE_FULL              277L
 //
 // The specified extended attribute handle is invalid.
 //
-static const int ERROR_INVALID_EA_HANDLE          278L
+static const int ERROR_INVALID_EA_HANDLE         = 278L
 
 //
 // MessageId: ERROR_EAS_NOT_SUPPORTED
@@ -1956,7 +1956,7 @@ static const int ERROR_INVALID_EA_HANDLE          278L
 //
 // The mounted file system does not support extended attributes.
 //
-static const int ERROR_EAS_NOT_SUPPORTED          282L
+static const int ERROR_EAS_NOT_SUPPORTED         = 282L
 
 //
 // MessageId: ERROR_NOT_OWNER
@@ -1965,7 +1965,7 @@ static const int ERROR_EAS_NOT_SUPPORTED          282L
 //
 // Attempt to release mutex not owned by caller.
 //
-static const int ERROR_NOT_OWNER                  288L
+static const int ERROR_NOT_OWNER                =  288L
 
 //
 // MessageId: ERROR_TOO_MANY_POSTS

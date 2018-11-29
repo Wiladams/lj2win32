@@ -102,14 +102,6 @@ if _68K or _MPPC
 end
 end
 
-if defined (_MSC_VER)
-if ( _MSC_VER >= 800 )
-if not __cplusplus
-#pragma warning(disable:4116)       /* TYPE_ALIGNMENT generates this - move it */
-                                    /* outside the warning push/pop scope. */
-end
-end
-end
 --]]
 
 --[[
