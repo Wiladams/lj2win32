@@ -482,10 +482,9 @@ GetDriveTypeW(
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
---[=[
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef struct _WIN32_FILE_ATTRIBUTE_DATA {
     DWORD dwFileAttributes;
     FILETIME ftCreationTime;
@@ -508,20 +507,23 @@ __stdcall
 GetFileAttributesW(
      LPCWSTR lpFileName
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define GetFileAttributes  GetFileAttributesW
 #else
 #define GetFileAttributes  GetFileAttributesA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetFileAttributesExA(
      LPCSTR lpFileName,
      GET_FILEEX_INFO_LEVELS fInfoLevelId,
-    _Out_writes_bytes_(sizeof(WIN32_FILE_ATTRIBUTE_DATA)) LPVOID lpFileInformation
+     LPVOID lpFileInformation
     );
 
 
@@ -530,21 +532,23 @@ __stdcall
 GetFileAttributesExW(
      LPCWSTR lpFileName,
      GET_FILEEX_INFO_LEVELS fInfoLevelId,
-    _Out_writes_bytes_(sizeof(WIN32_FILE_ATTRIBUTE_DATA)) LPVOID lpFileInformation
+     LPVOID lpFileInformation
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define GetFileAttributesEx  GetFileAttributesExW
 #else
 #define GetFileAttributesEx  GetFileAttributesExA
 #endif // !UNICODE
-
+--]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
-
+ffi.cdef[[
 typedef struct _BY_HANDLE_FILE_INFORMATION {
     DWORD dwFileAttributes;
     FILETIME ftCreationTime;
@@ -574,15 +578,15 @@ GetFileSize(
      HANDLE hFile,
      LPDWORD lpFileSizeHigh
     );
+]]
+
+end --// WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 
-#endif // WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetFileSizeEx(
@@ -597,16 +601,16 @@ __stdcall
 GetFileType(
      HANDLE hFile
     );
+]]
 
+--#if (_WIN32_WINNT >= 0x0600)
 
-#if (_WIN32_WINNT >= 0x0600)
-
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetFinalPathNameByHandleA(
      HANDLE hFile,
-    _Out_writes_(cchFilePath) LPSTR lpszFilePath,
+     LPSTR lpszFilePath,
      DWORD cchFilePath,
      DWORD dwFlags
     );
@@ -616,20 +620,23 @@ DWORD
 __stdcall
 GetFinalPathNameByHandleW(
      HANDLE hFile,
-    _Out_writes_(cchFilePath) LPWSTR lpszFilePath,
+     LPWSTR lpszFilePath,
      DWORD cchFilePath,
      DWORD dwFlags
     );
+]]
 
+
+--[[
 #ifdef UNICODE
 #define GetFinalPathNameByHandle  GetFinalPathNameByHandleW
 #else
 #define GetFinalPathNameByHandle  GetFinalPathNameByHandleA
 #endif // !UNICODE
+--]]
+--#endif // (_WIN32_WINNT >= 0x0600)
 
-#endif // (_WIN32_WINNT >= 0x0600)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetFileTime(
@@ -641,44 +648,47 @@ GetFileTime(
 
 
 
-_Success_(return != 0 && return < nBufferLength)
+
 DWORD
 __stdcall
 GetFullPathNameW(
      LPCWSTR lpFileName,
      DWORD nBufferLength,
      LPWSTR lpBuffer,
-    _Outptr_opt_ LPWSTR* lpFilePart
+     LPWSTR* lpFilePart
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define GetFullPathName  GetFullPathNameW
 #endif
+--]]
 
-
-_Success_(return != 0 && return < nBufferLength)
+ffi.cdef[[
 DWORD
 __stdcall
 GetFullPathNameA(
      LPCSTR lpFileName,
      DWORD nBufferLength,
      LPSTR lpBuffer,
-    _Outptr_opt_ LPSTR* lpFilePart
+     LPSTR* lpFilePart
     );
+]]
 
-
+--[[
 #ifndef UNICODE
 #define GetFullPathName GetFullPathNameA
 #endif
+--]]
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetLogicalDrives(
     VOID
     );
-
+]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -686,55 +696,56 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetLogicalDriveStringsW(
      DWORD nBufferLength,
      LPWSTR lpBuffer
     );
-
-
+]]
+--[[
 #ifdef UNICODE
 #define GetLogicalDriveStrings  GetLogicalDriveStringsW
 #endif
+--]]
 
-
-_Success_(return != 0 && return < cchBuffer)
+ffi.cdef[[
 DWORD
 __stdcall
 GetLongPathNameA(
      LPCSTR lpszShortPath,
-    _Out_writes_to_opt_(cchBuffer,return + 1) LPSTR lpszLongPath,
+    LPSTR lpszLongPath,
      DWORD cchBuffer
     );
-
-
+]]
+--[[
 #ifndef UNICODE
 #define GetLongPathName GetLongPathNameA
 #endif
+--]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
 
-_Success_(return != 0 && return < cchBuffer)
+ffi.cdef[[
 DWORD
 __stdcall
 GetLongPathNameW(
      LPCWSTR lpszShortPath,
-    _Out_writes_to_opt_(cchBuffer,return + 1) LPWSTR lpszLongPath,
+     LPWSTR lpszLongPath,
      DWORD cchBuffer
     );
-
-
+]]
+--[[
 #ifdef UNICODE
 #define GetLongPathName GetLongPathNameW
 #endif
-
+--]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
@@ -742,27 +753,28 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
 
-_Success_(return != 0 && return < cchBuffer)
+ffi.cdef[[
 DWORD
 __stdcall
 GetShortPathNameW(
      LPCWSTR lpszLongPath,
-    _Out_writes_to_opt_(cchBuffer,return + 1) LPWSTR lpszShortPath,
+     LPWSTR lpszShortPath,
      DWORD cchBuffer
     );
-
-
+]]
+--[[
 #ifdef UNICODE
 #define GetShortPathName  GetShortPathNameW
 #endif
+--]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+ffi.cdef[[
 UINT
 __stdcall
 GetTempFileNameW(
@@ -771,21 +783,21 @@ GetTempFileNameW(
      UINT uUnique,
      LPWSTR lpTempFileName
     );
-
-
+]]
+--[[
 #ifdef UNICODE
 #define GetTempFileName  GetTempFileNameW
 #endif
-
+--]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-#if (_WIN32_WINNT >= 0x0600)
+--#if (_WIN32_WINNT >= 0x0600)
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetVolumeInformationByHandleW(
@@ -798,16 +810,16 @@ GetVolumeInformationByHandleW(
      LPWSTR lpFileSystemNameBuffer,
      DWORD nFileSystemNameSize
     );
+]]
 
-
-#endif /* _WIN32_WINNT >=  0x0600 */
+--#endif /* _WIN32_WINNT >=  0x0600 */
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+ffi.cdef[[
 BOOL
 __stdcall
 GetVolumeInformationW(
@@ -820,11 +832,12 @@ GetVolumeInformationW(
      LPWSTR lpFileSystemNameBuffer,
      DWORD nFileSystemNameSize
     );
-
-
+]]
+--[[
 #ifdef UNICODE
 #define GetVolumeInformation  GetVolumeInformationW
 #endif
+--]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -832,7 +845,7 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetVolumePathNameW(
@@ -840,19 +853,20 @@ GetVolumePathNameW(
      LPWSTR lpszVolumePathName,
      DWORD cchBufferLength
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define GetVolumePathName  GetVolumePathNameW
 #endif
-
+--]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+ffi.cdef[[
 BOOL
 __stdcall
 LocalFileTimeToFileTime(
@@ -884,7 +898,7 @@ LockFileEx(
      DWORD nNumberOfBytesToLockHigh,
      LPOVERLAPPED lpOverlapped
     );
-
+]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -892,51 +906,52 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 QueryDosDeviceW(
      LPCWSTR lpDeviceName,
-    _Out_writes_to_opt_(ucchMax,return) LPWSTR lpTargetPath,
+     LPWSTR lpTargetPath,
      DWORD ucchMax
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define QueryDosDevice  QueryDosDeviceW
 #endif
-
+--]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
 
-_Must_inspect_result_
+ffi.cdef[[
 BOOL
 __stdcall
 ReadFile(
      HANDLE hFile,
-    _Out_writes_bytes_to_opt_(nNumberOfBytesToRead, *lpNumberOfBytesRead) __out_data_source(FILE) LPVOID lpBuffer,
+      LPVOID lpBuffer,
      DWORD nNumberOfBytesToRead,
      LPDWORD lpNumberOfBytesRead,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped
+     LPOVERLAPPED lpOverlapped
     );
 
 
 
-_Must_inspect_result_
+
 BOOL
 __stdcall
 ReadFileEx(
      HANDLE hFile,
-    _Out_writes_bytes_opt_(nNumberOfBytesToRead) __out_data_source(FILE) LPVOID lpBuffer,
+      LPVOID lpBuffer,
      DWORD nNumberOfBytesToRead,
      LPOVERLAPPED lpOverlapped,
      LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
-
+]]
     
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -945,7 +960,7 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
 
-_Must_inspect_result_
+ffi.cdef[[
 BOOL
 __stdcall
 ReadFileScatter(
@@ -955,15 +970,15 @@ ReadFileScatter(
      LPDWORD lpReserved,
      LPOVERLAPPED lpOverlapped
     );
+]]
+
+end --// WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 
-#endif // WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 RemoveDirectoryA(
@@ -976,14 +991,17 @@ __stdcall
 RemoveDirectoryW(
      LPCWSTR lpPathName
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define RemoveDirectory  RemoveDirectoryW
 #else
 #define RemoveDirectory  RemoveDirectoryA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetEndOfFile(
@@ -1006,35 +1024,37 @@ SetFileAttributesW(
      LPCWSTR lpFileName,
      DWORD dwFileAttributes
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define SetFileAttributes  SetFileAttributesW
 #else
 #define SetFileAttributes  SetFileAttributesA
 #endif // !UNICODE
+--]]
+--#if (_WIN32_WINNT >= 0x0600)
 
-#if (_WIN32_WINNT >= 0x0600)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetFileInformationByHandle(
      HANDLE hFile,
      FILE_INFO_BY_HANDLE_CLASS FileInformationClass,
-    _In_reads_bytes_(dwBufferSize) LPVOID lpFileInformation,
+     LPVOID lpFileInformation,
      DWORD dwBufferSize
     );
+]]
 
+--#endif
 
-#endif
-
-
+ffi.cdef[[
 DWORD
 __stdcall
 SetFilePointer(
      HANDLE hFile,
      LONG lDistanceToMove,
-    _Inout_opt_ PLONG lpDistanceToMoveHigh,
+     PLONG lpDistanceToMoveHigh,
      DWORD dwMoveMethod
     );
 
@@ -1059,7 +1079,7 @@ SetFileTime(
      const FILETIME* lpLastAccessTime,
      const FILETIME* lpLastWriteTime
     );
-
+]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -1067,26 +1087,26 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-#if _WIN32_WINNT >= 0x0501
+--#if _WIN32_WINNT >= 0x0501
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetFileValidData(
      HANDLE hFile,
      LONGLONG ValidDataLength
     );
+]]
 
-
-#endif // (_WIN32_WINNT >= 0x0501)
+--#endif // (_WIN32_WINNT >= 0x0501)
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+ffi.cdef[[
 BOOL
 __stdcall
 UnlockFile(
@@ -1115,10 +1135,10 @@ BOOL
 __stdcall
 WriteFile(
      HANDLE hFile,
-    _In_reads_bytes_opt_(nNumberOfBytesToWrite) LPCVOID lpBuffer,
+     LPCVOID lpBuffer,
      DWORD nNumberOfBytesToWrite,
      LPDWORD lpNumberOfBytesWritten,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped
+     LPOVERLAPPED lpOverlapped
     );
 
 
@@ -1127,12 +1147,12 @@ BOOL
 __stdcall
 WriteFileEx(
      HANDLE hFile,
-    _In_reads_bytes_opt_(nNumberOfBytesToWrite) LPCVOID lpBuffer,
+     LPCVOID lpBuffer,
      DWORD nNumberOfBytesToWrite,
      LPOVERLAPPED lpOverlapped,
      LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
-
+]]
     
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -1140,7 +1160,7 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 WriteFileGather(
@@ -1150,10 +1170,10 @@ WriteFileGather(
      LPDWORD lpReserved,
      LPOVERLAPPED lpOverlapped
     );
-
+]]
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
---]=]
+
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
