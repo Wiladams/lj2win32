@@ -7,7 +7,7 @@ Abstract:
 
 --]]
 
---require("win32.sdkddkver")
+require("win32.sdkddkver")
 
 if not _INC_WINDOWS then
 _INC_WINDOWS = true
@@ -94,12 +94,6 @@ if not _68K and not _MPPC and not _X86 and not _M_IX86) and not _AMD64 and not _
 if not _IA64
  _IA64_ = true
 end /* !_IA64_ */
-end
-
-if not _MAC
-if _68K or _MPPC
- _MAC = true
-end
 end
 
 --]]
