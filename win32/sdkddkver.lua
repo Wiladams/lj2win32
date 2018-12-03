@@ -182,7 +182,7 @@ function SUBVER(Version) return tonumber(band(Version , SUBVERSION_MASK) ) end
 -- if versions are not already defined, default to most current
 
 
-local function NTDDI_VERSION_FROM_WIN32_WINNT2(ver)    return ver * 10000 end -- ver##0000
+local function NTDDI_VERSION_FROM_WIN32_WINNT2(ver)    return lshift(ver,16) end -- ver##0000
 local function NTDDI_VERSION_FROM_WIN32_WINNT(ver)     return NTDDI_VERSION_FROM_WIN32_WINNT2(ver) end
 
 if _WIN32_WINNT == nil and _CHICAGO_ == nil then
@@ -213,62 +213,61 @@ if not WINVER then
     end
 end
 
---[[
-#ifndef _WIN32_IE
-#ifdef _WIN32_WINNT
-// set _WIN32_IE based on _WIN32_WINNT
-#if (_WIN32_WINNT <= _WIN32_WINNT_NT4)
-#define _WIN32_IE       _WIN32_IE_IE50
-#elif (_WIN32_WINNT <= _WIN32_WINNT_WIN2K)
-#define _WIN32_IE       _WIN32_IE_IE501
-#elif (_WIN32_WINNT <= _WIN32_WINNT_WINXP)
-#define _WIN32_IE       _WIN32_IE_IE60
-#elif (_WIN32_WINNT <= _WIN32_WINNT_WS03)
-#define _WIN32_IE       _WIN32_IE_WS03
-#elif (_WIN32_WINNT <= _WIN32_WINNT_VISTA)
-#define _WIN32_IE       _WIN32_IE_LONGHORN
-#elif (_WIN32_WINNT <= _WIN32_WINNT_WIN7)
-#define _WIN32_IE       _WIN32_IE_WIN7
-#elif (_WIN32_WINNT <= _WIN32_WINNT_WIN8)
-#define _WIN32_IE       _WIN32_IE_WIN8
-#else
-#define _WIN32_IE       0x0A00
-#endif
-#else
-#define _WIN32_IE       0x0A00
-#endif
-#endif
 
-//
-// Sanity check for compatible versions
-//
-#if defined(_WIN32_WINNT) && !defined(MIDL_PASS) && !defined(RC_INVOKED)
+if not _WIN32_IE then
+    if _WIN32_WINNT then
+        if  (_WIN32_WINNT <= _WIN32_WINNT_NT4) then
+            _WIN32_IE     =  _WIN32_IE_IE50
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_WIN2K) then
+            _WIN32_IE     =  _WIN32_IE_IE501
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_WINXP) then
+            _WIN32_IE     =  _WIN32_IE_IE60
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_WS03) then
+            _WIN32_IE     =  _WIN32_IE_WS03
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_VISTA) then
+            _WIN32_IE     =  _WIN32_IE_LONGHORN
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_WIN7) then
+            _WIN32_IE     =  _WIN32_IE_WIN7
+        elseif (_WIN32_WINNT <= _WIN32_WINNT_WIN8) then
+            _WIN32_IE    =   _WIN32_IE_WIN8
+        else
+            _WIN32_IE   =    0x0A00
+        end
+    else
+        _WIN32_IE  =     0x0A00
+    end
+end
 
-#if (defined(WINVER) && (WINVER < 0x0400) && (_WIN32_WINNT > 0x0400))
-#error WINVER setting conflicts with _WIN32_WINNT setting
-#endif
 
-#if (((OSVERSION_MASK & NTDDI_VERSION) == NTDDI_WIN2K) && (_WIN32_WINNT != _WIN32_WINNT_WIN2K))
-#error NTDDI_VERSION setting conflicts with _WIN32_WINNT setting
-#endif
+-- Sanity check for compatible versions
 
-#if (((OSVERSION_MASK & NTDDI_VERSION) == NTDDI_WINXP) && (_WIN32_WINNT != _WIN32_WINNT_WINXP))
-#error NTDDI_VERSION setting conflicts with _WIN32_WINNT setting
-#endif
+if _WIN32_WINNT and not MIDL_PASS and not RC_INVOKED then
 
-#if (((OSVERSION_MASK & NTDDI_VERSION) == NTDDI_WS03) && (_WIN32_WINNT != _WIN32_WINNT_WS03))
-#error NTDDI_VERSION setting conflicts with _WIN32_WINNT setting
-#endif
+    if (WINVER and (WINVER < 0x0400) and (_WIN32_WINNT > 0x0400)) then
+        error("WINVER setting conflicts with _WIN32_WINNT setting")
+    end
 
-#if (((OSVERSION_MASK & NTDDI_VERSION) == NTDDI_VISTA) && (_WIN32_WINNT != _WIN32_WINNT_VISTA))
-#error NTDDI_VERSION setting conflicts with _WIN32_WINNT setting
-#endif
+    if ((band(OSVERSION_MASK , NTDDI_VERSION) == NTDDI_WIN2K) and (_WIN32_WINNT ~= _WIN32_WINNT_WIN2K)) then
+        error("NTDDI_VERSION setting conflicts with _WIN32_WINNT setting")
+    end
 
-#if ((_WIN32_WINNT < _WIN32_WINNT_WIN2K) && (_WIN32_IE > _WIN32_IE_IE60SP1))
-#error _WIN32_WINNT settings conflicts with _WIN32_IE setting
-#endif
+    if ((band(OSVERSION_MASK , NTDDI_VERSION) == NTDDI_WINXP) and (_WIN32_WINNT ~= _WIN32_WINNT_WINXP)) then
+        error("NTDDI_VERSION setting conflicts with _WIN32_WINNT setting")
+    end
 
-#endif  // defined(_WIN32_WINNT) && !defined(MIDL_PASS) && !defined(_WINRESRC_)
---]]
+    if ((band(OSVERSION_MASK , NTDDI_VERSION) == NTDDI_WS03) and (_WIN32_WINNT ~= _WIN32_WINNT_WS03)) then
+        error("NTDDI_VERSION setting conflicts with _WIN32_WINNT setting")
+    end
+
+    if ((band(OSVERSION_MASK , NTDDI_VERSION) == NTDDI_VISTA) and (_WIN32_WINNT ~= _WIN32_WINNT_VISTA)) then
+        error("NTDDI_VERSION setting conflicts with _WIN32_WINNT setting")
+    end
+
+    if ((_WIN32_WINNT < _WIN32_WINNT_WIN2K) and (_WIN32_IE > _WIN32_IE_IE60SP1)) then
+        error("_WIN32_WINNT settings conflicts with _WIN32_IE setting")
+    end
+
+end  -- defined(_WIN32_WINNT) and !defined(MIDL_PASS) and !defined(_WINRESRC_)
+
 
 
