@@ -1,16 +1,9 @@
-
-
 --[[
-Abstract:
-
     Master include file for Windows applications.
-
 --]]
 
+local ffi = require("ffi")
 require("win32.sdkddkver")
-
-if not _INC_WINDOWS then
-_INC_WINDOWS = true
 
 
 --[[
@@ -111,7 +104,7 @@ require("win32.wingdi")
 require("win32.winuser")
 
 if not _MAC or _WIN32NLS then
-require("win32.winnls")         -- NYI
+require("win32.winnls")
 end
 
 if not _MAC then
@@ -120,14 +113,16 @@ require("win32.winver")
 end
 
 if not _MAC or _WIN32REG then
-require("win32.winreg")
+--require("win32.winreg")     -- NYI
 end
 
 if not _MAC then
 require("win32.winnetwk")
 end
 
+
 if not WIN32_LEAN_AND_MEAN then
+--[=[
 require("win32.cderr")
 require("win32.dde")
 require("win32.ddeml")
@@ -160,13 +155,13 @@ if not NOGDI then
     end --/* !MAC */
     require("win32.commdlg")
 end -- !NOGDI
-
+--]=]
 end -- WIN32_LEAN_AND_MEAN
 
-require("win32.stralign")
+--require("win32.stralign")
 
 if _MAC then
-require("win32.winwlm")
+--require("win32.winwlm")   -- NYI
 end
 
 
@@ -189,10 +184,5 @@ require("win32.imm")
 end -- NOIME
 
 end  -- !_MAC
-
-
-
-
-end -- _INC_WINDOWS
 
 
