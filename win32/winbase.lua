@@ -12,7 +12,7 @@ require("win32.minwinbase")
 require("win32.processenv")
 require("win32.fileapi")            -- NYI
 --require("win32.debugapi")           -- dbghelp
---require("win32.utilapiset")         -- experimental util.lua
+require("win32.utilapiset")
 require("win32.handleapi")
 require("win32.errhandlingapi")
 --require("win32.fibersapi")          -- NYI
