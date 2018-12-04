@@ -127,17 +127,21 @@ require("win32.cderr")
 require("win32.dde")
 require("win32.ddeml")
 require("win32.dlgs")
+
 if not _MAC then
 require("win32.lzexpand")
 require("win32.mmsystem")
 require("win32.nb30")
 require("win32.rpc")
 end    -- _MAC
+
 require("win32.shellapi")
+
 if not _MAC then
 require("win32.winperf")
 require("win32.winsock")
 end -- _MAC
+
 if not NOCRYPT then
 require("win32.wincrypt")
 require("win32.winefs")

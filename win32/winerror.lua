@@ -28457,12 +28457,16 @@ static const int ERROR_API_UNAVAILABLE            15841L
 //
 // Create an HRESULT value from component pieces
 //
+--]=]
 
-#define MAKE_HRESULT(sev,fac,code) \
-    ((HRESULT) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code))) )
-#define MAKE_SCODE(sev,fac,code) \
-    ((SCODE) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code))) )
+function MAKE_HRESULT(sev,fac,code) 
+    return ffi.cast("HRESULT", bor(lshift((unsigned long)sev,31) , lshift(ffi.cast("unsigned long",fac),16) , ffi.cast("unsigned long",code)) )
+end
 
+--[=[
+function MAKE_SCODE(sev,fac,code) 
+    return ffi.cast("SCODE", ((ffi.cast("unsigned long",sev)<<31) | (ffi.cast("unsigned long",fac)<<16) | ffi.cast("unsigned long",code)) )
+end
 
 //
 // Map a WIN32 error value into a HRESULT

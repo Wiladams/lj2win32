@@ -42,24 +42,24 @@ require("win32.winapifamily")
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) then
 ffi.cdef[[
-typedef interface IDWriteTextFormat IDWriteTextFormat;
-typedef interface IDWriteTextLayout IDWriteTextLayout;
-typedef interface IDWriteRenderingParams IDWriteRenderingParams;
-typedef interface IDXGISurface IDXGISurface;
-typedef interface IWICBitmap IWICBitmap;
-typedef interface IWICBitmapSource IWICBitmapSource;
+typedef struct IDWriteTextFormat IDWriteTextFormat;
+typedef struct IDWriteTextLayout IDWriteTextLayout;
+typedef struct IDWriteRenderingParams IDWriteRenderingParams;
+typedef struct IDXGISurface IDXGISurface;
+typedef struct IWICBitmap IWICBitmap;
+typedef struct IWICBitmapSource IWICBitmapSource;
 
 typedef struct DWRITE_GLYPH_RUN DWRITE_GLYPH_RUN;
 
 
 
-typedef interface ID2D1Factory ID2D1Factory;
-typedef interface ID2D1RenderTarget ID2D1RenderTarget;
-typedef interface ID2D1BitmapRenderTarget ID2D1BitmapRenderTarget;
-typedef interface ID2D1SimplifiedGeometrySink ID2D1SimplifiedGeometrySink;;
-typedef interface ID2D1TessellationSink ID2D1TessellationSink;
-typedef interface ID2D1Geometry ID2D1Geometry;
-typedef interface ID2D1Brush ID2D1Brush;
+typedef struct ID2D1Factory ID2D1Factory;
+typedef struct ID2D1RenderTarget ID2D1RenderTarget;
+typedef struct ID2D1BitmapRenderTarget ID2D1BitmapRenderTarget;
+typedef struct ID2D1SimplifiedGeometrySink ID2D1SimplifiedGeometrySink;;
+typedef struct ID2D1TessellationSink ID2D1TessellationSink;
+typedef struct ID2D1Geometry ID2D1Geometry;
+typedef struct ID2D1Brush ID2D1Brush;
 ]]
         
 --D2D1_INVALID_TAG = ULONGLONG_MAX;
@@ -3566,57 +3566,57 @@ if D2D_USE_C_DEFINITIONS then
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) then
 ffi.cdef[[
-typedef interface ID2D1Resource ID2D1Resource;
+typedef struct ID2D1Resource ID2D1Resource;
 
-typedef interface ID2D1Image ID2D1Image;
+typedef struct ID2D1Image ID2D1Image;
 
-typedef interface ID2D1Bitmap ID2D1Bitmap;
+typedef struct ID2D1Bitmap ID2D1Bitmap;
 
-typedef interface ID2D1GradientStopCollection ID2D1GradientStopCollection;
+typedef struct ID2D1GradientStopCollection ID2D1GradientStopCollection;
 
-typedef interface ID2D1Brush ID2D1Brush;
+typedef struct ID2D1Brush ID2D1Brush;
 
-typedef interface ID2D1BitmapBrush ID2D1BitmapBrush;
+typedef struct ID2D1BitmapBrush ID2D1BitmapBrush;
 
-typedef interface ID2D1SolidColorBrush ID2D1SolidColorBrush;
+typedef struct ID2D1SolidColorBrush ID2D1SolidColorBrush;
 
-typedef interface ID2D1LinearGradientBrush ID2D1LinearGradientBrush;
+typedef struct ID2D1LinearGradientBrush ID2D1LinearGradientBrush;
 
-typedef interface ID2D1RadialGradientBrush ID2D1RadialGradientBrush;
+typedef struct ID2D1RadialGradientBrush ID2D1RadialGradientBrush;
 
-typedef interface ID2D1StrokeStyle ID2D1StrokeStyle;
+typedef struct ID2D1StrokeStyle ID2D1StrokeStyle;
 
-typedef interface ID2D1Geometry ID2D1Geometry;
+typedef struct ID2D1Geometry ID2D1Geometry;
 
-typedef interface ID2D1RectangleGeometry ID2D1RectangleGeometry;
+typedef struct ID2D1RectangleGeometry ID2D1RectangleGeometry;
 
-typedef interface ID2D1RoundedRectangleGeometry ID2D1RoundedRectangleGeometry;
+typedef struct ID2D1RoundedRectangleGeometry ID2D1RoundedRectangleGeometry;
 
-typedef interface ID2D1EllipseGeometry ID2D1EllipseGeometry;
+typedef struct ID2D1EllipseGeometry ID2D1EllipseGeometry;
 
-typedef interface ID2D1GeometryGroup ID2D1GeometryGroup;
+typedef struct ID2D1GeometryGroup ID2D1GeometryGroup;
 
-typedef interface ID2D1TransformedGeometry ID2D1TransformedGeometry;
+typedef struct ID2D1TransformedGeometry ID2D1TransformedGeometry;
 
-typedef interface ID2D1SimplifiedGeometrySink ID2D1SimplifiedGeometrySink;
+typedef struct ID2D1SimplifiedGeometrySink ID2D1SimplifiedGeometrySink;
 
-typedef interface ID2D1GeometrySink ID2D1GeometrySink;
+typedef struct ID2D1GeometrySink ID2D1GeometrySink;
 
-typedef interface ID2D1TessellationSink ID2D1TessellationSink;
+typedef struct ID2D1TessellationSink ID2D1TessellationSink;
 
-typedef interface ID2D1PathGeometry ID2D1PathGeometry;
+typedef struct ID2D1PathGeometry ID2D1PathGeometry;
 
-typedef interface ID2D1Mesh ID2D1Mesh;
+typedef struct ID2D1Mesh ID2D1Mesh;
 
-typedef interface ID2D1Layer ID2D1Layer;
+typedef struct ID2D1Layer ID2D1Layer;
 
-typedef interface ID2D1DrawingStateBlock ID2D1DrawingStateBlock;
+typedef struct ID2D1DrawingStateBlock ID2D1DrawingStateBlock;
 
-typedef interface ID2D1RenderTarget ID2D1RenderTarget;
+typedef struct ID2D1RenderTarget ID2D1RenderTarget;
 
-typedef interface ID2D1BitmapRenderTarget ID2D1BitmapRenderTarget;
+typedef struct ID2D1BitmapRenderTarget ID2D1BitmapRenderTarget;
 
-typedef interface ID2D1HwndRenderTarget ID2D1HwndRenderTarget;
+typedef struct ID2D1HwndRenderTarget ID2D1HwndRenderTarget;
 ]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
@@ -3624,7 +3624,7 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 ffi.cdef[[
-typedef interface ID2D1GdiInteropRenderTarget ID2D1GdiInteropRenderTarget;
+typedef struct ID2D1GdiInteropRenderTarget ID2D1GdiInteropRenderTarget;
 ]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -3632,9 +3632,9 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) then
 ffi.cdef[[
-typedef interface ID2D1DCRenderTarget ID2D1DCRenderTarget;
+typedef struct ID2D1DCRenderTarget ID2D1DCRenderTarget;
 
-typedef interface ID2D1Factory ID2D1Factory;
+typedef struct ID2D1Factory ID2D1Factory;
 ]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
