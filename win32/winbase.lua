@@ -2473,13 +2473,13 @@ SetMailslotInfo(
 // File Encryption API
 //
 
-WINADVAPI
+
 BOOL
 WINAPI
 EncryptFileA(
     _In_ LPCSTR lpFileName
     );
-WINADVAPI
+
 BOOL
 WINAPI
 EncryptFileW(
@@ -2491,14 +2491,14 @@ EncryptFileW(
 #define EncryptFile  EncryptFileA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 DecryptFileA(
     _In_       LPCSTR lpFileName,
     _Reserved_ DWORD dwReserved
     );
-WINADVAPI
+
 BOOL
 WINAPI
 DecryptFileW(
@@ -2526,14 +2526,14 @@ DecryptFileW(
 #define FILE_READ_ONLY                  8
 #define FILE_DIR_DISALLOWED             9
 
-WINADVAPI
+
 BOOL
 WINAPI
 FileEncryptionStatusA(
     _In_  LPCSTR lpFileName,
     _Out_ LPDWORD  lpStatus
     );
-WINADVAPI
+
 BOOL
 WINAPI
 FileEncryptionStatusW(
@@ -2580,7 +2580,7 @@ DWORD
 #define EFS_DROP_ALTERNATE_STREAMS      (0x10)
 
 
-WINADVAPI
+
 DWORD
 WINAPI
 OpenEncryptedFileRawA(
@@ -2588,7 +2588,7 @@ OpenEncryptedFileRawA(
     _In_        ULONG    ulFlags,
     _Outptr_ PVOID   *pvContext
     );
-WINADVAPI
+
 DWORD
 WINAPI
 OpenEncryptedFileRawW(
@@ -2602,7 +2602,7 @@ OpenEncryptedFileRawW(
 #define OpenEncryptedFileRaw  OpenEncryptedFileRawA
 #endif // !UNICODE
 
-WINADVAPI
+
 DWORD
 WINAPI
 ReadEncryptedFileRaw(
@@ -2611,7 +2611,7 @@ ReadEncryptedFileRaw(
     _In_     PVOID           pvContext
     );
 
-WINADVAPI
+
 DWORD
 WINAPI
 WriteEncryptedFileRaw(
@@ -2620,7 +2620,7 @@ WriteEncryptedFileRaw(
     _In_     PVOID           pvContext
     );
 
-WINADVAPI
+
 VOID
 WINAPI
 CloseEncryptedFileRaw(
@@ -2857,7 +2857,7 @@ _llseek(
     _In_ int iOrigin
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 IsTextUnicode(
@@ -6033,14 +6033,14 @@ GetFileBandwidthReservation(
 // Event logging APIs
 //
 
-WINADVAPI
+
 BOOL
 WINAPI
 ClearEventLogA (
     _In_     HANDLE hEventLog,
     _In_opt_ LPCSTR lpBackupFileName
     );
-WINADVAPI
+
 BOOL
 WINAPI
 ClearEventLogW (
@@ -6053,14 +6053,14 @@ ClearEventLogW (
 #define ClearEventLog  ClearEventLogA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 BackupEventLogA (
     _In_ HANDLE hEventLog,
     _In_ LPCSTR lpBackupFileName
     );
-WINADVAPI
+
 BOOL
 WINAPI
 BackupEventLogW (
@@ -6073,21 +6073,21 @@ BackupEventLogW (
 #define BackupEventLog  BackupEventLogA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 CloseEventLog (
     _In_ HANDLE hEventLog
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 DeregisterEventSource (
     _In_ HANDLE hEventLog
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 NotifyChangeEventLog(
@@ -6095,7 +6095,7 @@ NotifyChangeEventLog(
     _In_ HANDLE  hEvent
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetNumberOfEventLogRecords (
@@ -6103,7 +6103,7 @@ GetNumberOfEventLogRecords (
     _Out_ PDWORD NumberOfRecords
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetOldestEventLogRecord (
@@ -6111,14 +6111,14 @@ GetOldestEventLogRecord (
     _Out_ PDWORD OldestRecord
     );
 
-WINADVAPI
+
 HANDLE
 WINAPI
 OpenEventLogA (
     _In_opt_ LPCSTR lpUNCServerName,
     _In_     LPCSTR lpSourceName
     );
-WINADVAPI
+
 HANDLE
 WINAPI
 OpenEventLogW (
@@ -6131,14 +6131,14 @@ OpenEventLogW (
 #define OpenEventLog  OpenEventLogA
 #endif // !UNICODE
 
-WINADVAPI
+
 HANDLE
 WINAPI
 RegisterEventSourceA (
     _In_opt_ LPCSTR lpUNCServerName,
     _In_     LPCSTR lpSourceName
     );
-WINADVAPI
+
 HANDLE
 WINAPI
 RegisterEventSourceW (
@@ -6151,14 +6151,14 @@ RegisterEventSourceW (
 #define RegisterEventSource  RegisterEventSourceA
 #endif // !UNICODE
 
-WINADVAPI
+
 HANDLE
 WINAPI
 OpenBackupEventLogA (
     _In_opt_ LPCSTR lpUNCServerName,
     _In_     LPCSTR lpFileName
     );
-WINADVAPI
+
 HANDLE
 WINAPI
 OpenBackupEventLogW (
@@ -6171,7 +6171,7 @@ OpenBackupEventLogW (
 #define OpenBackupEventLog  OpenBackupEventLogA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 ReadEventLogA (
@@ -6183,7 +6183,7 @@ ReadEventLogA (
     _Out_ DWORD      *pnBytesRead,
     _Out_ DWORD      *pnMinNumberOfBytesNeeded
     );
-WINADVAPI
+
 BOOL
 WINAPI
 ReadEventLogW (
@@ -6201,7 +6201,7 @@ ReadEventLogW (
 #define ReadEventLog  ReadEventLogA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 ReportEventA (
@@ -6215,7 +6215,7 @@ ReportEventA (
     _In_reads_opt_(wNumStrings) LPCSTR *lpStrings,
     _In_reads_bytes_opt_(dwDataSize) LPVOID lpRawData
     );
-WINADVAPI
+
 BOOL
 WINAPI
 ReportEventW (
@@ -6244,7 +6244,7 @@ typedef struct _EVENTLOG_FULL_INFORMATION
 }
 EVENTLOG_FULL_INFORMATION, *LPEVENTLOG_FULL_INFORMATION;
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetEventLogInformation (
@@ -6288,14 +6288,14 @@ typedef struct _OPERATION_END_PARAMETERS {
 
 #define OPERATION_END_DISCARD                   0x1
 
-WINADVAPI
+
 BOOL
 WINAPI
 OperationStart (
     _In_ OPERATION_START_PARAMETERS* OperationStartParams
     );
 
-WINADVAPI
+
 BOOL
 WINAPI
 OperationEnd (
@@ -6310,7 +6310,7 @@ OperationEnd (
 //
 
 
-WINADVAPI
+
 BOOL
 WINAPI
 AccessCheckAndAuditAlarmA (
@@ -6332,7 +6332,7 @@ AccessCheckAndAuditAlarmA (
 
 #if(_WIN32_WINNT >= 0x0500)
 
-WINADVAPI
+
 BOOL
 WINAPI
 AccessCheckByTypeAndAuditAlarmA (
@@ -6357,7 +6357,7 @@ AccessCheckByTypeAndAuditAlarmA (
 #define AccessCheckByTypeAndAuditAlarm  AccessCheckByTypeAndAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 AccessCheckByTypeResultListAndAuditAlarmA (
@@ -6382,7 +6382,7 @@ AccessCheckByTypeResultListAndAuditAlarmA (
 #define AccessCheckByTypeResultListAndAuditAlarm  AccessCheckByTypeResultListAndAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 AccessCheckByTypeResultListAndAuditAlarmByHandleA (
@@ -6409,7 +6409,7 @@ AccessCheckByTypeResultListAndAuditAlarmByHandleA (
 #endif
 #endif //(_WIN32_WINNT >= 0x0500)
 
-WINADVAPI
+
 BOOL
 WINAPI
 ObjectOpenAuditAlarmA (
@@ -6430,7 +6430,7 @@ ObjectOpenAuditAlarmA (
 #define ObjectOpenAuditAlarm  ObjectOpenAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 ObjectPrivilegeAuditAlarmA (
@@ -6445,7 +6445,7 @@ ObjectPrivilegeAuditAlarmA (
 #define ObjectPrivilegeAuditAlarm  ObjectPrivilegeAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 ObjectCloseAuditAlarmA (
@@ -6457,7 +6457,7 @@ ObjectCloseAuditAlarmA (
 #define ObjectCloseAuditAlarm  ObjectCloseAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 ObjectDeleteAuditAlarmA (
@@ -6469,7 +6469,7 @@ ObjectDeleteAuditAlarmA (
 #define ObjectDeleteAuditAlarm  ObjectDeleteAuditAlarmA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 PrivilegedServiceAuditAlarmA (
@@ -6484,7 +6484,7 @@ PrivilegedServiceAuditAlarmA (
 #endif
 
 #if(_WIN32_WINNT >= 0x0601)
-WINADVAPI
+
 BOOL
 WINAPI
 AddConditionalAce (
@@ -6505,7 +6505,7 @@ AddConditionalAce (
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINADVAPI
+
 BOOL
 WINAPI
 SetFileSecurityA (
@@ -6517,7 +6517,7 @@ SetFileSecurityA (
 #define SetFileSecurity  SetFileSecurityA
 #endif
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetFileSecurityA (
@@ -6659,7 +6659,7 @@ IsBadStringPtrW(
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidA(
@@ -6671,7 +6671,7 @@ LookupAccountSidA(
     _Inout_ LPDWORD cchReferencedDomainName,
     _Out_ PSID_NAME_USE peUse
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidW(
@@ -6689,7 +6689,7 @@ LookupAccountSidW(
 #define LookupAccountSid  LookupAccountSidA
 #endif // !UNICODE
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameA(
@@ -6701,7 +6701,7 @@ LookupAccountNameA(
     _Inout_  LPDWORD cchReferencedDomainName,
     _Out_    PSID_NAME_USE peUse
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameW(
@@ -6727,7 +6727,7 @@ LookupAccountNameW(
 
 #if _WIN32_WINNT >= 0x0601
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameLocalA(
@@ -6738,7 +6738,7 @@ LookupAccountNameLocalA(
     _Inout_  LPDWORD cchReferencedDomainName,
     _Out_    PSID_NAME_USE peUse
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameLocalW(
@@ -6755,7 +6755,7 @@ LookupAccountNameLocalW(
 #define LookupAccountNameLocal  LookupAccountNameLocalA
 #endif // !UNICODE
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidLocalA(
@@ -6766,7 +6766,7 @@ LookupAccountSidLocalA(
     _Inout_ LPDWORD cchReferencedDomainName,
     _Out_ PSID_NAME_USE peUse
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidLocalW(
@@ -6813,7 +6813,7 @@ LookupAccountSidLocalW(
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINADVAPI
+
 BOOL
 WINAPI
 LookupPrivilegeValueA(
@@ -6821,7 +6821,7 @@ LookupPrivilegeValueA(
     _In_     LPCSTR lpName,
     _Out_    PLUID   lpLuid
     );
-WINADVAPI
+
 BOOL
 WINAPI
 LookupPrivilegeValueW(
@@ -6835,7 +6835,7 @@ LookupPrivilegeValueW(
 #define LookupPrivilegeValue  LookupPrivilegeValueA
 #endif // !UNICODE
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeNameA(
@@ -6844,7 +6844,7 @@ LookupPrivilegeNameA(
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR lpName,
     _Inout_  LPDWORD cchName
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeNameW(
@@ -6859,7 +6859,7 @@ LookupPrivilegeNameW(
 #define LookupPrivilegeName  LookupPrivilegeNameA
 #endif // !UNICODE
 
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeDisplayNameA(
@@ -6869,7 +6869,7 @@ LookupPrivilegeDisplayNameA(
     _Inout_  LPDWORD cchDisplayName,
     _Out_    LPDWORD lpLanguageId
     );
-WINADVAPI
+
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeDisplayNameW(
@@ -7068,14 +7068,14 @@ DnsHostnameToComputerNameW (
 
 #endif // _WIN32_WINNT
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetUserNameA (
     _Out_writes_to_opt_(*pcbBuffer, *pcbBuffer) LPSTR lpBuffer,
     _Inout_ LPDWORD pcbBuffer
     );
-WINADVAPI
+
 BOOL
 WINAPI
 GetUserNameW (
@@ -7116,7 +7116,7 @@ GetUserNameW (
 
 
 
-WINADVAPI
+
 BOOL
 WINAPI
 LogonUserA (
@@ -7127,7 +7127,7 @@ LogonUserA (
     _In_        DWORD dwLogonProvider,
     _Outptr_ PHANDLE phToken
     );
-WINADVAPI
+
 BOOL
 WINAPI
 LogonUserW (
@@ -7144,7 +7144,7 @@ LogonUserW (
 #define LogonUser  LogonUserA
 #endif // !UNICODE
 
-WINADVAPI
+
 BOOL
 WINAPI
 LogonUserExA (
@@ -7159,7 +7159,7 @@ LogonUserExA (
     _Out_opt_       LPDWORD pdwProfileLength,
     _Out_opt_       PQUOTA_LIMITS pQuotaLimits
     );
-WINADVAPI
+
 BOOL
 WINAPI
 LogonUserExW (
@@ -7201,7 +7201,7 @@ LogonUserExW (
 #define LOGON_ZERO_PASSWORD_BUFFER      0x80000000
 
 //@[comment("MVI_tracked")]
-WINADVAPI
+
 _Must_inspect_result_ BOOL
 WINAPI
 CreateProcessWithLogonW(
@@ -7218,7 +7218,7 @@ CreateProcessWithLogonW(
     _Out_       LPPROCESS_INFORMATION lpProcessInformation
       );
 
-WINADVAPI
+
 _Must_inspect_result_ BOOL
 WINAPI
 CreateProcessWithTokenW(
@@ -7235,7 +7235,7 @@ CreateProcessWithTokenW(
 
 #endif // (_WIN32_WINNT >= 0x0500)
 
-WINADVAPI
+
 BOOL
 WINAPI
 IsTokenUntrusted(
@@ -7532,13 +7532,13 @@ typedef LPHW_PROFILE_INFOA LPHW_PROFILE_INFO;
 #endif // UNICODE
 
 
-WINADVAPI
+
 BOOL
 WINAPI
 GetCurrentHwProfileA (
     _Out_ LPHW_PROFILE_INFOA  lpHwProfileInfo
     );
-WINADVAPI
+
 BOOL
 WINAPI
 GetCurrentHwProfileW (

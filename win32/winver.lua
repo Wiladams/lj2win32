@@ -1,3 +1,5 @@
+local ffi = require("ffi")
+
 require("win32.winapifamily")
 
 --[[
@@ -23,7 +25,7 @@ require("win32.verrsrc")
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-if not RC_INVOKED              --/* RC doesn't need to see the rest of this */
+if not RC_INVOKED   then           --/* RC doesn't need to see the rest of this */
 
 ffi.cdef[[
 /* ----- Function prototypes ----- */
@@ -106,7 +108,7 @@ VerInstallFileW(
 #endif // !UNICODE
 --]]
 
-end // RC_INVOKED
+end -- RC_INVOKED
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 

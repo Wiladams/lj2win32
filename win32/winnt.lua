@@ -468,9 +468,12 @@ typedef struct _LUID {
 } LUID, *PLUID;
 ]]
 
---#define _DWORDLONG_
---typedef ULONGLONG  DWORDLONG;
---typedef DWORDLONG *PDWORDLONG;
+
+_DWORDLONG_ = true
+ffi.cdef[[
+typedef ULONGLONG  DWORDLONG;
+typedef DWORDLONG *PDWORDLONG;
+]]
 
 --[==[
 //

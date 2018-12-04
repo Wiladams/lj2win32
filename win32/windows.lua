@@ -91,12 +91,12 @@ end
 
 --]]
 
---[[
+
 if not RC_INVOKED then
-require("win32.excpt")
-require("win32.stdarg")
-end /* RC_INVOKED */
---]]
+--require("win32.excpt")
+--require("win32.stdarg")
+end --/* RC_INVOKED */
+
 
 require("win32.windef")
 require("win32.winbase")
@@ -166,21 +166,21 @@ end
 
 
 if INC_OLE2 then
-require("win32.ole2")
+--require("win32.ole2")
 end -- INC_OLE2 
 
 if not _MAC then
 if not NOSERVICE then
-require("win32.winsvc")
+--require("win32.winsvc")
 end
 
 
 if not  NOMCX then
-require("win32.mcx")
+--require("win32.mcx")
 end -- NOMCX */
 
 if not NOIME then
-require("win32.imm")
+--require("win32.imm")
 end -- NOIME
 
 end  -- !_MAC
