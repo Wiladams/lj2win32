@@ -1,11 +1,15 @@
 -- public interface to HID parsing library
 local ffi = require("ffi")
 
+require("win32.winapifamily")
+
 -- put the following at the end of each cdef to get packing
 --[=[
 
 ]]..(ffi.arch == "x64" and [[__attribute__((__packed__));]] or [[;]]))
 
+or use 
+#pragma pack (push, 4)
 --]=]
 
 
@@ -15,31 +19,24 @@ local ffi = require("ffi")
 -- Please include "hidpddi.h" to use the kernel space parser
 
 ffi.cdef[[
+#pragma pack (push, 4)
+
 static const int HIDP_LINK_COLLECTION_ROOT = ((USHORT) -1);
 static const int HIDP_LINK_COLLECTION_UNSPECIFIED = ((USHORT) 0);
-]]
 
-ffi.cdef[[
 typedef enum _HIDP_REPORT_TYPE
 {
     HidP_Input,
     HidP_Output,
     HidP_Feature
 } HIDP_REPORT_TYPE;
-]]
 
-ffi.cdef[[
 typedef struct _USAGE_AND_PAGE
 {
     USAGE Usage;
     USAGE UsagePage;
 } USAGE_AND_PAGE, *PUSAGE_AND_PAGE
-__attribute__((__packed__));
-]]
 
-
-
-ffi.cdef[[
 typedef struct _HIDP_BUTTON_CAPS
 {
     USAGE    UsagePage;
@@ -74,10 +71,7 @@ typedef struct _HIDP_BUTTON_CAPS
     };
 
 } HIDP_BUTTON_CAPS, *PHIDP_BUTTON_CAPS
-__attribute__((__packed__));
-]]
 
-ffi.cdef[[
 typedef struct _HIDP_VALUE_CAPS
 {
     USAGE    UsagePage;
@@ -124,11 +118,7 @@ typedef struct _HIDP_VALUE_CAPS
         } NotRange;
     };
 } HIDP_VALUE_CAPS, *PHIDP_VALUE_CAPS
-__attribute__((__packed__));
-]]
 
-
-ffi.cdef[[
 typedef struct _HIDP_LINK_COLLECTION_NODE
 {
     USAGE    LinkUsage;
@@ -142,15 +132,10 @@ typedef struct _HIDP_LINK_COLLECTION_NODE
     ULONG    Reserved: 23;
     PVOID    UserContext; // The user can hang his coat here.
 } HIDP_LINK_COLLECTION_NODE, *PHIDP_LINK_COLLECTION_NODE
-__attribute__((__packed__));
-]]
 
-ffi.cdef[[
 typedef PUCHAR  PHIDP_REPORT_DESCRIPTOR;
 typedef struct _HIDP_PREPARSED_DATA * PHIDP_PREPARSED_DATA;
-]]
 
-ffi.cdef[[
 typedef struct _HIDP_CAPS
 {
     USAGE    Usage;
@@ -174,10 +159,7 @@ typedef struct _HIDP_CAPS
     USHORT   NumberFeatureValueCaps;
     USHORT   NumberFeatureDataIndices;
 } HIDP_CAPS, *PHIDP_CAPS
-__attribute__((__packed__));
-]]
 
-ffi.cdef[[
 typedef struct _HIDP_DATA
 {
     USHORT  DataIndex;
@@ -187,22 +169,14 @@ typedef struct _HIDP_DATA
         BOOLEAN On; // for buttons MUST BE TRUE for buttons.
     };
 } HIDP_DATA, *PHIDP_DATA
-__attribute__((__packed__));
-]]
 
-
-ffi.cdef[[
 typedef struct _HIDP_UNKNOWN_TOKEN
 {
     UCHAR  Token;
     UCHAR  Reserved[3];
     ULONG  BitField;
 } HIDP_UNKNOWN_TOKEN, *PHIDP_UNKNOWN_TOKEN
-__attribute__((__packed__));
-]]
 
-
-ffi.cdef[[
 typedef struct _HIDP_EXTENDED_ATTRIBUTES
 {
     UCHAR   NumGlobalUnknowns;
@@ -211,7 +185,7 @@ typedef struct _HIDP_EXTENDED_ATTRIBUTES
     // ... Additional attributes
     ULONG   Data [1]; // variableLength  DO NOT ACCESS THIS FIELD
 } HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES
-__attribute__((__packed__));
+#pragma pack (pop)
 ]]
 
 ffi.cdef[[
@@ -458,13 +432,12 @@ HidP_UsageAndPageListDifference (
 ]]
 
 ffi.cdef[[
+#pragma pack (push, 4)
 typedef enum _HIDP_KEYBOARD_DIRECTION {
     HidP_Keyboard_Break,
     HidP_Keyboard_Make
 } HIDP_KEYBOARD_DIRECTION;
-]]
 
-ffi.cdef[[
 typedef struct _HIDP_KEYBOARD_MODIFIER_STATE {
    union {
       struct {
@@ -485,7 +458,8 @@ typedef struct _HIDP_KEYBOARD_MODIFIER_STATE {
    };
 
 } HIDP_KEYBOARD_MODIFIER_STATE, * PHIDP_KEYBOARD_MODIFIER_STATE
-__attribute__((__packed__));
+
+#pragma pack (pop)
 ]]
 
 --#include <poppack.h>
