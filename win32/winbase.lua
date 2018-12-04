@@ -37,7 +37,7 @@ require("win32.libloaderapi")
 --require("win32.systemtopologyapi")  -- NYI
 --require("win32.processtopologyapi") -- NYI
 --require("win32.securityappcontainer")   -- NYI
---require("win32.realtimeapiset")     -- NYI
+require("win32.realtimeapiset")
 
 
 
@@ -61,22 +61,26 @@ require("win32.libloaderapi")
 
 
 #define Yield()
-
-#define FILE_BEGIN         =  0;
-#define FILE_CURRENT       =  1;
-#define FILE_END           =  2;
-
-#define WAIT_FAILED = ((DWORD)0xFFFFFFFF);
-#define WAIT_OBJECT_0      = ((STATUS_WAIT_0 ) + 0 );
-
-#define WAIT_ABANDONED     =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );
-#define WAIT_ABANDONED_0   =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );
-
-#define WAIT_IO_COMPLETION =                 STATUS_USER_APC;
-
-#define SecureZeroMemory RtlSecureZeroMemory
-#define CaptureStackBackTrace RtlCaptureStackBackTrace
 --]=]
+
+
+ffi.cdef[[
+static const int FILE_BEGIN         =  0;
+static const int FILE_CURRENT       =  1;
+static const int FILE_END           =  2;
+
+static const int WAIT_FAILED = ((DWORD)0xFFFFFFFF);
+static const int WAIT_OBJECT_0      = ((STATUS_WAIT_0 ) + 0 );
+
+static const int WAIT_ABANDONED     =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );
+static const int WAIT_ABANDONED_0   =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );
+
+static const int WAIT_IO_COMPLETION =                 STATUS_USER_APC;
+]]
+
+--#define SecureZeroMemory RtlSecureZeroMemory
+--#define CaptureStackBackTrace RtlCaptureStackBackTrace
+
 
 ffi.cdef[[
 //
