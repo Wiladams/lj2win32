@@ -22,12 +22,12 @@ local ffi = require("ffi")
 #endif /* __RPCNDR_H_VERSION__ */
 --]]
 
---[[
-if not COM_NO_WINDOWS_H
+
+if not COM_NO_WINDOWS_H then
 require("win32.windows")
-require("win32.ole2.h")
-endif -- COM_NO_WINDOWS_H
---]]
+--require("win32.ole2.h")
+end -- COM_NO_WINDOWS_H
+
 
 
 
@@ -60,9 +60,6 @@ end
 
 require("win32.wtypes")
 
-
---extern RPC_IF_HANDLE __MIDL_itf_unknwn_0000_0000_v0_0_c_ifspec;
---extern RPC_IF_HANDLE __MIDL_itf_unknwn_0000_0000_v0_0_s_ifspec;
 
 if not __IUnknown_INTERFACE_DEFINED__ then
 __IUnknown_INTERFACE_DEFINED__ = true

@@ -127,18 +127,19 @@ end
 #define REFCLSID const IID * __MIDL_CONST
 #endif
 #endif
-
-#ifndef _REFFMTID_DEFINED
-#define _REFFMTID_DEFINED
-#ifdef __cplusplus
-#define REFFMTID const IID &
-#else
-#define REFFMTID const IID * __MIDL_CONST
-#endif
-#endif
-
-#endif // !__IID_DEFINED__
 --]]
+
+if not _REFFMTID_DEFINED then
+_REFFMTID_DEFINED = true
+ffi.cdef[[
+typedef const IID * REFFMTID;
+//#define REFFMTID const IID * __MIDL_CONST
+]]
+end
+
+
+--end --// !__IID_DEFINED__
+
 
 --[=[
 #if !defined (__midl)
