@@ -100,16 +100,16 @@ typedef FMTID *LPFMTID;
 #else
 #define __MIDL_CONST const
 #endif
-
-#ifndef _REFGUID_DEFINED
-#define _REFGUID_DEFINED
-#ifdef __cplusplus
-#define REFGUID const GUID &
-#else
-#define REFGUID const GUID * __MIDL_CONST
-#endif
-#endif
 --]]
+
+if not _REFGUID_DEFINED then
+_REFGUID_DEFINED = true
+ffi.cdef[[
+typedef const GUID * REFGUID
+//#define REFGUID const GUID * __MIDL_CONST
+]]
+end
+
 
 if not _REFIID_DEFINED then
 _REFIID_DEFINED = true;

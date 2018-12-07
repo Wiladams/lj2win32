@@ -82,7 +82,7 @@ typedef struct IUnknownVtbl
        ULONG ( __stdcall *Release )(IUnknown * This);
 } IUnknownVtbl;
 
-struct IUnknown
+typedef struct IUnknown
 {
     const struct IUnknownVtbl *lpVtbl;
 };

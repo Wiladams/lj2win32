@@ -70,7 +70,7 @@ static const int FILE_CURRENT       =  1;
 static const int FILE_END           =  2;
 
 static const int WAIT_FAILED = ((DWORD)0xFFFFFFFF);
-static const int WAIT_OBJECT_0      = ((STATUS_WAIT_0 ) + 0 );
+static const int WAIT_OBJECT_0      = STATUS_WAIT_0;
 
 static const int WAIT_ABANDONED     =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );
 static const int WAIT_ABANDONED_0   =    ((STATUS_ABANDONED_WAIT_0 ) + 0 );

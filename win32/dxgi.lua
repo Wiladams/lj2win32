@@ -1,17 +1,17 @@
 
 
+local ffi = require("ffi")
 
-/* verify that the <rpcndr.h> version is high enough to compile this file*/
 if not __REQUIRED_RPCNDR_H_VERSION__ then
 __REQUIRED_RPCNDR_H_VERSION__ = 500;
 end
 
-/* verify that the <rpcsal.h> version is high enough to compile this file*/
+
 if not __REQUIRED_RPCSAL_H_VERSION__ then
 __REQUIRED_RPCSAL_H_VERSION__ = 100
 end
 
-require("win32.rpc")
+--require("win32.rpc")
 require("win32.rpcndr")
 
 if not __RPCNDR_H_VERSION__ then
@@ -20,18 +20,26 @@ end --/* __RPCNDR_H_VERSION__ */
 
 if not COM_NO_WINDOWS_H then
 require("win32.windows")
-require("win32.ole2")
+--require("win32.ole2")
 end --/*COM_NO_WINDOWS_H*/
+
+
+local com_meta = {
+    __index = function (self, key)
+        return self.lpVtbl[key]
+    end;
+}
+
 
 if not __dxgi_h__ then
 __dxgi_h__ = true
 
 
 
-if not __IDXGIObject_FWD_DEFINED__
+if not __IDXGIObject_FWD_DEFINED__ then
 __IDXGIObject_FWD_DEFINED__ = true;
 ffi.cdef[[
-    typedef interface IDXGIObject IDXGIObject;
+    typedef struct IDXGIObject IDXGIObject;
 ]]
 end 	--/* __IDXGIObject_FWD_DEFINED__ */
 
@@ -39,7 +47,7 @@ end 	--/* __IDXGIObject_FWD_DEFINED__ */
 if not __IDXGIDeviceSubObject_FWD_DEFINED__ then
 __IDXGIDeviceSubObject_FWD_DEFINED__ = true
 ffi.cdef[[
-typedef interface IDXGIDeviceSubObject IDXGIDeviceSubObject;
+typedef struct IDXGIDeviceSubObject IDXGIDeviceSubObject;
 ]]
 end 	--/* __IDXGIDeviceSubObject_FWD_DEFINED__ */
 
@@ -47,7 +55,7 @@ end 	--/* __IDXGIDeviceSubObject_FWD_DEFINED__ */
 if not  __IDXGIResource_FWD_DEFINED__ then
 __IDXGIResource_FWD_DEFINED__ = true
 ffi.cdef[[
-typedef interface IDXGIResource IDXGIResource;
+typedef struct IDXGIResource IDXGIResource;
 ]]
 end 	--/* __IDXGIResource_FWD_DEFINED__ */
 
@@ -55,7 +63,7 @@ end 	--/* __IDXGIResource_FWD_DEFINED__ */
 if not __IDXGIKeyedMutex_FWD_DEFINED__ then
 __IDXGIKeyedMutex_FWD_DEFINED__ = true
 ffi.cdef[[
-typedef interface IDXGIKeyedMutex IDXGIKeyedMutex;
+typedef struct IDXGIKeyedMutex IDXGIKeyedMutex;
 ]]
 end 	--/* __IDXGIKeyedMutex_FWD_DEFINED__ */
 
@@ -63,72 +71,21 @@ end 	--/* __IDXGIKeyedMutex_FWD_DEFINED__ */
 if not __IDXGISurface_FWD_DEFINED__ then
 __IDXGISurface_FWD_DEFINED__ = true;
 ffi.cdef[[
-    typedef interface IDXGISurface IDXGISurface;
+    typedef struct IDXGISurface IDXGISurface;
 ]]
 end 	--/* __IDXGISurface_FWD_DEFINED__ */
 
-
---#ifndef __IDXGISurface1_FWD_DEFINED__
---#define __IDXGISurface1_FWD_DEFINED__
-typedef interface IDXGISurface1 IDXGISurface1;
-
---end 	/* __IDXGISurface1_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIAdapter_FWD_DEFINED__
---#define __IDXGIAdapter_FWD_DEFINED__
-typedef interface IDXGIAdapter IDXGIAdapter;
-
---end 	/* __IDXGIAdapter_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIOutput_FWD_DEFINED__
---#define __IDXGIOutput_FWD_DEFINED__
-typedef interface IDXGIOutput IDXGIOutput;
-
---end 	/* __IDXGIOutput_FWD_DEFINED__ */
-
-
---#ifndef __IDXGISwapChain_FWD_DEFINED__
---#define __IDXGISwapChain_FWD_DEFINED__
-typedef interface IDXGISwapChain IDXGISwapChain;
-
---end 	/* __IDXGISwapChain_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIFactory_FWD_DEFINED__
---#define __IDXGIFactory_FWD_DEFINED__
-typedef interface IDXGIFactory IDXGIFactory;
-
---end 	/* __IDXGIFactory_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIDevice_FWD_DEFINED__
---#define __IDXGIDevice_FWD_DEFINED__
-typedef interface IDXGIDevice IDXGIDevice;
-
---end 	/* __IDXGIDevice_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIFactory1_FWD_DEFINED__
---#define __IDXGIFactory1_FWD_DEFINED__
-typedef interface IDXGIFactory1 IDXGIFactory1;
-
---end 	/* __IDXGIFactory1_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIAdapter1_FWD_DEFINED__
---#define __IDXGIAdapter1_FWD_DEFINED__
-typedef interface IDXGIAdapter1 IDXGIAdapter1;
-
---end 	/* __IDXGIAdapter1_FWD_DEFINED__ */
-
-
---#ifndef __IDXGIDevice1_FWD_DEFINED__
---#define __IDXGIDevice1_FWD_DEFINED__
-typedef interface IDXGIDevice1 IDXGIDevice1;
-
---end 	/* __IDXGIDevice1_FWD_DEFINED__ */
+ffi.cdef[[
+typedef struct IDXGISurface1 IDXGISurface1;
+typedef struct IDXGIAdapter IDXGIAdapter;
+typedef struct IDXGIOutput IDXGIOutput;
+typedef struct IDXGISwapChain IDXGISwapChain;
+typedef struct IDXGIFactory IDXGIFactory;
+typedef struct IDXGIDevice IDXGIDevice;
+typedef struct IDXGIFactory1 IDXGIFactory1;
+typedef struct IDXGIAdapter1 IDXGIAdapter1;
+typedef struct IDXGIDevice1 IDXGIDevice1;
+]]
 
 
 
@@ -139,17 +96,19 @@ require("win32.dxgitype")
 
 
 
-
-
-
 require("win32.winapifamily")
 
+--[[
 ffi.cdef[[
-static const int DXGI_CPU_ACCESS_NONE    = 0;
-static const int DXGI_CPU_ACCESS_DYNAMIC    = 1;
-static const int DXGI_CPU_ACCESS_READ_WRITE    = 2;
-static const int DXGI_CPU_ACCESS_SCRATCH    = 3;
-static const int DXGI_CPU_ACCESS_FIELD       = 15;
+static const int DXGI_CPU_ACCESS_NONE               = 0;
+static const int DXGI_CPU_ACCESS_DYNAMIC            = 1;
+static const int DXGI_CPU_ACCESS_READ_WRITE         = 2;
+static const int DXGI_CPU_ACCESS_SCRATCH            = 3;
+static const int DXGI_CPU_ACCESS_FIELD              = 15;
+]]
+--]]
+
+ffi.cdef[[
 static const int DXGI_USAGE_SHADER_INPUT           =  0x00000010;
 static const int DXGI_USAGE_RENDER_TARGET_OUTPUT   =  0x00000020;
 static const int DXGI_USAGE_BACK_BUFFER            =  0x00000040;
@@ -299,10 +258,6 @@ typedef struct DXGI_SWAP_CHAIN_DESC
 ]]
 
 
-if not __IDXGIObject_INTERFACE_DEFINED__ then
-__IDXGIObject_INTERFACE_DEFINED__ = true
-
-
 
 --EXTERN_C const IID IID_IDXGIObject;
 
@@ -313,19 +268,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIObject * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIObject * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIObject * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIObject * This,
            
              REFGUID Name,
@@ -333,14 +288,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIObject * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIObject * This,
            
              REFGUID Name,
@@ -349,7 +304,7 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIObject * This,
            
              REFIID riid,
@@ -359,46 +314,15 @@ ffi.cdef[[
        
    } IDXGIObjectVtbl;
 
-   interface IDXGIObject
+   typedef struct IDXGIObject
    {
        const struct IDXGIObjectVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS
 
 
-#define IDXGIObject_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIObject_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIObject_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIObject_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIObject_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIObject_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIObject_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* __IDXGIObject_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGIDeviceSubObject_INTERFACE_DEFINED__
-#define __IDXGIDeviceSubObject_INTERFACE_DEFINED__
 
 
 --EXTERN_C const IID IID_IDXGIDeviceSubObject;
@@ -409,19 +333,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIDeviceSubObject * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIDeviceSubObject * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIDeviceSubObject * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIDeviceSubObject * This,
            
              REFGUID Name,
@@ -429,14 +353,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIDeviceSubObject * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIDeviceSubObject * This,
            
              REFGUID Name,
@@ -445,14 +369,14 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIDeviceSubObject * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGIDeviceSubObject * This,
            
              REFIID riid,
@@ -462,50 +386,15 @@ ffi.cdef[[
        
    } IDXGIDeviceSubObjectVtbl;
 
-   interface IDXGIDeviceSubObject
+   struct IDXGIDeviceSubObject
    {
        const struct IDXGIDeviceSubObjectVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIDeviceSubObject_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIDeviceSubObject_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIDeviceSubObject_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIDeviceSubObject_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIDeviceSubObject_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIDeviceSubObject_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIDeviceSubObject_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIDeviceSubObject_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* __IDXGIDeviceSubObject_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGIResource_INTERFACE_DEFINED__
-#define __IDXGIResource_INTERFACE_DEFINED__
 
 --EXTERN_C const IID IID_IDXGIResource;
 
@@ -514,19 +403,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIResource * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIResource * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIResource * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIResource * This,
            
              REFGUID Name,
@@ -534,14 +423,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIResource * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIResource * This,
            
              REFGUID Name,
@@ -550,34 +439,34 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIResource * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGIResource * This,
            
              REFIID riid,
             
              void **ppDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *GetSharedHandle )( 
+       HRESULT ( __stdcall *GetSharedHandle )( 
            IDXGIResource * This,
             
              HANDLE *pSharedHandle);
        
-       HRESULT ( STDMETHODCALLTYPE *GetUsage )( 
+       HRESULT ( __stdcall *GetUsage )( 
            IDXGIResource * This,
             DXGI_USAGE *pUsage);
        
-       HRESULT ( STDMETHODCALLTYPE *SetEvictionPriority )( 
+       HRESULT ( __stdcall *SetEvictionPriority )( 
            IDXGIResource * This,
             UINT EvictionPriority);
        
-       HRESULT ( STDMETHODCALLTYPE *GetEvictionPriority )( 
+       HRESULT ( __stdcall *GetEvictionPriority )( 
            IDXGIResource * This,
             
              UINT *pEvictionPriority);
@@ -585,68 +474,14 @@ ffi.cdef[[
        
    } IDXGIResourceVtbl;
 
-   interface IDXGIResource
+   struct IDXGIResource
    {
        const struct IDXGIResourceVtbl *lpVtbl;
    };
 ]]
-   
-
-if COBJMACROS then
 
 
-#define IDXGIResource_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IDXGIResource_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIResource_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIResource_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIResource_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIResource_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIResource_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIResource_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-
-#define IDXGIResource_GetSharedHandle(This,pSharedHandle)	\
-   ( (This)->lpVtbl -> GetSharedHandle(This,pSharedHandle) ) 
-
-#define IDXGIResource_GetUsage(This,pUsage)	\
-   ( (This)->lpVtbl -> GetUsage(This,pUsage) ) 
-
-#define IDXGIResource_SetEvictionPriority(This,EvictionPriority)	\
-   ( (This)->lpVtbl -> SetEvictionPriority(This,EvictionPriority) ) 
-
-#define IDXGIResource_GetEvictionPriority(This,pEvictionPriority)	\
-   ( (This)->lpVtbl -> GetEvictionPriority(This,pEvictionPriority) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* C style interface */
-
-
-end 	--/* __IDXGIResource_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGIKeyedMutex_INTERFACE_DEFINED__
-#define __IDXGIKeyedMutex_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGIKeyedMutex;
 
 
 ffi.cdef[[
@@ -654,19 +489,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIKeyedMutex * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIKeyedMutex * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIKeyedMutex * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIKeyedMutex * This,
            
              REFGUID Name,
@@ -674,14 +509,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIKeyedMutex * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIKeyedMutex * This,
            
              REFGUID Name,
@@ -690,84 +525,39 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIKeyedMutex * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGIKeyedMutex * This,
            
              REFIID riid,
             
              void **ppDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *AcquireSync )( 
+       HRESULT ( __stdcall *AcquireSync )( 
            IDXGIKeyedMutex * This,
             UINT64 Key,
             DWORD dwMilliseconds);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseSync )( 
+       HRESULT ( __stdcall *ReleaseSync )( 
            IDXGIKeyedMutex * This,
             UINT64 Key);
        
        
    } IDXGIKeyedMutexVtbl;
 
-   interface IDXGIKeyedMutex
+   struct IDXGIKeyedMutex
    {
        const struct IDXGIKeyedMutexVtbl *lpVtbl;
    };
 ]]
-   
-
-if COBJMACROS then
 
 
-#define IDXGIKeyedMutex_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIKeyedMutex_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIKeyedMutex_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIKeyedMutex_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIKeyedMutex_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIKeyedMutex_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIKeyedMutex_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIKeyedMutex_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-
-#define IDXGIKeyedMutex_AcquireSync(This,Key,dwMilliseconds)	\
-   ( (This)->lpVtbl -> AcquireSync(This,Key,dwMilliseconds) ) 
-
-#define IDXGIKeyedMutex_ReleaseSync(This,Key)	\
-   ( (This)->lpVtbl -> ReleaseSync(This,Key) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* C style interface */
-
-
-
-
-end 	--/* __IDXGIKeyedMutex_INTERFACE_DEFINED__ */
 
 
 ffi.cdef[[
@@ -778,29 +568,25 @@ static const int	DXGI_MAP_DISCARD	= 4;
 
 
 
-#ifndef __IDXGISurface_INTERFACE_DEFINED__
-#define __IDXGISurface_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGISurface;
 
 ffi.cdef[[
    typedef struct IDXGISurfaceVtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGISurface * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGISurface * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGISurface * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGISurface * This,
            
              REFGUID Name,
@@ -808,14 +594,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGISurface * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGISurface * This,
            
              REFGUID Name,
@@ -824,114 +610,65 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGISurface * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGISurface * This,
            
              REFIID riid,
             
              void **ppDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGISurface * This,
             
              DXGI_SURFACE_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *Map )( 
+       HRESULT ( __stdcall *Map )( 
            IDXGISurface * This,
             
              DXGI_MAPPED_RECT *pLockedRect,
             UINT MapFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *Unmap )( 
+       HRESULT ( __stdcall *Unmap )( 
            IDXGISurface * This);
        
        
    } IDXGISurfaceVtbl;
 
-   interface IDXGISurface
+   struct IDXGISurface
    {
        const struct IDXGISurfaceVtbl *lpVtbl;
    };
 ]]
-   
-
-if COBJMACROS then
 
 
-#define IDXGISurface_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGISurface_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGISurface_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IDXGISurface_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGISurface_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGISurface_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGISurface_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGISurface_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-
-#define IDXGISurface_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGISurface_Map(This,pLockedRect,MapFlags)	\
-   ( (This)->lpVtbl -> Map(This,pLockedRect,MapFlags) ) 
-
-#define IDXGISurface_Unmap(This)	\
-   ( (This)->lpVtbl -> Unmap(This) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* C style interface */
-
-end 	--/* __IDXGISurface_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGISurface1_INTERFACE_DEFINED__
-#define __IDXGISurface1_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGISurface1;
 
 ffi.cdef[[
    typedef struct IDXGISurface1Vtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGISurface1 * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGISurface1 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGISurface1 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGISurface1 * This,
            
              REFGUID Name,
@@ -939,14 +676,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGISurface1 * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGISurface1 * This,
            
              REFGUID Name,
@@ -955,41 +692,41 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGISurface1 * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGISurface1 * This,
            
              REFIID riid,
             
              void **ppDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGISurface1 * This,
             
              DXGI_SURFACE_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *Map )( 
+       HRESULT ( __stdcall *Map )( 
            IDXGISurface1 * This,
             
              DXGI_MAPPED_RECT *pLockedRect,
             UINT MapFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *Unmap )( 
+       HRESULT ( __stdcall *Unmap )( 
            IDXGISurface1 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDC )( 
+       HRESULT ( __stdcall *GetDC )( 
            IDXGISurface1 * This,
             BOOL Discard,
             
              HDC *phdc);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseDC )( 
+       HRESULT ( __stdcall *ReleaseDC )( 
            IDXGISurface1 * This,
            
              RECT *pDirtyRect);
@@ -997,72 +734,14 @@ ffi.cdef[[
        
    } IDXGISurface1Vtbl;
 
-   interface IDXGISurface1
+   struct IDXGISurface1
    {
        const struct IDXGISurface1Vtbl *lpVtbl;
    };
 ]]
-   
-
-if COBJMACROS then
 
 
-#define IDXGISurface1_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IDXGISurface1_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGISurface1_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGISurface1_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGISurface1_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGISurface1_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGISurface1_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGISurface1_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-
-#define IDXGISurface1_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGISurface1_Map(This,pLockedRect,MapFlags)	\
-   ( (This)->lpVtbl -> Map(This,pLockedRect,MapFlags) ) 
-
-#define IDXGISurface1_Unmap(This)	\
-   ( (This)->lpVtbl -> Unmap(This) ) 
-
-
-#define IDXGISurface1_GetDC(This,Discard,phdc)	\
-   ( (This)->lpVtbl -> GetDC(This,Discard,phdc) ) 
-
-#define IDXGISurface1_ReleaseDC(This,pDirtyRect)	\
-   ( (This)->lpVtbl -> ReleaseDC(This,pDirtyRect) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-
-end 	/* __IDXGISurface1_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGIAdapter_INTERFACE_DEFINED__
-#define __IDXGIAdapter_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGIAdapter;
 
 
 ffi.cdef[[
@@ -1070,19 +749,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIAdapter * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIAdapter * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIAdapter * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIAdapter * This,
            
              REFGUID Name,
@@ -1090,14 +769,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIAdapter * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIAdapter * This,
            
              REFGUID Name,
@@ -1106,25 +785,25 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIAdapter * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumOutputs )( 
+       HRESULT ( __stdcall *EnumOutputs )( 
            IDXGIAdapter * This,
             UINT Output,
             
              IDXGIOutput **ppOutput);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGIAdapter * This,
             
              DXGI_ADAPTER_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *CheckInterfaceSupport )( 
+       HRESULT ( __stdcall *CheckInterfaceSupport )( 
            IDXGIAdapter * This,
            
              REFGUID InterfaceName,
@@ -1134,53 +813,15 @@ ffi.cdef[[
        
    } IDXGIAdapterVtbl;
 
-   interface IDXGIAdapter
+   struct IDXGIAdapter
    {
        const struct IDXGIAdapterVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIAdapter_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIAdapter_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIAdapter_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIAdapter_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIAdapter_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIAdapter_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIAdapter_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIAdapter_EnumOutputs(This,Output,ppOutput)	\
-   ( (This)->lpVtbl -> EnumOutputs(This,Output,ppOutput) ) 
-
-#define IDXGIAdapter_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGIAdapter_CheckInterfaceSupport(This,InterfaceName,pUMDVersion)	\
-   ( (This)->lpVtbl -> CheckInterfaceSupport(This,InterfaceName,pUMDVersion) ) 
-
-end /* COBJMACROS */
-
-end 	/* C style interface */
-
-end 	/* __IDXGIAdapter_INTERFACE_DEFINED__ */
 
 
 
@@ -1190,29 +831,25 @@ static const int	DXGI_ENUM_MODES_SCALING	 = 2;
 ]]
 
 
-#ifndef __IDXGIOutput_INTERFACE_DEFINED__
-#define __IDXGIOutput_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGIOutput;
 
 ffi.cdef[[
    typedef struct IDXGIOutputVtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIOutput * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIOutput * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIOutput * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIOutput * This,
            
              REFGUID Name,
@@ -1220,14 +857,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIOutput * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIOutput * This,
            
              REFGUID Name,
@@ -1236,19 +873,19 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIOutput * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGIOutput * This,
             
              DXGI_OUTPUT_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDisplayModeList )( 
+       HRESULT ( __stdcall *GetDisplayModeList )( 
            IDXGIOutput * This,
             DXGI_FORMAT EnumFormat,
             UINT Flags,
@@ -1257,7 +894,7 @@ ffi.cdef[[
             
            _Out_writes_to_opt_(*pNumModes,*pNumModes)  DXGI_MODE_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *FindClosestMatchingMode )( 
+       HRESULT ( __stdcall *FindClosestMatchingMode )( 
            IDXGIOutput * This,
            
              const DXGI_MODE_DESC *pModeToMatch,
@@ -1266,44 +903,44 @@ ffi.cdef[[
            
              IUnknown *pConcernedDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *WaitForVBlank )( 
+       HRESULT ( __stdcall *WaitForVBlank )( 
            IDXGIOutput * This);
        
-       HRESULT ( STDMETHODCALLTYPE *TakeOwnership )( 
+       HRESULT ( __stdcall *TakeOwnership )( 
            IDXGIOutput * This,
            
              IUnknown *pDevice,
            BOOL Exclusive);
        
-       void ( STDMETHODCALLTYPE *ReleaseOwnership )( 
+       void ( __stdcall *ReleaseOwnership )( 
            IDXGIOutput * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetGammaControlCapabilities )( 
+       HRESULT ( __stdcall *GetGammaControlCapabilities )( 
            IDXGIOutput * This,
             
              DXGI_GAMMA_CONTROL_CAPABILITIES *pGammaCaps);
        
-       HRESULT ( STDMETHODCALLTYPE *SetGammaControl )( 
+       HRESULT ( __stdcall *SetGammaControl )( 
            IDXGIOutput * This,
            
              const DXGI_GAMMA_CONTROL *pArray);
        
-       HRESULT ( STDMETHODCALLTYPE *GetGammaControl )( 
+       HRESULT ( __stdcall *GetGammaControl )( 
            IDXGIOutput * This,
             
              DXGI_GAMMA_CONTROL *pArray);
        
-       HRESULT ( STDMETHODCALLTYPE *SetDisplaySurface )( 
+       HRESULT ( __stdcall *SetDisplaySurface )( 
            IDXGIOutput * This,
            
              IDXGISurface *pScanoutSurface);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDisplaySurfaceData )( 
+       HRESULT ( __stdcall *GetDisplaySurfaceData )( 
            IDXGIOutput * This,
            
              IDXGISurface *pDestination);
        
-       HRESULT ( STDMETHODCALLTYPE *GetFrameStatistics )( 
+       HRESULT ( __stdcall *GetFrameStatistics )( 
            IDXGIOutput * This,
             
              DXGI_FRAME_STATISTICS *pStats);
@@ -1311,82 +948,15 @@ ffi.cdef[[
        
    } IDXGIOutputVtbl;
 
-   interface IDXGIOutput
+   typedef struct IDXGIOutput
    {
        const struct IDXGIOutputVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIOutput_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIOutput_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIOutput_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIOutput_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIOutput_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIOutput_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIOutput_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIOutput_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGIOutput_GetDisplayModeList(This,EnumFormat,Flags,pNumModes,pDesc)	\
-   ( (This)->lpVtbl -> GetDisplayModeList(This,EnumFormat,Flags,pNumModes,pDesc) ) 
-
-#define IDXGIOutput_FindClosestMatchingMode(This,pModeToMatch,pClosestMatch,pConcernedDevice)	\
-   ( (This)->lpVtbl -> FindClosestMatchingMode(This,pModeToMatch,pClosestMatch,pConcernedDevice) ) 
-
-#define IDXGIOutput_WaitForVBlank(This)	\
-   ( (This)->lpVtbl -> WaitForVBlank(This) ) 
-
-#define IDXGIOutput_TakeOwnership(This,pDevice,Exclusive)	\
-   ( (This)->lpVtbl -> TakeOwnership(This,pDevice,Exclusive) ) 
-
-#define IDXGIOutput_ReleaseOwnership(This)	\
-   ( (This)->lpVtbl -> ReleaseOwnership(This) ) 
-
-#define IDXGIOutput_GetGammaControlCapabilities(This,pGammaCaps)	\
-   ( (This)->lpVtbl -> GetGammaControlCapabilities(This,pGammaCaps) ) 
-
-#define IDXGIOutput_SetGammaControl(This,pArray)	\
-   ( (This)->lpVtbl -> SetGammaControl(This,pArray) ) 
-
-#define IDXGIOutput_GetGammaControl(This,pArray)	\
-   ( (This)->lpVtbl -> GetGammaControl(This,pArray) ) 
-
-#define IDXGIOutput_SetDisplaySurface(This,pScanoutSurface)	\
-   ( (This)->lpVtbl -> SetDisplaySurface(This,pScanoutSurface) ) 
-
-#define IDXGIOutput_GetDisplaySurfaceData(This,pDestination)	\
-   ( (This)->lpVtbl -> GetDisplaySurfaceData(This,pDestination) ) 
-
-#define IDXGIOutput_GetFrameStatistics(This,pStats)	\
-   ( (This)->lpVtbl -> GetFrameStatistics(This,pStats) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-
-end 	/* __IDXGIOutput_INTERFACE_DEFINED__ */
 
 
 ffi.cdef[[
@@ -1403,29 +973,24 @@ static const int DXGI_PRESENT_ALLOW_TEARING             = 0x00000200UL;
 ]]
 
 
-#ifndef __IDXGISwapChain_INTERFACE_DEFINED__
-#define __IDXGISwapChain_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGISwapChain;
-
 ffi.cdef[[
    typedef struct IDXGISwapChainVtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGISwapChain * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGISwapChain * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGISwapChain * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGISwapChain * This,
            
              REFGUID Name,
@@ -1433,14 +998,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGISwapChain * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGISwapChain * This,
            
              REFGUID Name,
@@ -1449,26 +1014,26 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGISwapChain * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDevice )( 
+       HRESULT ( __stdcall *GetDevice )( 
            IDXGISwapChain * This,
            
              REFIID riid,
             
              void **ppDevice);
        
-       HRESULT ( STDMETHODCALLTYPE *Present )( 
+       HRESULT ( __stdcall *Present )( 
            IDXGISwapChain * This,
             UINT SyncInterval,
             UINT Flags);
        
-       HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+       HRESULT ( __stdcall *GetBuffer )( 
            IDXGISwapChain * This,
             UINT Buffer,
            
@@ -1476,25 +1041,25 @@ ffi.cdef[[
             
              void **ppSurface);
        
-       HRESULT ( STDMETHODCALLTYPE *SetFullscreenState )( 
+       HRESULT ( __stdcall *SetFullscreenState )( 
            IDXGISwapChain * This,
             BOOL Fullscreen,
            
              IDXGIOutput *pTarget);
        
-       HRESULT ( STDMETHODCALLTYPE *GetFullscreenState )( 
+       HRESULT ( __stdcall *GetFullscreenState )( 
            IDXGISwapChain * This,
             
            _Out_opt_  BOOL *pFullscreen,
             
            _COM_Outptr_opt_result_maybenull_  IDXGIOutput **ppTarget);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGISwapChain * This,
             
              DXGI_SWAP_CHAIN_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *ResizeBuffers )( 
+       HRESULT ( __stdcall *ResizeBuffers )( 
            IDXGISwapChain * This,
             UINT BufferCount,
             UINT Width,
@@ -1502,22 +1067,22 @@ ffi.cdef[[
             DXGI_FORMAT NewFormat,
             UINT SwapChainFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *ResizeTarget )( 
+       HRESULT ( __stdcall *ResizeTarget )( 
            IDXGISwapChain * This,
            
              const DXGI_MODE_DESC *pNewTargetParameters);
        
-       HRESULT ( STDMETHODCALLTYPE *GetContainingOutput )( 
+       HRESULT ( __stdcall *GetContainingOutput )( 
            IDXGISwapChain * This,
             
              IDXGIOutput **ppOutput);
        
-       HRESULT ( STDMETHODCALLTYPE *GetFrameStatistics )( 
+       HRESULT ( __stdcall *GetFrameStatistics )( 
            IDXGISwapChain * This,
             
              DXGI_FRAME_STATISTICS *pStats);
        
-       HRESULT ( STDMETHODCALLTYPE *GetLastPresentCount )( 
+       HRESULT ( __stdcall *GetLastPresentCount )( 
            IDXGISwapChain * This,
             
              UINT *pLastPresentCount);
@@ -1525,116 +1090,45 @@ ffi.cdef[[
        
    } IDXGISwapChainVtbl;
 
-   interface IDXGISwapChain
+   typedef struct IDXGISwapChain
    {
        const struct IDXGISwapChainVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGISwapChain_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGISwapChain_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGISwapChain_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGISwapChain_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGISwapChain_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGISwapChain_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGISwapChain_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGISwapChain_GetDevice(This,riid,ppDevice)	\
-   ( (This)->lpVtbl -> GetDevice(This,riid,ppDevice) ) 
-
-
-#define IDXGISwapChain_Present(This,SyncInterval,Flags)	\
-   ( (This)->lpVtbl -> Present(This,SyncInterval,Flags) ) 
-
-#define IDXGISwapChain_GetBuffer(This,Buffer,riid,ppSurface)	\
-   ( (This)->lpVtbl -> GetBuffer(This,Buffer,riid,ppSurface) ) 
-
-#define IDXGISwapChain_SetFullscreenState(This,Fullscreen,pTarget)	\
-   ( (This)->lpVtbl -> SetFullscreenState(This,Fullscreen,pTarget) ) 
-
-#define IDXGISwapChain_GetFullscreenState(This,pFullscreen,ppTarget)	\
-   ( (This)->lpVtbl -> GetFullscreenState(This,pFullscreen,ppTarget) ) 
-
-#define IDXGISwapChain_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGISwapChain_ResizeBuffers(This,BufferCount,Width,Height,NewFormat,SwapChainFlags)	\
-   ( (This)->lpVtbl -> ResizeBuffers(This,BufferCount,Width,Height,NewFormat,SwapChainFlags) ) 
-
-#define IDXGISwapChain_ResizeTarget(This,pNewTargetParameters)	\
-   ( (This)->lpVtbl -> ResizeTarget(This,pNewTargetParameters) ) 
-
-#define IDXGISwapChain_GetContainingOutput(This,ppOutput)	\
-   ( (This)->lpVtbl -> GetContainingOutput(This,ppOutput) ) 
-
-#define IDXGISwapChain_GetFrameStatistics(This,pStats)	\
-   ( (This)->lpVtbl -> GetFrameStatistics(This,pStats) ) 
-
-#define IDXGISwapChain_GetLastPresentCount(This,pLastPresentCount)	\
-   ( (This)->lpVtbl -> GetLastPresentCount(This,pLastPresentCount) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-
-end 	/* __IDXGISwapChain_INTERFACE_DEFINED__ */
 
 
 
 ffi.cdef[[
-#define DXGI_MWA_NO_WINDOW_CHANGES     = 1 << 0;
-#define DXGI_MWA_NO_ALT_ENTER          = 1 << 1;
-#define DXGI_MWA_NO_PRINT_SCREEN       = 1 << 2;
-#define DXGI_MWA_VALID                 = 0x7;
+static const int DXGI_MWA_NO_WINDOW_CHANGES     = 1 << 0;
+static const int DXGI_MWA_NO_ALT_ENTER          = 1 << 1;
+static const int DXGI_MWA_NO_PRINT_SCREEN       = 1 << 2;
+static const int DXGI_MWA_VALID                 = 0x7;
 ]]
 
 
-#ifndef __IDXGIFactory_INTERFACE_DEFINED__
-#define __IDXGIFactory_INTERFACE_DEFINED__
- 
-
-
---EXTERN_C const IID IID_IDXGIFactory;
 
 ffi.cdef[[
    typedef struct IDXGIFactoryVtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIFactory * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIFactory * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIFactory * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIFactory * This,
            
              REFGUID Name,
@@ -1642,14 +1136,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIFactory * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIFactory * This,
            
              REFGUID Name,
@@ -1658,30 +1152,30 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIFactory * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumAdapters )( 
+       HRESULT ( __stdcall *EnumAdapters )( 
            IDXGIFactory * This,
             UINT Adapter,
             
              IDXGIAdapter **ppAdapter);
        
-       HRESULT ( STDMETHODCALLTYPE *MakeWindowAssociation )( 
+       HRESULT ( __stdcall *MakeWindowAssociation )( 
            IDXGIFactory * This,
            HWND WindowHandle,
            UINT Flags);
        
-       HRESULT ( STDMETHODCALLTYPE *GetWindowAssociation )( 
+       HRESULT ( __stdcall *GetWindowAssociation )( 
            IDXGIFactory * This,
             
              HWND *pWindowHandle);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSwapChain )( 
+       HRESULT ( __stdcall *CreateSwapChain )( 
            IDXGIFactory * This,
            
              IUnknown *pDevice,
@@ -1690,7 +1184,7 @@ ffi.cdef[[
             
              IDXGISwapChain **ppSwapChain);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSoftwareAdapter )( 
+       HRESULT ( __stdcall *CreateSoftwareAdapter )( 
            IDXGIFactory * This,
             HMODULE Module,
             
@@ -1699,60 +1193,17 @@ ffi.cdef[[
        
    } IDXGIFactoryVtbl;
 
-   struct IDXGIFactory
+   typedef struct IDXGIFactory
    {
        const struct IDXGIFactoryVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIFactory_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIFactory_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIFactory_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IDXGIFactory_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIFactory_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIFactory_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIFactory_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIFactory_EnumAdapters(This,Adapter,ppAdapter)	\
-   ( (This)->lpVtbl -> EnumAdapters(This,Adapter,ppAdapter) ) 
-
-#define IDXGIFactory_MakeWindowAssociation(This,WindowHandle,Flags)	\
-   ( (This)->lpVtbl -> MakeWindowAssociation(This,WindowHandle,Flags) ) 
-
-#define IDXGIFactory_GetWindowAssociation(This,pWindowHandle)	\
-   ( (This)->lpVtbl -> GetWindowAssociation(This,pWindowHandle) ) 
-
-#define IDXGIFactory_CreateSwapChain(This,pDevice,pDesc,ppSwapChain)	\
-   ( (This)->lpVtbl -> CreateSwapChain(This,pDevice,pDesc,ppSwapChain) ) 
-
-#define IDXGIFactory_CreateSoftwareAdapter(This,Module,ppAdapter)	\
-   ( (This)->lpVtbl -> CreateSoftwareAdapter(This,Module,ppAdapter) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-end
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
@@ -1765,29 +1216,25 @@ ffi.cdef[[
 HRESULT WINAPI CreateDXGIFactory1(REFIID riid,  void **ppFactory);
 ]]
 
-#ifndef __IDXGIDevice_INTERFACE_DEFINED__
-#define __IDXGIDevice_INTERFACE_DEFINED__
-
---EXTERN_C const IID IID_IDXGIDevice;
 
 ffi.cdef[[
    typedef struct IDXGIDeviceVtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIDevice * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIDevice * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIDevice * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIDevice * This,
            
              REFGUID Name,
@@ -1795,14 +1242,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIDevice * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIDevice * This,
            
              REFGUID Name,
@@ -1811,19 +1258,19 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIDevice * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetAdapter )( 
+       HRESULT ( __stdcall *GetAdapter )( 
            IDXGIDevice * This,
             
              IDXGIAdapter **pAdapter);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSurface )( 
+       HRESULT ( __stdcall *CreateSurface )( 
            IDXGIDevice * This,
            
              const DXGI_SURFACE_DESC *pDesc,
@@ -1834,7 +1281,7 @@ ffi.cdef[[
             
              IDXGISurface **ppSurface);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryResourceResidency )( 
+       HRESULT ( __stdcall *QueryResourceResidency )( 
            IDXGIDevice * This,
            /* [annotation][size_is][in] */ 
            _In_reads_(NumResources)  IUnknown *const *ppResources,
@@ -1842,11 +1289,11 @@ ffi.cdef[[
            _Out_writes_(NumResources)  DXGI_RESIDENCY *pResidencyStatus,
             UINT NumResources);
        
-       HRESULT ( STDMETHODCALLTYPE *SetGPUThreadPriority )( 
+       HRESULT ( __stdcall *SetGPUThreadPriority )( 
            IDXGIDevice * This,
             INT Priority);
        
-       HRESULT ( STDMETHODCALLTYPE *GetGPUThreadPriority )( 
+       HRESULT ( __stdcall *GetGPUThreadPriority )( 
            IDXGIDevice * This,
             
              INT *pPriority);
@@ -1854,60 +1301,16 @@ ffi.cdef[[
        
    } IDXGIDeviceVtbl;
 
-   interface IDXGIDevice
+   typedef struct IDXGIDevice
    {
        const struct IDXGIDeviceVtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIDevice_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IDXGIDevice_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIDevice_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIDevice_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIDevice_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIDevice_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIDevice_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIDevice_GetAdapter(This,pAdapter)	\
-   ( (This)->lpVtbl -> GetAdapter(This,pAdapter) ) 
-
-#define IDXGIDevice_CreateSurface(This,pDesc,NumSurfaces,Usage,pSharedResource,ppSurface)	\
-   ( (This)->lpVtbl -> CreateSurface(This,pDesc,NumSurfaces,Usage,pSharedResource,ppSurface) ) 
-
-#define IDXGIDevice_QueryResourceResidency(This,ppResources,pResidencyStatus,NumResources)	\
-   ( (This)->lpVtbl -> QueryResourceResidency(This,ppResources,pResidencyStatus,NumResources) ) 
-
-#define IDXGIDevice_SetGPUThreadPriority(This,Priority)	\
-   ( (This)->lpVtbl -> SetGPUThreadPriority(This,Priority) ) 
-
-#define IDXGIDevice_GetGPUThreadPriority(This,pPriority)	\
-   ( (This)->lpVtbl -> GetGPUThreadPriority(This,pPriority) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* C style interface */
-
-end
 
 
 ffi.cdef[[
@@ -1942,30 +1345,25 @@ typedef struct DXGI_DISPLAY_COLOR_SPACE
 ]]
 
 
-#ifndef __IDXGIFactory1_INTERFACE_DEFINED__
-#define __IDXGIFactory1_INTERFACE_DEFINED__
-
-
---EXTERN_C const IID IID_IDXGIFactory1;
 
 ffi.cdef[[
    typedef struct IDXGIFactory1Vtbl
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIFactory1 * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIFactory1 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIFactory1 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIFactory1 * This,
            
              REFGUID Name,
@@ -1973,14 +1371,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIFactory1 * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIFactory1 * This,
            
              REFGUID Name,
@@ -1989,30 +1387,30 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIFactory1 * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumAdapters )( 
+       HRESULT ( __stdcall *EnumAdapters )( 
            IDXGIFactory1 * This,
             UINT Adapter,
             
              IDXGIAdapter **ppAdapter);
        
-       HRESULT ( STDMETHODCALLTYPE *MakeWindowAssociation )( 
+       HRESULT ( __stdcall *MakeWindowAssociation )( 
            IDXGIFactory1 * This,
            HWND WindowHandle,
            UINT Flags);
        
-       HRESULT ( STDMETHODCALLTYPE *GetWindowAssociation )( 
+       HRESULT ( __stdcall *GetWindowAssociation )( 
            IDXGIFactory1 * This,
             
              HWND *pWindowHandle);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSwapChain )( 
+       HRESULT ( __stdcall *CreateSwapChain )( 
            IDXGIFactory1 * This,
            
              IUnknown *pDevice,
@@ -2021,115 +1419,51 @@ ffi.cdef[[
             
              IDXGISwapChain **ppSwapChain);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSoftwareAdapter )( 
+       HRESULT ( __stdcall *CreateSoftwareAdapter )( 
            IDXGIFactory1 * This,
             HMODULE Module,
             
              IDXGIAdapter **ppAdapter);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumAdapters1 )( 
+       HRESULT ( __stdcall *EnumAdapters1 )( 
            IDXGIFactory1 * This,
             UINT Adapter,
             
              IDXGIAdapter1 **ppAdapter);
        
-       BOOL ( STDMETHODCALLTYPE *IsCurrent )( 
+       BOOL ( __stdcall *IsCurrent )( 
            IDXGIFactory1 * This);
        
        
    } IDXGIFactory1Vtbl;
 
-   interface IDXGIFactory1
+   typedef struct IDXGIFactory1
    {
        const struct IDXGIFactory1Vtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
-
-
-#define IDXGIFactory1_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIFactory1_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIFactory1_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIFactory1_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIFactory1_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIFactory1_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIFactory1_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIFactory1_EnumAdapters(This,Adapter,ppAdapter)	\
-   ( (This)->lpVtbl -> EnumAdapters(This,Adapter,ppAdapter) ) 
-
-#define IDXGIFactory1_MakeWindowAssociation(This,WindowHandle,Flags)	\
-   ( (This)->lpVtbl -> MakeWindowAssociation(This,WindowHandle,Flags) ) 
-
-#define IDXGIFactory1_GetWindowAssociation(This,pWindowHandle)	\
-   ( (This)->lpVtbl -> GetWindowAssociation(This,pWindowHandle) ) 
-
-#define IDXGIFactory1_CreateSwapChain(This,pDevice,pDesc,ppSwapChain)	\
-   ( (This)->lpVtbl -> CreateSwapChain(This,pDevice,pDesc,ppSwapChain) ) 
-
-#define IDXGIFactory1_CreateSoftwareAdapter(This,Module,ppAdapter)	\
-   ( (This)->lpVtbl -> CreateSoftwareAdapter(This,Module,ppAdapter) ) 
-
-
-#define IDXGIFactory1_EnumAdapters1(This,Adapter,ppAdapter)	\
-   ( (This)->lpVtbl -> EnumAdapters1(This,Adapter,ppAdapter) ) 
-
-#define IDXGIFactory1_IsCurrent(This)	\
-   ( (This)->lpVtbl -> IsCurrent(This) ) 
-
-end --/* COBJMACROS */
-
-
-end 	--/* C style interface */
-
-end
-
-
-
-
-
-#ifndef __IDXGIAdapter1_INTERFACE_DEFINED__
-#define __IDXGIAdapter1_INTERFACE_DEFINED__
 
  
-
-
---EXTERN_C const IID IID_IDXGIAdapter1;
 
 ffi.cdef[[
    typedef struct IDXGIAdapter1Vtbl
    {
 
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIAdapter1 * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIAdapter1 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIAdapter1 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIAdapter1 * This,
            
              REFGUID Name,
@@ -2137,14 +1471,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIAdapter1 * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIAdapter1 * This,
            
              REFGUID Name,
@@ -2153,32 +1487,32 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIAdapter1 * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumOutputs )( 
+       HRESULT ( __stdcall *EnumOutputs )( 
            IDXGIAdapter1 * This,
             UINT Output,
             
              IDXGIOutput **ppOutput);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc )( 
+       HRESULT ( __stdcall *GetDesc )( 
            IDXGIAdapter1 * This,
             
              DXGI_ADAPTER_DESC *pDesc);
        
-       HRESULT ( STDMETHODCALLTYPE *CheckInterfaceSupport )( 
+       HRESULT ( __stdcall *CheckInterfaceSupport )( 
            IDXGIAdapter1 * This,
            
              REFGUID InterfaceName,
             
              LARGE_INTEGER *pUMDVersion);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDesc1 )( 
+       HRESULT ( __stdcall *GetDesc1 )( 
            IDXGIAdapter1 * This,
             
              DXGI_ADAPTER_DESC1 *pDesc);
@@ -2186,66 +1520,16 @@ ffi.cdef[[
        
    } IDXGIAdapter1Vtbl;
 
-   interface IDXGIAdapter1
+   typedef struct IDXGIAdapter1
    {
        const struct IDXGIAdapter1Vtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIAdapter1_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IDXGIAdapter1_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIAdapter1_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIAdapter1_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIAdapter1_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIAdapter1_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIAdapter1_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIAdapter1_EnumOutputs(This,Output,ppOutput)	\
-   ( (This)->lpVtbl -> EnumOutputs(This,Output,ppOutput) ) 
-
-#define IDXGIAdapter1_GetDesc(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
-
-#define IDXGIAdapter1_CheckInterfaceSupport(This,InterfaceName,pUMDVersion)	\
-   ( (This)->lpVtbl -> CheckInterfaceSupport(This,InterfaceName,pUMDVersion) ) 
-
-
-#define IDXGIAdapter1_GetDesc1(This,pDesc)	\
-   ( (This)->lpVtbl -> GetDesc1(This,pDesc) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-
-end 	/* __IDXGIAdapter1_INTERFACE_DEFINED__ */
-
-
-#ifndef __IDXGIDevice1_INTERFACE_DEFINED__
-#define __IDXGIDevice1_INTERFACE_DEFINED__
-
-
---EXTERN_C const IID IID_IDXGIDevice1;
 
 
 ffi.cdef[[
@@ -2253,19 +1537,19 @@ ffi.cdef[[
    {
        
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IDXGIDevice1 * This,
             REFIID riid,
             
              void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IDXGIDevice1 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IDXGIDevice1 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateData )( 
+       HRESULT ( __stdcall *SetPrivateData )( 
            IDXGIDevice1 * This,
            
              REFGUID Name,
@@ -2273,14 +1557,14 @@ ffi.cdef[[
            
              const void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *SetPrivateDataInterface )( 
+       HRESULT ( __stdcall *SetPrivateDataInterface )( 
            IDXGIDevice1 * This,
            
              REFGUID Name,
            
              const IUnknown *pUnknown);
        
-       HRESULT ( STDMETHODCALLTYPE *GetPrivateData )( 
+       HRESULT ( __stdcall *GetPrivateData )( 
            IDXGIDevice1 * This,
            
              REFGUID Name,
@@ -2289,19 +1573,19 @@ ffi.cdef[[
             
              void *pData);
        
-       HRESULT ( STDMETHODCALLTYPE *GetParent )( 
+       HRESULT ( __stdcall *GetParent )( 
            IDXGIDevice1 * This,
            
              REFIID riid,
             
              void **ppParent);
        
-       HRESULT ( STDMETHODCALLTYPE *GetAdapter )( 
+       HRESULT ( __stdcall *GetAdapter )( 
            IDXGIDevice1 * This,
             
              IDXGIAdapter **pAdapter);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateSurface )( 
+       HRESULT ( __stdcall *CreateSurface )( 
            IDXGIDevice1 * This,
            
              const DXGI_SURFACE_DESC *pDesc,
@@ -2312,7 +1596,7 @@ ffi.cdef[[
             
              IDXGISurface **ppSurface);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryResourceResidency )( 
+       HRESULT ( __stdcall *QueryResourceResidency )( 
            IDXGIDevice1 * This,
            /* [annotation][size_is][in] */ 
            _In_reads_(NumResources)  IUnknown *const *ppResources,
@@ -2320,20 +1604,20 @@ ffi.cdef[[
            _Out_writes_(NumResources)  DXGI_RESIDENCY *pResidencyStatus,
             UINT NumResources);
        
-       HRESULT ( STDMETHODCALLTYPE *SetGPUThreadPriority )( 
+       HRESULT ( __stdcall *SetGPUThreadPriority )( 
            IDXGIDevice1 * This,
             INT Priority);
        
-       HRESULT ( STDMETHODCALLTYPE *GetGPUThreadPriority )( 
+       HRESULT ( __stdcall *GetGPUThreadPriority )( 
            IDXGIDevice1 * This,
             
              INT *pPriority);
        
-       HRESULT ( STDMETHODCALLTYPE *SetMaximumFrameLatency )( 
+       HRESULT ( __stdcall *SetMaximumFrameLatency )( 
            IDXGIDevice1 * This,
             UINT MaxLatency);
        
-       HRESULT ( STDMETHODCALLTYPE *GetMaximumFrameLatency )( 
+       HRESULT ( __stdcall *GetMaximumFrameLatency )( 
            IDXGIDevice1 * This,
             
              UINT *pMaxLatency);
@@ -2341,86 +1625,29 @@ ffi.cdef[[
        
    } IDXGIDevice1Vtbl;
 
-   interface IDXGIDevice1
+   typedef struct IDXGIDevice1
    {
        const struct IDXGIDevice1Vtbl *lpVtbl;
    };
 ]]
    
 
-if COBJMACROS then
 
 
-#define IDXGIDevice1_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IDXGIDevice1_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IDXGIDevice1_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IDXGIDevice1_SetPrivateData(This,Name,DataSize,pData)	\
-   ( (This)->lpVtbl -> SetPrivateData(This,Name,DataSize,pData) ) 
-
-#define IDXGIDevice1_SetPrivateDataInterface(This,Name,pUnknown)	\
-   ( (This)->lpVtbl -> SetPrivateDataInterface(This,Name,pUnknown) ) 
-
-#define IDXGIDevice1_GetPrivateData(This,Name,pDataSize,pData)	\
-   ( (This)->lpVtbl -> GetPrivateData(This,Name,pDataSize,pData) ) 
-
-#define IDXGIDevice1_GetParent(This,riid,ppParent)	\
-   ( (This)->lpVtbl -> GetParent(This,riid,ppParent) ) 
-
-
-#define IDXGIDevice1_GetAdapter(This,pAdapter)	\
-   ( (This)->lpVtbl -> GetAdapter(This,pAdapter) ) 
-
-#define IDXGIDevice1_CreateSurface(This,pDesc,NumSurfaces,Usage,pSharedResource,ppSurface)	\
-   ( (This)->lpVtbl -> CreateSurface(This,pDesc,NumSurfaces,Usage,pSharedResource,ppSurface) ) 
-
-#define IDXGIDevice1_QueryResourceResidency(This,ppResources,pResidencyStatus,NumResources)	\
-   ( (This)->lpVtbl -> QueryResourceResidency(This,ppResources,pResidencyStatus,NumResources) ) 
-
-#define IDXGIDevice1_SetGPUThreadPriority(This,Priority)	\
-   ( (This)->lpVtbl -> SetGPUThreadPriority(This,Priority) ) 
-
-#define IDXGIDevice1_GetGPUThreadPriority(This,pPriority)	\
-   ( (This)->lpVtbl -> GetGPUThreadPriority(This,pPriority) ) 
-
-
-#define IDXGIDevice1_SetMaximumFrameLatency(This,MaxLatency)	\
-   ( (This)->lpVtbl -> SetMaximumFrameLatency(This,MaxLatency) ) 
-
-#define IDXGIDevice1_GetMaximumFrameLatency(This,pMaxLatency)	\
-   ( (This)->lpVtbl -> GetMaximumFrameLatency(This,pMaxLatency) ) 
-
-end /* COBJMACROS */
-
-
-end 	/* C style interface */
-
-
-end 	/* __IDXGIDevice1_INTERFACE_DEFINED__ */
-
-
-
-
-DEFINE_GUID(IID_IDXGIObject,0xaec22fb8,0x76f3,0x4639,0x9b,0xe0,0x28,0xeb,0x43,0xa6,0x7a,0x2e);
-DEFINE_GUID(IID_IDXGIDeviceSubObject,0x3d3e0379,0xf9de,0x4d58,0xbb,0x6c,0x18,0xd6,0x29,0x92,0xf1,0xa6);
-DEFINE_GUID(IID_IDXGIResource,0x035f3ab4,0x482e,0x4e50,0xb4,0x1f,0x8a,0x7f,0x8b,0xd8,0x96,0x0b);
-DEFINE_GUID(IID_IDXGIKeyedMutex,0x9d8e1289,0xd7b3,0x465f,0x81,0x26,0x25,0x0e,0x34,0x9a,0xf8,0x5d);
-DEFINE_GUID(IID_IDXGISurface,0xcafcb56c,0x6ac3,0x4889,0xbf,0x47,0x9e,0x23,0xbb,0xd2,0x60,0xec);
-DEFINE_GUID(IID_IDXGISurface1,0x4AE63092,0x6327,0x4c1b,0x80,0xAE,0xBF,0xE1,0x2E,0xA3,0x2B,0x86);
-DEFINE_GUID(IID_IDXGIAdapter,0x2411e7e1,0x12ac,0x4ccf,0xbd,0x14,0x97,0x98,0xe8,0x53,0x4d,0xc0);
-DEFINE_GUID(IID_IDXGIOutput,0xae02eedb,0xc735,0x4690,0x8d,0x52,0x5a,0x8d,0xc2,0x02,0x13,0xaa);
-DEFINE_GUID(IID_IDXGISwapChain,0x310d36a0,0xd2e7,0x4c0a,0xaa,0x04,0x6a,0x9d,0x23,0xb8,0x88,0x6a);
-DEFINE_GUID(IID_IDXGIFactory,0x7b7166ec,0x21c7,0x44ae,0xb2,0x1a,0xc9,0xae,0x32,0x1a,0xe3,0x69);
-DEFINE_GUID(IID_IDXGIDevice,0x54ec77fa,0x1377,0x44e6,0x8c,0x32,0x88,0xfd,0x5f,0x44,0xc8,0x4c);
-DEFINE_GUID(IID_IDXGIFactory1,0x770aae78,0xf26f,0x4dba,0xa8,0x29,0x25,0x3c,0x83,0xd1,0xb3,0x87);
-DEFINE_GUID(IID_IDXGIAdapter1,0x29038f61,0x3839,0x4626,0x91,0xfd,0x08,0x68,0x79,0x01,0x1a,0x05);
-DEFINE_GUID(IID_IDXGIDevice1,0x77db970f,0x6276,0x48ba,0xba,0x28,0x07,0x01,0x43,0xb4,0x39,0x2c);
+DEFINE_GUID("IID_IDXGIObject",0xaec22fb8,0x76f3,0x4639,0x9b,0xe0,0x28,0xeb,0x43,0xa6,0x7a,0x2e);
+DEFINE_GUID("IID_IDXGIDeviceSubObject",0x3d3e0379,0xf9de,0x4d58,0xbb,0x6c,0x18,0xd6,0x29,0x92,0xf1,0xa6);
+DEFINE_GUID("IID_IDXGIResource",0x035f3ab4,0x482e,0x4e50,0xb4,0x1f,0x8a,0x7f,0x8b,0xd8,0x96,0x0b);
+DEFINE_GUID("IID_IDXGIKeyedMutex",0x9d8e1289,0xd7b3,0x465f,0x81,0x26,0x25,0x0e,0x34,0x9a,0xf8,0x5d);
+DEFINE_GUID("IID_IDXGISurface",0xcafcb56c,0x6ac3,0x4889,0xbf,0x47,0x9e,0x23,0xbb,0xd2,0x60,0xec);
+DEFINE_GUID("IID_IDXGISurface1",0x4AE63092,0x6327,0x4c1b,0x80,0xAE,0xBF,0xE1,0x2E,0xA3,0x2B,0x86);
+DEFINE_GUID("IID_IDXGIAdapter",0x2411e7e1,0x12ac,0x4ccf,0xbd,0x14,0x97,0x98,0xe8,0x53,0x4d,0xc0);
+DEFINE_GUID("IID_IDXGIOutput",0xae02eedb,0xc735,0x4690,0x8d,0x52,0x5a,0x8d,0xc2,0x02,0x13,0xaa);
+DEFINE_GUID("IID_IDXGISwapChain",0x310d36a0,0xd2e7,0x4c0a,0xaa,0x04,0x6a,0x9d,0x23,0xb8,0x88,0x6a);
+DEFINE_GUID("IID_IDXGIFactory",0x7b7166ec,0x21c7,0x44ae,0xb2,0x1a,0xc9,0xae,0x32,0x1a,0xe3,0x69);
+DEFINE_GUID("IID_IDXGIDevice",0x54ec77fa,0x1377,0x44e6,0x8c,0x32,0x88,0xfd,0x5f,0x44,0xc8,0x4c);
+DEFINE_GUID("IID_IDXGIFactory1",0x770aae78,0xf26f,0x4dba,0xa8,0x29,0x25,0x3c,0x83,0xd1,0xb3,0x87);
+DEFINE_GUID("IID_IDXGIAdapter1",0x29038f61,0x3839,0x4626,0x91,0xfd,0x08,0x68,0x79,0x01,0x1a,0x05);
+DEFINE_GUID("IID_IDXGIDevice1",0x77db970f,0x6276,0x48ba,0xba,0x28,0x07,0x01,0x43,0xb4,0x39,0x2c);
 
 
 

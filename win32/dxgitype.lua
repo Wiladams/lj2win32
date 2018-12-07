@@ -13,11 +13,11 @@ function MAKE_DXGI_STATUS(code)  return MAKE_HRESULT(0, _FACDXGI, code) end
 
 -- DXGI error messages have moved to winerror.h
 ffi.cdef[[
-#define DXGI_CPU_ACCESS_NONE                  =  0;
-#define DXGI_CPU_ACCESS_DYNAMIC               =  1;
-#define DXGI_CPU_ACCESS_READ_WRITE            =  2;
-#define DXGI_CPU_ACCESS_SCRATCH               =  3;
-#define DXGI_CPU_ACCESS_FIELD                 =  15;
+static const int DXGI_CPU_ACCESS_NONE                  =  0;
+static const int DXGI_CPU_ACCESS_DYNAMIC               =  1;
+static const int DXGI_CPU_ACCESS_READ_WRITE            =  2;
+static const int DXGI_CPU_ACCESS_SCRATCH               =  3;
+static const int DXGI_CPU_ACCESS_FIELD                 =  15;
 ]]
 
 ffi.cdef[[
