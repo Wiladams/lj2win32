@@ -25,8 +25,8 @@ if (NTDDI_VERSION >= NTDDI_WIN2K && !defined(_WIN32_WINNT))
 #endif
 --]]
 
---if !defined(_COMBASEAPI_H_)
---#define _COMBASEAPI_H_
+if not _COMBASEAPI_H_ then
+_COMBASEAPI_H_ = true
 
 
 ffi.cdef[[
@@ -151,7 +151,9 @@ if defined(_MPPC_)
 #define DECLARE_INTERFACE_IID(iface, iid)               DECLARE_INTERFACE(iface)
 #define DECLARE_INTERFACE_IID_(iface, baseiface, iid)   DECLARE_INTERFACE_(iface, baseiface)
 #endif
+--]=]
 
+--[[
 /****** Additional basic types **********************************************/
 
 #ifndef FARSTRUCT
@@ -169,9 +171,12 @@ if defined(_WIN32) or defined(_MPPC_)
 #define HUGEP __huge
 end  -- WIN32
 end  -- HUGEP
+--]]
 
-#include <stdlib.h>
 
+--#include <stdlib.h>
+
+--[=[
 #define LISet32(li, v) ((li).HighPart = ((LONG) (v)) < 0 ? -1 : 0, (li).LowPart = (v))
 
 #define ULISet32(li, v) ((li).HighPart = 0, (li).LowPart = (v))
@@ -194,7 +199,9 @@ if (_WIN32_WINNT >= 0x0400) or _WIN32_DCOM
 
 #define CLSCTX_SERVER           (CLSCTX_INPROC_SERVER|CLSCTX_LOCAL_SERVER)
 #endif
+--]=]
 
+ffi.cdef[[
 // class registration flags; passed to CoRegisterClassObject
 typedef enum tagREGCLS
 {
@@ -208,7 +215,7 @@ typedef enum tagREGCLS
     REGCLS_SURROGATE      = 8,  // must be used when a surrogate process
                                 // is registering a class object that will be
                                 // loaded in the surrogate
-if (NTDDI_VERSION >= NTDDI_WINTHRESHOLD)
+//if (NTDDI_VERSION >= NTDDI_WINTHRESHOLD)
     REGCLS_AGILE = 0x10,        // Class object aggregates the free-threaded marshaler
                                 // and will be made visible to all inproc apartments.
                                 // Can be used together with other flags - for example,
@@ -217,27 +224,30 @@ if (NTDDI_VERSION >= NTDDI_WINTHRESHOLD)
                                 // different apartments. Without other flags, behavior
                                 // will retain REGCLS_SINGLEUSE semantics in that only
                                 // one instance can be generated.
-#endif
+//#endif
 } REGCLS;
+]]
 
+ffi.cdef[[
 /* here is where we pull in the MIDL generated headers for the interfaces */
-typedef interface    IRpcStubBuffer     IRpcStubBuffer;
-typedef interface    IRpcChannelBuffer  IRpcChannelBuffer;
+typedef struct    IRpcStubBuffer     IRpcStubBuffer;
+typedef struct    IRpcChannelBuffer  IRpcChannelBuffer;
 
 // COM initialization flags; passed to CoInitialize.
 typedef enum tagCOINITBASE
 {
 // DCOM
-if (_WIN32_WINNT >= 0x0400) or _WIN32_DCOM
+//if (_WIN32_WINNT >= 0x0400) or _WIN32_DCOM
   // These constants are only valid on Windows NT 4.0
   COINITBASE_MULTITHREADED      = 0x0,      // OLE calls objects on any thread.
-end  -- DCOM
+//end  -- DCOM
 } COINITBASE;
---]=]
+]]
 
 require("win32.wtypesbase")
-require("win32.unknwnbase")
-
+--require("win32.unknwnbase")
+--BUGBUG - original has the above
+require("win32.unknwn")
 require("win32.objidlbase")
 
 require("win32.guiddef")
@@ -1325,7 +1335,7 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYST
 
 
 ffi.cdef[[
-    #pragma push (pop)
+    #pragma pack (pop)
 ]]
 
-
+end  -- _COMBASEAPI_H_

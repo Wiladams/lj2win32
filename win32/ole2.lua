@@ -15,8 +15,8 @@ require("win32.winapifamily")
 //
 //----------------------------------------------------------------------------
 --]]
---#if !defined( _OLE2_H_ )
---#define _OLE2_H_
+if not _OLE2_H_ then
+_OLE2_H_ = true
 
 
 ffi.cdef[[
@@ -360,3 +360,7 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 ffi.cdef[[
     #pragma pack (pop)
 ]]
+
+end
+
+return ffi.load("ole32")

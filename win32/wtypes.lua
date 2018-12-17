@@ -1,24 +1,23 @@
 
 local ffi = require("ffi")
 
---[[
-/* verify that the <rpcndr.h> version is high enough to compile this file*/
-#ifndef __REQUIRED_RPCNDR_H_VERSION__
-#define __REQUIRED_RPCNDR_H_VERSION__ 500
-#endif
 
-/* verify that the <rpcsal.h> version is high enough to compile this file*/
-#ifndef __REQUIRED_RPCSAL_H_VERSION__
-#define __REQUIRED_RPCSAL_H_VERSION__ 100
-#endif
+if not __REQUIRED_RPCNDR_H_VERSION__ then
+__REQUIRED_RPCNDR_H_VERSION__ = 500
+end
 
-#include "rpc.h"
-#include "rpcndr.h"
 
-#ifndef __RPCNDR_H_VERSION__
-#error this stub requires an updated version of <rpcndr.h>
-#endif /* __RPCNDR_H_VERSION__ */
---]]
+if not __REQUIRED_RPCSAL_H_VERSION__ then
+__REQUIRED_RPCSAL_H_VERSION__ = 100
+end
+
+--#include "rpc.h"
+require("win32.rpcndr")
+
+--#ifndef __RPCNDR_H_VERSION__
+--#error this stub requires an updated version of <rpcndr.h>
+--#endif /* __RPCNDR_H_VERSION__ */
+
 
 
 

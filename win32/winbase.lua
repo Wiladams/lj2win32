@@ -649,7 +649,7 @@ typedef PEXCEPTION_POINTERS LPEXCEPTION_POINTERS;
 #ifndef _MAC
 #define GetFreeSpace(w)                 (0x100000L)
 #else
-WINBASEAPI DWORD WINAPI GetFreeSpace(_In_ UINT);
+WINBASEAPI DWORD WINAPI GetFreeSpace( UINT);
 #endif
 
 
@@ -879,10 +879,10 @@ WINAPI
 CALLBACK
 #endif
 WinMain (
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPSTR lpCmdLine,
-    _In_ int nShowCmd
+     HINSTANCE hInstance,
+     HINSTANCE hPrevInstance,
+     LPSTR lpCmdLine,
+     int nShowCmd
     );
 
 int
@@ -892,10 +892,10 @@ __clrcall
 WINAPI
 #endif
 wWinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPWSTR lpCmdLine,
-    _In_ int nShowCmd
+     HINSTANCE hInstance,
+     HINSTANCE hPrevInstance,
+     LPWSTR lpCmdLine,
+     int nShowCmd
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -911,8 +911,8 @@ DECLSPEC_ALLOCATOR
 HGLOBAL
 WINAPI
 GlobalAlloc(
-    _In_ UINT uFlags,
-    _In_ SIZE_T dwBytes
+     UINT uFlags,
+     SIZE_T dwBytes
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -928,8 +928,8 @@ HGLOBAL
 WINAPI
 GlobalReAlloc (
     _Frees_ptr_ HGLOBAL hMem,
-    _In_ SIZE_T dwBytes,
-    _In_ UINT uFlags
+     SIZE_T dwBytes,
+     UINT uFlags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
@@ -942,14 +942,14 @@ WINBASEAPI
 SIZE_T
 WINAPI
 GlobalSize (
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 GlobalUnlock(
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
@@ -957,7 +957,7 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 GlobalLock (
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -970,7 +970,7 @@ WINBASEAPI
 UINT
 WINAPI
 GlobalFlags (
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
@@ -978,7 +978,7 @@ _Ret_maybenull_
 HGLOBAL
 WINAPI
 GlobalHandle (
-    _In_ LPCVOID pMem
+     LPCVOID pMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1006,35 +1006,35 @@ WINBASEAPI
 SIZE_T
 WINAPI
 GlobalCompact(
-    _In_ DWORD dwMinFree
+     DWORD dwMinFree
     );
 
 WINBASEAPI
 VOID
 WINAPI
 GlobalFix(
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
 VOID
 WINAPI
 GlobalUnfix(
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
 LPVOID
 WINAPI
 GlobalWire(
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 GlobalUnWire(
-    _In_ HGLOBAL hMem
+     HGLOBAL hMem
     );
 
 __drv_preferredFunction("GlobalMemoryStatusEx","Deprecated. See MSDN for details")
@@ -1058,8 +1058,8 @@ DECLSPEC_ALLOCATOR
 HLOCAL
 WINAPI
 LocalAlloc(
-    _In_ UINT uFlags,
-    _In_ SIZE_T uBytes
+     UINT uFlags,
+     SIZE_T uBytes
     );
 
 WINBASEAPI
@@ -1069,8 +1069,8 @@ HLOCAL
 WINAPI
 LocalReAlloc(
     _Frees_ptr_opt_ HLOCAL hMem,
-    _In_ SIZE_T uBytes,
-    _In_ UINT uFlags
+     SIZE_T uBytes,
+     UINT uFlags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)*/
@@ -1084,7 +1084,7 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 LocalLock(
-    _In_ HLOCAL hMem
+     HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -1098,7 +1098,7 @@ _Ret_maybenull_
 HLOCAL
 WINAPI
 LocalHandle(
-    _In_ LPCVOID pMem
+     LPCVOID pMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1111,7 +1111,7 @@ WINBASEAPI
 BOOL
 WINAPI
 LocalUnlock(
-    _In_ HLOCAL hMem
+     HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -1124,14 +1124,14 @@ WINBASEAPI
 SIZE_T
 WINAPI
 LocalSize(
-    _In_ HLOCAL hMem
+     HLOCAL hMem
     );
 
 WINBASEAPI
 UINT
 WINAPI
 LocalFlags(
-    _In_ HLOCAL hMem
+     HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1159,15 +1159,15 @@ WINBASEAPI
 SIZE_T
 WINAPI
 LocalShrink(
-    _In_ HLOCAL hMem,
-    _In_ UINT cbNewSize
+     HLOCAL hMem,
+     UINT cbNewSize
     );
 
 WINBASEAPI
 SIZE_T
 WINAPI
 LocalCompact(
-    _In_ UINT uMinFree
+     UINT uMinFree
     );
 
 // GetBinaryType return values.
@@ -1190,14 +1190,14 @@ WINBASEAPI
 BOOL
 WINAPI
 GetBinaryTypeA(
-    _In_  LPCSTR lpApplicationName,
+      LPCSTR lpApplicationName,
     _Out_ LPDWORD  lpBinaryType
     );
 WINBASEAPI
 BOOL
 WINAPI
 GetBinaryTypeW(
-    _In_  LPCWSTR lpApplicationName,
+      LPCWSTR lpApplicationName,
     _Out_ LPDWORD  lpBinaryType
     );
 #ifdef UNICODE
@@ -1211,9 +1211,9 @@ _Success_(return != 0 && return < cchBuffer)
 DWORD
 WINAPI
 GetShortPathNameA(
-    _In_ LPCSTR lpszLongPath,
+     LPCSTR lpszLongPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPSTR  lpszShortPath,
-    _In_ DWORD cchBuffer
+     DWORD cchBuffer
     );
 #ifndef UNICODE
 #define GetShortPathName  GetShortPathNameA
@@ -1226,20 +1226,20 @@ _Success_(return != 0 && return < cchBuffer)
 DWORD
 WINAPI
 GetLongPathNameTransactedA(
-    _In_     LPCSTR lpszShortPath,
+         LPCSTR lpszShortPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPSTR  lpszLongPath,
-    _In_     DWORD cchBuffer,
-    _In_     HANDLE hTransaction
+         DWORD cchBuffer,
+         HANDLE hTransaction
     );
 WINBASEAPI
 _Success_(return != 0 && return < cchBuffer)
 DWORD
 WINAPI
 GetLongPathNameTransactedW(
-    _In_     LPCWSTR lpszShortPath,
+         LPCWSTR lpszShortPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPWSTR  lpszLongPath,
-    _In_     DWORD cchBuffer,
-    _In_     HANDLE hTransaction
+         DWORD cchBuffer,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetLongPathNameTransacted  GetLongPathNameTransactedW
@@ -1259,7 +1259,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetProcessAffinityMask(
-    _In_  HANDLE hProcess,
+      HANDLE hProcess,
     _Out_ PDWORD_PTR lpProcessAffinityMask,
     _Out_ PDWORD_PTR lpSystemAffinityMask
     );
@@ -1268,8 +1268,8 @@ WINBASEAPI
 BOOL
 WINAPI
 SetProcessAffinityMask(
-    _In_ HANDLE hProcess,
-    _In_ DWORD_PTR dwProcessAffinityMask
+     HANDLE hProcess,
+     DWORD_PTR dwProcessAffinityMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -1282,7 +1282,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetProcessIoCounters(
-    _In_  HANDLE hProcess,
+      HANDLE hProcess,
     _Out_ PIO_COUNTERS lpIoCounters
     );
 
@@ -1296,7 +1296,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetProcessWorkingSetSize(
-    _In_  HANDLE hProcess,
+      HANDLE hProcess,
     _Out_ PSIZE_T lpMinimumWorkingSetSize,
     _Out_ PSIZE_T lpMaximumWorkingSetSize
     );
@@ -1311,9 +1311,9 @@ WINBASEAPI
 BOOL
 WINAPI
 SetProcessWorkingSetSize(
-    _In_ HANDLE hProcess,
-    _In_ SIZE_T dwMinimumWorkingSetSize,
-    _In_ SIZE_T dwMaximumWorkingSetSize
+     HANDLE hProcess,
+     SIZE_T dwMinimumWorkingSetSize,
+     SIZE_T dwMaximumWorkingSetSize
     );
 
 WINBASEAPI
@@ -1321,7 +1321,7 @@ __analysis_noreturn
 VOID
 WINAPI
 FatalExit(
-    _In_ int ExitCode
+     int ExitCode
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1334,7 +1334,7 @@ WINBASEAPI
 BOOL
 WINAPI
 SetEnvironmentStringsA(
-    _In_ _Pre_ _NullNull_terminated_ LPCH NewEnvironment
+     _Pre_ _NullNull_terminated_ LPCH NewEnvironment
     );
 #ifndef UNICODE
 #define SetEnvironmentStrings  SetEnvironmentStringsA
@@ -1358,14 +1358,14 @@ WINBASEAPI
 VOID
 WINAPI
 SwitchToFiber(
-    _In_ LPVOID lpFiber
+     LPVOID lpFiber
     );
 
 WINBASEAPI
 VOID
 WINAPI
 DeleteFiber(
-    _In_ LPVOID lpFiber
+     LPVOID lpFiber
     );
 
 #if (_WIN32_WINNT >= 0x0501)
@@ -1384,11 +1384,11 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 CreateFiberEx(
-    _In_     SIZE_T dwStackCommitSize,
-    _In_     SIZE_T dwStackReserveSize,
-    _In_     DWORD dwFlags,
-    _In_     LPFIBER_START_ROUTINE lpStartAddress,
-    _In_opt_ LPVOID lpParameter
+         SIZE_T dwStackCommitSize,
+         SIZE_T dwStackReserveSize,
+         DWORD dwFlags,
+         LPFIBER_START_ROUTINE lpStartAddress,
+     LPVOID lpParameter
     );
 
 WINBASEAPI
@@ -1396,8 +1396,8 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 ConvertThreadToFiberEx(
-    _In_opt_ LPVOID lpParameter,
-    _In_     DWORD dwFlags
+     LPVOID lpParameter,
+         DWORD dwFlags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -1411,9 +1411,9 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 CreateFiber(
-    _In_     SIZE_T dwStackSize,
-    _In_     LPFIBER_START_ROUTINE lpStartAddress,
-    _In_opt_ LPVOID lpParameter
+         SIZE_T dwStackSize,
+         LPFIBER_START_ROUTINE lpStartAddress,
+     LPVOID lpParameter
     );
 
 WINBASEAPI
@@ -1421,7 +1421,7 @@ _Ret_maybenull_
 LPVOID
 WINAPI
 ConvertThreadToFiber(
-    _In_opt_ LPVOID lpParameter
+     LPVOID lpParameter
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -1500,8 +1500,8 @@ WINBASEAPI
 BOOL
 WINAPI
 DequeueUmsCompletionListItems(
-    _In_ PUMS_COMPLETION_LIST UmsCompletionList,
-    _In_ DWORD WaitTimeOut,
+     PUMS_COMPLETION_LIST UmsCompletionList,
+     DWORD WaitTimeOut,
     _Out_ PUMS_CONTEXT* UmsThreadList
     );
 
@@ -1509,7 +1509,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetUmsCompletionListEvent(
-    _In_ PUMS_COMPLETION_LIST UmsCompletionList,
+     PUMS_COMPLETION_LIST UmsCompletionList,
     _Inout_ PHANDLE UmsCompletionEvent
     );
 
@@ -1524,14 +1524,14 @@ WINBASEAPI
 BOOL
 WINAPI
 UmsThreadYield(
-    _In_ PVOID SchedulerParam
+     PVOID SchedulerParam
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 DeleteUmsCompletionList(
-    _In_ PUMS_COMPLETION_LIST UmsCompletionList
+     PUMS_COMPLETION_LIST UmsCompletionList
     );
 
 WINBASEAPI
@@ -1552,10 +1552,10 @@ WINBASEAPI
 BOOL
 WINAPI
 QueryUmsThreadInformation(
-    _In_ PUMS_CONTEXT UmsThread,
-    _In_ UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
+     PUMS_CONTEXT UmsThread,
+     UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
     _Out_writes_bytes_to_(UmsThreadInformationLength, *ReturnLength) PVOID UmsThreadInformation,
-    _In_ ULONG UmsThreadInformationLength,
+     ULONG UmsThreadInformationLength,
     _Out_opt_ PULONG ReturnLength
     );
 
@@ -1563,17 +1563,17 @@ WINBASEAPI
 BOOL
 WINAPI
 SetUmsThreadInformation(
-    _In_ PUMS_CONTEXT UmsThread,
-    _In_ UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
-    _In_ PVOID UmsThreadInformation,
-    _In_ ULONG UmsThreadInformationLength
+     PUMS_CONTEXT UmsThread,
+     UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
+     PVOID UmsThreadInformation,
+     ULONG UmsThreadInformationLength
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 DeleteUmsThreadContext(
-    _In_ PUMS_CONTEXT UmsThread
+     PUMS_CONTEXT UmsThread
     );
 
 WINBASEAPI
@@ -1587,14 +1587,14 @@ WINBASEAPI
 BOOL
 WINAPI
 EnterUmsSchedulingMode(
-    _In_ PUMS_SCHEDULER_STARTUP_INFO SchedulerStartupInfo
+     PUMS_SCHEDULER_STARTUP_INFO SchedulerStartupInfo
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 GetUmsSystemThreadInformation(
-    _In_ HANDLE ThreadHandle,
+     HANDLE ThreadHandle,
     _Inout_ PUMS_SYSTEM_THREAD_INFORMATION SystemThreadInfo
     );
 
@@ -1616,8 +1616,8 @@ WINBASEAPI
 DWORD_PTR
 WINAPI
 SetThreadAffinityMask(
-    _In_ HANDLE hThread,
-    _In_ DWORD_PTR dwThreadAffinityMask
+     HANDLE hThread,
+     DWORD_PTR dwThreadAffinityMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -1635,14 +1635,14 @@ WINBASEAPI
 BOOL
 WINAPI
 SetProcessDEPPolicy(
-    _In_ DWORD dwFlags
+     DWORD dwFlags
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 GetProcessDEPPolicy(
-    _In_ HANDLE hProcess,
+     HANDLE hProcess,
     _Out_ LPDWORD lpFlags,
     _Out_ PBOOL lpPermanent
     );
@@ -1653,7 +1653,7 @@ WINBASEAPI
 BOOL
 WINAPI
 RequestWakeupLatency(
-    _In_ LATENCY_TIME latency
+     LATENCY_TIME latency
     );
 
 WINBASEAPI
@@ -1667,8 +1667,8 @@ WINBASEAPI
 BOOL
 WINAPI
 GetThreadSelectorEntry(
-    _In_  HANDLE hThread,
-    _In_  DWORD dwSelector,
+      HANDLE hThread,
+      DWORD dwSelector,
     _Out_ LPLDT_ENTRY lpSelectorEntry
     );
 
@@ -1676,7 +1676,7 @@ WINBASEAPI
 EXECUTION_STATE
 WINAPI
 SetThreadExecutionState(
-    _In_ EXECUTION_STATE esFlags
+     EXECUTION_STATE esFlags
     );
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
@@ -1691,23 +1691,23 @@ WINBASEAPI
 HANDLE
 WINAPI
 PowerCreateRequest (
-    _In_ PREASON_CONTEXT Context
+     PREASON_CONTEXT Context
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 PowerSetRequest (
-    _In_ HANDLE PowerRequest,
-    _In_ POWER_REQUEST_TYPE RequestType
+     HANDLE PowerRequest,
+     POWER_REQUEST_TYPE RequestType
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 PowerClearRequest (
-    _In_ HANDLE PowerRequest,
-    _In_ POWER_REQUEST_TYPE RequestType
+     HANDLE PowerRequest,
+     POWER_REQUEST_TYPE RequestType
     );
 
 #endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
@@ -1736,7 +1736,7 @@ WINBASEAPI
 VOID
 WINAPI
 RestoreLastError(
-    _In_ DWORD dwErrCode
+     DWORD dwErrCode
     );
 
 typedef VOID (WINAPI* PRESTORE_LAST_ERROR)(DWORD);
@@ -1777,8 +1777,8 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFileCompletionNotificationModes(
-    _In_ HANDLE FileHandle,
-    _In_ UCHAR Flags
+     HANDLE FileHandle,
+     UCHAR Flags
     );
 
 #endif // _WIN32_WINNT >= 0x0600
@@ -1802,7 +1802,7 @@ WINBASEAPI
 BOOL
 WINAPI
 Wow64GetThreadContext(
-    _In_    HANDLE hThread,
+        HANDLE hThread,
     _Inout_ PWOW64_CONTEXT lpContext
     );
 
@@ -1810,8 +1810,8 @@ WINBASEAPI
 BOOL
 WINAPI
 Wow64SetThreadContext(
-    _In_ HANDLE hThread,
-    _In_ CONST WOW64_CONTEXT *lpContext
+     HANDLE hThread,
+     CONST WOW64_CONTEXT *lpContext
     );
 
 #endif // (_WIN32_WINNT >= 0x0600)
@@ -1822,8 +1822,8 @@ WINBASEAPI
 BOOL
 WINAPI
 Wow64GetThreadSelectorEntry(
-    _In_ HANDLE hThread,
-    _In_ DWORD dwSelector,
+     HANDLE hThread,
+     DWORD dwSelector,
     _Out_ PWOW64_LDT_ENTRY lpSelectorEntry
     );
 
@@ -1837,7 +1837,7 @@ WINBASEAPI
 DWORD
 WINAPI
 Wow64SuspendThread(
-    _In_ HANDLE hThread
+     HANDLE hThread
     );
 
 #endif // (_WIN32_WINNT >= 0x0600)
@@ -1846,14 +1846,14 @@ WINBASEAPI
 BOOL
 WINAPI
 DebugSetProcessKillOnExit(
-    _In_ BOOL KillOnExit
+     BOOL KillOnExit
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 DebugBreakProcess (
-    _In_ HANDLE Process
+     HANDLE Process
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1876,56 +1876,56 @@ WINBASEAPI
 BOOL
 WINAPI
 PulseEvent(
-    _In_ HANDLE hEvent
+     HANDLE hEvent
     );
 
 WINBASEAPI
 ATOM
 WINAPI
 GlobalDeleteAtom(
-    _In_ ATOM nAtom
+     ATOM nAtom
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 InitAtomTable(
-    _In_ DWORD nSize
+     DWORD nSize
     );
 
 WINBASEAPI
 ATOM
 WINAPI
 DeleteAtom(
-    _In_ ATOM nAtom
+     ATOM nAtom
     );
 
 WINBASEAPI
 UINT
 WINAPI
 SetHandleCount(
-    _In_ UINT uNumber
+     UINT uNumber
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 RequestDeviceWakeup(
-    _In_ HANDLE hDevice
+     HANDLE hDevice
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 CancelDeviceWakeupRequest(
-    _In_ HANDLE hDevice
+     HANDLE hDevice
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 GetDevicePowerState(
-    _In_  HANDLE hDevice,
+      HANDLE hDevice,
     _Out_ BOOL *pfOn
     );
 
@@ -1933,8 +1933,8 @@ WINBASEAPI
 BOOL
 WINAPI
 SetMessageWaitingIndicator(
-    _In_ HANDLE hMsgIndicator,
-    _In_ ULONG ulMsgCount
+     HANDLE hMsgIndicator,
+     ULONG ulMsgCount
     );
 
 
@@ -1942,15 +1942,15 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFileShortNameA(
-    _In_ HANDLE hFile,
-    _In_ LPCSTR lpShortName
+     HANDLE hFile,
+     LPCSTR lpShortName
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetFileShortNameW(
-    _In_ HANDLE hFile,
-    _In_ LPCWSTR lpShortName
+     HANDLE hFile,
+     LPCWSTR lpShortName
     );
 #ifdef UNICODE
 #define SetFileShortName  SetFileShortNameW
@@ -1967,8 +1967,8 @@ WINBASEAPI
 DWORD
 WINAPI
 LoadModule(
-    _In_ LPCSTR lpModuleName,
-    _In_ LPVOID lpParameterBlock
+     LPCSTR lpModuleName,
+     LPVOID lpParameterBlock
     );
 
 
@@ -1977,8 +1977,8 @@ WINBASEAPI
 UINT
 WINAPI
 WinExec(
-    _In_ LPCSTR lpCmdLine,
-    _In_ UINT uCmdShow
+     LPCSTR lpCmdLine,
+     UINT uCmdShow
     );
 
 
@@ -1992,14 +1992,14 @@ WINBASEAPI
 BOOL
 WINAPI
 ClearCommBreak(
-    _In_ HANDLE hFile
+     HANDLE hFile
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 ClearCommError(
-    _In_      HANDLE hFile,
+          HANDLE hFile,
     _Out_opt_ LPDWORD lpErrors,
     _Out_opt_ LPCOMSTAT lpStat
     );
@@ -2008,17 +2008,17 @@ WINBASEAPI
 BOOL
 WINAPI
 SetupComm(
-    _In_ HANDLE hFile,
-    _In_ DWORD dwInQueue,
-    _In_ DWORD dwOutQueue
+     HANDLE hFile,
+     DWORD dwInQueue,
+     DWORD dwOutQueue
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 EscapeCommFunction(
-    _In_ HANDLE hFile,
-    _In_ DWORD dwFunc
+     HANDLE hFile,
+     DWORD dwFunc
     );
 
 WINBASEAPI
@@ -2026,7 +2026,7 @@ _Success_(return != FALSE)
 BOOL
 WINAPI
 GetCommConfig(
-    _In_      HANDLE hCommDev,
+          HANDLE hCommDev,
     _Out_writes_bytes_opt_(*lpdwSize) LPCOMMCONFIG lpCC,
     _Inout_   LPDWORD lpdwSize
     );
@@ -2035,7 +2035,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetCommMask(
-    _In_  HANDLE hFile,
+      HANDLE hFile,
     _Out_ LPDWORD lpEvtMask
     );
 
@@ -2043,7 +2043,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetCommProperties(
-    _In_    HANDLE hFile,
+        HANDLE hFile,
     _Inout_ LPCOMMPROP lpCommProp
     );
 
@@ -2051,7 +2051,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetCommModemStatus(
-    _In_  HANDLE hFile,
+      HANDLE hFile,
     _Out_ LPDWORD lpModemStat
     );
 
@@ -2059,7 +2059,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetCommState(
-    _In_  HANDLE hFile,
+      HANDLE hFile,
     _Out_ LPDCB lpDCB
     );
 
@@ -2067,7 +2067,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetCommTimeouts(
-    _In_  HANDLE hFile,
+      HANDLE hFile,
     _Out_ LPCOMMTIMEOUTS lpCommTimeouts
     );
 
@@ -2075,63 +2075,63 @@ WINBASEAPI
 BOOL
 WINAPI
 PurgeComm(
-    _In_ HANDLE hFile,
-    _In_ DWORD dwFlags
+     HANDLE hFile,
+     DWORD dwFlags
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetCommBreak(
-    _In_ HANDLE hFile
+     HANDLE hFile
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetCommConfig(
-    _In_ HANDLE hCommDev,
+     HANDLE hCommDev,
     _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
-    _In_ DWORD dwSize
+     DWORD dwSize
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetCommMask(
-    _In_ HANDLE hFile,
-    _In_ DWORD dwEvtMask
+     HANDLE hFile,
+     DWORD dwEvtMask
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetCommState(
-    _In_ HANDLE hFile,
-    _In_ LPDCB lpDCB
+     HANDLE hFile,
+     LPDCB lpDCB
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetCommTimeouts(
-    _In_ HANDLE hFile,
-    _In_ LPCOMMTIMEOUTS lpCommTimeouts
+     HANDLE hFile,
+     LPCOMMTIMEOUTS lpCommTimeouts
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 TransmitCommChar(
-    _In_ HANDLE hFile,
-    _In_ char cChar
+     HANDLE hFile,
+     char cChar
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 WaitCommEvent(
-    _In_        HANDLE hFile,
+            HANDLE hFile,
     _Inout_     LPDWORD lpEvtMask,
     _Inout_opt_ LPOVERLAPPED lpOverlapped
     );
@@ -2143,9 +2143,9 @@ WINBASEAPI
 HANDLE
 WINAPI
 OpenCommPort(
-    _In_ ULONG uPortNumber,
-    _In_ DWORD dwDesiredAccess,
-    _In_ DWORD dwFlagsAndAttributes
+     ULONG uPortNumber,
+     DWORD dwDesiredAccess,
+     DWORD dwFlagsAndAttributes
     );
 
 #endif // (NTDDI_VERSION >= NTDDI_WIN10_RS3)
@@ -2157,7 +2157,7 @@ ULONG
 WINAPI
 GetCommPorts(
     _Out_writes_(uPortNumbersCount) PULONG lpPortNumbers,
-    _In_                            ULONG uPortNumbersCount,
+                                ULONG uPortNumbersCount,
     _Out_                           PULONG puPortNumbersFound
     );
 
@@ -2173,20 +2173,20 @@ WINBASEAPI
 DWORD
 WINAPI
 SetTapePosition(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwPositionMethod,
-    _In_ DWORD dwPartition,
-    _In_ DWORD dwOffsetLow,
-    _In_ DWORD dwOffsetHigh,
-    _In_ BOOL bImmediate
+     HANDLE hDevice,
+     DWORD dwPositionMethod,
+     DWORD dwPartition,
+     DWORD dwOffsetLow,
+     DWORD dwOffsetHigh,
+     BOOL bImmediate
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 GetTapePosition(
-    _In_  HANDLE hDevice,
-    _In_  DWORD dwPositionType,
+      HANDLE hDevice,
+      DWORD dwPositionType,
     _Out_ LPDWORD lpdwPartition,
     _Out_ LPDWORD lpdwOffsetLow,
     _Out_ LPDWORD lpdwOffsetHigh
@@ -2196,53 +2196,53 @@ WINBASEAPI
 DWORD
 WINAPI
 PrepareTape(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwOperation,
-    _In_ BOOL bImmediate
+     HANDLE hDevice,
+     DWORD dwOperation,
+     BOOL bImmediate
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 EraseTape(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwEraseType,
-    _In_ BOOL bImmediate
+     HANDLE hDevice,
+     DWORD dwEraseType,
+     BOOL bImmediate
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 CreateTapePartition(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwPartitionMethod,
-    _In_ DWORD dwCount,
-    _In_ DWORD dwSize
+     HANDLE hDevice,
+     DWORD dwPartitionMethod,
+     DWORD dwCount,
+     DWORD dwSize
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 WriteTapemark(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwTapemarkType,
-    _In_ DWORD dwTapemarkCount,
-    _In_ BOOL bImmediate
+     HANDLE hDevice,
+     DWORD dwTapemarkType,
+     DWORD dwTapemarkCount,
+     BOOL bImmediate
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 GetTapeStatus(
-    _In_ HANDLE hDevice
+     HANDLE hDevice
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 GetTapeParameters(
-    _In_    HANDLE hDevice,
-    _In_    DWORD dwOperation,
+        HANDLE hDevice,
+        DWORD dwOperation,
     _Inout_ LPDWORD lpdwSize,
     _Out_writes_bytes_(*lpdwSize) LPVOID lpTapeInformation
     );
@@ -2254,9 +2254,9 @@ WINBASEAPI
 DWORD
 WINAPI
 SetTapeParameters(
-    _In_ HANDLE hDevice,
-    _In_ DWORD dwOperation,
-    _In_ LPVOID lpTapeInformation
+     HANDLE hDevice,
+     DWORD dwOperation,
+     LPVOID lpTapeInformation
     );
 
 #define SET_TAPE_MEDIA_INFORMATION 0
@@ -2272,9 +2272,9 @@ WINBASEAPI
 int
 WINAPI
 MulDiv(
-    _In_ int nNumber,
-    _In_ int nNumerator,
-    _In_ int nDenominator
+     int nNumber,
+     int nNumerator,
+     int nDenominator
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -2322,7 +2322,7 @@ WINBASEAPI
 BOOL
 WINAPI
 FileTimeToDosDateTime(
-    _In_  CONST FILETIME *lpFileTime,
+      CONST FILETIME *lpFileTime,
     _Out_ LPWORD lpFatDate,
     _Out_ LPWORD lpFatTime
     );
@@ -2331,8 +2331,8 @@ WINBASEAPI
 BOOL
 WINAPI
 DosDateTimeToFileTime(
-    _In_  WORD wFatDate,
-    _In_  WORD wFatTime,
+      WORD wFatDate,
+      WORD wFatTime,
     _Out_ LPFILETIME lpFileTime
     );
 
@@ -2354,30 +2354,30 @@ _Success_(return != 0)
 DWORD
 WINAPI
 FormatMessageA(
-    _In_     DWORD dwFlags,
-    _In_opt_ LPCVOID lpSource,
-    _In_     DWORD dwMessageId,
-    _In_     DWORD dwLanguageId,
+         DWORD dwFlags,
+     LPCVOID lpSource,
+         DWORD dwMessageId,
+         DWORD dwLanguageId,
     _When_((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0, _At_((LPSTR*)lpBuffer, _Outptr_result_z_))
     _When_((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) == 0, _Out_writes_z_(nSize))
              LPSTR lpBuffer,
-    _In_     DWORD nSize,
-    _In_opt_ va_list *Arguments
+         DWORD nSize,
+     va_list *Arguments
     );
 WINBASEAPI
 _Success_(return != 0)
 DWORD
 WINAPI
 FormatMessageW(
-    _In_     DWORD dwFlags,
-    _In_opt_ LPCVOID lpSource,
-    _In_     DWORD dwMessageId,
-    _In_     DWORD dwLanguageId,
+         DWORD dwFlags,
+     LPCVOID lpSource,
+         DWORD dwMessageId,
+         DWORD dwLanguageId,
     _When_((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0, _At_((LPWSTR*)lpBuffer, _Outptr_result_z_))
     _When_((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) == 0, _Out_writes_z_(nSize))
              LPWSTR lpBuffer,
-    _In_     DWORD nSize,
-    _In_opt_ va_list *Arguments
+         DWORD nSize,
+     va_list *Arguments
     );
 #ifdef UNICODE
 #define FormatMessage  FormatMessageW
@@ -2434,19 +2434,19 @@ WINBASEAPI
 HANDLE
 WINAPI
 CreateMailslotA(
-    _In_     LPCSTR lpName,
-    _In_     DWORD nMaxMessageSize,
-    _In_     DWORD lReadTimeout,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+         LPCSTR lpName,
+         DWORD nMaxMessageSize,
+         DWORD lReadTimeout,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 WINBASEAPI
 HANDLE
 WINAPI
 CreateMailslotW(
-    _In_     LPCWSTR lpName,
-    _In_     DWORD nMaxMessageSize,
-    _In_     DWORD lReadTimeout,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+         LPCWSTR lpName,
+         DWORD nMaxMessageSize,
+         DWORD lReadTimeout,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 #ifdef UNICODE
 #define CreateMailslot  CreateMailslotW
@@ -2458,7 +2458,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetMailslotInfo(
-    _In_      HANDLE hMailslot,
+          HANDLE hMailslot,
     _Out_opt_ LPDWORD lpMaxMessageSize,
     _Out_opt_ LPDWORD lpNextSize,
     _Out_opt_ LPDWORD lpMessageCount,
@@ -2469,8 +2469,8 @@ WINBASEAPI
 BOOL
 WINAPI
 SetMailslotInfo(
-    _In_ HANDLE hMailslot,
-    _In_ DWORD lReadTimeout
+     HANDLE hMailslot,
+     DWORD lReadTimeout
     );
 
 //
@@ -2481,13 +2481,13 @@ SetMailslotInfo(
 BOOL
 WINAPI
 EncryptFileA(
-    _In_ LPCSTR lpFileName
+     LPCSTR lpFileName
     );
 
 BOOL
 WINAPI
 EncryptFileW(
-    _In_ LPCWSTR lpFileName
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define EncryptFile  EncryptFileW
@@ -2499,14 +2499,14 @@ EncryptFileW(
 BOOL
 WINAPI
 DecryptFileA(
-    _In_       LPCSTR lpFileName,
+           LPCSTR lpFileName,
     _Reserved_ DWORD dwReserved
     );
 
 BOOL
 WINAPI
 DecryptFileW(
-    _In_       LPCWSTR lpFileName,
+           LPCWSTR lpFileName,
     _Reserved_ DWORD dwReserved
     );
 #ifdef UNICODE
@@ -2534,14 +2534,14 @@ DecryptFileW(
 BOOL
 WINAPI
 FileEncryptionStatusA(
-    _In_  LPCSTR lpFileName,
+      LPCSTR lpFileName,
     _Out_ LPDWORD  lpStatus
     );
 
 BOOL
 WINAPI
 FileEncryptionStatusW(
-    _In_  LPCWSTR lpFileName,
+      LPCWSTR lpFileName,
     _Out_ LPDWORD  lpStatus
     );
 #ifdef UNICODE
@@ -2560,15 +2560,15 @@ typedef
 DWORD
 (WINAPI *PFE_EXPORT_FUNC)(
     _In_reads_bytes_(ulLength) PBYTE pbData,
-    _In_opt_ PVOID pvCallbackContext,
-    _In_     ULONG ulLength
+     PVOID pvCallbackContext,
+         ULONG ulLength
     );
 
 typedef
 DWORD
 (WINAPI *PFE_IMPORT_FUNC)(
     _Out_writes_bytes_to_(*ulLength, *ulLength) PBYTE pbData,
-    _In_opt_ PVOID pvCallbackContext,
+     PVOID pvCallbackContext,
     _Inout_  PULONG ulLength
     );
 
@@ -2588,16 +2588,16 @@ DWORD
 DWORD
 WINAPI
 OpenEncryptedFileRawA(
-    _In_        LPCSTR lpFileName,
-    _In_        ULONG    ulFlags,
+            LPCSTR lpFileName,
+            ULONG    ulFlags,
     _Outptr_ PVOID   *pvContext
     );
 
 DWORD
 WINAPI
 OpenEncryptedFileRawW(
-    _In_        LPCWSTR lpFileName,
-    _In_        ULONG    ulFlags,
+            LPCWSTR lpFileName,
+            ULONG    ulFlags,
     _Outptr_ PVOID   *pvContext
     );
 #ifdef UNICODE
@@ -2610,25 +2610,25 @@ OpenEncryptedFileRawW(
 DWORD
 WINAPI
 ReadEncryptedFileRaw(
-    _In_     PFE_EXPORT_FUNC pfExportCallback,
-    _In_opt_ PVOID           pvCallbackContext,
-    _In_     PVOID           pvContext
+         PFE_EXPORT_FUNC pfExportCallback,
+     PVOID           pvCallbackContext,
+         PVOID           pvContext
     );
 
 
 DWORD
 WINAPI
 WriteEncryptedFileRaw(
-    _In_     PFE_IMPORT_FUNC pfImportCallback,
-    _In_opt_ PVOID           pvCallbackContext,
-    _In_     PVOID           pvContext
+         PFE_IMPORT_FUNC pfImportCallback,
+     PVOID           pvCallbackContext,
+         PVOID           pvContext
     );
 
 
 VOID
 WINAPI
 CloseEncryptedFileRaw(
-    _In_ PVOID           pvContext
+     PVOID           pvContext
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -2645,15 +2645,15 @@ WINBASEAPI
 int
 WINAPI
 lstrcmpA(
-    _In_ LPCSTR lpString1,
-    _In_ LPCSTR lpString2
+     LPCSTR lpString1,
+     LPCSTR lpString2
     );
 WINBASEAPI
 int
 WINAPI
 lstrcmpW(
-    _In_ LPCWSTR lpString1,
-    _In_ LPCWSTR lpString2
+     LPCWSTR lpString1,
+     LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcmp  lstrcmpW
@@ -2665,15 +2665,15 @@ WINBASEAPI
 int
 WINAPI
 lstrcmpiA(
-    _In_ LPCSTR lpString1,
-    _In_ LPCSTR lpString2
+     LPCSTR lpString1,
+     LPCSTR lpString2
     );
 WINBASEAPI
 int
 WINAPI
 lstrcmpiW(
-    _In_ LPCWSTR lpString1,
-    _In_ LPCWSTR lpString2
+     LPCWSTR lpString1,
+     LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcmpi  lstrcmpiW
@@ -2695,8 +2695,8 @@ LPSTR
 WINAPI
 lstrcpynA(
     _Out_writes_(iMaxLength) LPSTR lpString1,
-    _In_ LPCSTR lpString2,
-    _In_ int iMaxLength
+     LPCSTR lpString2,
+     int iMaxLength
     );
 WINBASEAPI
 _Check_return_
@@ -2707,8 +2707,8 @@ LPWSTR
 WINAPI
 lstrcpynW(
     _Out_writes_(iMaxLength) LPWSTR lpString1,
-    _In_ LPCWSTR lpString2,
-    _In_ int iMaxLength
+     LPCWSTR lpString2,
+     int iMaxLength
     );
 #ifdef UNICODE
 #define lstrcpyn  lstrcpynW
@@ -2721,14 +2721,14 @@ LPSTR
 WINAPI
 lstrcpyA(
     _Out_writes_(_String_length_(lpString2) + 1) LPSTR lpString1, // deprecated: annotation is as good as it gets
-    _In_  LPCSTR lpString2
+      LPCSTR lpString2
     );
 WINBASEAPI
 LPWSTR
 WINAPI
 lstrcpyW(
     _Out_writes_(_String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
-    _In_  LPCWSTR lpString2
+      LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcpy  lstrcpyW
@@ -2741,14 +2741,14 @@ LPSTR
 WINAPI
 lstrcatA(
     _Inout_updates_z_(_String_length_(lpString1) + _String_length_(lpString2) + 1) LPSTR lpString1, // deprecated: annotation is as good as it gets
-    _In_    LPCSTR lpString2
+        LPCSTR lpString2
     );
 WINBASEAPI
 LPWSTR
 WINAPI
 lstrcatW(
     _Inout_updates_z_(_String_length_(lpString1) + _String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
-    _In_    LPCWSTR lpString2
+        LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcat  lstrcatW
@@ -2764,13 +2764,13 @@ WINBASEAPI
 int
 WINAPI
 lstrlenA(
-    _In_ LPCSTR lpString
+     LPCSTR lpString
     );
 WINBASEAPI
 int
 WINAPI
 lstrlenW(
-    _In_ LPCWSTR lpString
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define lstrlen  lstrlenW
@@ -2788,77 +2788,77 @@ WINBASEAPI
 HFILE
 WINAPI
 OpenFile(
-    _In_    LPCSTR lpFileName,
+        LPCSTR lpFileName,
     _Inout_ LPOFSTRUCT lpReOpenBuff,
-    _In_    UINT uStyle
+        UINT uStyle
     );
 
 WINBASEAPI
 HFILE
 WINAPI
 _lopen(
-    _In_ LPCSTR lpPathName,
-    _In_ int iReadWrite
+     LPCSTR lpPathName,
+     int iReadWrite
     );
 
 WINBASEAPI
 HFILE
 WINAPI
 _lcreat(
-    _In_ LPCSTR lpPathName,
-    _In_ int  iAttribute
+     LPCSTR lpPathName,
+     int  iAttribute
     );
 
 WINBASEAPI
 UINT
 WINAPI
 _lread(
-    _In_ HFILE hFile,
+     HFILE hFile,
     _Out_writes_bytes_to_(uBytes, return) LPVOID lpBuffer,
-    _In_ UINT uBytes
+     UINT uBytes
     );
 
 WINBASEAPI
 UINT
 WINAPI
 _lwrite(
-    _In_ HFILE hFile,
+     HFILE hFile,
     _In_reads_bytes_(uBytes) LPCCH lpBuffer,
-    _In_ UINT uBytes
+     UINT uBytes
     );
 
 WINBASEAPI
 long
 WINAPI
 _hread(
-    _In_ HFILE hFile,
+     HFILE hFile,
     _Out_writes_bytes_to_(lBytes, return) LPVOID lpBuffer,
-    _In_ long lBytes
+     long lBytes
     );
 
 WINBASEAPI
 long
 WINAPI
 _hwrite(
-    _In_ HFILE hFile,
+     HFILE hFile,
     _In_reads_bytes_(lBytes) LPCCH lpBuffer,
-    _In_ long lBytes
+     long lBytes
     );
 
 WINBASEAPI
 HFILE
 WINAPI
 _lclose(
-    _In_ HFILE hFile
+     HFILE hFile
     );
 
 WINBASEAPI
 LONG
 WINAPI
 _llseek(
-    _In_ HFILE hFile,
-    _In_ LONG lOffset,
-    _In_ int iOrigin
+     HFILE hFile,
+     LONG lOffset,
+     int iOrigin
     );
 
 
@@ -2866,7 +2866,7 @@ BOOL
 WINAPI
 IsTextUnicode(
     _In_reads_bytes_(iSize) CONST VOID* lpv,
-    _In_        int iSize,
+            int iSize,
     _Inout_opt_ LPINT lpiResult
     );
 
@@ -2881,10 +2881,10 @@ WINBASEAPI
 DWORD
 WINAPI
 SignalObjectAndWait(
-    _In_ HANDLE hObjectToSignal,
-    _In_ HANDLE hObjectToWaitOn,
-    _In_ DWORD dwMilliseconds,
-    _In_ BOOL bAlertable
+     HANDLE hObjectToSignal,
+     HANDLE hObjectToWaitOn,
+     DWORD dwMilliseconds,
+     BOOL bAlertable
     );
 #endif /* _WIN32_WINNT >= 0x0400 */
 
@@ -2898,12 +2898,12 @@ WINBASEAPI
 BOOL
 WINAPI
 BackupRead(
-    _In_    HANDLE hFile,
+        HANDLE hFile,
     _Out_writes_bytes_to_(nNumberOfBytesToRead, *lpNumberOfBytesRead) LPBYTE lpBuffer,
-    _In_    DWORD nNumberOfBytesToRead,
+        DWORD nNumberOfBytesToRead,
     _Out_   LPDWORD lpNumberOfBytesRead,
-    _In_    BOOL bAbort,
-    _In_    BOOL bProcessSecurity,
+        BOOL bAbort,
+        BOOL bProcessSecurity,
     _Inout_ LPVOID *lpContext
     );
 
@@ -2911,9 +2911,9 @@ WINBASEAPI
 BOOL
 WINAPI
 BackupSeek(
-    _In_    HANDLE hFile,
-    _In_    DWORD  dwLowBytesToSeek,
-    _In_    DWORD  dwHighBytesToSeek,
+        HANDLE hFile,
+        DWORD  dwLowBytesToSeek,
+        DWORD  dwHighBytesToSeek,
     _Out_   LPDWORD lpdwLowByteSeeked,
     _Out_   LPDWORD lpdwHighByteSeeked,
     _Inout_ LPVOID *lpContext
@@ -2923,12 +2923,12 @@ WINBASEAPI
 BOOL
 WINAPI
 BackupWrite(
-    _In_    HANDLE hFile,
+        HANDLE hFile,
     _In_reads_bytes_(nNumberOfBytesToWrite) LPBYTE lpBuffer,
-    _In_    DWORD nNumberOfBytesToWrite,
+        DWORD nNumberOfBytesToWrite,
     _Out_   LPDWORD lpNumberOfBytesWritten,
-    _In_    BOOL bAbort,
-    _In_    BOOL bProcessSecurity,
+        BOOL bAbort,
+        BOOL bProcessSecurity,
     _Inout_ LPVOID *lpContext
     );
 
@@ -3030,9 +3030,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 OpenMutexA(
-    _In_ DWORD dwDesiredAccess,
-    _In_ BOOL bInheritHandle,
-    _In_ LPCSTR lpName
+     DWORD dwDesiredAccess,
+     BOOL bInheritHandle,
+     LPCSTR lpName
     );
 #ifndef UNICODE
 #define OpenMutex  OpenMutexA
@@ -3043,10 +3043,10 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateSemaphoreA(
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
-    _In_     LONG lInitialCount,
-    _In_     LONG lMaximumCount,
-    _In_opt_ LPCSTR lpName
+     LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
+         LONG lInitialCount,
+         LONG lMaximumCount,
+     LPCSTR lpName
     );
 #ifndef UNICODE
 #define CreateSemaphore  CreateSemaphoreA
@@ -3063,9 +3063,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 OpenSemaphoreA(
-    _In_ DWORD dwDesiredAccess,
-    _In_ BOOL bInheritHandle,
-    _In_ LPCSTR lpName
+     DWORD dwDesiredAccess,
+     BOOL bInheritHandle,
+     LPCSTR lpName
     );
 #ifndef UNICODE
 #define OpenSemaphore  OpenSemaphoreA
@@ -3084,9 +3084,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateWaitableTimerA(
-    _In_opt_ LPSECURITY_ATTRIBUTES lpTimerAttributes,
-    _In_     BOOL bManualReset,
-    _In_opt_ LPCSTR lpTimerName
+     LPSECURITY_ATTRIBUTES lpTimerAttributes,
+         BOOL bManualReset,
+     LPCSTR lpTimerName
     );
 #ifndef UNICODE
 #define CreateWaitableTimer  CreateWaitableTimerA
@@ -3097,9 +3097,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 OpenWaitableTimerA(
-    _In_ DWORD dwDesiredAccess,
-    _In_ BOOL bInheritHandle,
-    _In_ LPCSTR lpTimerName
+     DWORD dwDesiredAccess,
+     BOOL bInheritHandle,
+     LPCSTR lpTimerName
     );
 #ifndef UNICODE
 #define OpenWaitableTimer  OpenWaitableTimerA
@@ -3112,12 +3112,12 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateSemaphoreExA(
-    _In_opt_    LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
-    _In_        LONG lInitialCount,
-    _In_        LONG lMaximumCount,
-    _In_opt_    LPCSTR lpName,
+        LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
+            LONG lInitialCount,
+            LONG lMaximumCount,
+        LPCSTR lpName,
     _Reserved_  DWORD dwFlags,
-    _In_        DWORD dwDesiredAccess
+            DWORD dwDesiredAccess
     );
 #ifndef UNICODE
 #define CreateSemaphoreEx  CreateSemaphoreExA
@@ -3128,10 +3128,10 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateWaitableTimerExA(
-    _In_opt_ LPSECURITY_ATTRIBUTES lpTimerAttributes,
-    _In_opt_ LPCSTR lpTimerName,
-    _In_     DWORD dwFlags,
-    _In_     DWORD dwDesiredAccess
+     LPSECURITY_ATTRIBUTES lpTimerAttributes,
+     LPCSTR lpTimerName,
+         DWORD dwFlags,
+         DWORD dwDesiredAccess
     );
 #ifndef UNICODE
 #define CreateWaitableTimerEx  CreateWaitableTimerExA
@@ -3153,12 +3153,12 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateFileMappingA(
-    _In_     HANDLE hFile,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
-    _In_     DWORD flProtect,
-    _In_     DWORD dwMaximumSizeHigh,
-    _In_     DWORD dwMaximumSizeLow,
-    _In_opt_ LPCSTR lpName
+         HANDLE hFile,
+     LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
+         DWORD flProtect,
+         DWORD dwMaximumSizeHigh,
+         DWORD dwMaximumSizeLow,
+     LPCSTR lpName
     );
 #ifndef UNICODE
 #define CreateFileMapping  CreateFileMappingA
@@ -3171,13 +3171,13 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateFileMappingNumaA(
-    _In_     HANDLE hFile,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
-    _In_     DWORD flProtect,
-    _In_     DWORD dwMaximumSizeHigh,
-    _In_     DWORD dwMaximumSizeLow,
-    _In_opt_ LPCSTR lpName,
-    _In_     DWORD nndPreferred
+         HANDLE hFile,
+     LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
+         DWORD flProtect,
+         DWORD dwMaximumSizeHigh,
+         DWORD dwMaximumSizeLow,
+     LPCSTR lpName,
+         DWORD nndPreferred
     );
 
 #ifndef UNICODE
@@ -3190,9 +3190,9 @@ WINBASEAPI
 HANDLE
 WINAPI
 OpenFileMappingA(
-    _In_ DWORD dwDesiredAccess,
-    _In_ BOOL bInheritHandle,
-    _In_ LPCSTR lpName
+     DWORD dwDesiredAccess,
+     BOOL bInheritHandle,
+     LPCSTR lpName
     );
 #ifndef UNICODE
 #define OpenFileMapping  OpenFileMappingA
@@ -3209,7 +3209,7 @@ _Success_(return != 0 && return <= nBufferLength)
 DWORD
 WINAPI
 GetLogicalDriveStringsA(
-    _In_ DWORD nBufferLength,
+     DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer
     );
 #ifndef UNICODE
@@ -3236,7 +3236,7 @@ _Ret_maybenull_
 HMODULE
 WINAPI
 LoadPackagedLibrary (
-    _In_       LPCWSTR lpwLibFileName,
+           LPCWSTR lpwLibFileName,
     _Reserved_ DWORD Reserved
     );
 
@@ -3288,8 +3288,8 @@ WINBASEAPI
 BOOL
 WINAPI
 QueryFullProcessImageNameA(
-    _In_ HANDLE hProcess,
-    _In_ DWORD dwFlags,
+     HANDLE hProcess,
+     DWORD dwFlags,
     _Out_writes_to_(*lpdwSize, *lpdwSize) LPSTR lpExeName,
     _Inout_ PDWORD lpdwSize
     );
@@ -3297,8 +3297,8 @@ WINBASEAPI
 BOOL
 WINAPI
 QueryFullProcessImageNameW(
-    _In_ HANDLE hProcess,
-    _In_ DWORD dwFlags,
+     HANDLE hProcess,
+     DWORD dwFlags,
     _Out_writes_to_(*lpdwSize, *lpdwSize) LPWSTR lpExeName,
     _Inout_ PDWORD lpdwSize
     );
@@ -3698,9 +3698,9 @@ _Success_(return != 0 && return < nSize)
 __inline
 DWORD
 GetEnvironmentVariable(
-    _In_opt_ LPCTSTR lpName,
+     LPCTSTR lpName,
     _Out_writes_to_opt_(nSize, return + 1) LPTSTR lpBuffer,
-    _In_ DWORD nSize
+     DWORD nSize
     )
 {
 #ifdef UNICODE
@@ -3750,19 +3750,19 @@ WINBASEAPI
 DWORD
 WINAPI
 GetFirmwareEnvironmentVariableA(
-    _In_ LPCSTR lpName,
-    _In_ LPCSTR lpGuid,
+     LPCSTR lpName,
+     LPCSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
-    _In_ DWORD    nSize
+     DWORD    nSize
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetFirmwareEnvironmentVariableW(
-    _In_ LPCWSTR lpName,
-    _In_ LPCWSTR lpGuid,
+     LPCWSTR lpName,
+     LPCWSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
-    _In_ DWORD    nSize
+     DWORD    nSize
     );
 #ifdef UNICODE
 #define GetFirmwareEnvironmentVariable  GetFirmwareEnvironmentVariableW
@@ -3776,20 +3776,20 @@ WINBASEAPI
 DWORD
 WINAPI
 GetFirmwareEnvironmentVariableExA(
-    _In_ LPCSTR lpName,
-    _In_ LPCSTR lpGuid,
+     LPCSTR lpName,
+     LPCSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
-    _In_ DWORD    nSize,
+     DWORD    nSize,
     _Out_opt_ PDWORD pdwAttribubutes
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetFirmwareEnvironmentVariableExW(
-    _In_ LPCWSTR lpName,
-    _In_ LPCWSTR lpGuid,
+     LPCWSTR lpName,
+     LPCWSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
-    _In_ DWORD    nSize,
+     DWORD    nSize,
     _Out_opt_ PDWORD pdwAttribubutes
     );
 #ifdef UNICODE
@@ -3804,19 +3804,19 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFirmwareEnvironmentVariableA(
-    _In_ LPCSTR lpName,
-    _In_ LPCSTR lpGuid,
+     LPCSTR lpName,
+     LPCSTR lpGuid,
     _In_reads_bytes_opt_(nSize) PVOID pValue,
-    _In_ DWORD    nSize
+     DWORD    nSize
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetFirmwareEnvironmentVariableW(
-    _In_ LPCWSTR lpName,
-    _In_ LPCWSTR lpGuid,
+     LPCWSTR lpName,
+     LPCWSTR lpGuid,
     _In_reads_bytes_opt_(nSize) PVOID pValue,
-    _In_ DWORD    nSize
+     DWORD    nSize
     );
 #ifdef UNICODE
 #define SetFirmwareEnvironmentVariable  SetFirmwareEnvironmentVariableW
@@ -3830,21 +3830,21 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFirmwareEnvironmentVariableExA(
-    _In_ LPCSTR lpName,
-    _In_ LPCSTR lpGuid,
+     LPCSTR lpName,
+     LPCSTR lpGuid,
     _In_reads_bytes_opt_(nSize) PVOID pValue,
-    _In_ DWORD    nSize,
-    _In_ DWORD    dwAttributes
+     DWORD    nSize,
+     DWORD    dwAttributes
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetFirmwareEnvironmentVariableExW(
-    _In_ LPCWSTR lpName,
-    _In_ LPCWSTR lpGuid,
+     LPCWSTR lpName,
+     LPCWSTR lpGuid,
     _In_reads_bytes_opt_(nSize) PVOID pValue,
-    _In_ DWORD    nSize,
-    _In_ DWORD    dwAttributes
+     DWORD    nSize,
+     DWORD    dwAttributes
     );
 #ifdef UNICODE
 #define SetFirmwareEnvironmentVariableEx  SetFirmwareEnvironmentVariableExW
@@ -3884,9 +3884,9 @@ _Ret_maybenull_
 HRSRC
 WINAPI
 FindResourceA(
-    _In_opt_ HMODULE hModule,
-    _In_     LPCSTR lpName,
-    _In_     LPCSTR lpType
+     HMODULE hModule,
+         LPCSTR lpName,
+         LPCSTR lpType
     );
 #ifndef UNICODE
 #define FindResource  FindResourceA
@@ -3897,10 +3897,10 @@ _Ret_maybenull_
 HRSRC
 WINAPI
 FindResourceExA(
-    _In_opt_ HMODULE hModule,
-    _In_     LPCSTR lpType,
-    _In_     LPCSTR lpName,
-    _In_     WORD    wLanguage
+     HMODULE hModule,
+         LPCSTR lpType,
+         LPCSTR lpName,
+         WORD    wLanguage
     );
 #ifndef UNICODE
 #define FindResourceEx  FindResourceExA
@@ -3910,17 +3910,17 @@ WINBASEAPI
 BOOL
 WINAPI
 EnumResourceTypesA(
-    _In_opt_ HMODULE hModule,
-    _In_     ENUMRESTYPEPROCA lpEnumFunc,
-    _In_     LONG_PTR lParam
+     HMODULE hModule,
+         ENUMRESTYPEPROCA lpEnumFunc,
+         LONG_PTR lParam
     );
 WINBASEAPI
 BOOL
 WINAPI
 EnumResourceTypesW(
-    _In_opt_ HMODULE hModule,
-    _In_     ENUMRESTYPEPROCW lpEnumFunc,
-    _In_     LONG_PTR lParam
+     HMODULE hModule,
+         ENUMRESTYPEPROCW lpEnumFunc,
+         LONG_PTR lParam
     );
 #ifdef UNICODE
 #define EnumResourceTypes  EnumResourceTypesW
@@ -3932,10 +3932,10 @@ WINBASEAPI
 BOOL
 WINAPI
 EnumResourceNamesA(
-    _In_opt_ HMODULE hModule,
-    _In_     LPCSTR lpType,
-    _In_     ENUMRESNAMEPROCA lpEnumFunc,
-    _In_     LONG_PTR lParam
+     HMODULE hModule,
+         LPCSTR lpType,
+         ENUMRESNAMEPROCA lpEnumFunc,
+         LONG_PTR lParam
     );
 
 #ifndef UNICODE
@@ -3946,21 +3946,21 @@ WINBASEAPI
 BOOL
 WINAPI
 EnumResourceLanguagesA(
-    _In_opt_ HMODULE hModule,
-    _In_     LPCSTR lpType,
-    _In_     LPCSTR lpName,
-    _In_     ENUMRESLANGPROCA lpEnumFunc,
-    _In_     LONG_PTR lParam
+     HMODULE hModule,
+         LPCSTR lpType,
+         LPCSTR lpName,
+         ENUMRESLANGPROCA lpEnumFunc,
+         LONG_PTR lParam
     );
 WINBASEAPI
 BOOL
 WINAPI
 EnumResourceLanguagesW(
-    _In_opt_ HMODULE hModule,
-    _In_     LPCWSTR lpType,
-    _In_     LPCWSTR lpName,
-    _In_     ENUMRESLANGPROCW lpEnumFunc,
-    _In_     LONG_PTR lParam
+     HMODULE hModule,
+         LPCWSTR lpType,
+         LPCWSTR lpName,
+         ENUMRESLANGPROCW lpEnumFunc,
+         LONG_PTR lParam
     );
 #ifdef UNICODE
 #define EnumResourceLanguages  EnumResourceLanguagesW
@@ -3972,15 +3972,15 @@ WINBASEAPI
 HANDLE
 WINAPI
 BeginUpdateResourceA(
-    _In_ LPCSTR pFileName,
-    _In_ BOOL bDeleteExistingResources
+     LPCSTR pFileName,
+     BOOL bDeleteExistingResources
     );
 WINBASEAPI
 HANDLE
 WINAPI
 BeginUpdateResourceW(
-    _In_ LPCWSTR pFileName,
-    _In_ BOOL bDeleteExistingResources
+     LPCWSTR pFileName,
+     BOOL bDeleteExistingResources
     );
 #ifdef UNICODE
 #define BeginUpdateResource  BeginUpdateResourceW
@@ -3992,23 +3992,23 @@ WINBASEAPI
 BOOL
 WINAPI
 UpdateResourceA(
-    _In_ HANDLE hUpdate,
-    _In_ LPCSTR lpType,
-    _In_ LPCSTR lpName,
-    _In_ WORD wLanguage,
+     HANDLE hUpdate,
+     LPCSTR lpType,
+     LPCSTR lpName,
+     WORD wLanguage,
     _In_reads_bytes_opt_(cb) LPVOID lpData,
-    _In_ DWORD cb
+     DWORD cb
     );
 WINBASEAPI
 BOOL
 WINAPI
 UpdateResourceW(
-    _In_ HANDLE hUpdate,
-    _In_ LPCWSTR lpType,
-    _In_ LPCWSTR lpName,
-    _In_ WORD wLanguage,
+     HANDLE hUpdate,
+     LPCWSTR lpType,
+     LPCWSTR lpName,
+     WORD wLanguage,
     _In_reads_bytes_opt_(cb) LPVOID lpData,
-    _In_ DWORD cb
+     DWORD cb
     );
 #ifdef UNICODE
 #define UpdateResource  UpdateResourceW
@@ -4020,15 +4020,15 @@ WINBASEAPI
 BOOL
 WINAPI
 EndUpdateResourceA(
-    _In_ HANDLE hUpdate,
-    _In_ BOOL   fDiscard
+     HANDLE hUpdate,
+     BOOL   fDiscard
     );
 WINBASEAPI
 BOOL
 WINAPI
 EndUpdateResourceW(
-    _In_ HANDLE hUpdate,
-    _In_ BOOL   fDiscard
+     HANDLE hUpdate,
+     BOOL   fDiscard
     );
 #ifdef UNICODE
 #define EndUpdateResource  EndUpdateResourceW
@@ -4042,13 +4042,13 @@ WINBASEAPI
 ATOM
 WINAPI
 GlobalAddAtomA(
-    _In_opt_ LPCSTR lpString
+     LPCSTR lpString
     );
 WINBASEAPI
 ATOM
 WINAPI
 GlobalAddAtomW(
-    _In_opt_ LPCWSTR lpString
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define GlobalAddAtom  GlobalAddAtomW
@@ -4060,15 +4060,15 @@ WINBASEAPI
 ATOM
 WINAPI
 GlobalAddAtomExA(
-    _In_opt_ LPCSTR lpString,
-    _In_ DWORD Flags
+     LPCSTR lpString,
+     DWORD Flags
     );
 WINBASEAPI
 ATOM
 WINAPI
 GlobalAddAtomExW(
-    _In_opt_ LPCWSTR lpString,
-    _In_ DWORD Flags
+     LPCWSTR lpString,
+     DWORD Flags
     );
 #ifdef UNICODE
 #define GlobalAddAtomEx  GlobalAddAtomExW
@@ -4080,13 +4080,13 @@ WINBASEAPI
 ATOM
 WINAPI
 GlobalFindAtomA(
-    _In_opt_ LPCSTR lpString
+     LPCSTR lpString
     );
 WINBASEAPI
 ATOM
 WINAPI
 GlobalFindAtomW(
-    _In_opt_ LPCWSTR lpString
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define GlobalFindAtom  GlobalFindAtomW
@@ -4098,17 +4098,17 @@ WINBASEAPI
 UINT
 WINAPI
 GlobalGetAtomNameA(
-    _In_ ATOM nAtom,
+     ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPSTR lpBuffer,
-    _In_ int nSize
+     int nSize
     );
 WINBASEAPI
 UINT
 WINAPI
 GlobalGetAtomNameW(
-    _In_ ATOM nAtom,
+     ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPWSTR lpBuffer,
-    _In_ int nSize
+     int nSize
     );
 #ifdef UNICODE
 #define GlobalGetAtomName  GlobalGetAtomNameW
@@ -4120,13 +4120,13 @@ WINBASEAPI
 ATOM
 WINAPI
 AddAtomA(
-    _In_opt_ LPCSTR lpString
+     LPCSTR lpString
     );
 WINBASEAPI
 ATOM
 WINAPI
 AddAtomW(
-    _In_opt_ LPCWSTR lpString
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define AddAtom  AddAtomW
@@ -4138,13 +4138,13 @@ WINBASEAPI
 ATOM
 WINAPI
 FindAtomA(
-    _In_opt_ LPCSTR lpString
+     LPCSTR lpString
     );
 WINBASEAPI
 ATOM
 WINAPI
 FindAtomW(
-    _In_opt_ LPCWSTR lpString
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define FindAtom  FindAtomW
@@ -4156,17 +4156,17 @@ WINBASEAPI
 UINT
 WINAPI
 GetAtomNameA(
-    _In_ ATOM nAtom,
+     ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPSTR lpBuffer,
-    _In_ int nSize
+     int nSize
     );
 WINBASEAPI
 UINT
 WINAPI
 GetAtomNameW(
-    _In_ ATOM nAtom,
+     ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPWSTR lpBuffer,
-    _In_ int nSize
+     int nSize
     );
 #ifdef UNICODE
 #define GetAtomName  GetAtomNameW
@@ -4184,17 +4184,17 @@ WINBASEAPI
 UINT
 WINAPI
 GetProfileIntA(
-    _In_ LPCSTR lpAppName,
-    _In_ LPCSTR lpKeyName,
-    _In_ INT nDefault
+     LPCSTR lpAppName,
+     LPCSTR lpKeyName,
+     INT nDefault
     );
 WINBASEAPI
 UINT
 WINAPI
 GetProfileIntW(
-    _In_ LPCWSTR lpAppName,
-    _In_ LPCWSTR lpKeyName,
-    _In_ INT nDefault
+     LPCWSTR lpAppName,
+     LPCWSTR lpKeyName,
+     INT nDefault
     );
 #ifdef UNICODE
 #define GetProfileInt  GetProfileIntW
@@ -4206,21 +4206,21 @@ WINBASEAPI
 DWORD
 WINAPI
 GetProfileStringA(
-    _In_opt_ LPCSTR lpAppName,
-    _In_opt_ LPCSTR lpKeyName,
-    _In_opt_ LPCSTR lpDefault,
+     LPCSTR lpAppName,
+     LPCSTR lpKeyName,
+     LPCSTR lpDefault,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
-    _In_     DWORD nSize
+         DWORD nSize
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetProfileStringW(
-    _In_opt_ LPCWSTR lpAppName,
-    _In_opt_ LPCWSTR lpKeyName,
-    _In_opt_ LPCWSTR lpDefault,
+     LPCWSTR lpAppName,
+     LPCWSTR lpKeyName,
+     LPCWSTR lpDefault,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
-    _In_     DWORD nSize
+         DWORD nSize
     );
 #ifdef UNICODE
 #define GetProfileString  GetProfileStringW
@@ -4238,17 +4238,17 @@ WINBASEAPI
 BOOL
 WINAPI
 WriteProfileStringA(
-    _In_opt_ LPCSTR lpAppName,
-    _In_opt_ LPCSTR lpKeyName,
-    _In_opt_ LPCSTR lpString
+     LPCSTR lpAppName,
+     LPCSTR lpKeyName,
+     LPCSTR lpString
     );
 WINBASEAPI
 BOOL
 WINAPI
 WriteProfileStringW(
-    _In_opt_ LPCWSTR lpAppName,
-    _In_opt_ LPCWSTR lpKeyName,
-    _In_opt_ LPCWSTR lpString
+     LPCWSTR lpAppName,
+     LPCWSTR lpKeyName,
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define WriteProfileString  WriteProfileStringW
@@ -4266,17 +4266,17 @@ WINBASEAPI
 DWORD
 WINAPI
 GetProfileSectionA(
-    _In_ LPCSTR lpAppName,
+     LPCSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
-    _In_ DWORD nSize
+     DWORD nSize
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetProfileSectionW(
-    _In_ LPCWSTR lpAppName,
+     LPCWSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
-    _In_ DWORD nSize
+     DWORD nSize
     );
 #ifdef UNICODE
 #define GetProfileSection  GetProfileSectionW
@@ -4294,15 +4294,15 @@ WINBASEAPI
 BOOL
 WINAPI
 WriteProfileSectionA(
-    _In_ LPCSTR lpAppName,
-    _In_ LPCSTR lpString
+     LPCSTR lpAppName,
+     LPCSTR lpString
     );
 WINBASEAPI
 BOOL
 WINAPI
 WriteProfileSectionW(
-    _In_ LPCWSTR lpAppName,
-    _In_ LPCWSTR lpString
+     LPCWSTR lpAppName,
+     LPCWSTR lpString
     );
 #ifdef UNICODE
 #define WriteProfileSection  WriteProfileSectionW
@@ -4320,19 +4320,19 @@ WINBASEAPI
 UINT
 WINAPI
 GetPrivateProfileIntA(
-    _In_     LPCSTR lpAppName,
-    _In_     LPCSTR lpKeyName,
-    _In_     INT nDefault,
-    _In_opt_ LPCSTR lpFileName
+         LPCSTR lpAppName,
+         LPCSTR lpKeyName,
+         INT nDefault,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 UINT
 WINAPI
 GetPrivateProfileIntW(
-    _In_     LPCWSTR lpAppName,
-    _In_     LPCWSTR lpKeyName,
-    _In_     INT nDefault,
-    _In_opt_ LPCWSTR lpFileName
+         LPCWSTR lpAppName,
+         LPCWSTR lpKeyName,
+         INT nDefault,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define GetPrivateProfileInt  GetPrivateProfileIntW
@@ -4368,23 +4368,23 @@ WINBASEAPI
 DWORD
 WINAPI
 GetPrivateProfileStringA(
-    _In_opt_ LPCSTR lpAppName,
-    _In_opt_ LPCSTR lpKeyName,
-    _In_opt_ LPCSTR lpDefault,
+     LPCSTR lpAppName,
+     LPCSTR lpKeyName,
+     LPCSTR lpDefault,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
-    _In_     DWORD nSize,
-    _In_opt_ LPCSTR lpFileName
+         DWORD nSize,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetPrivateProfileStringW(
-    _In_opt_ LPCWSTR lpAppName,
-    _In_opt_ LPCWSTR lpKeyName,
-    _In_opt_ LPCWSTR lpDefault,
+     LPCWSTR lpAppName,
+     LPCWSTR lpKeyName,
+     LPCWSTR lpDefault,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
-    _In_     DWORD nSize,
-    _In_opt_ LPCWSTR lpFileName
+         DWORD nSize,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define GetPrivateProfileString  GetPrivateProfileStringW
@@ -4424,19 +4424,19 @@ WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileStringA(
-    _In_opt_ LPCSTR lpAppName,
-    _In_opt_ LPCSTR lpKeyName,
-    _In_opt_ LPCSTR lpString,
-    _In_opt_ LPCSTR lpFileName
+     LPCSTR lpAppName,
+     LPCSTR lpKeyName,
+     LPCSTR lpString,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileStringW(
-    _In_opt_ LPCWSTR lpAppName,
-    _In_opt_ LPCWSTR lpKeyName,
-    _In_opt_ LPCWSTR lpString,
-    _In_opt_ LPCWSTR lpFileName
+     LPCWSTR lpAppName,
+     LPCWSTR lpKeyName,
+     LPCWSTR lpString,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define WritePrivateProfileString  WritePrivateProfileStringW
@@ -4448,19 +4448,19 @@ WINBASEAPI
 DWORD
 WINAPI
 GetPrivateProfileSectionA(
-    _In_     LPCSTR lpAppName,
+         LPCSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
-    _In_     DWORD nSize,
-    _In_opt_ LPCSTR lpFileName
+         DWORD nSize,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetPrivateProfileSectionW(
-    _In_     LPCWSTR lpAppName,
+         LPCWSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
-    _In_     DWORD nSize,
-    _In_opt_ LPCWSTR lpFileName
+         DWORD nSize,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define GetPrivateProfileSection  GetPrivateProfileSectionW
@@ -4496,17 +4496,17 @@ WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileSectionA(
-    _In_opt_ LPCSTR lpAppName,
-    _In_opt_ LPCSTR lpString,
-    _In_opt_ LPCSTR lpFileName
+     LPCSTR lpAppName,
+     LPCSTR lpString,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileSectionW(
-    _In_opt_ LPCWSTR lpAppName,
-    _In_opt_ LPCWSTR lpString,
-    _In_opt_ LPCWSTR lpFileName
+     LPCWSTR lpAppName,
+     LPCWSTR lpString,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define WritePrivateProfileSection  WritePrivateProfileSectionW
@@ -4525,16 +4525,16 @@ DWORD
 WINAPI
 GetPrivateProfileSectionNamesA(
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpszReturnBuffer,
-    _In_     DWORD nSize,
-    _In_opt_ LPCSTR lpFileName
+         DWORD nSize,
+     LPCSTR lpFileName
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetPrivateProfileSectionNamesW(
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpszReturnBuffer,
-    _In_     DWORD nSize,
-    _In_opt_ LPCWSTR lpFileName
+         DWORD nSize,
+     LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define GetPrivateProfileSectionNames  GetPrivateProfileSectionNamesW
@@ -4568,21 +4568,21 @@ WINBASEAPI
 BOOL
 WINAPI
 GetPrivateProfileStructA(
-    _In_     LPCSTR lpszSection,
-    _In_     LPCSTR lpszKey,
+         LPCSTR lpszSection,
+         LPCSTR lpszKey,
     _Out_writes_bytes_opt_(uSizeStruct) LPVOID   lpStruct,
-    _In_     UINT     uSizeStruct,
-    _In_opt_ LPCSTR szFile
+         UINT     uSizeStruct,
+     LPCSTR szFile
     );
 WINBASEAPI
 BOOL
 WINAPI
 GetPrivateProfileStructW(
-    _In_     LPCWSTR lpszSection,
-    _In_     LPCWSTR lpszKey,
+         LPCWSTR lpszSection,
+         LPCWSTR lpszKey,
     _Out_writes_bytes_opt_(uSizeStruct) LPVOID   lpStruct,
-    _In_     UINT     uSizeStruct,
-    _In_opt_ LPCWSTR szFile
+         UINT     uSizeStruct,
+     LPCWSTR szFile
     );
 #ifdef UNICODE
 #define GetPrivateProfileStruct  GetPrivateProfileStructW
@@ -4620,21 +4620,21 @@ WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileStructA(
-    _In_     LPCSTR lpszSection,
-    _In_     LPCSTR lpszKey,
+         LPCSTR lpszSection,
+         LPCSTR lpszKey,
     _In_reads_bytes_opt_(uSizeStruct) LPVOID lpStruct,
-    _In_     UINT     uSizeStruct,
-    _In_opt_ LPCSTR szFile
+         UINT     uSizeStruct,
+     LPCSTR szFile
     );
 WINBASEAPI
 BOOL
 WINAPI
 WritePrivateProfileStructW(
-    _In_     LPCWSTR lpszSection,
-    _In_     LPCWSTR lpszKey,
+         LPCWSTR lpszSection,
+         LPCWSTR lpszKey,
     _In_reads_bytes_opt_(uSizeStruct) LPVOID lpStruct,
-    _In_     UINT     uSizeStruct,
-    _In_opt_ LPCWSTR szFile
+         UINT     uSizeStruct,
+     LPCWSTR szFile
     );
 #ifdef UNICODE
 #define WritePrivateProfileStruct  WritePrivateProfileStructW
@@ -4673,14 +4673,14 @@ WINBASEAPI
 BOOLEAN
 WINAPI
 Wow64EnableWow64FsRedirection (
-    _In_ BOOLEAN Wow64FsEnableRedirection
+     BOOLEAN Wow64FsEnableRedirection
     );
 
 //
 // for GetProcAddress
 //
-typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_A)(_Out_writes_to_opt_(uSize, return + 1) LPSTR lpBuffer, _In_ UINT uSize);
-typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_W)(_Out_writes_to_opt_(uSize, return + 1) LPWSTR lpBuffer, _In_ UINT uSize);
+typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_A)(_Out_writes_to_opt_(uSize, return + 1) LPSTR lpBuffer,  UINT uSize);
+typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_W)(_Out_writes_to_opt_(uSize, return + 1) LPWSTR lpBuffer,  UINT uSize);
 
 //
 // GetProcAddress only accepts GET_SYSTEM_WOW64_DIRECTORY_NAME_A_A,
@@ -4751,13 +4751,13 @@ WINBASEAPI
 BOOL
 WINAPI
 SetDllDirectoryA(
-    _In_opt_ LPCSTR lpPathName
+     LPCSTR lpPathName
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetDllDirectoryW(
-    _In_opt_ LPCWSTR lpPathName
+     LPCWSTR lpPathName
     );
 #ifdef UNICODE
 #define SetDllDirectory  SetDllDirectoryW
@@ -4770,7 +4770,7 @@ _Success_(return != 0 && return < nBufferLength)
 DWORD
 WINAPI
 GetDllDirectoryA(
-    _In_ DWORD nBufferLength,
+     DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer
     );
 WINBASEAPI
@@ -4778,7 +4778,7 @@ _Success_(return != 0 && return < nBufferLength)
 DWORD
 WINAPI
 GetDllDirectoryW(
-    _In_ DWORD nBufferLength,
+     DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPWSTR lpBuffer
     );
 #ifdef UNICODE
@@ -4798,7 +4798,7 @@ WINBASEAPI
 BOOL
 WINAPI
 SetSearchPathMode (
-    _In_ DWORD Flags
+     DWORD Flags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -4837,17 +4837,17 @@ WINBASEAPI
 BOOL
 WINAPI
 CreateDirectoryExA(
-    _In_     LPCSTR lpTemplateDirectory,
-    _In_     LPCSTR lpNewDirectory,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+         LPCSTR lpTemplateDirectory,
+         LPCSTR lpNewDirectory,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 WINBASEAPI
 BOOL
 WINAPI
 CreateDirectoryExW(
-    _In_     LPCWSTR lpTemplateDirectory,
-    _In_     LPCWSTR lpNewDirectory,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+         LPCWSTR lpTemplateDirectory,
+         LPCWSTR lpNewDirectory,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 #ifdef UNICODE
 #define CreateDirectoryEx  CreateDirectoryExW
@@ -4867,19 +4867,19 @@ WINBASEAPI
 BOOL
 WINAPI
 CreateDirectoryTransactedA(
-    _In_opt_ LPCSTR lpTemplateDirectory,
-    _In_     LPCSTR lpNewDirectory,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_     HANDLE hTransaction
+     LPCSTR lpTemplateDirectory,
+         LPCSTR lpNewDirectory,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 CreateDirectoryTransactedW(
-    _In_opt_ LPCWSTR lpTemplateDirectory,
-    _In_     LPCWSTR lpNewDirectory,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_     HANDLE hTransaction
+     LPCWSTR lpTemplateDirectory,
+         LPCWSTR lpNewDirectory,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define CreateDirectoryTransacted  CreateDirectoryTransactedW
@@ -4891,15 +4891,15 @@ WINBASEAPI
 BOOL
 WINAPI
 RemoveDirectoryTransactedA(
-    _In_ LPCSTR lpPathName,
-    _In_     HANDLE hTransaction
+     LPCSTR lpPathName,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 RemoveDirectoryTransactedW(
-    _In_ LPCWSTR lpPathName,
-    _In_     HANDLE hTransaction
+     LPCWSTR lpPathName,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define RemoveDirectoryTransacted  RemoveDirectoryTransactedW
@@ -4912,22 +4912,22 @@ _Success_(return != 0 && return < nBufferLength)
 DWORD
 WINAPI
 GetFullPathNameTransactedA(
-    _In_            LPCSTR lpFileName,
-    _In_            DWORD nBufferLength,
+                LPCSTR lpFileName,
+                DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer,
     _Outptr_opt_ LPSTR *lpFilePart,
-    _In_            HANDLE hTransaction
+                HANDLE hTransaction
     );
 WINBASEAPI
 _Success_(return != 0 && return < nBufferLength)
 DWORD
 WINAPI
 GetFullPathNameTransactedW(
-    _In_            LPCWSTR lpFileName,
-    _In_            DWORD nBufferLength,
+                LPCWSTR lpFileName,
+                DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPWSTR lpBuffer,
     _Outptr_opt_ LPWSTR *lpFilePart,
-    _In_            HANDLE hTransaction
+                HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetFullPathNameTransacted  GetFullPathNameTransactedW
@@ -4953,9 +4953,9 @@ WINBASEAPI
 BOOL
 WINAPI
 DefineDosDeviceA(
-    _In_     DWORD dwFlags,
-    _In_     LPCSTR lpDeviceName,
-    _In_opt_ LPCSTR lpTargetPath
+         DWORD dwFlags,
+         LPCSTR lpDeviceName,
+     LPCSTR lpTargetPath
     );
 #ifndef UNICODE
 #define DefineDosDevice  DefineDosDeviceA
@@ -4965,9 +4965,9 @@ WINBASEAPI
 DWORD
 WINAPI
 QueryDosDeviceA(
-    _In_opt_ LPCSTR lpDeviceName,
+     LPCSTR lpDeviceName,
     _Out_writes_to_opt_(ucchMax, return) LPSTR lpTargetPath,
-    _In_     DWORD ucchMax
+         DWORD ucchMax
     );
 #ifndef UNICODE
 #define QueryDosDevice  QueryDosDeviceA
@@ -4987,30 +4987,30 @@ WINBASEAPI
 HANDLE
 WINAPI
 CreateFileTransactedA(
-    _In_       LPCSTR lpFileName,
-    _In_       DWORD dwDesiredAccess,
-    _In_       DWORD dwShareMode,
-    _In_opt_   LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_       DWORD dwCreationDisposition,
-    _In_       DWORD dwFlagsAndAttributes,
-    _In_opt_   HANDLE hTemplateFile,
-    _In_       HANDLE hTransaction,
-    _In_opt_   PUSHORT pusMiniVersion,
+           LPCSTR lpFileName,
+           DWORD dwDesiredAccess,
+           DWORD dwShareMode,
+       LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+           DWORD dwCreationDisposition,
+           DWORD dwFlagsAndAttributes,
+       HANDLE hTemplateFile,
+           HANDLE hTransaction,
+       PUSHORT pusMiniVersion,
     _Reserved_ PVOID  lpExtendedParameter
     );
 WINBASEAPI
 HANDLE
 WINAPI
 CreateFileTransactedW(
-    _In_       LPCWSTR lpFileName,
-    _In_       DWORD dwDesiredAccess,
-    _In_       DWORD dwShareMode,
-    _In_opt_   LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_       DWORD dwCreationDisposition,
-    _In_       DWORD dwFlagsAndAttributes,
-    _In_opt_   HANDLE hTemplateFile,
-    _In_       HANDLE hTransaction,
-    _In_opt_   PUSHORT pusMiniVersion,
+           LPCWSTR lpFileName,
+           DWORD dwDesiredAccess,
+           DWORD dwShareMode,
+       LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+           DWORD dwCreationDisposition,
+           DWORD dwFlagsAndAttributes,
+       HANDLE hTemplateFile,
+           HANDLE hTransaction,
+       PUSHORT pusMiniVersion,
     _Reserved_ PVOID  lpExtendedParameter
     );
 #ifdef UNICODE
@@ -5033,10 +5033,10 @@ WINBASEAPI
 HANDLE
 WINAPI
 ReOpenFile(
-    _In_ HANDLE  hOriginalFile,
-    _In_ DWORD   dwDesiredAccess,
-    _In_ DWORD   dwShareMode,
-    _In_ DWORD   dwFlagsAndAttributes
+     HANDLE  hOriginalFile,
+     DWORD   dwDesiredAccess,
+     DWORD   dwShareMode,
+     DWORD   dwFlagsAndAttributes
     );
 
 #endif // _WIN32_WINNT >= 0x0502
@@ -5054,17 +5054,17 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFileAttributesTransactedA(
-    _In_     LPCSTR lpFileName,
-    _In_     DWORD dwFileAttributes,
-    _In_     HANDLE hTransaction
+         LPCSTR lpFileName,
+         DWORD dwFileAttributes,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetFileAttributesTransactedW(
-    _In_     LPCWSTR lpFileName,
-    _In_     DWORD dwFileAttributes,
-    _In_     HANDLE hTransaction
+         LPCWSTR lpFileName,
+         DWORD dwFileAttributes,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define SetFileAttributesTransacted  SetFileAttributesTransactedW
@@ -5076,19 +5076,19 @@ WINBASEAPI
 BOOL
 WINAPI
 GetFileAttributesTransactedA(
-    _In_  LPCSTR lpFileName,
-    _In_  GET_FILEEX_INFO_LEVELS fInfoLevelId,
+      LPCSTR lpFileName,
+      GET_FILEEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FILE_ATTRIBUTE_DATA)) LPVOID lpFileInformation,
-    _In_     HANDLE hTransaction
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 GetFileAttributesTransactedW(
-    _In_  LPCWSTR lpFileName,
-    _In_  GET_FILEEX_INFO_LEVELS fInfoLevelId,
+      LPCWSTR lpFileName,
+      GET_FILEEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FILE_ATTRIBUTE_DATA)) LPVOID lpFileInformation,
-    _In_     HANDLE hTransaction
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetFileAttributesTransacted  GetFileAttributesTransactedW
@@ -5100,17 +5100,17 @@ WINBASEAPI
 DWORD
 WINAPI
 GetCompressedFileSizeTransactedA(
-    _In_      LPCSTR lpFileName,
+          LPCSTR lpFileName,
     _Out_opt_ LPDWORD  lpFileSizeHigh,
-    _In_      HANDLE hTransaction
+          HANDLE hTransaction
     );
 WINBASEAPI
 DWORD
 WINAPI
 GetCompressedFileSizeTransactedW(
-    _In_      LPCWSTR lpFileName,
+          LPCWSTR lpFileName,
     _Out_opt_ LPDWORD  lpFileSizeHigh,
-    _In_      HANDLE hTransaction
+          HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetCompressedFileSizeTransacted  GetCompressedFileSizeTransactedW
@@ -5122,15 +5122,15 @@ WINBASEAPI
 BOOL
 WINAPI
 DeleteFileTransactedA(
-    _In_     LPCSTR lpFileName,
-    _In_     HANDLE hTransaction
+         LPCSTR lpFileName,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 DeleteFileTransactedW(
-    _In_     LPCWSTR lpFileName,
-    _In_     HANDLE hTransaction
+         LPCWSTR lpFileName,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define DeleteFileTransacted  DeleteFileTransactedW
@@ -5176,9 +5176,9 @@ WINBASEAPI
 BOOL
 WINAPI
 CheckNameLegalDOS8Dot3A(
-    _In_      LPCSTR lpName,
+          LPCSTR lpName,
     _Out_writes_opt_(OemNameSize) LPSTR lpOemName,
-    _In_      DWORD OemNameSize,
+          DWORD OemNameSize,
     _Out_opt_ PBOOL pbNameContainsSpaces OPTIONAL,
     _Out_     PBOOL pbNameLegal
     );
@@ -5186,9 +5186,9 @@ WINBASEAPI
 BOOL
 WINAPI
 CheckNameLegalDOS8Dot3W(
-    _In_      LPCWSTR lpName,
+          LPCWSTR lpName,
     _Out_writes_opt_(OemNameSize) LPSTR lpOemName,
-    _In_      DWORD OemNameSize,
+          DWORD OemNameSize,
     _Out_opt_ PBOOL pbNameContainsSpaces OPTIONAL,
     _Out_     PBOOL pbNameLegal
     );
@@ -5214,25 +5214,25 @@ WINBASEAPI
 HANDLE
 WINAPI
 FindFirstFileTransactedA(
-    _In_       LPCSTR lpFileName,
-    _In_       FINDEX_INFO_LEVELS fInfoLevelId,
+           LPCSTR lpFileName,
+           FINDEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FIND_DATAA)) LPVOID lpFindFileData,
-    _In_       FINDEX_SEARCH_OPS fSearchOp,
+           FINDEX_SEARCH_OPS fSearchOp,
     _Reserved_ LPVOID lpSearchFilter,
-    _In_       DWORD dwAdditionalFlags,
-    _In_       HANDLE hTransaction
+           DWORD dwAdditionalFlags,
+           HANDLE hTransaction
     );
 WINBASEAPI
 HANDLE
 WINAPI
 FindFirstFileTransactedW(
-    _In_       LPCWSTR lpFileName,
-    _In_       FINDEX_INFO_LEVELS fInfoLevelId,
+           LPCWSTR lpFileName,
+           FINDEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FIND_DATAW)) LPVOID lpFindFileData,
-    _In_       FINDEX_SEARCH_OPS fSearchOp,
+           FINDEX_SEARCH_OPS fSearchOp,
     _Reserved_ LPVOID lpSearchFilter,
-    _In_       DWORD dwAdditionalFlags,
-    _In_       HANDLE hTransaction
+           DWORD dwAdditionalFlags,
+           HANDLE hTransaction
     );
 #ifdef UNICODE
 #define FindFirstFileTransacted  FindFirstFileTransactedW
@@ -5255,17 +5255,17 @@ WINBASEAPI
 BOOL
 WINAPI
 CopyFileA(
-    _In_ LPCSTR lpExistingFileName,
-    _In_ LPCSTR lpNewFileName,
-    _In_ BOOL bFailIfExists
+     LPCSTR lpExistingFileName,
+     LPCSTR lpNewFileName,
+     BOOL bFailIfExists
     );
 WINBASEAPI
 BOOL
 WINAPI
 CopyFileW(
-    _In_ LPCWSTR lpExistingFileName,
-    _In_ LPCWSTR lpNewFileName,
-    _In_ BOOL bFailIfExists
+     LPCWSTR lpExistingFileName,
+     LPCWSTR lpNewFileName,
+     BOOL bFailIfExists
     );
 #ifdef UNICODE
 #define CopyFile  CopyFileW
@@ -5306,40 +5306,40 @@ CopyFile(
 typedef
 DWORD
 (WINAPI *LPPROGRESS_ROUTINE)(
-    _In_     LARGE_INTEGER TotalFileSize,
-    _In_     LARGE_INTEGER TotalBytesTransferred,
-    _In_     LARGE_INTEGER StreamSize,
-    _In_     LARGE_INTEGER StreamBytesTransferred,
-    _In_     DWORD dwStreamNumber,
-    _In_     DWORD dwCallbackReason,
-    _In_     HANDLE hSourceFile,
-    _In_     HANDLE hDestinationFile,
-    _In_opt_ LPVOID lpData
+         LARGE_INTEGER TotalFileSize,
+         LARGE_INTEGER TotalBytesTransferred,
+         LARGE_INTEGER StreamSize,
+         LARGE_INTEGER StreamBytesTransferred,
+         DWORD dwStreamNumber,
+         DWORD dwCallbackReason,
+         HANDLE hSourceFile,
+         HANDLE hDestinationFile,
+     LPVOID lpData
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 CopyFileExA(
-    _In_        LPCSTR lpExistingFileName,
-    _In_        LPCSTR lpNewFileName,
-    _In_opt_    LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_    LPVOID lpData,
+            LPCSTR lpExistingFileName,
+            LPCSTR lpNewFileName,
+        LPPROGRESS_ROUTINE lpProgressRoutine,
+        LPVOID lpData,
     _When_(pbCancel != NULL, _Pre_satisfies_(*pbCancel == FALSE))
     _Inout_opt_ LPBOOL pbCancel,
-    _In_        DWORD dwCopyFlags
+            DWORD dwCopyFlags
     );
 WINBASEAPI
 BOOL
 WINAPI
 CopyFileExW(
-    _In_        LPCWSTR lpExistingFileName,
-    _In_        LPCWSTR lpNewFileName,
-    _In_opt_    LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_    LPVOID lpData,
+            LPCWSTR lpExistingFileName,
+            LPCWSTR lpNewFileName,
+        LPPROGRESS_ROUTINE lpProgressRoutine,
+        LPVOID lpData,
     _When_(pbCancel != NULL, _Pre_satisfies_(*pbCancel == FALSE))
     _Inout_opt_ LPBOOL pbCancel,
-    _In_        DWORD dwCopyFlags
+            DWORD dwCopyFlags
     );
 #ifdef UNICODE
 #define CopyFileEx  CopyFileExW
@@ -5359,25 +5359,25 @@ WINBASEAPI
 BOOL
 WINAPI
 CopyFileTransactedA(
-    _In_     LPCSTR lpExistingFileName,
-    _In_     LPCSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_opt_ LPBOOL pbCancel,
-    _In_     DWORD dwCopyFlags,
-    _In_     HANDLE hTransaction
+         LPCSTR lpExistingFileName,
+         LPCSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+     LPBOOL pbCancel,
+         DWORD dwCopyFlags,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 CopyFileTransactedW(
-    _In_     LPCWSTR lpExistingFileName,
-    _In_     LPCWSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_opt_ LPBOOL pbCancel,
-    _In_     DWORD dwCopyFlags,
-    _In_     HANDLE hTransaction
+         LPCWSTR lpExistingFileName,
+         LPCWSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+     LPBOOL pbCancel,
+         DWORD dwCopyFlags,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define CopyFileTransacted  CopyFileTransactedW
@@ -5505,8 +5505,8 @@ typedef struct COPYFILE2_MESSAGE {
 
 typedef
 COPYFILE2_MESSAGE_ACTION (CALLBACK *PCOPYFILE2_PROGRESS_ROUTINE)(
-  _In_      const COPYFILE2_MESSAGE     *pMessage,
-  _In_opt_  PVOID                       pvCallbackContext
+        const COPYFILE2_MESSAGE     *pMessage,
+    PVOID                       pvCallbackContext
 );
 
 typedef struct COPYFILE2_EXTENDED_PARAMETERS {
@@ -5521,9 +5521,9 @@ WINBASEAPI
 HRESULT
 WINAPI
 CopyFile2(
-  _In_      PCWSTR                          pwszExistingFileName,
-  _In_      PCWSTR                          pwszNewFileName,
-  _In_opt_  COPYFILE2_EXTENDED_PARAMETERS   *pExtendedParameters
+        PCWSTR                          pwszExistingFileName,
+        PCWSTR                          pwszNewFileName,
+    COPYFILE2_EXTENDED_PARAMETERS   *pExtendedParameters
 );
 
 #endif // _WIN32_WINNT >= 0x0601
@@ -5540,15 +5540,15 @@ WINBASEAPI
 BOOL
 WINAPI
 MoveFileA(
-    _In_ LPCSTR lpExistingFileName,
-    _In_ LPCSTR lpNewFileName
+     LPCSTR lpExistingFileName,
+     LPCSTR lpNewFileName
     );
 WINBASEAPI
 BOOL
 WINAPI
 MoveFileW(
-    _In_ LPCWSTR lpExistingFileName,
-    _In_ LPCWSTR lpNewFileName
+     LPCWSTR lpExistingFileName,
+     LPCWSTR lpNewFileName
     );
 #ifdef UNICODE
 #define MoveFile  MoveFileW
@@ -5586,17 +5586,17 @@ WINBASEAPI
 BOOL
 WINAPI
 MoveFileExA(
-    _In_     LPCSTR lpExistingFileName,
-    _In_opt_ LPCSTR lpNewFileName,
-    _In_     DWORD    dwFlags
+         LPCSTR lpExistingFileName,
+     LPCSTR lpNewFileName,
+         DWORD    dwFlags
     );
 WINBASEAPI
 BOOL
 WINAPI
 MoveFileExW(
-    _In_     LPCWSTR lpExistingFileName,
-    _In_opt_ LPCWSTR lpNewFileName,
-    _In_     DWORD    dwFlags
+         LPCWSTR lpExistingFileName,
+     LPCWSTR lpNewFileName,
+         DWORD    dwFlags
     );
 #ifdef UNICODE
 #define MoveFileEx  MoveFileExW
@@ -5615,21 +5615,21 @@ WINBASEAPI
 BOOL
 WINAPI
 MoveFileWithProgressA(
-    _In_     LPCSTR lpExistingFileName,
-    _In_opt_ LPCSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_     DWORD dwFlags
+         LPCSTR lpExistingFileName,
+     LPCSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+         DWORD dwFlags
     );
 WINBASEAPI
 BOOL
 WINAPI
 MoveFileWithProgressW(
-    _In_     LPCWSTR lpExistingFileName,
-    _In_opt_ LPCWSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_     DWORD dwFlags
+         LPCWSTR lpExistingFileName,
+     LPCWSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+         DWORD dwFlags
     );
 #ifdef UNICODE
 #define MoveFileWithProgress  MoveFileWithProgressW
@@ -5649,23 +5649,23 @@ WINBASEAPI
 BOOL
 WINAPI
 MoveFileTransactedA(
-    _In_     LPCSTR lpExistingFileName,
-    _In_opt_ LPCSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_     DWORD dwFlags,
-    _In_     HANDLE hTransaction
+         LPCSTR lpExistingFileName,
+     LPCSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+         DWORD dwFlags,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 MoveFileTransactedW(
-    _In_     LPCWSTR lpExistingFileName,
-    _In_opt_ LPCWSTR lpNewFileName,
-    _In_opt_ LPPROGRESS_ROUTINE lpProgressRoutine,
-    _In_opt_ LPVOID lpData,
-    _In_     DWORD dwFlags,
-    _In_     HANDLE hTransaction
+         LPCWSTR lpExistingFileName,
+     LPCWSTR lpNewFileName,
+     LPPROGRESS_ROUTINE lpProgressRoutine,
+     LPVOID lpData,
+         DWORD dwFlags,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define MoveFileTransacted  MoveFileTransactedW
@@ -5708,10 +5708,10 @@ WINBASEAPI
 BOOL
 WINAPI
 ReplaceFileA(
-    _In_       LPCSTR lpReplacedFileName,
-    _In_       LPCSTR lpReplacementFileName,
-    _In_opt_   LPCSTR lpBackupFileName,
-    _In_       DWORD    dwReplaceFlags,
+           LPCSTR lpReplacedFileName,
+           LPCSTR lpReplacementFileName,
+       LPCSTR lpBackupFileName,
+           DWORD    dwReplaceFlags,
     _Reserved_ LPVOID   lpExclude,
     _Reserved_ LPVOID  lpReserved
     );
@@ -5719,10 +5719,10 @@ WINBASEAPI
 BOOL
 WINAPI
 ReplaceFileW(
-    _In_       LPCWSTR lpReplacedFileName,
-    _In_       LPCWSTR lpReplacementFileName,
-    _In_opt_   LPCWSTR lpBackupFileName,
-    _In_       DWORD    dwReplaceFlags,
+           LPCWSTR lpReplacedFileName,
+           LPCWSTR lpReplacementFileName,
+       LPCWSTR lpBackupFileName,
+           DWORD    dwReplaceFlags,
     _Reserved_ LPVOID   lpExclude,
     _Reserved_ LPVOID  lpReserved
     );
@@ -5748,16 +5748,16 @@ WINBASEAPI
 BOOL
 WINAPI
 CreateHardLinkA(
-    _In_       LPCSTR lpFileName,
-    _In_       LPCSTR lpExistingFileName,
+           LPCSTR lpFileName,
+           LPCSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 WINBASEAPI
 BOOL
 WINAPI
 CreateHardLinkW(
-    _In_       LPCWSTR lpFileName,
-    _In_       LPCWSTR lpExistingFileName,
+           LPCWSTR lpFileName,
+           LPCWSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 #ifdef UNICODE
@@ -5783,19 +5783,19 @@ WINBASEAPI
 BOOL
 WINAPI
 CreateHardLinkTransactedA(
-    _In_       LPCSTR lpFileName,
-    _In_       LPCSTR lpExistingFileName,
+           LPCSTR lpFileName,
+           LPCSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_       HANDLE hTransaction
+           HANDLE hTransaction
     );
 WINBASEAPI
 BOOL
 WINAPI
 CreateHardLinkTransactedW(
-    _In_       LPCWSTR lpFileName,
-    _In_       LPCWSTR lpExistingFileName,
+           LPCWSTR lpFileName,
+           LPCWSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_       HANDLE hTransaction
+           HANDLE hTransaction
     );
 #ifdef UNICODE
 #define CreateHardLinkTransacted  CreateHardLinkTransactedW
@@ -5811,22 +5811,22 @@ WINBASEAPI
 HANDLE
 WINAPI
 FindFirstStreamTransactedW (
-    _In_       LPCWSTR lpFileName,
-    _In_       STREAM_INFO_LEVELS InfoLevel,
+           LPCWSTR lpFileName,
+           STREAM_INFO_LEVELS InfoLevel,
     _Out_writes_bytes_(sizeof(WIN32_FIND_STREAM_DATA)) LPVOID lpFindStreamData,
     _Reserved_ DWORD dwFlags,
-    _In_       HANDLE hTransaction
+           HANDLE hTransaction
     );
 
 WINBASEAPI
 HANDLE
 WINAPI
 FindFirstFileNameTransactedW (
-    _In_     LPCWSTR lpFileName,
-    _In_     DWORD dwFlags,
+         LPCWSTR lpFileName,
+         DWORD dwFlags,
     _Inout_  LPDWORD StringLength,
     _Out_writes_(*StringLength) PWSTR LinkName,
-    _In_opt_ HANDLE hTransaction
+     HANDLE hTransaction
     );
 
 #endif
@@ -5841,14 +5841,14 @@ WINBASEAPI
 HANDLE
 WINAPI
 CreateNamedPipeA(
-    _In_     LPCSTR lpName,
-    _In_     DWORD dwOpenMode,
-    _In_     DWORD dwPipeMode,
-    _In_     DWORD nMaxInstances,
-    _In_     DWORD nOutBufferSize,
-    _In_     DWORD nInBufferSize,
-    _In_     DWORD nDefaultTimeOut,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+         LPCSTR lpName,
+         DWORD dwOpenMode,
+         DWORD dwPipeMode,
+         DWORD nMaxInstances,
+         DWORD nOutBufferSize,
+         DWORD nInBufferSize,
+         DWORD nDefaultTimeOut,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 #ifndef UNICODE
 #define CreateNamedPipe  CreateNamedPipeA
@@ -5864,13 +5864,13 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeHandleStateA(
-    _In_      HANDLE hNamedPipe,
+          HANDLE hNamedPipe,
     _Out_opt_ LPDWORD lpState,
     _Out_opt_ LPDWORD lpCurInstances,
     _Out_opt_ LPDWORD lpMaxCollectionCount,
     _Out_opt_ LPDWORD lpCollectDataTimeout,
     _Out_writes_opt_(nMaxUserNameSize) LPSTR lpUserName,
-    _In_      DWORD nMaxUserNameSize
+          DWORD nMaxUserNameSize
     );
 #ifndef UNICODE
 #define GetNamedPipeHandleState  GetNamedPipeHandleStateA
@@ -5880,13 +5880,13 @@ WINBASEAPI
 BOOL
 WINAPI
 CallNamedPipeA(
-    _In_  LPCSTR lpNamedPipeName,
+      LPCSTR lpNamedPipeName,
     _In_reads_bytes_opt_(nInBufferSize) LPVOID lpInBuffer,
-    _In_  DWORD nInBufferSize,
+      DWORD nInBufferSize,
     _Out_writes_bytes_to_opt_(nOutBufferSize, *lpBytesRead) LPVOID lpOutBuffer,
-    _In_  DWORD nOutBufferSize,
+      DWORD nOutBufferSize,
     _Out_ LPDWORD lpBytesRead,
-    _In_  DWORD nTimeOut
+      DWORD nTimeOut
     );
 
 #ifndef UNICODE
@@ -5897,8 +5897,8 @@ WINBASEAPI
 BOOL
 WINAPI
 WaitNamedPipeA(
-    _In_ LPCSTR lpNamedPipeName,
-    _In_ DWORD nTimeOut
+     LPCSTR lpNamedPipeName,
+     DWORD nTimeOut
     );
 #ifndef UNICODE
 #define WaitNamedPipe  WaitNamedPipeA
@@ -5923,9 +5923,9 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeClientComputerNameA(
-    _In_ HANDLE Pipe,
+     HANDLE Pipe,
     _Out_writes_bytes_(ClientComputerNameLength)  LPSTR ClientComputerName,
-    _In_ ULONG ClientComputerNameLength
+     ULONG ClientComputerNameLength
     );
 
 #ifndef UNICODE
@@ -5942,7 +5942,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeClientProcessId(
-    _In_ HANDLE Pipe,
+     HANDLE Pipe,
     _Out_ PULONG ClientProcessId
     );
 
@@ -5950,7 +5950,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeClientSessionId(
-    _In_ HANDLE Pipe,
+     HANDLE Pipe,
     _Out_ PULONG ClientSessionId
     );
 
@@ -5958,7 +5958,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeServerProcessId(
-    _In_ HANDLE Pipe,
+     HANDLE Pipe,
     _Out_ PULONG ServerProcessId
     );
 
@@ -5966,7 +5966,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNamedPipeServerSessionId(
-    _In_ HANDLE Pipe,
+     HANDLE Pipe,
     _Out_ PULONG ServerSessionId
     );
 
@@ -5982,15 +5982,15 @@ WINBASEAPI
 BOOL
 WINAPI
 SetVolumeLabelA(
-    _In_opt_ LPCSTR lpRootPathName,
-    _In_opt_ LPCSTR lpVolumeName
+     LPCSTR lpRootPathName,
+     LPCSTR lpVolumeName
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetVolumeLabelW(
-    _In_opt_ LPCWSTR lpRootPathName,
-    _In_opt_ LPCWSTR lpVolumeName
+     LPCWSTR lpRootPathName,
+     LPCWSTR lpVolumeName
     );
 #ifdef UNICODE
 #define SetVolumeLabel  SetVolumeLabelW
@@ -6011,10 +6011,10 @@ WINBASEAPI
 BOOL
 WINAPI
 SetFileBandwidthReservation(
-    _In_  HANDLE  hFile,
-    _In_  DWORD   nPeriodMilliseconds,
-    _In_  DWORD   nBytesPerPeriod,
-    _In_  BOOL    bDiscardable,
+      HANDLE  hFile,
+      DWORD   nPeriodMilliseconds,
+      DWORD   nBytesPerPeriod,
+      BOOL    bDiscardable,
     _Out_ LPDWORD lpTransferSize,
     _Out_ LPDWORD lpNumOutstandingRequests
     );
@@ -6023,7 +6023,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetFileBandwidthReservation(
-    _In_  HANDLE  hFile,
+      HANDLE  hFile,
     _Out_ LPDWORD lpPeriodMilliseconds,
     _Out_ LPDWORD lpBytesPerPeriod,
     _Out_ LPBOOL  pDiscardable,
@@ -6041,15 +6041,15 @@ GetFileBandwidthReservation(
 BOOL
 WINAPI
 ClearEventLogA (
-    _In_     HANDLE hEventLog,
-    _In_opt_ LPCSTR lpBackupFileName
+         HANDLE hEventLog,
+     LPCSTR lpBackupFileName
     );
 
 BOOL
 WINAPI
 ClearEventLogW (
-    _In_     HANDLE hEventLog,
-    _In_opt_ LPCWSTR lpBackupFileName
+         HANDLE hEventLog,
+     LPCWSTR lpBackupFileName
     );
 #ifdef UNICODE
 #define ClearEventLog  ClearEventLogW
@@ -6061,15 +6061,15 @@ ClearEventLogW (
 BOOL
 WINAPI
 BackupEventLogA (
-    _In_ HANDLE hEventLog,
-    _In_ LPCSTR lpBackupFileName
+     HANDLE hEventLog,
+     LPCSTR lpBackupFileName
     );
 
 BOOL
 WINAPI
 BackupEventLogW (
-    _In_ HANDLE hEventLog,
-    _In_ LPCWSTR lpBackupFileName
+     HANDLE hEventLog,
+     LPCWSTR lpBackupFileName
     );
 #ifdef UNICODE
 #define BackupEventLog  BackupEventLogW
@@ -6081,29 +6081,29 @@ BackupEventLogW (
 BOOL
 WINAPI
 CloseEventLog (
-    _In_ HANDLE hEventLog
+     HANDLE hEventLog
     );
 
 
 BOOL
 WINAPI
 DeregisterEventSource (
-    _In_ HANDLE hEventLog
+     HANDLE hEventLog
     );
 
 
 BOOL
 WINAPI
 NotifyChangeEventLog(
-    _In_ HANDLE  hEventLog,
-    _In_ HANDLE  hEvent
+     HANDLE  hEventLog,
+     HANDLE  hEvent
     );
 
 
 BOOL
 WINAPI
 GetNumberOfEventLogRecords (
-    _In_  HANDLE hEventLog,
+      HANDLE hEventLog,
     _Out_ PDWORD NumberOfRecords
     );
 
@@ -6111,7 +6111,7 @@ GetNumberOfEventLogRecords (
 BOOL
 WINAPI
 GetOldestEventLogRecord (
-    _In_  HANDLE hEventLog,
+      HANDLE hEventLog,
     _Out_ PDWORD OldestRecord
     );
 
@@ -6119,15 +6119,15 @@ GetOldestEventLogRecord (
 HANDLE
 WINAPI
 OpenEventLogA (
-    _In_opt_ LPCSTR lpUNCServerName,
-    _In_     LPCSTR lpSourceName
+     LPCSTR lpUNCServerName,
+         LPCSTR lpSourceName
     );
 
 HANDLE
 WINAPI
 OpenEventLogW (
-    _In_opt_ LPCWSTR lpUNCServerName,
-    _In_     LPCWSTR lpSourceName
+     LPCWSTR lpUNCServerName,
+         LPCWSTR lpSourceName
     );
 #ifdef UNICODE
 #define OpenEventLog  OpenEventLogW
@@ -6139,15 +6139,15 @@ OpenEventLogW (
 HANDLE
 WINAPI
 RegisterEventSourceA (
-    _In_opt_ LPCSTR lpUNCServerName,
-    _In_     LPCSTR lpSourceName
+     LPCSTR lpUNCServerName,
+         LPCSTR lpSourceName
     );
 
 HANDLE
 WINAPI
 RegisterEventSourceW (
-    _In_opt_ LPCWSTR lpUNCServerName,
-    _In_     LPCWSTR lpSourceName
+     LPCWSTR lpUNCServerName,
+         LPCWSTR lpSourceName
     );
 #ifdef UNICODE
 #define RegisterEventSource  RegisterEventSourceW
@@ -6159,15 +6159,15 @@ RegisterEventSourceW (
 HANDLE
 WINAPI
 OpenBackupEventLogA (
-    _In_opt_ LPCSTR lpUNCServerName,
-    _In_     LPCSTR lpFileName
+     LPCSTR lpUNCServerName,
+         LPCSTR lpFileName
     );
 
 HANDLE
 WINAPI
 OpenBackupEventLogW (
-    _In_opt_ LPCWSTR lpUNCServerName,
-    _In_     LPCWSTR lpFileName
+     LPCWSTR lpUNCServerName,
+         LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define OpenBackupEventLog  OpenBackupEventLogW
@@ -6179,11 +6179,11 @@ OpenBackupEventLogW (
 BOOL
 WINAPI
 ReadEventLogA (
-    _In_  HANDLE     hEventLog,
-    _In_  DWORD      dwReadFlags,
-    _In_  DWORD      dwRecordOffset,
+      HANDLE     hEventLog,
+      DWORD      dwReadFlags,
+      DWORD      dwRecordOffset,
     _Out_writes_bytes_to_(nNumberOfBytesToRead, *pnBytesRead) LPVOID     lpBuffer,
-    _In_  DWORD      nNumberOfBytesToRead,
+      DWORD      nNumberOfBytesToRead,
     _Out_ DWORD      *pnBytesRead,
     _Out_ DWORD      *pnMinNumberOfBytesNeeded
     );
@@ -6191,11 +6191,11 @@ ReadEventLogA (
 BOOL
 WINAPI
 ReadEventLogW (
-    _In_  HANDLE     hEventLog,
-    _In_  DWORD      dwReadFlags,
-    _In_  DWORD      dwRecordOffset,
+      HANDLE     hEventLog,
+      DWORD      dwReadFlags,
+      DWORD      dwRecordOffset,
     _Out_writes_bytes_to_(nNumberOfBytesToRead, *pnBytesRead) LPVOID     lpBuffer,
-    _In_  DWORD      nNumberOfBytesToRead,
+      DWORD      nNumberOfBytesToRead,
     _Out_ DWORD      *pnBytesRead,
     _Out_ DWORD      *pnMinNumberOfBytesNeeded
     );
@@ -6209,13 +6209,13 @@ ReadEventLogW (
 BOOL
 WINAPI
 ReportEventA (
-    _In_     HANDLE     hEventLog,
-    _In_     WORD       wType,
-    _In_     WORD       wCategory,
-    _In_     DWORD      dwEventID,
-    _In_opt_ PSID       lpUserSid,
-    _In_     WORD       wNumStrings,
-    _In_     DWORD      dwDataSize,
+         HANDLE     hEventLog,
+         WORD       wType,
+         WORD       wCategory,
+         DWORD      dwEventID,
+     PSID       lpUserSid,
+         WORD       wNumStrings,
+         DWORD      dwDataSize,
     _In_reads_opt_(wNumStrings) LPCSTR *lpStrings,
     _In_reads_bytes_opt_(dwDataSize) LPVOID lpRawData
     );
@@ -6223,13 +6223,13 @@ ReportEventA (
 BOOL
 WINAPI
 ReportEventW (
-    _In_     HANDLE     hEventLog,
-    _In_     WORD       wType,
-    _In_     WORD       wCategory,
-    _In_     DWORD      dwEventID,
-    _In_opt_ PSID       lpUserSid,
-    _In_     WORD       wNumStrings,
-    _In_     DWORD      dwDataSize,
+         HANDLE     hEventLog,
+         WORD       wType,
+         WORD       wCategory,
+         DWORD      dwEventID,
+     PSID       lpUserSid,
+         WORD       wNumStrings,
+         DWORD      dwDataSize,
     _In_reads_opt_(wNumStrings) LPCWSTR *lpStrings,
     _In_reads_bytes_opt_(dwDataSize) LPVOID lpRawData
     );
@@ -6252,10 +6252,10 @@ EVENTLOG_FULL_INFORMATION, *LPEVENTLOG_FULL_INFORMATION;
 BOOL
 WINAPI
 GetEventLogInformation (
-    _In_  HANDLE     hEventLog,
-    _In_  DWORD      dwInfoLevel,
+      HANDLE     hEventLog,
+      DWORD      dwInfoLevel,
     _Out_writes_bytes_to_(cbBufSize, *pcbBytesNeeded) LPVOID lpBuffer,
-    _In_  DWORD      cbBufSize,
+      DWORD      cbBufSize,
     _Out_ LPDWORD    pcbBytesNeeded
     );
 
@@ -6296,14 +6296,14 @@ typedef struct _OPERATION_END_PARAMETERS {
 BOOL
 WINAPI
 OperationStart (
-    _In_ OPERATION_START_PARAMETERS* OperationStartParams
+     OPERATION_START_PARAMETERS* OperationStartParams
     );
 
 
 BOOL
 WINAPI
 OperationEnd (
-    _In_ OPERATION_END_PARAMETERS* OperationEndParams
+     OPERATION_END_PARAMETERS* OperationEndParams
     );
 
 #endif // _WIN32_WINNT >= 0x0602
@@ -6318,14 +6318,14 @@ OperationEnd (
 BOOL
 WINAPI
 AccessCheckAndAuditAlarmA (
-    _In_     LPCSTR SubsystemName,
-    _In_opt_ LPVOID HandleId,
-    _In_     LPSTR ObjectTypeName,
-    _In_opt_ LPSTR ObjectName,
-    _In_     PSECURITY_DESCRIPTOR SecurityDescriptor,
-    _In_     DWORD DesiredAccess,
-    _In_     PGENERIC_MAPPING GenericMapping,
-    _In_     BOOL ObjectCreation,
+         LPCSTR SubsystemName,
+     LPVOID HandleId,
+         LPSTR ObjectTypeName,
+     LPSTR ObjectName,
+         PSECURITY_DESCRIPTOR SecurityDescriptor,
+         DWORD DesiredAccess,
+         PGENERIC_MAPPING GenericMapping,
+         BOOL ObjectCreation,
     _Out_    LPDWORD GrantedAccess,
     _Out_    LPBOOL AccessStatus,
     _Out_    LPBOOL pfGenerateOnClose
@@ -6340,19 +6340,19 @@ AccessCheckAndAuditAlarmA (
 BOOL
 WINAPI
 AccessCheckByTypeAndAuditAlarmA (
-    _In_     LPCSTR SubsystemName,
-    _In_     LPVOID HandleId,
-    _In_     LPCSTR ObjectTypeName,
-    _In_opt_ LPCSTR ObjectName,
-    _In_     PSECURITY_DESCRIPTOR SecurityDescriptor,
-    _In_opt_ PSID PrincipalSelfSid,
-    _In_     DWORD DesiredAccess,
-    _In_     AUDIT_EVENT_TYPE AuditType,
-    _In_     DWORD Flags,
+         LPCSTR SubsystemName,
+         LPVOID HandleId,
+         LPCSTR ObjectTypeName,
+     LPCSTR ObjectName,
+         PSECURITY_DESCRIPTOR SecurityDescriptor,
+     PSID PrincipalSelfSid,
+         DWORD DesiredAccess,
+         AUDIT_EVENT_TYPE AuditType,
+         DWORD Flags,
     _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
-    _In_     DWORD ObjectTypeListLength,
-    _In_     PGENERIC_MAPPING GenericMapping,
-    _In_     BOOL ObjectCreation,
+         DWORD ObjectTypeListLength,
+         PGENERIC_MAPPING GenericMapping,
+         BOOL ObjectCreation,
     _Out_    LPDWORD GrantedAccess,
     _Out_    LPBOOL AccessStatus,
     _Out_    LPBOOL pfGenerateOnClose
@@ -6365,19 +6365,19 @@ AccessCheckByTypeAndAuditAlarmA (
 BOOL
 WINAPI
 AccessCheckByTypeResultListAndAuditAlarmA (
-    _In_     LPCSTR SubsystemName,
-    _In_     LPVOID HandleId,
-    _In_     LPCSTR ObjectTypeName,
-    _In_opt_ LPCSTR ObjectName,
-    _In_     PSECURITY_DESCRIPTOR SecurityDescriptor,
-    _In_opt_ PSID PrincipalSelfSid,
-    _In_     DWORD DesiredAccess,
-    _In_     AUDIT_EVENT_TYPE AuditType,
-    _In_     DWORD Flags,
+         LPCSTR SubsystemName,
+         LPVOID HandleId,
+         LPCSTR ObjectTypeName,
+     LPCSTR ObjectName,
+         PSECURITY_DESCRIPTOR SecurityDescriptor,
+     PSID PrincipalSelfSid,
+         DWORD DesiredAccess,
+         AUDIT_EVENT_TYPE AuditType,
+         DWORD Flags,
     _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
-    _In_     DWORD ObjectTypeListLength,
-    _In_     PGENERIC_MAPPING GenericMapping,
-    _In_     BOOL ObjectCreation,
+         DWORD ObjectTypeListLength,
+         PGENERIC_MAPPING GenericMapping,
+         BOOL ObjectCreation,
     _Out_writes_(ObjectTypeListLength)       LPDWORD GrantedAccess,
     _Out_writes_(ObjectTypeListLength)       LPDWORD AccessStatusList,
     _Out_    LPBOOL pfGenerateOnClose
@@ -6390,20 +6390,20 @@ AccessCheckByTypeResultListAndAuditAlarmA (
 BOOL
 WINAPI
 AccessCheckByTypeResultListAndAuditAlarmByHandleA (
-    _In_     LPCSTR SubsystemName,
-    _In_     LPVOID HandleId,
-    _In_     HANDLE ClientToken,
-    _In_     LPCSTR ObjectTypeName,
-    _In_opt_ LPCSTR ObjectName,
-    _In_     PSECURITY_DESCRIPTOR SecurityDescriptor,
-    _In_opt_ PSID PrincipalSelfSid,
-    _In_     DWORD DesiredAccess,
-    _In_     AUDIT_EVENT_TYPE AuditType,
-    _In_     DWORD Flags,
+         LPCSTR SubsystemName,
+         LPVOID HandleId,
+         HANDLE ClientToken,
+         LPCSTR ObjectTypeName,
+     LPCSTR ObjectName,
+         PSECURITY_DESCRIPTOR SecurityDescriptor,
+     PSID PrincipalSelfSid,
+         DWORD DesiredAccess,
+         AUDIT_EVENT_TYPE AuditType,
+         DWORD Flags,
     _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
-    _In_     DWORD ObjectTypeListLength,
-    _In_     PGENERIC_MAPPING GenericMapping,
-    _In_     BOOL ObjectCreation,
+         DWORD ObjectTypeListLength,
+         PGENERIC_MAPPING GenericMapping,
+         BOOL ObjectCreation,
     _Out_writes_(ObjectTypeListLength)       LPDWORD GrantedAccess,
     _Out_writes_(ObjectTypeListLength)       LPDWORD AccessStatusList,
     _Out_    LPBOOL pfGenerateOnClose
@@ -6417,17 +6417,17 @@ AccessCheckByTypeResultListAndAuditAlarmByHandleA (
 BOOL
 WINAPI
 ObjectOpenAuditAlarmA (
-    _In_     LPCSTR SubsystemName,
-    _In_     LPVOID HandleId,
-    _In_     LPSTR ObjectTypeName,
-    _In_opt_ LPSTR ObjectName,
-    _In_     PSECURITY_DESCRIPTOR pSecurityDescriptor,
-    _In_     HANDLE ClientToken,
-    _In_     DWORD DesiredAccess,
-    _In_     DWORD GrantedAccess,
-    _In_opt_ PPRIVILEGE_SET Privileges,
-    _In_     BOOL ObjectCreation,
-    _In_     BOOL AccessGranted,
+         LPCSTR SubsystemName,
+         LPVOID HandleId,
+         LPSTR ObjectTypeName,
+     LPSTR ObjectName,
+         PSECURITY_DESCRIPTOR pSecurityDescriptor,
+         HANDLE ClientToken,
+         DWORD DesiredAccess,
+         DWORD GrantedAccess,
+     PPRIVILEGE_SET Privileges,
+         BOOL ObjectCreation,
+         BOOL AccessGranted,
     _Out_    LPBOOL GenerateOnClose
     );
 #ifndef UNICODE
@@ -6438,12 +6438,12 @@ ObjectOpenAuditAlarmA (
 BOOL
 WINAPI
 ObjectPrivilegeAuditAlarmA (
-    _In_ LPCSTR SubsystemName,
-    _In_ LPVOID HandleId,
-    _In_ HANDLE ClientToken,
-    _In_ DWORD DesiredAccess,
-    _In_ PPRIVILEGE_SET Privileges,
-    _In_ BOOL AccessGranted
+     LPCSTR SubsystemName,
+     LPVOID HandleId,
+     HANDLE ClientToken,
+     DWORD DesiredAccess,
+     PPRIVILEGE_SET Privileges,
+     BOOL AccessGranted
     );
 #ifndef UNICODE
 #define ObjectPrivilegeAuditAlarm  ObjectPrivilegeAuditAlarmA
@@ -6453,9 +6453,9 @@ ObjectPrivilegeAuditAlarmA (
 BOOL
 WINAPI
 ObjectCloseAuditAlarmA (
-    _In_ LPCSTR SubsystemName,
-    _In_ LPVOID HandleId,
-    _In_ BOOL GenerateOnClose
+     LPCSTR SubsystemName,
+     LPVOID HandleId,
+     BOOL GenerateOnClose
     );
 #ifndef UNICODE
 #define ObjectCloseAuditAlarm  ObjectCloseAuditAlarmA
@@ -6465,9 +6465,9 @@ ObjectCloseAuditAlarmA (
 BOOL
 WINAPI
 ObjectDeleteAuditAlarmA (
-    _In_ LPCSTR SubsystemName,
-    _In_ LPVOID HandleId,
-    _In_ BOOL GenerateOnClose
+     LPCSTR SubsystemName,
+     LPVOID HandleId,
+     BOOL GenerateOnClose
     );
 #ifndef UNICODE
 #define ObjectDeleteAuditAlarm  ObjectDeleteAuditAlarmA
@@ -6477,11 +6477,11 @@ ObjectDeleteAuditAlarmA (
 BOOL
 WINAPI
 PrivilegedServiceAuditAlarmA (
-    _In_ LPCSTR SubsystemName,
-    _In_ LPCSTR ServiceName,
-    _In_ HANDLE ClientToken,
-    _In_ PPRIVILEGE_SET Privileges,
-    _In_ BOOL AccessGranted
+     LPCSTR SubsystemName,
+     LPCSTR ServiceName,
+     HANDLE ClientToken,
+     PPRIVILEGE_SET Privileges,
+     BOOL AccessGranted
     );
 #ifndef UNICODE
 #define PrivilegedServiceAuditAlarm  PrivilegedServiceAuditAlarmA
@@ -6493,12 +6493,12 @@ BOOL
 WINAPI
 AddConditionalAce (
     _Inout_ PACL pAcl,
-    _In_    DWORD dwAceRevision,
-    _In_    DWORD AceFlags,
-    _In_    UCHAR AceType,
-    _In_    DWORD AccessMask,
-    _In_    PSID pSid,
-    _In_ _Null_terminated_ PWCHAR ConditionStr,
+        DWORD dwAceRevision,
+        DWORD AceFlags,
+        UCHAR AceType,
+        DWORD AccessMask,
+        PSID pSid,
+     _Null_terminated_ PWCHAR ConditionStr,
     _Out_ DWORD *ReturnLength
     );
 #endif /* _WIN32_WINNT >=  0x0601 */
@@ -6513,9 +6513,9 @@ AddConditionalAce (
 BOOL
 WINAPI
 SetFileSecurityA (
-    _In_ LPCSTR lpFileName,
-    _In_ SECURITY_INFORMATION SecurityInformation,
-    _In_ PSECURITY_DESCRIPTOR pSecurityDescriptor
+     LPCSTR lpFileName,
+     SECURITY_INFORMATION SecurityInformation,
+     PSECURITY_DESCRIPTOR pSecurityDescriptor
     );
 #ifndef UNICODE
 #define SetFileSecurity  SetFileSecurityA
@@ -6525,10 +6525,10 @@ SetFileSecurityA (
 BOOL
 WINAPI
 GetFileSecurityA (
-    _In_  LPCSTR lpFileName,
-    _In_  SECURITY_INFORMATION RequestedInformation,
+      LPCSTR lpFileName,
+      SECURITY_INFORMATION RequestedInformation,
     _Out_writes_bytes_to_opt_(nLength, *lpnLengthNeeded) PSECURITY_DESCRIPTOR pSecurityDescriptor,
-    _In_  DWORD nLength,
+      DWORD nLength,
     _Out_ LPDWORD lpnLengthNeeded
     );
 #ifndef UNICODE
@@ -6546,14 +6546,14 @@ WINBASEAPI
 BOOL
 WINAPI
 ReadDirectoryChangesW(
-    _In_        HANDLE hDirectory,
+            HANDLE hDirectory,
     _Out_writes_bytes_to_(nBufferLength, *lpBytesReturned) LPVOID lpBuffer,
-    _In_        DWORD nBufferLength,
-    _In_        BOOL bWatchSubtree,
-    _In_        DWORD dwNotifyFilter,
+            DWORD nBufferLength,
+            BOOL bWatchSubtree,
+            DWORD dwNotifyFilter,
     _Out_opt_   LPDWORD lpBytesReturned,
     _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_opt_    LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
+        LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
@@ -6561,15 +6561,15 @@ WINBASEAPI
 BOOL
 WINAPI
 ReadDirectoryChangesExW(
-    _In_        HANDLE hDirectory,
+            HANDLE hDirectory,
     _Out_writes_bytes_to_(nBufferLength, *lpBytesReturned) LPVOID lpBuffer,
-    _In_        DWORD nBufferLength,
-    _In_        BOOL bWatchSubtree,
-    _In_        DWORD dwNotifyFilter,
+            DWORD nBufferLength,
+            BOOL bWatchSubtree,
+            DWORD dwNotifyFilter,
     _Out_opt_   LPDWORD lpBytesReturned,
     _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_opt_    LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
-    _In_        READ_DIRECTORY_NOTIFY_INFORMATION_CLASS ReadDirectoryNotifyInformationClass
+        LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
+            READ_DIRECTORY_NOTIFY_INFORMATION_CLASS ReadDirectoryNotifyInformationClass
     );
 #endif
 #endif /* _WIN32_WINNT >= 0x0400 */
@@ -6587,13 +6587,13 @@ _Ret_maybenull_ __out_data_source(FILE)
 LPVOID
 WINAPI
 MapViewOfFileExNuma(
-    _In_     HANDLE hFileMappingObject,
-    _In_     DWORD dwDesiredAccess,
-    _In_     DWORD dwFileOffsetHigh,
-    _In_     DWORD dwFileOffsetLow,
-    _In_     SIZE_T dwNumberOfBytesToMap,
-    _In_opt_ LPVOID lpBaseAddress,
-    _In_     DWORD nndPreferred
+         HANDLE hFileMappingObject,
+         DWORD dwDesiredAccess,
+         DWORD dwFileOffsetHigh,
+         DWORD dwFileOffsetLow,
+         SIZE_T dwNumberOfBytesToMap,
+     LPVOID lpBaseAddress,
+         DWORD nndPreferred
     );
 
 #endif // _WIN32_WINNT >= 0x0600
@@ -6602,54 +6602,54 @@ WINBASEAPI
 BOOL
 WINAPI
 IsBadReadPtr(
-    _In_opt_ CONST VOID *lp,
-    _In_     UINT_PTR ucb
+     CONST VOID *lp,
+         UINT_PTR ucb
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 IsBadWritePtr(
-    _In_opt_ LPVOID lp,
-    _In_     UINT_PTR ucb
+     LPVOID lp,
+         UINT_PTR ucb
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 IsBadHugeReadPtr(
-    _In_opt_ CONST VOID *lp,
-    _In_     UINT_PTR ucb
+     CONST VOID *lp,
+         UINT_PTR ucb
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 IsBadHugeWritePtr(
-    _In_opt_ LPVOID lp,
-    _In_     UINT_PTR ucb
+     LPVOID lp,
+         UINT_PTR ucb
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 IsBadCodePtr(
-    _In_opt_ FARPROC lpfn
+     FARPROC lpfn
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 IsBadStringPtrA(
-    _In_opt_ LPCSTR lpsz,
-    _In_     UINT_PTR ucchMax
+     LPCSTR lpsz,
+         UINT_PTR ucchMax
     );
 WINBASEAPI
 BOOL
 WINAPI
 IsBadStringPtrW(
-    _In_opt_ LPCWSTR lpsz,
-    _In_     UINT_PTR ucchMax
+     LPCWSTR lpsz,
+         UINT_PTR ucchMax
     );
 #ifdef UNICODE
 #define IsBadStringPtr  IsBadStringPtrW
@@ -6667,8 +6667,8 @@ IsBadStringPtrW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidA(
-    _In_opt_ LPCSTR lpSystemName,
-    _In_ PSID Sid,
+     LPCSTR lpSystemName,
+     PSID Sid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR Name,
     _Inout_  LPDWORD cchName,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
@@ -6679,8 +6679,8 @@ LookupAccountSidA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidW(
-    _In_opt_ LPCWSTR lpSystemName,
-    _In_ PSID Sid,
+     LPCWSTR lpSystemName,
+     PSID Sid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR Name,
     _Inout_  LPDWORD cchName,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
@@ -6697,8 +6697,8 @@ LookupAccountSidW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameA(
-    _In_opt_ LPCSTR lpSystemName,
-    _In_     LPCSTR lpAccountName,
+     LPCSTR lpSystemName,
+         LPCSTR lpAccountName,
     _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
     _Inout_  LPDWORD cbSid,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
@@ -6709,8 +6709,8 @@ LookupAccountNameA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameW(
-    _In_opt_ LPCWSTR lpSystemName,
-    _In_     LPCWSTR lpAccountName,
+     LPCWSTR lpSystemName,
+         LPCWSTR lpAccountName,
     _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
     _Inout_  LPDWORD cbSid,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
@@ -6735,7 +6735,7 @@ LookupAccountNameW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameLocalA(
-    _In_     LPCSTR lpAccountName,
+         LPCSTR lpAccountName,
     _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
     _Inout_  LPDWORD cbSid,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
@@ -6746,7 +6746,7 @@ LookupAccountNameLocalA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountNameLocalW(
-    _In_     LPCWSTR lpAccountName,
+         LPCWSTR lpAccountName,
     _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
     _Inout_  LPDWORD cbSid,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
@@ -6763,7 +6763,7 @@ LookupAccountNameLocalW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidLocalA(
-    _In_ PSID Sid,
+     PSID Sid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR Name,
     _Inout_  LPDWORD cchName,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
@@ -6774,7 +6774,7 @@ LookupAccountSidLocalA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidLocalW(
-    _In_ PSID Sid,
+     PSID Sid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR Name,
     _Inout_  LPDWORD cchName,
     _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
@@ -6821,16 +6821,16 @@ LookupAccountSidLocalW(
 BOOL
 WINAPI
 LookupPrivilegeValueA(
-    _In_opt_ LPCSTR lpSystemName,
-    _In_     LPCSTR lpName,
+     LPCSTR lpSystemName,
+         LPCSTR lpName,
     _Out_    PLUID   lpLuid
     );
 
 BOOL
 WINAPI
 LookupPrivilegeValueW(
-    _In_opt_ LPCWSTR lpSystemName,
-    _In_     LPCWSTR lpName,
+     LPCWSTR lpSystemName,
+         LPCWSTR lpName,
     _Out_    PLUID   lpLuid
     );
 #ifdef UNICODE
@@ -6843,8 +6843,8 @@ LookupPrivilegeValueW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeNameA(
-    _In_opt_ LPCSTR lpSystemName,
-    _In_     PLUID   lpLuid,
+     LPCSTR lpSystemName,
+         PLUID   lpLuid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR lpName,
     _Inout_  LPDWORD cchName
     );
@@ -6852,8 +6852,8 @@ LookupPrivilegeNameA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeNameW(
-    _In_opt_ LPCWSTR lpSystemName,
-    _In_     PLUID   lpLuid,
+     LPCWSTR lpSystemName,
+         PLUID   lpLuid,
     _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR lpName,
     _Inout_  LPDWORD cchName
     );
@@ -6867,8 +6867,8 @@ LookupPrivilegeNameW(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeDisplayNameA(
-    _In_opt_ LPCSTR lpSystemName,
-    _In_     LPCSTR lpName,
+     LPCSTR lpSystemName,
+         LPCSTR lpName,
     _Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) LPSTR lpDisplayName,
     _Inout_  LPDWORD cchDisplayName,
     _Out_    LPDWORD lpLanguageId
@@ -6877,8 +6877,8 @@ LookupPrivilegeDisplayNameA(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupPrivilegeDisplayNameW(
-    _In_opt_ LPCWSTR lpSystemName,
-    _In_     LPCWSTR lpName,
+     LPCWSTR lpSystemName,
+         LPCWSTR lpName,
     _Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) LPWSTR lpDisplayName,
     _Inout_  LPDWORD cchDisplayName,
     _Out_    LPDWORD lpLanguageId
@@ -6899,14 +6899,14 @@ WINBASEAPI
 BOOL
 WINAPI
 BuildCommDCBA(
-    _In_  LPCSTR lpDef,
+      LPCSTR lpDef,
     _Out_ LPDCB lpDCB
     );
 WINBASEAPI
 BOOL
 WINAPI
 BuildCommDCBW(
-    _In_  LPCWSTR lpDef,
+      LPCWSTR lpDef,
     _Out_ LPDCB lpDCB
     );
 #ifdef UNICODE
@@ -6919,7 +6919,7 @@ WINBASEAPI
 BOOL
 WINAPI
 BuildCommDCBAndTimeoutsA(
-    _In_  LPCSTR lpDef,
+      LPCSTR lpDef,
     _Out_ LPDCB lpDCB,
     _Out_ LPCOMMTIMEOUTS lpCommTimeouts
     );
@@ -6927,7 +6927,7 @@ WINBASEAPI
 BOOL
 WINAPI
 BuildCommDCBAndTimeoutsW(
-    _In_  LPCWSTR lpDef,
+      LPCWSTR lpDef,
     _Out_ LPDCB lpDCB,
     _Out_ LPCOMMTIMEOUTS lpCommTimeouts
     );
@@ -6941,16 +6941,16 @@ WINBASEAPI
 BOOL
 WINAPI
 CommConfigDialogA(
-    _In_     LPCSTR lpszName,
-    _In_opt_ HWND hWnd,
+         LPCSTR lpszName,
+     HWND hWnd,
     _Inout_  LPCOMMCONFIG lpCC
     );
 WINBASEAPI
 BOOL
 WINAPI
 CommConfigDialogW(
-    _In_     LPCWSTR lpszName,
-    _In_opt_ HWND hWnd,
+         LPCWSTR lpszName,
+     HWND hWnd,
     _Inout_  LPCOMMCONFIG lpCC
     );
 #ifdef UNICODE
@@ -6963,7 +6963,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetDefaultCommConfigA(
-    _In_    LPCSTR lpszName,
+        LPCSTR lpszName,
     _Out_writes_bytes_to_(*lpdwSize, *lpdwSize) LPCOMMCONFIG lpCC,
     _Inout_ LPDWORD lpdwSize
     );
@@ -6971,7 +6971,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetDefaultCommConfigW(
-    _In_    LPCWSTR lpszName,
+        LPCWSTR lpszName,
     _Out_writes_bytes_to_(*lpdwSize, *lpdwSize) LPCOMMCONFIG lpCC,
     _Inout_ LPDWORD lpdwSize
     );
@@ -6985,17 +6985,17 @@ WINBASEAPI
 BOOL
 WINAPI
 SetDefaultCommConfigA(
-    _In_ LPCSTR lpszName,
+     LPCSTR lpszName,
     _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
-    _In_ DWORD dwSize
+     DWORD dwSize
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetDefaultCommConfigW(
-    _In_ LPCWSTR lpszName,
+     LPCWSTR lpszName,
     _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
-    _In_ DWORD dwSize
+     DWORD dwSize
     );
 #ifdef UNICODE
 #define SetDefaultCommConfig  SetDefaultCommConfigW
@@ -7051,7 +7051,7 @@ _Success_(return != FALSE)
 BOOL
 WINAPI
 DnsHostnameToComputerNameA (
-    _In_    LPCSTR Hostname,
+        LPCSTR Hostname,
     _Out_writes_to_opt_(*nSize, *nSize + 1) LPSTR ComputerName,
     _Inout_ LPDWORD nSize
     );
@@ -7060,7 +7060,7 @@ _Success_(return != FALSE)
 BOOL
 WINAPI
 DnsHostnameToComputerNameW (
-    _In_    LPCWSTR Hostname,
+        LPCWSTR Hostname,
     _Out_writes_to_opt_(*nSize, *nSize + 1) LPWSTR ComputerName,
     _Inout_ LPDWORD nSize
     );
@@ -7124,22 +7124,22 @@ GetUserNameW (
 BOOL
 WINAPI
 LogonUserA (
-    _In_        LPCSTR lpszUsername,
-    _In_opt_    LPCSTR lpszDomain,
-    _In_opt_    LPCSTR lpszPassword,
-    _In_        DWORD dwLogonType,
-    _In_        DWORD dwLogonProvider,
+            LPCSTR lpszUsername,
+        LPCSTR lpszDomain,
+        LPCSTR lpszPassword,
+            DWORD dwLogonType,
+            DWORD dwLogonProvider,
     _Outptr_ PHANDLE phToken
     );
 
 BOOL
 WINAPI
 LogonUserW (
-    _In_        LPCWSTR lpszUsername,
-    _In_opt_    LPCWSTR lpszDomain,
-    _In_opt_    LPCWSTR lpszPassword,
-    _In_        DWORD dwLogonType,
-    _In_        DWORD dwLogonProvider,
+            LPCWSTR lpszUsername,
+        LPCWSTR lpszDomain,
+        LPCWSTR lpszPassword,
+            DWORD dwLogonType,
+            DWORD dwLogonProvider,
     _Outptr_ PHANDLE phToken
     );
 #ifdef UNICODE
@@ -7152,11 +7152,11 @@ LogonUserW (
 BOOL
 WINAPI
 LogonUserExA (
-    _In_            LPCSTR lpszUsername,
-    _In_opt_        LPCSTR lpszDomain,
-    _In_opt_        LPCSTR lpszPassword,
-    _In_            DWORD dwLogonType,
-    _In_            DWORD dwLogonProvider,
+                LPCSTR lpszUsername,
+            LPCSTR lpszDomain,
+            LPCSTR lpszPassword,
+                DWORD dwLogonType,
+                DWORD dwLogonProvider,
     _Outptr_opt_ PHANDLE phToken,
     _Outptr_opt_ PSID  *ppLogonSid,
     _Outptr_opt_result_bytebuffer_all_(*pdwProfileLength) PVOID *ppProfileBuffer,
@@ -7167,11 +7167,11 @@ LogonUserExA (
 BOOL
 WINAPI
 LogonUserExW (
-    _In_            LPCWSTR lpszUsername,
-    _In_opt_        LPCWSTR lpszDomain,
-    _In_opt_        LPCWSTR lpszPassword,
-    _In_            DWORD dwLogonType,
-    _In_            DWORD dwLogonProvider,
+                LPCWSTR lpszUsername,
+            LPCWSTR lpszDomain,
+            LPCWSTR lpszPassword,
+                DWORD dwLogonType,
+                DWORD dwLogonProvider,
     _Outptr_opt_ PHANDLE phToken,
     _Outptr_opt_ PSID  *ppLogonSid,
     _Outptr_opt_result_bytebuffer_all_(*pdwProfileLength) PVOID *ppProfileBuffer,
@@ -7209,16 +7209,16 @@ LogonUserExW (
 _Must_inspect_result_ BOOL
 WINAPI
 CreateProcessWithLogonW(
-    _In_        LPCWSTR lpUsername,
-    _In_opt_    LPCWSTR lpDomain,
-    _In_        LPCWSTR lpPassword,
-    _In_        DWORD dwLogonFlags,
-    _In_opt_    LPCWSTR lpApplicationName,
+            LPCWSTR lpUsername,
+        LPCWSTR lpDomain,
+            LPCWSTR lpPassword,
+            DWORD dwLogonFlags,
+        LPCWSTR lpApplicationName,
     _Inout_opt_ LPWSTR lpCommandLine,
-    _In_        DWORD dwCreationFlags,
-    _In_opt_    LPVOID lpEnvironment,
-    _In_opt_    LPCWSTR lpCurrentDirectory,
-    _In_        LPSTARTUPINFOW lpStartupInfo,
+            DWORD dwCreationFlags,
+        LPVOID lpEnvironment,
+        LPCWSTR lpCurrentDirectory,
+            LPSTARTUPINFOW lpStartupInfo,
     _Out_       LPPROCESS_INFORMATION lpProcessInformation
       );
 
@@ -7226,14 +7226,14 @@ CreateProcessWithLogonW(
 _Must_inspect_result_ BOOL
 WINAPI
 CreateProcessWithTokenW(
-    _In_        HANDLE hToken,
-    _In_        DWORD dwLogonFlags,
-    _In_opt_    LPCWSTR lpApplicationName,
+            HANDLE hToken,
+            DWORD dwLogonFlags,
+        LPCWSTR lpApplicationName,
     _Inout_opt_ LPWSTR lpCommandLine,
-    _In_        DWORD dwCreationFlags,
-    _In_opt_    LPVOID lpEnvironment,
-    _In_opt_    LPCWSTR lpCurrentDirectory,
-    _In_        LPSTARTUPINFOW lpStartupInfo,
+            DWORD dwCreationFlags,
+        LPVOID lpEnvironment,
+        LPCWSTR lpCurrentDirectory,
+            LPSTARTUPINFOW lpStartupInfo,
     _Out_       LPPROCESS_INFORMATION lpProcessInformation
       );
 
@@ -7243,7 +7243,7 @@ CreateProcessWithTokenW(
 BOOL
 WINAPI
 IsTokenUntrusted(
-    _In_ HANDLE TokenHandle
+     HANDLE TokenHandle
     );
 
 //
@@ -7257,11 +7257,11 @@ BOOL
 WINAPI
 RegisterWaitForSingleObject(
     _Outptr_ PHANDLE phNewWaitObject,
-    _In_        HANDLE hObject,
-    _In_        WAITORTIMERCALLBACK Callback,
-    _In_opt_    PVOID Context,
-    _In_        ULONG dwMilliseconds,
-    _In_        ULONG dwFlags
+            HANDLE hObject,
+            WAITORTIMERCALLBACK Callback,
+        PVOID Context,
+            ULONG dwMilliseconds,
+            ULONG dwFlags
     );
 
 WINBASEAPI
@@ -7269,28 +7269,28 @@ _Must_inspect_result_
 BOOL
 WINAPI
 UnregisterWait(
-    _In_ HANDLE WaitHandle
+     HANDLE WaitHandle
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 BindIoCompletionCallback (
-    _In_ HANDLE FileHandle,
-    _In_ LPOVERLAPPED_COMPLETION_ROUTINE Function,
-    _In_ ULONG Flags
+     HANDLE FileHandle,
+     LPOVERLAPPED_COMPLETION_ROUTINE Function,
+     ULONG Flags
     );
 
 WINBASEAPI
 HANDLE
 WINAPI
 SetTimerQueueTimer(
-    _In_opt_ HANDLE TimerQueue,
-    _In_     WAITORTIMERCALLBACK Callback,
-    _In_opt_ PVOID Parameter,
-    _In_     DWORD DueTime,
-    _In_     DWORD Period,
-    _In_     BOOL PreferIo
+     HANDLE TimerQueue,
+         WAITORTIMERCALLBACK Callback,
+     PVOID Parameter,
+         DWORD DueTime,
+         DWORD Period,
+         BOOL PreferIo
     );
 
 WINBASEAPI
@@ -7298,8 +7298,8 @@ _Must_inspect_result_
 BOOL
 WINAPI
 CancelTimerQueueTimer(
-    _In_opt_ HANDLE TimerQueue,
-    _In_     HANDLE Timer
+     HANDLE TimerQueue,
+         HANDLE Timer
     );
 
 WINBASEAPI
@@ -7307,7 +7307,7 @@ _Must_inspect_result_
 BOOL
 WINAPI
 DeleteTimerQueue(
-    _In_ HANDLE TimerQueue
+     HANDLE TimerQueue
     );
 
 #endif // _WIN32_WINNT >= 0x0500
@@ -7335,7 +7335,7 @@ FORCEINLINE
 VOID
 SetThreadpoolCallbackPool(
     _Inout_ PTP_CALLBACK_ENVIRON pcbe,
-    _In_    PTP_POOL             ptpp
+        PTP_POOL             ptpp
     )
 {
     TpSetCallbackThreadpool(pcbe, ptpp);
@@ -7345,8 +7345,8 @@ FORCEINLINE
 VOID
 SetThreadpoolCallbackCleanupGroup(
     _Inout_  PTP_CALLBACK_ENVIRON              pcbe,
-    _In_     PTP_CLEANUP_GROUP                 ptpcg,
-    _In_opt_ PTP_CLEANUP_GROUP_CANCEL_CALLBACK pfng
+         PTP_CLEANUP_GROUP                 ptpcg,
+     PTP_CLEANUP_GROUP_CANCEL_CALLBACK pfng
     )
 {
     TpSetCallbackCleanupGroup(pcbe, ptpcg, pfng);
@@ -7365,7 +7365,7 @@ FORCEINLINE
 VOID
 SetThreadpoolCallbackLibrary(
     _Inout_ PTP_CALLBACK_ENVIRON pcbe,
-    _In_    PVOID                mod
+        PVOID                mod
     )
 {
     TpSetCallbackRaceWithDll(pcbe, mod);
@@ -7377,7 +7377,7 @@ FORCEINLINE
 VOID
 SetThreadpoolCallbackPriority(
     _Inout_ PTP_CALLBACK_ENVIRON pcbe,
-    _In_    TP_CALLBACK_PRIORITY Priority
+        TP_CALLBACK_PRIORITY Priority
     )
 {
     TpSetCallbackPriority(pcbe, Priority);
@@ -7435,9 +7435,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreatePrivateNamespaceA(
-    _In_opt_ LPSECURITY_ATTRIBUTES lpPrivateNamespaceAttributes,
-    _In_     LPVOID lpBoundaryDescriptor,
-    _In_     LPCSTR lpAliasPrefix
+     LPSECURITY_ATTRIBUTES lpPrivateNamespaceAttributes,
+         LPVOID lpBoundaryDescriptor,
+         LPCSTR lpAliasPrefix
     );
 
 #ifndef UNICODE
@@ -7451,8 +7451,8 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 OpenPrivateNamespaceA(
-    _In_     LPVOID lpBoundaryDescriptor,
-    _In_     LPCSTR lpAliasPrefix
+         LPVOID lpBoundaryDescriptor,
+         LPCSTR lpAliasPrefix
     );
 
 #ifndef UNICODE
@@ -7471,8 +7471,8 @@ _Ret_maybenull_
 HANDLE
 APIENTRY
 CreateBoundaryDescriptorA(
-    _In_ LPCSTR Name,
-    _In_ ULONG Flags
+     LPCSTR Name,
+     ULONG Flags
     );
 
 #ifndef UNICODE
@@ -7492,7 +7492,7 @@ BOOL
 WINAPI
 AddIntegrityLabelToBoundaryDescriptor(
     _Inout_ HANDLE * BoundaryDescriptor,
-    _In_ PSID IntegrityLabel
+     PSID IntegrityLabel
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -7560,16 +7560,16 @@ BOOL
 WINAPI
 VerifyVersionInfoA(
     _Inout_ LPOSVERSIONINFOEXA lpVersionInformation,
-    _In_    DWORD dwTypeMask,
-    _In_    DWORDLONG dwlConditionMask
+        DWORD dwTypeMask,
+        DWORDLONG dwlConditionMask
     );
 WINBASEAPI
 BOOL
 WINAPI
 VerifyVersionInfoW(
     _Inout_ LPOSVERSIONINFOEXW lpVersionInformation,
-    _In_    DWORD dwTypeMask,
-    _In_    DWORDLONG dwlConditionMask
+        DWORD dwTypeMask,
+        DWORDLONG dwlConditionMask
     );
 #ifdef UNICODE
 #define VerifyVersionInfo  VerifyVersionInfoW
@@ -7607,8 +7607,8 @@ WINBASEAPI
 BOOL
 WINAPI
 SetSystemPowerState(
-    _In_ BOOL fSuspend,
-    _In_ BOOL fForce
+     BOOL fSuspend,
+     BOOL fForce
     );
 
 #endif /* WINVER >= 0x0400 */
@@ -7676,7 +7676,7 @@ BOOL
 WINAPI
 MapUserPhysicalPagesScatter(
     _In_reads_(NumberOfPages) PVOID *VirtualAddresses,
-    _In_ ULONG_PTR NumberOfPages,
+     ULONG_PTR NumberOfPages,
     _In_reads_opt_(NumberOfPages) PULONG_PTR PageArray
     );
 
@@ -7691,8 +7691,8 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 CreateJobObjectA(
-    _In_opt_ LPSECURITY_ATTRIBUTES lpJobAttributes,
-    _In_opt_ LPCSTR lpName
+     LPSECURITY_ATTRIBUTES lpJobAttributes,
+     LPCSTR lpName
     );
 
 #ifdef UNICODE
@@ -7706,9 +7706,9 @@ _Ret_maybenull_
 HANDLE
 WINAPI
 OpenJobObjectA(
-    _In_ DWORD dwDesiredAccess,
-    _In_ BOOL bInheritHandle,
-    _In_ LPCSTR lpName
+     DWORD dwDesiredAccess,
+     BOOL bInheritHandle,
+     LPCSTR lpName
     );
 
 #ifdef UNICODE
@@ -7727,9 +7727,9 @@ WINBASEAPI
 BOOL
 WINAPI
 CreateJobSet (
-    _In_ ULONG NumJob,
+     ULONG NumJob,
     _In_reads_(NumJob) PJOB_SET_ARRAY UserJobSet,
-    _In_ ULONG Flags);
+     ULONG Flags);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 #pragma endregion
@@ -7742,7 +7742,7 @@ HANDLE
 WINAPI
 FindFirstVolumeA(
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 #ifndef UNICODE
 #define FindFirstVolume FindFirstVolumeA
@@ -7754,7 +7754,7 @@ WINAPI
 FindNextVolumeA(
     _Inout_ HANDLE hFindVolume,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
-    _In_    DWORD cchBufferLength
+        DWORD cchBufferLength
     );
 #ifndef UNICODE
 #define FindNextVolume FindNextVolumeA
@@ -7770,17 +7770,17 @@ WINBASEAPI
 HANDLE
 WINAPI
 FindFirstVolumeMountPointA(
-    _In_ LPCSTR lpszRootPathName,
+     LPCSTR lpszRootPathName,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 WINBASEAPI
 HANDLE
 WINAPI
 FindFirstVolumeMountPointW(
-    _In_ LPCWSTR lpszRootPathName,
+     LPCWSTR lpszRootPathName,
     _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 #ifdef UNICODE
 #define FindFirstVolumeMountPoint FindFirstVolumeMountPointW
@@ -7792,17 +7792,17 @@ WINBASEAPI
 BOOL
 WINAPI
 FindNextVolumeMountPointA(
-    _In_ HANDLE hFindVolumeMountPoint,
+     HANDLE hFindVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 WINBASEAPI
 BOOL
 WINAPI
 FindNextVolumeMountPointW(
-    _In_ HANDLE hFindVolumeMountPoint,
+     HANDLE hFindVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 #ifdef UNICODE
 #define FindNextVolumeMountPoint FindNextVolumeMountPointW
@@ -7814,22 +7814,22 @@ WINBASEAPI
 BOOL
 WINAPI
 FindVolumeMountPointClose(
-    _In_ HANDLE hFindVolumeMountPoint
+     HANDLE hFindVolumeMountPoint
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 SetVolumeMountPointA(
-    _In_ LPCSTR lpszVolumeMountPoint,
-    _In_ LPCSTR lpszVolumeName
+     LPCSTR lpszVolumeMountPoint,
+     LPCSTR lpszVolumeName
     );
 WINBASEAPI
 BOOL
 WINAPI
 SetVolumeMountPointW(
-    _In_ LPCWSTR lpszVolumeMountPoint,
-    _In_ LPCWSTR lpszVolumeName
+     LPCWSTR lpszVolumeMountPoint,
+     LPCWSTR lpszVolumeName
     );
 #ifdef UNICODE
 #define SetVolumeMountPoint  SetVolumeMountPointW
@@ -7847,7 +7847,7 @@ WINBASEAPI
 BOOL
 WINAPI
 DeleteVolumeMountPointA(
-    _In_ LPCSTR lpszVolumeMountPoint
+     LPCSTR lpszVolumeMountPoint
     );
 #ifndef UNICODE
 #define DeleteVolumeMountPoint  DeleteVolumeMountPointA
@@ -7867,18 +7867,18 @@ WINBASEAPI
 BOOL
 WINAPI
 GetVolumeNameForVolumeMountPointA(
-    _In_ LPCSTR lpszVolumeMountPoint,
+     LPCSTR lpszVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
 );
 
 WINBASEAPI
 BOOL
 WINAPI
 GetVolumePathNameA(
-    _In_ LPCSTR lpszFileName,
+     LPCSTR lpszFileName,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumePathName,
-    _In_ DWORD cchBufferLength
+     DWORD cchBufferLength
     );
 #ifndef UNICODE
 #define GetVolumePathName  GetVolumePathNameA
@@ -7898,9 +7898,9 @@ WINBASEAPI
 BOOL
 WINAPI
 GetVolumePathNamesForVolumeNameA(
-    _In_  LPCSTR lpszVolumeName,
+      LPCSTR lpszVolumeName,
     _Out_writes_to_opt_(cchBufferLength, *lpcchReturnLength) _Post_ _NullNull_terminated_ LPCH lpszVolumePathNames,
-    _In_  DWORD cchBufferLength,
+      DWORD cchBufferLength,
     _Out_ PDWORD lpcchReturnLength
     );
 
@@ -7965,13 +7965,13 @@ WINBASEAPI
 HANDLE
 WINAPI
 CreateActCtxA(
-    _In_ PCACTCTXA pActCtx
+     PCACTCTXA pActCtx
     );
 WINBASEAPI
 HANDLE
 WINAPI
 CreateActCtxW(
-    _In_ PCACTCTXW pActCtx
+     PCACTCTXW pActCtx
     );
 #ifdef UNICODE
 #define CreateActCtx  CreateActCtxW
@@ -8019,8 +8019,8 @@ WINBASEAPI
 BOOL
 WINAPI
 DeactivateActCtx(
-    _In_ DWORD dwFlags,
-    _In_ ULONG_PTR ulCookie
+     DWORD dwFlags,
+     ULONG_PTR ulCookie
     );
 
 WINBASEAPI
@@ -8081,10 +8081,10 @@ WINBASEAPI
 BOOL
 WINAPI
 FindActCtxSectionStringA(
-    _In_       DWORD dwFlags,
+           DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
-    _In_       ULONG ulSectionId,
-    _In_       LPCSTR lpStringToFind,
+           ULONG ulSectionId,
+           LPCSTR lpStringToFind,
     _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 _Success_(return)
@@ -8092,10 +8092,10 @@ WINBASEAPI
 BOOL
 WINAPI
 FindActCtxSectionStringW(
-    _In_       DWORD dwFlags,
+           DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
-    _In_       ULONG ulSectionId,
-    _In_       LPCWSTR lpStringToFind,
+           ULONG ulSectionId,
+           LPCWSTR lpStringToFind,
     _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 #ifdef UNICODE
@@ -8108,10 +8108,10 @@ WINBASEAPI
 BOOL
 WINAPI
 FindActCtxSectionGuid(
-    _In_       DWORD dwFlags,
+           DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
-    _In_       ULONG ulSectionId,
-    _In_opt_   const GUID *lpGuidToFind,
+           ULONG ulSectionId,
+       const GUID *lpGuidToFind,
     _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 
@@ -8171,22 +8171,22 @@ WINBASEAPI
 BOOL
 WINAPI
 QueryActCtxW(
-    _In_      DWORD dwFlags,
-    _In_      HANDLE hActCtx,
-    _In_opt_  PVOID pvSubInstance,
-    _In_      ULONG ulInfoClass,
+          DWORD dwFlags,
+          HANDLE hActCtx,
+      PVOID pvSubInstance,
+          ULONG ulInfoClass,
     _Out_writes_bytes_to_opt_(cbBuffer, *pcbWrittenOrRequired) PVOID pvBuffer,
-    _In_      SIZE_T cbBuffer,
+          SIZE_T cbBuffer,
     _Out_opt_ SIZE_T *pcbWrittenOrRequired
     );
 
 typedef _Success_(return) BOOL (WINAPI * PQUERYACTCTXW_FUNC)(
-    _In_      DWORD dwFlags,
-    _In_      HANDLE hActCtx,
-    _In_opt_  PVOID pvSubInstance,
-    _In_      ULONG ulInfoClass,
+          DWORD dwFlags,
+          HANDLE hActCtx,
+      PVOID pvSubInstance,
+          ULONG ulInfoClass,
     _Out_writes_bytes_to_opt_(cbBuffer, *pcbWrittenOrRequired) PVOID pvBuffer,
-    _In_      SIZE_T cbBuffer,
+          SIZE_T cbBuffer,
     _Out_opt_ SIZE_T *pcbWrittenOrRequired
     );
 
@@ -8248,14 +8248,14 @@ WINBASEAPI
 DWORD
 WINAPI
 GetActiveProcessorCount(
-    _In_ WORD GroupNumber
+     WORD GroupNumber
     );
 
 WINBASEAPI
 DWORD
 WINAPI
 GetMaximumProcessorCount(
-    _In_ WORD GroupNumber
+     WORD GroupNumber
     );
 
 #endif // (_WIN32_WINNT >=0x0601)
@@ -8268,7 +8268,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaProcessorNode(
-    _In_  UCHAR Processor,
+      UCHAR Processor,
     _Out_ PUCHAR NodeNumber
     );
 
@@ -8278,7 +8278,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaNodeNumberFromHandle(
-    _In_  HANDLE hFile,
+      HANDLE hFile,
     _Out_ PUSHORT NodeNumber
     );
 
@@ -8290,7 +8290,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaProcessorNodeEx(
-    _In_  PPROCESSOR_NUMBER Processor,
+      PPROCESSOR_NUMBER Processor,
     _Out_ PUSHORT NodeNumber
     );
 
@@ -8300,7 +8300,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaNodeProcessorMask(
-    _In_  UCHAR Node,
+      UCHAR Node,
     _Out_ PULONGLONG ProcessorMask
     );
 
@@ -8308,7 +8308,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaAvailableMemoryNode(
-    _In_  UCHAR Node,
+      UCHAR Node,
     _Out_ PULONGLONG AvailableBytes
     );
 
@@ -8318,7 +8318,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaAvailableMemoryNodeEx(
-    _In_  USHORT Node,
+      USHORT Node,
     _Out_ PULONGLONG AvailableBytes
     );
 
@@ -8330,7 +8330,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetNumaProximityNode(
-    _In_  ULONG ProximityId,
+      ULONG ProximityId,
     _Out_ PUCHAR NodeNumber
     );
 
@@ -8387,10 +8387,10 @@ WINBASEAPI
 HRESULT
 WINAPI
 RegisterApplicationRecoveryCallback(
-    _In_  APPLICATION_RECOVERY_CALLBACK pRecoveyCallback,
-    _In_opt_  PVOID pvParameter,
-    _In_ DWORD dwPingInterval,
-    _In_ DWORD dwFlags
+      APPLICATION_RECOVERY_CALLBACK pRecoveyCallback,
+      PVOID pvParameter,
+     DWORD dwPingInterval,
+     DWORD dwFlags
     );
 
 WINBASEAPI
@@ -8402,8 +8402,8 @@ WINBASEAPI
 HRESULT
 WINAPI
 RegisterApplicationRestart(
-    _In_opt_ PCWSTR pwzCommandline,
-    _In_ DWORD dwFlags
+     PCWSTR pwzCommandline,
+     DWORD dwFlags
     );
 
 WINBASEAPI
@@ -8425,7 +8425,7 @@ WINBASEAPI
 HRESULT
 WINAPI
 GetApplicationRecoveryCallback(
-    _In_  HANDLE hProcess,
+      HANDLE hProcess,
     _Out_ APPLICATION_RECOVERY_CALLBACK* pRecoveryCallback,
     _Outptr_opt_result_maybenull_ PVOID* ppvParameter,
     _Out_opt_ PDWORD pdwPingInterval,
@@ -8436,7 +8436,7 @@ WINBASEAPI
 HRESULT
 WINAPI
 GetApplicationRestartSettings(
-    _In_ HANDLE hProcess,
+     HANDLE hProcess,
     _Out_writes_opt_(*pcchSize) PWSTR pwzCommandline,
     _Inout_ PDWORD pcchSize,
     _Out_opt_ PDWORD pdwFlags
@@ -8463,7 +8463,7 @@ WINBASEAPI
 VOID
 WINAPI
 ApplicationRecoveryFinished(
-    _In_ BOOL bSuccess
+     BOOL bSuccess
     );
 
 #endif // _WIN32_WINNT >= 0x0600
@@ -8769,10 +8769,10 @@ WINBASEAPI
 BOOL
 WINAPI
 GetFileInformationByHandleEx(
-    _In_  HANDLE hFile,
-    _In_  FILE_INFO_BY_HANDLE_CLASS FileInformationClass,
+      HANDLE hFile,
+      FILE_INFO_BY_HANDLE_CLASS FileInformationClass,
     _Out_writes_bytes_(dwBufferSize) LPVOID lpFileInformation,
-    _In_  DWORD dwBufferSize
+      DWORD dwBufferSize
 );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -8804,12 +8804,12 @@ WINBASEAPI
 HANDLE
 WINAPI
 OpenFileById (
-    _In_     HANDLE hVolumeHint,
-    _In_     LPFILE_ID_DESCRIPTOR lpFileId,
-    _In_     DWORD dwDesiredAccess,
-    _In_     DWORD dwShareMode,
-    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
-    _In_     DWORD dwFlagsAndAttributes
+         HANDLE hVolumeHint,
+         LPFILE_ID_DESCRIPTOR lpFileId,
+         DWORD dwDesiredAccess,
+         DWORD dwShareMode,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+         DWORD dwFlagsAndAttributes
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -8845,17 +8845,17 @@ WINBASEAPI
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkA (
-    _In_ LPCSTR lpSymlinkFileName,
-    _In_ LPCSTR lpTargetFileName,
-    _In_ DWORD dwFlags
+     LPCSTR lpSymlinkFileName,
+     LPCSTR lpTargetFileName,
+     DWORD dwFlags
     );
 WINBASEAPI
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkW (
-    _In_ LPCWSTR lpSymlinkFileName,
-    _In_ LPCWSTR lpTargetFileName,
-    _In_ DWORD dwFlags
+     LPCWSTR lpSymlinkFileName,
+     LPCWSTR lpTargetFileName,
+     DWORD dwFlags
     );
 #ifdef UNICODE
 #define CreateSymbolicLink  CreateSymbolicLinkW
@@ -8871,12 +8871,12 @@ WINBASEAPI
 BOOL
 WINAPI
 QueryActCtxSettingsW(
-    _In_opt_      DWORD dwFlags,
-    _In_opt_      HANDLE hActCtx,
-    _In_opt_      PCWSTR settingsNameSpace,
-    _In_          PCWSTR settingName,
+          DWORD dwFlags,
+          HANDLE hActCtx,
+          PCWSTR settingsNameSpace,
+              PCWSTR settingName,
     _Out_writes_bytes_to_opt_(dwBuffer, *pdwWrittenOrRequired) PWSTR pvBuffer,
-    _In_      SIZE_T dwBuffer,
+          SIZE_T dwBuffer,
     _Out_opt_ SIZE_T *pdwWrittenOrRequired
     );
 
@@ -8894,19 +8894,19 @@ WINBASEAPI
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkTransactedA (
-    _In_     LPCSTR lpSymlinkFileName,
-    _In_     LPCSTR lpTargetFileName,
-    _In_     DWORD dwFlags,
-    _In_     HANDLE hTransaction
+         LPCSTR lpSymlinkFileName,
+         LPCSTR lpTargetFileName,
+         DWORD dwFlags,
+         HANDLE hTransaction
     );
 WINBASEAPI
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkTransactedW (
-    _In_     LPCWSTR lpSymlinkFileName,
-    _In_     LPCWSTR lpTargetFileName,
-    _In_     DWORD dwFlags,
-    _In_     HANDLE hTransaction
+         LPCWSTR lpSymlinkFileName,
+         LPCWSTR lpTargetFileName,
+         DWORD dwFlags,
+         HANDLE hTransaction
     );
 #ifdef UNICODE
 #define CreateSymbolicLinkTransacted  CreateSymbolicLinkTransactedW
@@ -8922,9 +8922,9 @@ WINBASEAPI
 BOOL
 WINAPI
 ReplacePartitionUnit (
-    _In_ PWSTR TargetPartition,
-    _In_ PWSTR SparePartition,
-    _In_ ULONG Flags
+     PWSTR TargetPartition,
+     PWSTR SparePartition,
+     ULONG Flags
     );
 
 #endif
@@ -8936,14 +8936,14 @@ WINBASEAPI
 BOOL
 WINAPI
 AddSecureMemoryCacheCallback(
-    _In_ __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
+     __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
     );
 
 WINBASEAPI
 BOOL
 WINAPI
 RemoveSecureMemoryCacheCallback(
-    _In_ __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
+     __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
     );
 
 #endif
@@ -8962,8 +8962,8 @@ BOOL
 WINAPI
 CopyContext(
     _Inout_ PCONTEXT Destination,
-    _In_ DWORD ContextFlags,
-    _In_ PCONTEXT Source
+     DWORD ContextFlags,
+     PCONTEXT Source
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -8978,7 +8978,7 @@ BOOL
 WINAPI
 InitializeContext(
     _Out_writes_bytes_opt_(*ContextLength) PVOID Buffer,
-    _In_ DWORD ContextFlags,
+     DWORD ContextFlags,
     _Out_ PCONTEXT* Context,
     _Inout_ PDWORD ContextLength
     );
@@ -9002,7 +9002,7 @@ WINBASEAPI
 BOOL
 WINAPI
 GetXStateFeaturesMask(
-    _In_ PCONTEXT Context,
+     PCONTEXT Context,
     _Out_ PDWORD64 FeatureMask
     );
 
@@ -9011,8 +9011,8 @@ WINBASEAPI
 PVOID
 WINAPI
 LocateXStateFeature(
-    _In_ PCONTEXT Context,
-    _In_ DWORD FeatureId,
+     PCONTEXT Context,
+     DWORD FeatureId,
     _Out_opt_ PDWORD Length
     );
 
@@ -9028,7 +9028,7 @@ BOOL
 WINAPI
 SetXStateFeaturesMask(
     _Inout_ PCONTEXT Context,
-    _In_ DWORD64 FeatureMask
+     DWORD64 FeatureMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -9047,9 +9047,9 @@ WINBASEAPI
 DWORD
 APIENTRY
 EnableThreadProfiling(
-    _In_ HANDLE ThreadHandle,
-    _In_ DWORD Flags,
-    _In_ DWORD64 HardwareCounters,
+     HANDLE ThreadHandle,
+     DWORD Flags,
+     DWORD64 HardwareCounters,
     _Out_ HANDLE *PerformanceDataHandle
     );
 
@@ -9057,14 +9057,14 @@ WINBASEAPI
 DWORD
 APIENTRY
 DisableThreadProfiling(
-    _In_ HANDLE PerformanceDataHandle
+     HANDLE PerformanceDataHandle
     );
 
 WINBASEAPI
 DWORD
 APIENTRY
 QueryThreadProfiling(
-    _In_ HANDLE ThreadHandle,
+     HANDLE ThreadHandle,
     _Out_ PBOOLEAN Enabled
     );
 
@@ -9072,8 +9072,8 @@ WINBASEAPI
 DWORD
 APIENTRY
 ReadThreadProfilingData(
-    _In_ HANDLE PerformanceDataHandle,
-    _In_ DWORD Flags,
+     HANDLE PerformanceDataHandle,
+     DWORD Flags,
     _Out_ PPERFORMANCE_DATA PerformanceData
     );
 
@@ -9091,7 +9091,7 @@ WINBASEAPI
 DWORD
 WINAPI
 RaiseCustomSystemEventTrigger(
-    _In_ PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG CustomSystemEventTriggerConfig
+     PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG CustomSystemEventTriggerConfig
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -9242,7 +9242,7 @@ FORCEINLINE
 unsigned
 InterlockedExchange(
     _Inout_ _Interlocked_operand_ unsigned volatile *Target,
-    _In_ unsigned Value
+     unsigned Value
     )
 {
     return (unsigned) _InterlockedExchange((volatile long*) Target, (long) Value);
@@ -9252,7 +9252,7 @@ FORCEINLINE
 unsigned long
 InterlockedExchange(
     _Inout_ _Interlocked_operand_ unsigned long volatile *Target,
-    _In_ unsigned long Value
+     unsigned long Value
     )
 {
     return (unsigned long) _InterlockedExchange((volatile long*) Target, (long) Value);
@@ -9264,7 +9264,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedExchange(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Target,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedExchange64((volatile __int64*) Target, (__int64) Value);
@@ -9276,7 +9276,7 @@ FORCEINLINE
 unsigned
 InterlockedExchangeAdd(
     _Inout_ _Interlocked_operand_ unsigned volatile *Addend,
-    _In_ unsigned Value
+     unsigned Value
     )
 {
     return (unsigned) _InterlockedExchangeAdd((volatile long*) Addend, (long) Value);
@@ -9286,7 +9286,7 @@ FORCEINLINE
 unsigned
 InterlockedExchangeSubtract(
     _Inout_ _Interlocked_operand_ unsigned volatile *Addend,
-    _In_ unsigned Value
+     unsigned Value
     )
 {
     return (unsigned) _InterlockedExchangeAdd((volatile long*) Addend,  - (long) Value);
@@ -9296,7 +9296,7 @@ FORCEINLINE
 unsigned long
 InterlockedExchangeAdd(
     _Inout_ _Interlocked_operand_ unsigned long volatile *Addend,
-    _In_ unsigned long Value
+     unsigned long Value
     )
 {
     return (unsigned long) _InterlockedExchangeAdd((volatile long*) Addend, (long) Value);
@@ -9306,7 +9306,7 @@ FORCEINLINE
 unsigned long
 InterlockedExchangeSubtract(
     _Inout_ _Interlocked_operand_ unsigned long volatile *Addend,
-    _In_ unsigned long Value
+     unsigned long Value
     )
 {
     return (unsigned long) _InterlockedExchangeAdd((volatile long*) Addend,  - (long) Value);
@@ -9318,7 +9318,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedExchangeAdd(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedExchangeAdd64((volatile __int64*) Addend,  (__int64) Value);
@@ -9328,7 +9328,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedExchangeSubtract(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedExchangeAdd64((volatile __int64*) Addend,  - (__int64) Value);
@@ -9340,8 +9340,8 @@ FORCEINLINE
 unsigned
 InterlockedCompareExchange(
     _Inout_ _Interlocked_operand_ unsigned volatile *Destination,
-    _In_ unsigned Exchange,
-    _In_ unsigned Comperand
+     unsigned Exchange,
+     unsigned Comperand
     )
 {
     return (unsigned) _InterlockedCompareExchange((volatile long*) Destination, (long) Exchange, (long) Comperand);
@@ -9351,8 +9351,8 @@ FORCEINLINE
 unsigned long
 InterlockedCompareExchange(
     _Inout_ _Interlocked_operand_ unsigned long volatile *Destination,
-    _In_ unsigned long Exchange,
-    _In_ unsigned long Comperand
+     unsigned long Exchange,
+     unsigned long Comperand
     )
 {
     return (unsigned long) _InterlockedCompareExchange((volatile long*) Destination, (long) Exchange, (long) Comperand);
@@ -9364,8 +9364,8 @@ FORCEINLINE
 unsigned __int64
 InterlockedCompareExchange(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
-    _In_ unsigned __int64 Exchange,
-    _In_ unsigned __int64 Comperand
+     unsigned __int64 Exchange,
+     unsigned __int64 Comperand
     )
 {
     return (unsigned __int64) _InterlockedCompareExchange64((volatile __int64*) Destination, (__int64) Exchange, (__int64) Comperand);
@@ -9375,7 +9375,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedAnd(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedAnd64((volatile __int64*) Destination, (__int64) Value);
@@ -9385,7 +9385,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedOr(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedOr64((volatile __int64*) Destination, (__int64) Value);
@@ -9395,7 +9395,7 @@ FORCEINLINE
 unsigned __int64
 InterlockedXor(
     _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
-    _In_ unsigned __int64 Value
+     unsigned __int64 Value
     )
 {
     return (unsigned __int64) InterlockedXor64((volatile __int64*) Destination, (__int64) Value);
