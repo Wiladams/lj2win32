@@ -20,7 +20,7 @@ end --/* __RPCNDR_H_VERSION__ */
 
 if not COM_NO_WINDOWS_H then
 require("win32.windows")
---require("win32.ole2")
+require("win32.ole2")
 end --/*COM_NO_WINDOWS_H*/
 
 

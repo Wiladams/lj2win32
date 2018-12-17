@@ -23,10 +23,10 @@ end --/* __RPCNDR_H_VERSION__ */
 
 if not COM_NO_WINDOWS_H then
 require("win32.windows")
-require("win32.ole2")
+--require("win32.ole2")
 end --/*COM_NO_WINDOWS_H*/
 
-if not __objidlbase_h__
+if not __objidlbase_h__ then
 __objidlbase_h__ = true
 
 
@@ -356,7 +356,7 @@ end 	-- __IReleaseMarshalBuffers_FWD_DEFINED__
 if not __IWaitMultiple_FWD_DEFINED__ then
 __IWaitMultiple_FWD_DEFINED__ = true
 ffi.cdef[[
-ypedef struct IWaitMultiple IWaitMultiple;
+typedef struct IWaitMultiple IWaitMultiple;
 ]]
 end 	-- __IWaitMultiple_FWD_DEFINED__ 
 
@@ -567,7 +567,7 @@ if not __IMarshal_INTERFACE_DEFINED__
 /* interface IMarshal */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IMarshal *LPMARSHAL;
+typedef  IMarshal *LPMARSHAL;
 
 
 EXTERN_C const IID IID_IMarshal;
@@ -578,63 +578,63 @@ EXTERN_C const IID IID_IMarshal;
    IMarshal : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetUnmarshalClass( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+       virtual HRESULT __stdcall GetUnmarshalClass( 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  CLSID *pCid) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetMarshalSizeMax( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+       virtual HRESULT __stdcall GetMarshalSizeMax( 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  DWORD *pSize) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE MarshalInterface( 
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+       virtual HRESULT __stdcall MarshalInterface( 
+            
+             IStream *pStm,
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags) = 0;
+            
+             DWORD mshlflags) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE UnmarshalInterface( 
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall UnmarshalInterface( 
+            
+             IStream *pStm,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **ppv) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE ReleaseMarshalData( 
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm) = 0;
+       virtual HRESULT __stdcall ReleaseMarshalData( 
+            
+             IStream *pStm) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE DisconnectObject( 
-           /* [annotation][in] */ 
-           _In_  DWORD dwReserved) = 0;
+       virtual HRESULT __stdcall DisconnectObject( 
+            
+             DWORD dwReserved) = 0;
        
    };
    
@@ -645,81 +645,81 @@ EXTERN_C const IID IID_IMarshal;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IMarshal * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IMarshal * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IMarshal * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetUnmarshalClass )( 
+       HRESULT ( __stdcall *GetUnmarshalClass )( 
            IMarshal * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  CLSID *pCid);
        
-       HRESULT ( STDMETHODCALLTYPE *GetMarshalSizeMax )( 
+       HRESULT ( __stdcall *GetMarshalSizeMax )( 
            IMarshal * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  DWORD *pSize);
        
-       HRESULT ( STDMETHODCALLTYPE *MarshalInterface )( 
+       HRESULT ( __stdcall *MarshalInterface )( 
            IMarshal * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             IStream *pStm,
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags);
+            
+             DWORD mshlflags);
        
-       HRESULT ( STDMETHODCALLTYPE *UnmarshalInterface )( 
+       HRESULT ( __stdcall *UnmarshalInterface )( 
            IMarshal * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             IStream *pStm,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **ppv);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseMarshalData )( 
+       HRESULT ( __stdcall *ReleaseMarshalData )( 
            IMarshal * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm);
+            
+             IStream *pStm);
        
-       HRESULT ( STDMETHODCALLTYPE *DisconnectObject )( 
+       HRESULT ( __stdcall *DisconnectObject )( 
            IMarshal * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwReserved);
+            
+             DWORD dwReserved);
        
        END_INTERFACE
    } IMarshalVtbl;
@@ -797,16 +797,16 @@ EXTERN_C const IID IID_INoMarshal;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            INoMarshal * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            INoMarshal * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            INoMarshal * This);
        
        END_INTERFACE
@@ -867,16 +867,16 @@ EXTERN_C const IID IID_IAgileObject;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAgileObject * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAgileObject * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAgileObject * This);
        
        END_INTERFACE
@@ -914,7 +914,7 @@ end 	/* __IAgileObject_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0003 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -951,10 +951,10 @@ EXTERN_C const IID IID_IActivationFilter;
    IActivationFilter : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE HandleActivation( 
-           /* [in] */ DWORD dwActivationType,
-           /* [in] */ REFCLSID rclsid,
-           /* [out] */ CLSID *pReplacementClsId) = 0;
+       virtual HRESULT __stdcall HandleActivation( 
+            DWORD dwActivationType,
+            REFCLSID rclsid,
+            CLSID *pReplacementClsId) = 0;
        
    };
    
@@ -965,23 +965,23 @@ EXTERN_C const IID IID_IActivationFilter;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IActivationFilter * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IActivationFilter * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IActivationFilter * This);
        
-       HRESULT ( STDMETHODCALLTYPE *HandleActivation )( 
+       HRESULT ( __stdcall *HandleActivation )( 
            IActivationFilter * This,
-           /* [in] */ DWORD dwActivationType,
-           /* [in] */ REFCLSID rclsid,
-           /* [out] */ CLSID *pReplacementClsId);
+            DWORD dwActivationType,
+            REFCLSID rclsid,
+            CLSID *pReplacementClsId);
        
        END_INTERFACE
    } IActivationFilterVtbl;
@@ -1026,7 +1026,7 @@ if not __IMarshal2_INTERFACE_DEFINED__
 /* interface IMarshal2 */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IMarshal2 *LPMARSHAL2;
+typedef  IMarshal2 *LPMARSHAL2;
 
 
 EXTERN_C const IID IID_IMarshal2;
@@ -1046,81 +1046,81 @@ EXTERN_C const IID IID_IMarshal2;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IMarshal2 * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IMarshal2 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IMarshal2 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetUnmarshalClass )( 
+       HRESULT ( __stdcall *GetUnmarshalClass )( 
            IMarshal2 * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  CLSID *pCid);
        
-       HRESULT ( STDMETHODCALLTYPE *GetMarshalSizeMax )( 
+       HRESULT ( __stdcall *GetMarshalSizeMax )( 
            IMarshal2 * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags,
+            
+             DWORD mshlflags,
            /* [annotation][out] */ 
            _Out_  DWORD *pSize);
        
-       HRESULT ( STDMETHODCALLTYPE *MarshalInterface )( 
+       HRESULT ( __stdcall *MarshalInterface )( 
            IMarshal2 * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             IStream *pStm,
+            
+             REFIID riid,
+            
+             void *pv,
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
-           /* [annotation][in] */ 
-           _In_  DWORD mshlflags);
+            
+             DWORD mshlflags);
        
-       HRESULT ( STDMETHODCALLTYPE *UnmarshalInterface )( 
+       HRESULT ( __stdcall *UnmarshalInterface )( 
            IMarshal2 * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             IStream *pStm,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **ppv);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseMarshalData )( 
+       HRESULT ( __stdcall *ReleaseMarshalData )( 
            IMarshal2 * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pStm);
+            
+             IStream *pStm);
        
-       HRESULT ( STDMETHODCALLTYPE *DisconnectObject )( 
+       HRESULT ( __stdcall *DisconnectObject )( 
            IMarshal2 * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwReserved);
+            
+             DWORD dwReserved);
        
        END_INTERFACE
    } IMarshal2Vtbl;
@@ -1173,110 +1173,73 @@ end 	/* C style interface */
 
 
 end 	/* __IMarshal2_INTERFACE_DEFINED__ */
+--]=]
 
+if not __IMalloc_INTERFACE_DEFINED__ then
+__IMalloc_INTERFACE_DEFINED__ = true
 
-if not __IMalloc_INTERFACE_DEFINED__
-#define __IMalloc_INTERFACE_DEFINED__
+ffi.cdef[[
+typedef  IMalloc *LPMALLOC;
+]]
 
-/* interface IMalloc */
-/* [uuid][object][local] */ 
+--EXTERN_C const IID IID_IMalloc;
+--MIDL_INTERFACE("00000002-0000-0000-C000-000000000046")
 
-typedef /* [unique] */ IMalloc *LPMALLOC;
-
-
-EXTERN_C const IID IID_IMalloc;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("00000002-0000-0000-C000-000000000046")
-   IMalloc : public IUnknown
-   {
-   public:
-       virtual void *STDMETHODCALLTYPE Alloc( 
-           /* [annotation][in] */ 
-           _In_  SIZE_T cb) = 0;
-       
-       virtual void *STDMETHODCALLTYPE Realloc( 
-           /* [annotation][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  SIZE_T cb) = 0;
-       
-       virtual void STDMETHODCALLTYPE Free( 
-           /* [annotation][in] */ 
-           _In_opt_  void *pv) = 0;
-       
-       virtual SIZE_T STDMETHODCALLTYPE GetSize( 
-           /* [annotation][in] */ 
-           _In_opt_ _Post_writable_byte_size_(return)  void *pv) = 0;
-       
-       virtual int STDMETHODCALLTYPE DidAlloc( 
-           /* [annotation][in] */ 
-           _In_opt_  void *pv) = 0;
-       
-       virtual void STDMETHODCALLTYPE HeapMinimize( void) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
-
+ffi.cdef[[
    typedef struct IMallocVtbl
    {
-       BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IMalloc * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IMalloc * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IMalloc * This);
        
-       void *( STDMETHODCALLTYPE *Alloc )( 
+       void *( __stdcall *Alloc )( 
            IMalloc * This,
-           /* [annotation][in] */ 
-           _In_  SIZE_T cb);
+            
+             SIZE_T cb);
        
-       void *( STDMETHODCALLTYPE *Realloc )( 
+       void *( __stdcall *Realloc )( 
            IMalloc * This,
-           /* [annotation][in] */ 
-           _In_opt_  void *pv,
-           /* [annotation][in] */ 
-           _In_  SIZE_T cb);
+            
+             void *pv,
+            
+             SIZE_T cb);
        
-       void ( STDMETHODCALLTYPE *Free )( 
+       void ( __stdcall *Free )( 
            IMalloc * This,
-           /* [annotation][in] */ 
-           _In_opt_  void *pv);
+            
+             void *pv);
        
-       SIZE_T ( STDMETHODCALLTYPE *GetSize )( 
+       SIZE_T ( __stdcall *GetSize )( 
            IMalloc * This,
-           /* [annotation][in] */ 
-           _In_opt_ _Post_writable_byte_size_(return)  void *pv);
+            
+              void *pv);
        
-       int ( STDMETHODCALLTYPE *DidAlloc )( 
+       int ( __stdcall *DidAlloc )( 
            IMalloc * This,
-           /* [annotation][in] */ 
-           _In_opt_  void *pv);
+            
+             void *pv);
        
-       void ( STDMETHODCALLTYPE *HeapMinimize )( 
+       void ( __stdcall *HeapMinimize )( 
            IMalloc * This);
        
-       END_INTERFACE
    } IMallocVtbl;
 
-   interface IMalloc
+   typedef struct IMalloc
    {
-       CONST_VTBL struct IMallocVtbl *lpVtbl;
+       const struct IMallocVtbl *lpVtbl;
    };
-
+]]
    
-
+--[[
 #ifdef COBJMACROS
 
 
@@ -1309,23 +1272,17 @@ EXTERN_C const IID IID_IMalloc;
    ( (This)->lpVtbl -> HeapMinimize(This) ) 
 
 end /* COBJMACROS */
+--]]
+end
 
-
-end 	/* C style interface */
-
-
-
-
-end 	/* __IMalloc_INTERFACE_DEFINED__ */
-
-
+--[=[
 if not __IStdMarshalInfo_INTERFACE_DEFINED__
 #define __IStdMarshalInfo_INTERFACE_DEFINED__
 
 /* interface IStdMarshalInfo */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IStdMarshalInfo *LPSTDMARSHALINFO;
+typedef  IStdMarshalInfo *LPSTDMARSHALINFO;
 
 
 EXTERN_C const IID IID_IStdMarshalInfo;
@@ -1336,10 +1293,10 @@ EXTERN_C const IID IID_IStdMarshalInfo;
    IStdMarshalInfo : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetClassForHandler( 
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+       virtual HRESULT __stdcall GetClassForHandler( 
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
            /* [annotation][out] */ 
            _Out_  CLSID *pClsid) = 0;
@@ -1353,23 +1310,23 @@ EXTERN_C const IID IID_IStdMarshalInfo;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IStdMarshalInfo * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IStdMarshalInfo * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IStdMarshalInfo * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetClassForHandler )( 
+       HRESULT ( __stdcall *GetClassForHandler )( 
            IStdMarshalInfo * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwDestContext,
-           /* [annotation][unique][in] */ 
+            
+             DWORD dwDestContext,
+            
            _Reserved_  void *pvDestContext,
            /* [annotation][out] */ 
            _Out_  CLSID *pClsid);
@@ -1417,7 +1374,7 @@ if not __IExternalConnection_INTERFACE_DEFINED__
 /* interface IExternalConnection */
 /* [uuid][local][object] */ 
 
-typedef /* [unique] */ IExternalConnection *LPEXTERNALCONNECTION;
+typedef  IExternalConnection *LPEXTERNALCONNECTION;
 
 typedef 
 enum tagEXTCONN
@@ -1436,19 +1393,19 @@ EXTERN_C const IID IID_IExternalConnection;
    IExternalConnection : public IUnknown
    {
    public:
-       virtual DWORD STDMETHODCALLTYPE AddConnection( 
-           /* [annotation][in] */ 
-           _In_  DWORD extconn,
-           /* [annotation][in] */ 
-           _In_  DWORD reserved) = 0;
+       virtual DWORD __stdcall AddConnection( 
+            
+             DWORD extconn,
+            
+             DWORD reserved) = 0;
        
-       virtual DWORD STDMETHODCALLTYPE ReleaseConnection( 
-           /* [annotation][in] */ 
-           _In_  DWORD extconn,
-           /* [annotation][in] */ 
-           _In_  DWORD reserved,
-           /* [annotation][in] */ 
-           _In_  BOOL fLastReleaseCloses) = 0;
+       virtual DWORD __stdcall ReleaseConnection( 
+            
+             DWORD extconn,
+            
+             DWORD reserved,
+            
+             BOOL fLastReleaseCloses) = 0;
        
    };
    
@@ -1459,33 +1416,33 @@ EXTERN_C const IID IID_IExternalConnection;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IExternalConnection * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IExternalConnection * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IExternalConnection * This);
        
-       DWORD ( STDMETHODCALLTYPE *AddConnection )( 
+       DWORD ( __stdcall *AddConnection )( 
            IExternalConnection * This,
-           /* [annotation][in] */ 
-           _In_  DWORD extconn,
-           /* [annotation][in] */ 
-           _In_  DWORD reserved);
+            
+             DWORD extconn,
+            
+             DWORD reserved);
        
-       DWORD ( STDMETHODCALLTYPE *ReleaseConnection )( 
+       DWORD ( __stdcall *ReleaseConnection )( 
            IExternalConnection * This,
-           /* [annotation][in] */ 
-           _In_  DWORD extconn,
-           /* [annotation][in] */ 
-           _In_  DWORD reserved,
-           /* [annotation][in] */ 
-           _In_  BOOL fLastReleaseCloses);
+            
+             DWORD extconn,
+            
+             DWORD reserved,
+            
+             BOOL fLastReleaseCloses);
        
        END_INTERFACE
    } IExternalConnectionVtbl;
@@ -1528,9 +1485,9 @@ end 	/* __IExternalConnection_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0008 */
-/* [local] */ 
+ 
 
-typedef /* [unique] */  __RPC_unique_pointer IMultiQI *LPMULTIQI;
+typedef    IMultiQI *LPMULTIQI;
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -1563,9 +1520,9 @@ EXTERN_C const IID IID_IMultiQI;
    IMultiQI : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE QueryMultipleInterfaces( 
-           /* [annotation][in] */ 
-           _In_  ULONG cMQIs,
+       virtual HRESULT __stdcall QueryMultipleInterfaces( 
+            
+             ULONG cMQIs,
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs) = 0;
        
@@ -1578,22 +1535,22 @@ EXTERN_C const IID IID_IMultiQI;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IMultiQI * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IMultiQI * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IMultiQI * This);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryMultipleInterfaces )( 
+       HRESULT ( __stdcall *QueryMultipleInterfaces )( 
            IMultiQI * This,
-           /* [annotation][in] */ 
-           _In_  ULONG cMQIs,
+            
+             ULONG cMQIs,
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs);
        
@@ -1649,13 +1606,13 @@ EXTERN_C const IID IID_AsyncIMultiQI;
    AsyncIMultiQI : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Begin_QueryMultipleInterfaces( 
-           /* [annotation][in] */ 
-           _In_  ULONG cMQIs,
+       virtual HRESULT __stdcall Begin_QueryMultipleInterfaces( 
+            
+             ULONG cMQIs,
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_QueryMultipleInterfaces( 
+       virtual HRESULT __stdcall Finish_QueryMultipleInterfaces( 
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs) = 0;
        
@@ -1668,26 +1625,26 @@ EXTERN_C const IID IID_AsyncIMultiQI;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            AsyncIMultiQI * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            AsyncIMultiQI * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            AsyncIMultiQI * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_QueryMultipleInterfaces )( 
+       HRESULT ( __stdcall *Begin_QueryMultipleInterfaces )( 
            AsyncIMultiQI * This,
-           /* [annotation][in] */ 
-           _In_  ULONG cMQIs,
+            
+             ULONG cMQIs,
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_QueryMultipleInterfaces )( 
+       HRESULT ( __stdcall *Finish_QueryMultipleInterfaces )( 
            AsyncIMultiQI * This,
            /* [annotation][out][in] */ 
            _Inout_updates_(cMQIs)  MULTI_QI *pMQIs);
@@ -1733,7 +1690,7 @@ end 	/* __AsyncIMultiQI_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0009 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -1759,9 +1716,9 @@ EXTERN_C const IID IID_IInternalUnknown;
    IInternalUnknown : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE QueryInternalInterface( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall QueryInternalInterface( 
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **ppv) = 0;
        
@@ -1774,22 +1731,22 @@ EXTERN_C const IID IID_IInternalUnknown;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IInternalUnknown * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IInternalUnknown * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IInternalUnknown * This);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInternalInterface )( 
+       HRESULT ( __stdcall *QueryInternalInterface )( 
            IInternalUnknown * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **ppv);
        
@@ -1831,7 +1788,7 @@ end 	/* __IInternalUnknown_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0010 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -1848,7 +1805,7 @@ if not __IEnumUnknown_INTERFACE_DEFINED__
 /* interface IEnumUnknown */
 /* [unique][uuid][object] */ 
 
-typedef /* [unique] */  __RPC_unique_pointer IEnumUnknown *LPENUMUNKNOWN;
+typedef    IEnumUnknown *LPENUMUNKNOWN;
 
 
 EXTERN_C const IID IID_IEnumUnknown;
@@ -1859,21 +1816,21 @@ EXTERN_C const IID IID_IEnumUnknown;
    IEnumUnknown : public IUnknown
    {
    public:
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
-           /* [annotation][in] */ 
-           _In_  ULONG celt,
+       virtual  HRESULT __stdcall Next( 
+            
+             ULONG celt,
            /* [annotation][out] */ 
            _Out_writes_to_(celt,*pceltFetched)  IUnknown **rgelt,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pceltFetched) = 0;
+             ULONG *pceltFetched) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Skip( 
-           /* [in] */ ULONG celt) = 0;
+       virtual HRESULT __stdcall Skip( 
+            ULONG celt) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+       virtual HRESULT __stdcall Reset( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
-           /* [out] */ __RPC__deref_out_opt IEnumUnknown **ppenum) = 0;
+       virtual HRESULT __stdcall Clone( 
+             IEnumUnknown **ppenum) = 0;
        
    };
    
@@ -1884,37 +1841,37 @@ EXTERN_C const IID IID_IEnumUnknown;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IEnumUnknown * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IEnumUnknown * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IEnumUnknown * This);
+       ULONG ( __stdcall *AddRef )( 
+            IEnumUnknown * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IEnumUnknown * This);
+       ULONG ( __stdcall *Release )( 
+            IEnumUnknown * This);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Next )( 
+        HRESULT ( __stdcall *Next )( 
            IEnumUnknown * This,
-           /* [annotation][in] */ 
-           _In_  ULONG celt,
+            
+             ULONG celt,
            /* [annotation][out] */ 
            _Out_writes_to_(celt,*pceltFetched)  IUnknown **rgelt,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pceltFetched);
+             ULONG *pceltFetched);
        
-       HRESULT ( STDMETHODCALLTYPE *Skip )( 
-           __RPC__in IEnumUnknown * This,
-           /* [in] */ ULONG celt);
+       HRESULT ( __stdcall *Skip )( 
+            IEnumUnknown * This,
+            ULONG celt);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
-           __RPC__in IEnumUnknown * This);
+       HRESULT ( __stdcall *Reset )( 
+            IEnumUnknown * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
-           __RPC__in IEnumUnknown * This,
-           /* [out] */ __RPC__deref_out_opt IEnumUnknown **ppenum);
+       HRESULT ( __stdcall *Clone )( 
+            IEnumUnknown * This,
+             IEnumUnknown **ppenum);
        
        END_INTERFACE
    } IEnumUnknownVtbl;
@@ -1958,14 +1915,14 @@ end 	/* C style interface */
 
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IEnumUnknown_RemoteNext_Proxy( 
-   __RPC__in IEnumUnknown * This,
-   /* [in] */ ULONG celt,
+ HRESULT __stdcall IEnumUnknown_RemoteNext_Proxy( 
+    IEnumUnknown * This,
+    ULONG celt,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, *pceltFetched) IUnknown **rgelt,
-   /* [out] */ __RPC__out ULONG *pceltFetched);
+     ULONG *pceltFetched);
 
 
-void __RPC_STUB IEnumUnknown_RemoteNext_Stub(
+void  IEnumUnknown_RemoteNext_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -1982,7 +1939,7 @@ if not __IEnumString_INTERFACE_DEFINED__
 /* interface IEnumString */
 /* [unique][uuid][object] */ 
 
-typedef /* [unique] */  __RPC_unique_pointer IEnumString *LPENUMSTRING;
+typedef    IEnumString *LPENUMSTRING;
 
 
 EXTERN_C const IID IID_IEnumString;
@@ -1993,20 +1950,20 @@ EXTERN_C const IID IID_IEnumString;
    IEnumString : public IUnknown
    {
    public:
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
-           /* [in] */ ULONG celt,
-           /* [annotation] */ 
+       virtual  HRESULT __stdcall Next( 
+            ULONG celt,
+            
            _Out_writes_to_(celt,*pceltFetched)  LPOLESTR *rgelt,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pceltFetched) = 0;
+            
+             ULONG *pceltFetched) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Skip( 
-           /* [in] */ ULONG celt) = 0;
+       virtual HRESULT __stdcall Skip( 
+            ULONG celt) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+       virtual HRESULT __stdcall Reset( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
-           /* [out] */ __RPC__deref_out_opt IEnumString **ppenum) = 0;
+       virtual HRESULT __stdcall Clone( 
+             IEnumString **ppenum) = 0;
        
    };
    
@@ -2017,36 +1974,36 @@ EXTERN_C const IID IID_IEnumString;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IEnumString * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IEnumString * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IEnumString * This);
+       ULONG ( __stdcall *AddRef )( 
+            IEnumString * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IEnumString * This);
+       ULONG ( __stdcall *Release )( 
+            IEnumString * This);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Next )( 
+        HRESULT ( __stdcall *Next )( 
            IEnumString * This,
-           /* [in] */ ULONG celt,
-           /* [annotation] */ 
+            ULONG celt,
+            
            _Out_writes_to_(celt,*pceltFetched)  LPOLESTR *rgelt,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pceltFetched);
+            
+             ULONG *pceltFetched);
        
-       HRESULT ( STDMETHODCALLTYPE *Skip )( 
-           __RPC__in IEnumString * This,
-           /* [in] */ ULONG celt);
+       HRESULT ( __stdcall *Skip )( 
+            IEnumString * This,
+            ULONG celt);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
-           __RPC__in IEnumString * This);
+       HRESULT ( __stdcall *Reset )( 
+            IEnumString * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
-           __RPC__in IEnumString * This,
-           /* [out] */ __RPC__deref_out_opt IEnumString **ppenum);
+       HRESULT ( __stdcall *Clone )( 
+            IEnumString * This,
+             IEnumString **ppenum);
        
        END_INTERFACE
    } IEnumStringVtbl;
@@ -2090,14 +2047,14 @@ end 	/* C style interface */
 
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IEnumString_RemoteNext_Proxy( 
-   __RPC__in IEnumString * This,
-   /* [in] */ ULONG celt,
+ HRESULT __stdcall IEnumString_RemoteNext_Proxy( 
+    IEnumString * This,
+    ULONG celt,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, *pceltFetched) LPOLESTR *rgelt,
-   /* [out] */ __RPC__out ULONG *pceltFetched);
+     ULONG *pceltFetched);
 
 
-void __RPC_STUB IEnumString_RemoteNext_Stub(
+void  IEnumString_RemoteNext_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -2123,21 +2080,21 @@ EXTERN_C const IID IID_ISequentialStream;
    ISequentialStream : public IUnknown
    {
    public:
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE Read( 
-           /* [annotation] */ 
-           _Out_writes_bytes_to_(cb, *pcbRead)  void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbRead) = 0;
+       virtual  HRESULT __stdcall Read( 
+            
+             void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbRead) = 0;
        
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE Write( 
-           /* [annotation] */ 
-           _In_reads_bytes_(cb)  const void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbWritten) = 0;
+       virtual  HRESULT __stdcall Write( 
+            
+             const void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbWritten) = 0;
        
    };
    
@@ -2148,35 +2105,35 @@ EXTERN_C const IID IID_ISequentialStream;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in ISequentialStream * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            ISequentialStream * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in ISequentialStream * This);
+       ULONG ( __stdcall *AddRef )( 
+            ISequentialStream * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in ISequentialStream * This);
+       ULONG ( __stdcall *Release )( 
+            ISequentialStream * This);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Read )( 
+        HRESULT ( __stdcall *Read )( 
            ISequentialStream * This,
-           /* [annotation] */ 
-           _Out_writes_bytes_to_(cb, *pcbRead)  void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbRead);
+            
+             void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbRead);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Write )( 
+        HRESULT ( __stdcall *Write )( 
            ISequentialStream * This,
-           /* [annotation] */ 
-           _In_reads_bytes_(cb)  const void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbWritten);
+            
+             const void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbWritten);
        
        END_INTERFACE
    } ISequentialStreamVtbl;
@@ -2214,28 +2171,28 @@ end 	/* C style interface */
 
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE ISequentialStream_RemoteRead_Proxy( 
-   __RPC__in ISequentialStream * This,
+ HRESULT __stdcall ISequentialStream_RemoteRead_Proxy( 
+    ISequentialStream * This,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(cb, *pcbRead) byte *pv,
-   /* [in] */ ULONG cb,
-   /* [out] */ __RPC__out ULONG *pcbRead);
+    ULONG cb,
+     ULONG *pcbRead);
 
 
-void __RPC_STUB ISequentialStream_RemoteRead_Stub(
+void  ISequentialStream_RemoteRead_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
    DWORD *_pdwStubPhase);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE ISequentialStream_RemoteWrite_Proxy( 
-   __RPC__in ISequentialStream * This,
+ HRESULT __stdcall ISequentialStream_RemoteWrite_Proxy( 
+    ISequentialStream * This,
    /* [size_is][in] */ __RPC__in_ecount_full(cb) const byte *pv,
-   /* [in] */ ULONG cb,
-   /* [out] */ __RPC__out ULONG *pcbWritten);
+    ULONG cb,
+     ULONG *pcbWritten);
 
 
-void __RPC_STUB ISequentialStream_RemoteWrite_Stub(
+void  ISequentialStream_RemoteWrite_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -2244,15 +2201,14 @@ void __RPC_STUB ISequentialStream_RemoteWrite_Stub(
 
 
 end 	/* __ISequentialStream_INTERFACE_DEFINED__ */
+--]=]
+
+if not __IStream_INTERFACE_DEFINED__ then
+__IStream_INTERFACE_DEFINED__ = true
 
 
-if not __IStream_INTERFACE_DEFINED__
-#define __IStream_INTERFACE_DEFINED__
-
-/* interface IStream */
-/* [unique][uuid][object] */ 
-
-typedef /* [unique] */  __RPC_unique_pointer IStream *LPSTREAM;
+ffi.cdef[[
+typedef    IStream *LPSTREAM;
 
 typedef struct tagSTATSTG
    {
@@ -2293,154 +2249,106 @@ enum tagLOCKTYPE
        LOCK_EXCLUSIVE	= 2,
        LOCK_ONLYONCE	= 4
    } 	LOCKTYPE;
+]]
+
+--EXTERN_C const IID IID_IStream;
+--   MIDL_INTERFACE("0000000c-0000-0000-C000-000000000046")
 
 
-EXTERN_C const IID IID_IStream;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("0000000c-0000-0000-C000-000000000046")
-   IStream : public ISequentialStream
-   {
-   public:
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE Seek( 
-           /* [in] */ LARGE_INTEGER dlibMove,
-           /* [in] */ DWORD dwOrigin,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *plibNewPosition) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE SetSize( 
-           /* [in] */ ULARGE_INTEGER libNewSize) = 0;
-       
-       virtual /* [local] */ HRESULT STDMETHODCALLTYPE CopyTo( 
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pstm,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbRead,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbWritten) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Commit( 
-           /* [in] */ DWORD grfCommitFlags) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Revert( void) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE LockRegion( 
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE UnlockRegion( 
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Stat( 
-           /* [out] */ __RPC__out STATSTG *pstatstg,
-           /* [in] */ DWORD grfStatFlag) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
-           /* [out] */ __RPC__deref_out_opt IStream **ppstm) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
-
+ffi.cdef[[
    typedef struct IStreamVtbl
    {
-       BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IStream * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IStream * This);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IStream * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IStream * This);
+       ULONG ( __stdcall *AddRef )( 
+            IStream * This);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Read )( 
+       ULONG ( __stdcall *Release )( 
+            IStream * This);
+       
+        HRESULT ( __stdcall *Read )( 
            IStream * This,
-           /* [annotation] */ 
-           _Out_writes_bytes_to_(cb, *pcbRead)  void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbRead);
+            
+             void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbRead);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Write )( 
+        HRESULT ( __stdcall *Write )( 
            IStream * This,
-           /* [annotation] */ 
-           _In_reads_bytes_(cb)  const void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbWritten);
+            
+             const void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbWritten);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Seek )( 
+        HRESULT ( __stdcall *Seek )( 
            IStream * This,
-           /* [in] */ LARGE_INTEGER dlibMove,
-           /* [in] */ DWORD dwOrigin,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *plibNewPosition);
+            LARGE_INTEGER dlibMove,
+            DWORD dwOrigin,
+            
+             ULARGE_INTEGER *plibNewPosition);
        
-       HRESULT ( STDMETHODCALLTYPE *SetSize )( 
-           __RPC__in IStream * This,
-           /* [in] */ ULARGE_INTEGER libNewSize);
+       HRESULT ( __stdcall *SetSize )( 
+            IStream * This,
+            ULARGE_INTEGER libNewSize);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *CopyTo )( 
+        HRESULT ( __stdcall *CopyTo )( 
            IStream * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pstm,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbRead,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbWritten);
+            
+             IStream *pstm,
+            ULARGE_INTEGER cb,
+            
+             ULARGE_INTEGER *pcbRead,
+            
+             ULARGE_INTEGER *pcbWritten);
        
-       HRESULT ( STDMETHODCALLTYPE *Commit )( 
-           __RPC__in IStream * This,
-           /* [in] */ DWORD grfCommitFlags);
+       HRESULT ( __stdcall *Commit )( 
+            IStream * This,
+            DWORD grfCommitFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *Revert )( 
-           __RPC__in IStream * This);
+       HRESULT ( __stdcall *Revert )( 
+            IStream * This);
        
-       HRESULT ( STDMETHODCALLTYPE *LockRegion )( 
-           __RPC__in IStream * This,
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType);
+       HRESULT ( __stdcall *LockRegion )( 
+            IStream * This,
+            ULARGE_INTEGER libOffset,
+            ULARGE_INTEGER cb,
+            DWORD dwLockType);
        
-       HRESULT ( STDMETHODCALLTYPE *UnlockRegion )( 
-           __RPC__in IStream * This,
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType);
+       HRESULT ( __stdcall *UnlockRegion )( 
+            IStream * This,
+            ULARGE_INTEGER libOffset,
+            ULARGE_INTEGER cb,
+            DWORD dwLockType);
        
-       HRESULT ( STDMETHODCALLTYPE *Stat )( 
-           __RPC__in IStream * This,
-           /* [out] */ __RPC__out STATSTG *pstatstg,
-           /* [in] */ DWORD grfStatFlag);
+       HRESULT ( __stdcall *Stat )( 
+            IStream * This,
+             STATSTG *pstatstg,
+            DWORD grfStatFlag);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
-           __RPC__in IStream * This,
-           /* [out] */ __RPC__deref_out_opt IStream **ppstm);
+       HRESULT ( __stdcall *Clone )( 
+            IStream * This,
+             IStream **ppstm);
        
-       END_INTERFACE
+       
    } IStreamVtbl;
 
-   interface IStream
+   typedef struct IStream
    {
-       CONST_VTBL struct IStreamVtbl *lpVtbl;
+       const struct IStreamVtbl *lpVtbl;
    };
-
+]]
    
-
+--[[
 #ifdef COBJMACROS
 
 
@@ -2489,45 +2397,44 @@ EXTERN_C const IID IID_IStream;
    ( (This)->lpVtbl -> Clone(This,ppstm) ) 
 
 end /* COBJMACROS */
+--]]
 
 
-end 	/* C style interface */
+--[[
+ffi.cdef[[
+ HRESULT __stdcall IStream_RemoteSeek_Proxy( 
+    IStream * This,
+    LARGE_INTEGER dlibMove,
+    DWORD dwOrigin,
+     ULARGE_INTEGER *plibNewPosition);
 
 
-
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IStream_RemoteSeek_Proxy( 
-   __RPC__in IStream * This,
-   /* [in] */ LARGE_INTEGER dlibMove,
-   /* [in] */ DWORD dwOrigin,
-   /* [out] */ __RPC__out ULARGE_INTEGER *plibNewPosition);
-
-
-void __RPC_STUB IStream_RemoteSeek_Stub(
+void  IStream_RemoteSeek_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
    DWORD *_pdwStubPhase);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IStream_RemoteCopyTo_Proxy( 
-   __RPC__in IStream * This,
-   /* [unique][in] */ __RPC__in_opt IStream *pstm,
-   /* [in] */ ULARGE_INTEGER cb,
-   /* [out] */ __RPC__out ULARGE_INTEGER *pcbRead,
-   /* [out] */ __RPC__out ULARGE_INTEGER *pcbWritten);
+ HRESULT __stdcall IStream_RemoteCopyTo_Proxy( 
+    IStream * This,
+     IStream *pstm,
+    ULARGE_INTEGER cb,
+     ULARGE_INTEGER *pcbRead,
+     ULARGE_INTEGER *pcbWritten);
 
 
-void __RPC_STUB IStream_RemoteCopyTo_Stub(
+void  IStream_RemoteCopyTo_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
    DWORD *_pdwStubPhase);
+]]
+--]]
 
+end 	--/* __IStream_INTERFACE_DEFINED__ */
 
-
-end 	/* __IStream_INTERFACE_DEFINED__ */
-
-
+--[=[
 if not __IRpcChannelBuffer_INTERFACE_DEFINED__
 #define __IRpcChannelBuffer_INTERFACE_DEFINED__
 
@@ -2558,29 +2465,29 @@ EXTERN_C const IID IID_IRpcChannelBuffer;
    IRpcChannelBuffer : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetBuffer( 
+       virtual HRESULT __stdcall GetBuffer( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
-           /* [annotation][in] */ 
-           _In_  REFIID riid) = 0;
+            
+             REFIID riid) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE SendReceive( 
+       virtual HRESULT __stdcall SendReceive( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pStatus) = 0;
+             ULONG *pStatus) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE FreeBuffer( 
+       virtual HRESULT __stdcall FreeBuffer( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetDestCtx( 
+       virtual HRESULT __stdcall GetDestCtx( 
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **ppvDestContext) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE IsConnected( void) = 0;
+       virtual HRESULT __stdcall IsConnected( void) = 0;
        
    };
    
@@ -2591,45 +2498,45 @@ EXTERN_C const IID IID_IRpcChannelBuffer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcChannelBuffer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcChannelBuffer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcChannelBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+       HRESULT ( __stdcall *GetBuffer )( 
            IRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
-           /* [annotation][in] */ 
-           _In_  REFIID riid);
+            
+             REFIID riid);
        
-       HRESULT ( STDMETHODCALLTYPE *SendReceive )( 
+       HRESULT ( __stdcall *SendReceive )( 
            IRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pStatus);
+             ULONG *pStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *FreeBuffer )( 
+       HRESULT ( __stdcall *FreeBuffer )( 
            IRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtx )( 
+       HRESULT ( __stdcall *GetDestCtx )( 
            IRpcChannelBuffer * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **ppvDestContext);
        
-       HRESULT ( STDMETHODCALLTYPE *IsConnected )( 
+       HRESULT ( __stdcall *IsConnected )( 
            IRpcChannelBuffer * This);
        
        END_INTERFACE
@@ -2682,7 +2589,7 @@ end 	/* __IRpcChannelBuffer_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0015 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -2708,7 +2615,7 @@ EXTERN_C const IID IID_IRpcChannelBuffer2;
    IRpcChannelBuffer2 : public IRpcChannelBuffer
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetProtocolVersion( 
+       virtual HRESULT __stdcall GetProtocolVersion( 
            /* [annotation][out] */ 
            _Out_  DWORD *pdwVersion) = 0;
        
@@ -2721,48 +2628,48 @@ EXTERN_C const IID IID_IRpcChannelBuffer2;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcChannelBuffer2 * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcChannelBuffer2 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcChannelBuffer2 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+       HRESULT ( __stdcall *GetBuffer )( 
            IRpcChannelBuffer2 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
-           /* [annotation][in] */ 
-           _In_  REFIID riid);
+            
+             REFIID riid);
        
-       HRESULT ( STDMETHODCALLTYPE *SendReceive )( 
+       HRESULT ( __stdcall *SendReceive )( 
            IRpcChannelBuffer2 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pStatus);
+             ULONG *pStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *FreeBuffer )( 
+       HRESULT ( __stdcall *FreeBuffer )( 
            IRpcChannelBuffer2 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtx )( 
+       HRESULT ( __stdcall *GetDestCtx )( 
            IRpcChannelBuffer2 * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **ppvDestContext);
        
-       HRESULT ( STDMETHODCALLTYPE *IsConnected )( 
+       HRESULT ( __stdcall *IsConnected )( 
            IRpcChannelBuffer2 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetProtocolVersion )( 
+       HRESULT ( __stdcall *GetProtocolVersion )( 
            IRpcChannelBuffer2 * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwVersion);
@@ -2835,23 +2742,23 @@ EXTERN_C const IID IID_IAsyncRpcChannelBuffer;
    IAsyncRpcChannelBuffer : public IRpcChannelBuffer2
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Send( 
+       virtual HRESULT __stdcall Send( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync,
+            
+             ISynchronize *pSync,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Receive( 
+       virtual HRESULT __stdcall Receive( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetDestCtxEx( 
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+       virtual HRESULT __stdcall GetDestCtxEx( 
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
@@ -2866,72 +2773,72 @@ EXTERN_C const IID IID_IAsyncRpcChannelBuffer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAsyncRpcChannelBuffer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAsyncRpcChannelBuffer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAsyncRpcChannelBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+       HRESULT ( __stdcall *GetBuffer )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
-           /* [annotation][in] */ 
-           _In_  REFIID riid);
+            
+             REFIID riid);
        
-       HRESULT ( STDMETHODCALLTYPE *SendReceive )( 
+       HRESULT ( __stdcall *SendReceive )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pStatus);
+             ULONG *pStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *FreeBuffer )( 
+       HRESULT ( __stdcall *FreeBuffer )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtx )( 
+       HRESULT ( __stdcall *GetDestCtx )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **ppvDestContext);
        
-       HRESULT ( STDMETHODCALLTYPE *IsConnected )( 
+       HRESULT ( __stdcall *IsConnected )( 
            IAsyncRpcChannelBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetProtocolVersion )( 
+       HRESULT ( __stdcall *GetProtocolVersion )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwVersion);
        
-       HRESULT ( STDMETHODCALLTYPE *Send )( 
+       HRESULT ( __stdcall *Send )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync,
+            
+             ISynchronize *pSync,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *Receive )( 
+       HRESULT ( __stdcall *Receive )( 
            IAsyncRpcChannelBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtxEx )( 
+       HRESULT ( __stdcall *GetDestCtxEx )( 
            IAsyncRpcChannelBuffer * This,
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
@@ -3015,51 +2922,51 @@ EXTERN_C const IID IID_IRpcChannelBuffer3;
    IRpcChannelBuffer3 : public IRpcChannelBuffer2
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Send( 
+       virtual HRESULT __stdcall Send( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Receive( 
+       virtual HRESULT __stdcall Receive( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  ULONG ulSize,
+            
+             ULONG ulSize,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Cancel( 
+       virtual HRESULT __stdcall Cancel( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetCallContext( 
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall GetCallContext( 
+            
+             RPCOLEMESSAGE *pMsg,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **pInterface) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetDestCtxEx( 
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+       virtual HRESULT __stdcall GetDestCtxEx( 
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_opt_result_maybenull_  void **ppvDestContext) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetState( 
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+       virtual HRESULT __stdcall GetState( 
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pState) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE RegisterAsync( 
+       virtual HRESULT __stdcall RegisterAsync( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  IAsyncManager *pAsyncMgr) = 0;
+            
+             IAsyncManager *pAsyncMgr) = 0;
        
    };
    
@@ -3070,104 +2977,104 @@ EXTERN_C const IID IID_IRpcChannelBuffer3;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcChannelBuffer3 * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcChannelBuffer3 * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcChannelBuffer3 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetBuffer )( 
+       HRESULT ( __stdcall *GetBuffer )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
-           /* [annotation][in] */ 
-           _In_  REFIID riid);
+            
+             REFIID riid);
        
-       HRESULT ( STDMETHODCALLTYPE *SendReceive )( 
+       HRESULT ( __stdcall *SendReceive )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage,
            /* [annotation][out] */ 
-           _Out_opt_  ULONG *pStatus);
+             ULONG *pStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *FreeBuffer )( 
+       HRESULT ( __stdcall *FreeBuffer )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMessage);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtx )( 
+       HRESULT ( __stdcall *GetDestCtx )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **ppvDestContext);
        
-       HRESULT ( STDMETHODCALLTYPE *IsConnected )( 
+       HRESULT ( __stdcall *IsConnected )( 
            IRpcChannelBuffer3 * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetProtocolVersion )( 
+       HRESULT ( __stdcall *GetProtocolVersion )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwVersion);
        
-       HRESULT ( STDMETHODCALLTYPE *Send )( 
+       HRESULT ( __stdcall *Send )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *Receive )( 
+       HRESULT ( __stdcall *Receive )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  ULONG ulSize,
+            
+             ULONG ulSize,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStatus);
        
-       HRESULT ( STDMETHODCALLTYPE *Cancel )( 
+       HRESULT ( __stdcall *Cancel )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCallContext )( 
+       HRESULT ( __stdcall *GetCallContext )( 
            IRpcChannelBuffer3 * This,
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             RPCOLEMESSAGE *pMsg,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **pInterface);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDestCtxEx )( 
+       HRESULT ( __stdcall *GetDestCtxEx )( 
            IRpcChannelBuffer3 * This,
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwDestContext,
            /* [annotation][out] */ 
            _Outptr_opt_result_maybenull_  void **ppvDestContext);
        
-       HRESULT ( STDMETHODCALLTYPE *GetState )( 
+       HRESULT ( __stdcall *GetState )( 
            IRpcChannelBuffer3 * This,
-           /* [annotation][in] */ 
-           _In_  RPCOLEMESSAGE *pMsg,
+            
+             RPCOLEMESSAGE *pMsg,
            /* [annotation][out] */ 
            _Out_  DWORD *pState);
        
-       HRESULT ( STDMETHODCALLTYPE *RegisterAsync )( 
+       HRESULT ( __stdcall *RegisterAsync )( 
            IRpcChannelBuffer3 * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  IAsyncManager *pAsyncMgr);
+            
+             IAsyncManager *pAsyncMgr);
        
        END_INTERFACE
    } IRpcChannelBuffer3Vtbl;
@@ -3259,7 +3166,7 @@ EXTERN_C const IID IID_IRpcSyntaxNegotiate;
    IRpcSyntaxNegotiate : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE NegotiateSyntax( 
+       virtual HRESULT __stdcall NegotiateSyntax( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg) = 0;
        
@@ -3272,19 +3179,19 @@ EXTERN_C const IID IID_IRpcSyntaxNegotiate;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcSyntaxNegotiate * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcSyntaxNegotiate * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcSyntaxNegotiate * This);
        
-       HRESULT ( STDMETHODCALLTYPE *NegotiateSyntax )( 
+       HRESULT ( __stdcall *NegotiateSyntax )( 
            IRpcSyntaxNegotiate * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg);
@@ -3341,11 +3248,11 @@ EXTERN_C const IID IID_IRpcProxyBuffer;
    IRpcProxyBuffer : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Connect( 
-           /* [annotation][unique][in] */ 
-           _In_  IRpcChannelBuffer *pRpcChannelBuffer) = 0;
+       virtual HRESULT __stdcall Connect( 
+            
+             IRpcChannelBuffer *pRpcChannelBuffer) = 0;
        
-       virtual void STDMETHODCALLTYPE Disconnect( void) = 0;
+       virtual void __stdcall Disconnect( void) = 0;
        
    };
    
@@ -3356,24 +3263,24 @@ EXTERN_C const IID IID_IRpcProxyBuffer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcProxyBuffer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcProxyBuffer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcProxyBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Connect )( 
+       HRESULT ( __stdcall *Connect )( 
            IRpcProxyBuffer * This,
-           /* [annotation][unique][in] */ 
-           _In_  IRpcChannelBuffer *pRpcChannelBuffer);
+            
+             IRpcChannelBuffer *pRpcChannelBuffer);
        
-       void ( STDMETHODCALLTYPE *Disconnect )( 
+       void ( __stdcall *Disconnect )( 
            IRpcProxyBuffer * This);
        
        END_INTERFACE
@@ -3417,7 +3324,7 @@ end 	/* __IRpcProxyBuffer_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0020 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -3443,31 +3350,31 @@ EXTERN_C const IID IID_IRpcStubBuffer;
    IRpcStubBuffer : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Connect( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnkServer) = 0;
+       virtual HRESULT __stdcall Connect( 
+            
+             IUnknown *pUnkServer) = 0;
        
-       virtual void STDMETHODCALLTYPE Disconnect( void) = 0;
+       virtual void __stdcall Disconnect( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Invoke( 
+       virtual HRESULT __stdcall Invoke( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *_prpcmsg,
-           /* [annotation][in] */ 
-           _In_  IRpcChannelBuffer *_pRpcChannelBuffer) = 0;
+            
+             IRpcChannelBuffer *_pRpcChannelBuffer) = 0;
        
-       virtual IRpcStubBuffer *STDMETHODCALLTYPE IsIIDSupported( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid) = 0;
+       virtual IRpcStubBuffer *__stdcall IsIIDSupported( 
+            
+             REFIID riid) = 0;
        
-       virtual ULONG STDMETHODCALLTYPE CountRefs( void) = 0;
+       virtual ULONG __stdcall CountRefs( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE DebugServerQueryInterface( 
+       virtual HRESULT __stdcall DebugServerQueryInterface( 
            /* [annotation][out] */ 
            _Outptr_  void **ppv) = 0;
        
-       virtual void STDMETHODCALLTYPE DebugServerRelease( 
-           /* [annotation][in] */ 
-           _In_  void *pv) = 0;
+       virtual void __stdcall DebugServerRelease( 
+            
+             void *pv) = 0;
        
    };
    
@@ -3478,50 +3385,50 @@ EXTERN_C const IID IID_IRpcStubBuffer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcStubBuffer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcStubBuffer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcStubBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Connect )( 
+       HRESULT ( __stdcall *Connect )( 
            IRpcStubBuffer * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnkServer);
+            
+             IUnknown *pUnkServer);
        
-       void ( STDMETHODCALLTYPE *Disconnect )( 
+       void ( __stdcall *Disconnect )( 
            IRpcStubBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+       HRESULT ( __stdcall *Invoke )( 
            IRpcStubBuffer * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *_prpcmsg,
-           /* [annotation][in] */ 
-           _In_  IRpcChannelBuffer *_pRpcChannelBuffer);
+            
+             IRpcChannelBuffer *_pRpcChannelBuffer);
        
-       IRpcStubBuffer *( STDMETHODCALLTYPE *IsIIDSupported )( 
+       IRpcStubBuffer *( __stdcall *IsIIDSupported )( 
            IRpcStubBuffer * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid);
+            
+             REFIID riid);
        
-       ULONG ( STDMETHODCALLTYPE *CountRefs )( 
+       ULONG ( __stdcall *CountRefs )( 
            IRpcStubBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *DebugServerQueryInterface )( 
+       HRESULT ( __stdcall *DebugServerQueryInterface )( 
            IRpcStubBuffer * This,
            /* [annotation][out] */ 
            _Outptr_  void **ppv);
        
-       void ( STDMETHODCALLTYPE *DebugServerRelease )( 
+       void ( __stdcall *DebugServerRelease )( 
            IRpcStubBuffer * This,
-           /* [annotation][in] */ 
-           _In_  void *pv);
+            
+             void *pv);
        
        END_INTERFACE
    } IRpcStubBufferVtbl;
@@ -3593,21 +3500,21 @@ EXTERN_C const IID IID_IPSFactoryBuffer;
    IPSFactoryBuffer : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE CreateProxy( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnkOuter,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall CreateProxy( 
+            
+             IUnknown *pUnkOuter,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  IRpcProxyBuffer **ppProxy,
            /* [annotation][out] */ 
            _Outptr_  void **ppv) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE CreateStub( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  IUnknown *pUnkServer,
+       virtual HRESULT __stdcall CreateStub( 
+            
+             REFIID riid,
+            
+             IUnknown *pUnkServer,
            /* [annotation][out] */ 
            _Outptr_  IRpcStubBuffer **ppStub) = 0;
        
@@ -3620,35 +3527,35 @@ EXTERN_C const IID IID_IPSFactoryBuffer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IPSFactoryBuffer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IPSFactoryBuffer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IPSFactoryBuffer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateProxy )( 
+       HRESULT ( __stdcall *CreateProxy )( 
            IPSFactoryBuffer * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnkOuter,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             IUnknown *pUnkOuter,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  IRpcProxyBuffer **ppProxy,
            /* [annotation][out] */ 
            _Outptr_  void **ppv);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateStub )( 
+       HRESULT ( __stdcall *CreateStub )( 
            IPSFactoryBuffer * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][unique][in] */ 
-           _In_opt_  IUnknown *pUnkServer,
+            
+             REFIID riid,
+            
+             IUnknown *pUnkServer,
            /* [annotation][out] */ 
            _Outptr_  IRpcStubBuffer **ppStub);
        
@@ -3693,7 +3600,7 @@ end 	/* __IPSFactoryBuffer_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0022 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -3731,71 +3638,71 @@ EXTERN_C const IID IID_IChannelHook;
    IChannelHook : public IUnknown
    {
    public:
-       virtual void STDMETHODCALLTYPE ClientGetSize( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual void __stdcall ClientGetSize( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Out_  ULONG *pDataSize) = 0;
        
-       virtual void STDMETHODCALLTYPE ClientFillBuffer( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual void __stdcall ClientFillBuffer( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out][in] */ 
            _Inout_  ULONG *pDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer) = 0;
+            
+             void *pDataBuffer) = 0;
        
-       virtual void STDMETHODCALLTYPE ClientNotify( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  ULONG cbDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  DWORD lDataRep,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault) = 0;
+       virtual void __stdcall ClientNotify( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             ULONG cbDataSize,
+            
+             void *pDataBuffer,
+            
+             DWORD lDataRep,
+            
+             HRESULT hrFault) = 0;
        
-       virtual void STDMETHODCALLTYPE ServerNotify( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  ULONG cbDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  DWORD lDataRep) = 0;
+       virtual void __stdcall ServerNotify( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             ULONG cbDataSize,
+            
+             void *pDataBuffer,
+            
+             DWORD lDataRep) = 0;
        
-       virtual void STDMETHODCALLTYPE ServerGetSize( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault,
+       virtual void __stdcall ServerGetSize( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             HRESULT hrFault,
            /* [annotation][out] */ 
            _Out_  ULONG *pDataSize) = 0;
        
-       virtual void STDMETHODCALLTYPE ServerFillBuffer( 
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual void __stdcall ServerFillBuffer( 
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out][in] */ 
            _Inout_  ULONG *pDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault) = 0;
+            
+             void *pDataBuffer,
+            
+             HRESULT hrFault) = 0;
        
    };
    
@@ -3806,89 +3713,89 @@ EXTERN_C const IID IID_IChannelHook;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IChannelHook * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IChannelHook * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IChannelHook * This);
        
-       void ( STDMETHODCALLTYPE *ClientGetSize )( 
+       void ( __stdcall *ClientGetSize )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Out_  ULONG *pDataSize);
        
-       void ( STDMETHODCALLTYPE *ClientFillBuffer )( 
+       void ( __stdcall *ClientFillBuffer )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out][in] */ 
            _Inout_  ULONG *pDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer);
+            
+             void *pDataBuffer);
        
-       void ( STDMETHODCALLTYPE *ClientNotify )( 
+       void ( __stdcall *ClientNotify )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  ULONG cbDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  DWORD lDataRep,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault);
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             ULONG cbDataSize,
+            
+             void *pDataBuffer,
+            
+             DWORD lDataRep,
+            
+             HRESULT hrFault);
        
-       void ( STDMETHODCALLTYPE *ServerNotify )( 
+       void ( __stdcall *ServerNotify )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  ULONG cbDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  DWORD lDataRep);
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             ULONG cbDataSize,
+            
+             void *pDataBuffer,
+            
+             DWORD lDataRep);
        
-       void ( STDMETHODCALLTYPE *ServerGetSize )( 
+       void ( __stdcall *ServerGetSize )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault,
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
+            
+             HRESULT hrFault,
            /* [annotation][out] */ 
            _Out_  ULONG *pDataSize);
        
-       void ( STDMETHODCALLTYPE *ServerFillBuffer )( 
+       void ( __stdcall *ServerFillBuffer )( 
            IChannelHook * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID uExtent,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             REFGUID uExtent,
+            
+             REFIID riid,
            /* [annotation][out][in] */ 
            _Inout_  ULONG *pDataSize,
-           /* [annotation][in] */ 
-           _In_  void *pDataBuffer,
-           /* [annotation][in] */ 
-           _In_  HRESULT hrFault);
+            
+             void *pDataBuffer,
+            
+             HRESULT hrFault);
        
        END_INTERFACE
    } IChannelHookVtbl;
@@ -3943,7 +3850,7 @@ end 	/* __IChannelHook_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0023 */
-/* [local] */ 
+ 
 
 end //DCOM
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -4024,45 +3931,45 @@ EXTERN_C const IID IID_IClientSecurity;
    IClientSecurity : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE QueryBlanket( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
+       virtual HRESULT __stdcall QueryBlanket( 
+            
+             IUnknown *pProxy,
            /* [annotation][out] */ 
            _Out_  DWORD *pAuthnSvc,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthzSvc,
+             DWORD *pAuthzSvc,
            /* [annotation][out] */ 
-           __RPC__deref_out_opt  OLECHAR **pServerPrincName,
+             OLECHAR **pServerPrincName,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnLevel,
+             DWORD *pAuthnLevel,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pImpLevel,
+             DWORD *pImpLevel,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **pAuthInfo,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pCapabilites) = 0;
+             DWORD *pCapabilites) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE SetBlanket( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthnSvc,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthzSvc,
-           /* [annotation][in] */ 
-           __RPC__in_opt  OLECHAR *pServerPrincName,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthnLevel,
-           /* [annotation][in] */ 
-           _In_  DWORD dwImpLevel,
-           /* [annotation][in] */ 
-           _In_opt_  void *pAuthInfo,
-           /* [annotation][in] */ 
-           _In_  DWORD dwCapabilities) = 0;
+       virtual HRESULT __stdcall SetBlanket( 
+            
+             IUnknown *pProxy,
+            
+             DWORD dwAuthnSvc,
+            
+             DWORD dwAuthzSvc,
+            
+             OLECHAR *pServerPrincName,
+            
+             DWORD dwAuthnLevel,
+            
+             DWORD dwImpLevel,
+            
+             void *pAuthInfo,
+            
+             DWORD dwCapabilities) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE CopyProxy( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
+       virtual HRESULT __stdcall CopyProxy( 
+            
+             IUnknown *pProxy,
            /* [annotation][out] */ 
            _Outptr_  IUnknown **ppCopy) = 0;
        
@@ -4075,60 +3982,60 @@ EXTERN_C const IID IID_IClientSecurity;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IClientSecurity * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IClientSecurity * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IClientSecurity * This);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryBlanket )( 
+       HRESULT ( __stdcall *QueryBlanket )( 
            IClientSecurity * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
+            
+             IUnknown *pProxy,
            /* [annotation][out] */ 
            _Out_  DWORD *pAuthnSvc,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthzSvc,
+             DWORD *pAuthzSvc,
            /* [annotation][out] */ 
-           __RPC__deref_out_opt  OLECHAR **pServerPrincName,
+             OLECHAR **pServerPrincName,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnLevel,
+             DWORD *pAuthnLevel,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pImpLevel,
+             DWORD *pImpLevel,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **pAuthInfo,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pCapabilites);
+             DWORD *pCapabilites);
        
-       HRESULT ( STDMETHODCALLTYPE *SetBlanket )( 
+       HRESULT ( __stdcall *SetBlanket )( 
            IClientSecurity * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthnSvc,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthzSvc,
-           /* [annotation][in] */ 
-           __RPC__in_opt  OLECHAR *pServerPrincName,
-           /* [annotation][in] */ 
-           _In_  DWORD dwAuthnLevel,
-           /* [annotation][in] */ 
-           _In_  DWORD dwImpLevel,
-           /* [annotation][in] */ 
-           _In_opt_  void *pAuthInfo,
-           /* [annotation][in] */ 
-           _In_  DWORD dwCapabilities);
+            
+             IUnknown *pProxy,
+            
+             DWORD dwAuthnSvc,
+            
+             DWORD dwAuthzSvc,
+            
+             OLECHAR *pServerPrincName,
+            
+             DWORD dwAuthnLevel,
+            
+             DWORD dwImpLevel,
+            
+             void *pAuthInfo,
+            
+             DWORD dwCapabilities);
        
-       HRESULT ( STDMETHODCALLTYPE *CopyProxy )( 
+       HRESULT ( __stdcall *CopyProxy )( 
            IClientSecurity * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pProxy,
+            
+             IUnknown *pProxy,
            /* [annotation][out] */ 
            _Outptr_  IUnknown **ppCopy);
        
@@ -4176,7 +4083,7 @@ end 	/* __IClientSecurity_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0024 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -4202,27 +4109,27 @@ EXTERN_C const IID IID_IServerSecurity;
    IServerSecurity : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE QueryBlanket( 
+       virtual HRESULT __stdcall QueryBlanket( 
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnSvc,
+             DWORD *pAuthnSvc,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthzSvc,
+             DWORD *pAuthzSvc,
            /* [annotation][out] */ 
-           __RPC__deref_out_opt  OLECHAR **pServerPrincName,
+             OLECHAR **pServerPrincName,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnLevel,
+             DWORD *pAuthnLevel,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pImpLevel,
+             DWORD *pImpLevel,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **pPrivs,
            /* [annotation][out][in] */ 
            _Inout_opt_  DWORD *pCapabilities) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE ImpersonateClient( void) = 0;
+       virtual HRESULT __stdcall ImpersonateClient( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE RevertToSelf( void) = 0;
+       virtual HRESULT __stdcall RevertToSelf( void) = 0;
        
-       virtual BOOL STDMETHODCALLTYPE IsImpersonating( void) = 0;
+       virtual BOOL __stdcall IsImpersonating( void) = 0;
        
    };
    
@@ -4233,42 +4140,42 @@ EXTERN_C const IID IID_IServerSecurity;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IServerSecurity * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IServerSecurity * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IServerSecurity * This);
        
-       HRESULT ( STDMETHODCALLTYPE *QueryBlanket )( 
+       HRESULT ( __stdcall *QueryBlanket )( 
            IServerSecurity * This,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnSvc,
+             DWORD *pAuthnSvc,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthzSvc,
+             DWORD *pAuthzSvc,
            /* [annotation][out] */ 
-           __RPC__deref_out_opt  OLECHAR **pServerPrincName,
+             OLECHAR **pServerPrincName,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pAuthnLevel,
+             DWORD *pAuthnLevel,
            /* [annotation][out] */ 
-           _Out_opt_  DWORD *pImpLevel,
+             DWORD *pImpLevel,
            /* [annotation][out] */ 
            _Outptr_result_maybenull_  void **pPrivs,
            /* [annotation][out][in] */ 
            _Inout_opt_  DWORD *pCapabilities);
        
-       HRESULT ( STDMETHODCALLTYPE *ImpersonateClient )( 
+       HRESULT ( __stdcall *ImpersonateClient )( 
            IServerSecurity * This);
        
-       HRESULT ( STDMETHODCALLTYPE *RevertToSelf )( 
+       HRESULT ( __stdcall *RevertToSelf )( 
            IServerSecurity * This);
        
-       BOOL ( STDMETHODCALLTYPE *IsImpersonating )( 
+       BOOL ( __stdcall *IsImpersonating )( 
            IServerSecurity * This);
        
        END_INTERFACE
@@ -4318,7 +4225,7 @@ end 	/* __IServerSecurity_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0025 */
-/* [local] */ 
+ 
 
 typedef 
 enum tagRPCOPT_PROPERTIES
@@ -4359,19 +4266,19 @@ EXTERN_C const IID IID_IRpcOptions;
    IRpcOptions : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Set( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pPrx,
-           /* [annotation][in] */ 
-           _In_  RPCOPT_PROPERTIES dwProperty,
-           /* [annotation][in] */ 
-           _In_  ULONG_PTR dwValue) = 0;
+       virtual HRESULT __stdcall Set( 
+            
+             IUnknown *pPrx,
+            
+             RPCOPT_PROPERTIES dwProperty,
+            
+             ULONG_PTR dwValue) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Query( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pPrx,
-           /* [annotation][in] */ 
-           _In_  RPCOPT_PROPERTIES dwProperty,
+       virtual HRESULT __stdcall Query( 
+            
+             IUnknown *pPrx,
+            
+             RPCOPT_PROPERTIES dwProperty,
            /* [annotation][out] */ 
            _Out_  ULONG_PTR *pdwValue) = 0;
        
@@ -4384,33 +4291,33 @@ EXTERN_C const IID IID_IRpcOptions;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcOptions * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcOptions * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcOptions * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Set )( 
+       HRESULT ( __stdcall *Set )( 
            IRpcOptions * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pPrx,
-           /* [annotation][in] */ 
-           _In_  RPCOPT_PROPERTIES dwProperty,
-           /* [annotation][in] */ 
-           _In_  ULONG_PTR dwValue);
+            
+             IUnknown *pPrx,
+            
+             RPCOPT_PROPERTIES dwProperty,
+            
+             ULONG_PTR dwValue);
        
-       HRESULT ( STDMETHODCALLTYPE *Query )( 
+       HRESULT ( __stdcall *Query )( 
            IRpcOptions * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pPrx,
-           /* [annotation][in] */ 
-           _In_  RPCOPT_PROPERTIES dwProperty,
+            
+             IUnknown *pPrx,
+            
+             RPCOPT_PROPERTIES dwProperty,
            /* [annotation][out] */ 
            _Out_  ULONG_PTR *pdwValue);
        
@@ -4455,7 +4362,7 @@ end 	/* __IRpcOptions_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0026 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -4533,15 +4440,15 @@ EXTERN_C const IID IID_IGlobalOptions;
    IGlobalOptions : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Set( 
-           /* [annotation][in] */ 
-           _In_  GLOBALOPT_PROPERTIES dwProperty,
-           /* [annotation][in] */ 
-           _In_  ULONG_PTR dwValue) = 0;
+       virtual HRESULT __stdcall Set( 
+            
+             GLOBALOPT_PROPERTIES dwProperty,
+            
+             ULONG_PTR dwValue) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Query( 
-           /* [annotation][in] */ 
-           _In_  GLOBALOPT_PROPERTIES dwProperty,
+       virtual HRESULT __stdcall Query( 
+            
+             GLOBALOPT_PROPERTIES dwProperty,
            /* [annotation][out] */ 
            _Out_  ULONG_PTR *pdwValue) = 0;
        
@@ -4554,29 +4461,29 @@ EXTERN_C const IID IID_IGlobalOptions;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IGlobalOptions * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IGlobalOptions * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IGlobalOptions * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Set )( 
+       HRESULT ( __stdcall *Set )( 
            IGlobalOptions * This,
-           /* [annotation][in] */ 
-           _In_  GLOBALOPT_PROPERTIES dwProperty,
-           /* [annotation][in] */ 
-           _In_  ULONG_PTR dwValue);
+            
+             GLOBALOPT_PROPERTIES dwProperty,
+            
+             ULONG_PTR dwValue);
        
-       HRESULT ( STDMETHODCALLTYPE *Query )( 
+       HRESULT ( __stdcall *Query )( 
            IGlobalOptions * This,
-           /* [annotation][in] */ 
-           _In_  GLOBALOPT_PROPERTIES dwProperty,
+            
+             GLOBALOPT_PROPERTIES dwProperty,
            /* [annotation][out] */ 
            _Out_  ULONG_PTR *pdwValue);
        
@@ -4621,7 +4528,7 @@ end 	/* __IGlobalOptions_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0027 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -4639,7 +4546,7 @@ if not __ISurrogate_INTERFACE_DEFINED__
 /* interface ISurrogate */
 /* [object][unique][version][uuid] */ 
 
-typedef /* [unique] */  __RPC_unique_pointer ISurrogate *LPSURROGATE;
+typedef    ISurrogate *LPSURROGATE;
 
 
 EXTERN_C const IID IID_ISurrogate;
@@ -4650,10 +4557,10 @@ EXTERN_C const IID IID_ISurrogate;
    ISurrogate : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE LoadDllServer( 
-           /* [in] */ __RPC__in REFCLSID Clsid) = 0;
+       virtual HRESULT __stdcall LoadDllServer( 
+             REFCLSID Clsid) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE FreeSurrogate( void) = 0;
+       virtual HRESULT __stdcall FreeSurrogate( void) = 0;
        
    };
    
@@ -4664,24 +4571,24 @@ EXTERN_C const IID IID_ISurrogate;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in ISurrogate * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            ISurrogate * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in ISurrogate * This);
+       ULONG ( __stdcall *AddRef )( 
+            ISurrogate * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in ISurrogate * This);
+       ULONG ( __stdcall *Release )( 
+            ISurrogate * This);
        
-       HRESULT ( STDMETHODCALLTYPE *LoadDllServer )( 
-           __RPC__in ISurrogate * This,
-           /* [in] */ __RPC__in REFCLSID Clsid);
+       HRESULT ( __stdcall *LoadDllServer )( 
+            ISurrogate * This,
+             REFCLSID Clsid);
        
-       HRESULT ( STDMETHODCALLTYPE *FreeSurrogate )( 
-           __RPC__in ISurrogate * This);
+       HRESULT ( __stdcall *FreeSurrogate )( 
+            ISurrogate * This);
        
        END_INTERFACE
    } ISurrogateVtbl;
@@ -4729,7 +4636,7 @@ if not __IGlobalInterfaceTable_INTERFACE_DEFINED__
 /* interface IGlobalInterfaceTable */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IGlobalInterfaceTable *LPGLOBALINTERFACETABLE;
+typedef  IGlobalInterfaceTable *LPGLOBALINTERFACETABLE;
 
 
 EXTERN_C const IID IID_IGlobalInterfaceTable;
@@ -4740,24 +4647,24 @@ EXTERN_C const IID IID_IGlobalInterfaceTable;
    IGlobalInterfaceTable : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE RegisterInterfaceInGlobal( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnk,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall RegisterInterfaceInGlobal( 
+            
+             IUnknown *pUnk,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwCookie) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE RevokeInterfaceFromGlobal( 
-           /* [annotation][in] */ 
-           _In_  DWORD dwCookie) = 0;
+       virtual HRESULT __stdcall RevokeInterfaceFromGlobal( 
+            
+             DWORD dwCookie) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetInterfaceFromGlobal( 
-           /* [annotation][in] */ 
-           _In_  DWORD dwCookie,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][iid_is][out] */ 
+       virtual HRESULT __stdcall GetInterfaceFromGlobal( 
+            
+             DWORD dwCookie,
+            
+             REFIID riid,
+            
            _Outptr_  void **ppv) = 0;
        
    };
@@ -4769,39 +4676,39 @@ EXTERN_C const IID IID_IGlobalInterfaceTable;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IGlobalInterfaceTable * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IGlobalInterfaceTable * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IGlobalInterfaceTable * This);
        
-       HRESULT ( STDMETHODCALLTYPE *RegisterInterfaceInGlobal )( 
+       HRESULT ( __stdcall *RegisterInterfaceInGlobal )( 
            IGlobalInterfaceTable * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnk,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             IUnknown *pUnk,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Out_  DWORD *pdwCookie);
        
-       HRESULT ( STDMETHODCALLTYPE *RevokeInterfaceFromGlobal )( 
+       HRESULT ( __stdcall *RevokeInterfaceFromGlobal )( 
            IGlobalInterfaceTable * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwCookie);
+            
+             DWORD dwCookie);
        
-       HRESULT ( STDMETHODCALLTYPE *GetInterfaceFromGlobal )( 
+       HRESULT ( __stdcall *GetInterfaceFromGlobal )( 
            IGlobalInterfaceTable * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwCookie,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][iid_is][out] */ 
+            
+             DWORD dwCookie,
+            
+             REFIID riid,
+            
            _Outptr_  void **ppv);
        
        END_INTERFACE
@@ -4848,7 +4755,7 @@ end 	/* __IGlobalInterfaceTable_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0029 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -4874,13 +4781,13 @@ EXTERN_C const IID IID_ISynchronize;
    ISynchronize : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Wait( 
-           /* [in] */ DWORD dwFlags,
-           /* [in] */ DWORD dwMilliseconds) = 0;
+       virtual HRESULT __stdcall Wait( 
+            DWORD dwFlags,
+            DWORD dwMilliseconds) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Signal( void) = 0;
+       virtual HRESULT __stdcall Signal( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+       virtual HRESULT __stdcall Reset( void) = 0;
        
    };
    
@@ -4891,28 +4798,28 @@ EXTERN_C const IID IID_ISynchronize;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in ISynchronize * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            ISynchronize * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in ISynchronize * This);
+       ULONG ( __stdcall *AddRef )( 
+            ISynchronize * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in ISynchronize * This);
+       ULONG ( __stdcall *Release )( 
+            ISynchronize * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Wait )( 
-           __RPC__in ISynchronize * This,
-           /* [in] */ DWORD dwFlags,
-           /* [in] */ DWORD dwMilliseconds);
+       HRESULT ( __stdcall *Wait )( 
+            ISynchronize * This,
+            DWORD dwFlags,
+            DWORD dwMilliseconds);
        
-       HRESULT ( STDMETHODCALLTYPE *Signal )( 
-           __RPC__in ISynchronize * This);
+       HRESULT ( __stdcall *Signal )( 
+            ISynchronize * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
-           __RPC__in ISynchronize * This);
+       HRESULT ( __stdcall *Reset )( 
+            ISynchronize * This);
        
        END_INTERFACE
    } ISynchronizeVtbl;
@@ -4972,7 +4879,7 @@ EXTERN_C const IID IID_ISynchronizeHandle;
    ISynchronizeHandle : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetHandle( 
+       virtual HRESULT __stdcall GetHandle( 
            /* [annotation][out] */ 
            _Out_  HANDLE *ph) = 0;
        
@@ -4985,19 +4892,19 @@ EXTERN_C const IID IID_ISynchronizeHandle;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ISynchronizeHandle * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ISynchronizeHandle * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ISynchronizeHandle * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetHandle )( 
+       HRESULT ( __stdcall *GetHandle )( 
            ISynchronizeHandle * This,
            /* [annotation][out] */ 
            _Out_  HANDLE *ph);
@@ -5054,9 +4961,9 @@ EXTERN_C const IID IID_ISynchronizeEvent;
    ISynchronizeEvent : public ISynchronizeHandle
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE SetEventHandle( 
-           /* [annotation][in] */ 
-           _In_  HANDLE *ph) = 0;
+       virtual HRESULT __stdcall SetEventHandle( 
+            
+             HANDLE *ph) = 0;
        
    };
    
@@ -5067,27 +4974,27 @@ EXTERN_C const IID IID_ISynchronizeEvent;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ISynchronizeEvent * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ISynchronizeEvent * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ISynchronizeEvent * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetHandle )( 
+       HRESULT ( __stdcall *GetHandle )( 
            ISynchronizeEvent * This,
            /* [annotation][out] */ 
            _Out_  HANDLE *ph);
        
-       HRESULT ( STDMETHODCALLTYPE *SetEventHandle )( 
+       HRESULT ( __stdcall *SetEventHandle )( 
            ISynchronizeEvent * This,
-           /* [annotation][in] */ 
-           _In_  HANDLE *ph);
+            
+             HANDLE *ph);
        
        END_INTERFACE
    } ISynchronizeEventVtbl;
@@ -5145,15 +5052,15 @@ EXTERN_C const IID IID_ISynchronizeContainer;
    ISynchronizeContainer : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE AddSynchronize( 
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync) = 0;
+       virtual HRESULT __stdcall AddSynchronize( 
+            
+             ISynchronize *pSync) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE WaitMultiple( 
-           /* [annotation][in] */ 
-           _In_  DWORD dwFlags,
-           /* [annotation][in] */ 
-           _In_  DWORD dwTimeOut,
+       virtual HRESULT __stdcall WaitMultiple( 
+            
+             DWORD dwFlags,
+            
+             DWORD dwTimeOut,
            /* [annotation][out] */ 
            _Outptr_  ISynchronize **ppSync) = 0;
        
@@ -5166,29 +5073,29 @@ EXTERN_C const IID IID_ISynchronizeContainer;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ISynchronizeContainer * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ISynchronizeContainer * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ISynchronizeContainer * This);
        
-       HRESULT ( STDMETHODCALLTYPE *AddSynchronize )( 
+       HRESULT ( __stdcall *AddSynchronize )( 
            ISynchronizeContainer * This,
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync);
+            
+             ISynchronize *pSync);
        
-       HRESULT ( STDMETHODCALLTYPE *WaitMultiple )( 
+       HRESULT ( __stdcall *WaitMultiple )( 
            ISynchronizeContainer * This,
-           /* [annotation][in] */ 
-           _In_  DWORD dwFlags,
-           /* [annotation][in] */ 
-           _In_  DWORD dwTimeOut,
+            
+             DWORD dwFlags,
+            
+             DWORD dwTimeOut,
            /* [annotation][out] */ 
            _Outptr_  ISynchronize **ppSync);
        
@@ -5247,7 +5154,7 @@ EXTERN_C const IID IID_ISynchronizeMutex;
    ISynchronizeMutex : public ISynchronize
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE ReleaseMutex( void) = 0;
+       virtual HRESULT __stdcall ReleaseMutex( void) = 0;
        
    };
    
@@ -5258,30 +5165,30 @@ EXTERN_C const IID IID_ISynchronizeMutex;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ISynchronizeMutex * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ISynchronizeMutex * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ISynchronizeMutex * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Wait )( 
+       HRESULT ( __stdcall *Wait )( 
            ISynchronizeMutex * This,
-           /* [in] */ DWORD dwFlags,
-           /* [in] */ DWORD dwMilliseconds);
+            DWORD dwFlags,
+            DWORD dwMilliseconds);
        
-       HRESULT ( STDMETHODCALLTYPE *Signal )( 
+       HRESULT ( __stdcall *Signal )( 
            ISynchronizeMutex * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
+       HRESULT ( __stdcall *Reset )( 
            ISynchronizeMutex * This);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseMutex )( 
+       HRESULT ( __stdcall *ReleaseMutex )( 
            ISynchronizeMutex * This);
        
        END_INTERFACE
@@ -5337,7 +5244,7 @@ if not __ICancelMethodCalls_INTERFACE_DEFINED__
 /* interface ICancelMethodCalls */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ ICancelMethodCalls *LPCANCELMETHODCALLS;
+typedef  ICancelMethodCalls *LPCANCELMETHODCALLS;
 
 
 EXTERN_C const IID IID_ICancelMethodCalls;
@@ -5348,11 +5255,11 @@ EXTERN_C const IID IID_ICancelMethodCalls;
    ICancelMethodCalls : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Cancel( 
-           /* [annotation][in] */ 
-           _In_  ULONG ulSeconds) = 0;
+       virtual HRESULT __stdcall Cancel( 
+            
+             ULONG ulSeconds) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE TestCancel( void) = 0;
+       virtual HRESULT __stdcall TestCancel( void) = 0;
        
    };
    
@@ -5363,24 +5270,24 @@ EXTERN_C const IID IID_ICancelMethodCalls;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ICancelMethodCalls * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ICancelMethodCalls * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ICancelMethodCalls * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Cancel )( 
+       HRESULT ( __stdcall *Cancel )( 
            ICancelMethodCalls * This,
-           /* [annotation][in] */ 
-           _In_  ULONG ulSeconds);
+            
+             ULONG ulSeconds);
        
-       HRESULT ( STDMETHODCALLTYPE *TestCancel )( 
+       HRESULT ( __stdcall *TestCancel )( 
            ICancelMethodCalls * This);
        
        END_INTERFACE
@@ -5446,17 +5353,17 @@ EXTERN_C const IID IID_IAsyncManager;
    IAsyncManager : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE CompleteCall( 
-           /* [annotation][in] */ 
-           _In_  HRESULT Result) = 0;
+       virtual HRESULT __stdcall CompleteCall( 
+            
+             HRESULT Result) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetCallContext( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+       virtual HRESULT __stdcall GetCallContext( 
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **pInterface) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetState( 
+       virtual HRESULT __stdcall GetState( 
            /* [annotation][out] */ 
            _Out_  ULONG *pulStateFlags) = 0;
        
@@ -5469,31 +5376,31 @@ EXTERN_C const IID IID_IAsyncManager;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAsyncManager * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAsyncManager * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAsyncManager * This);
        
-       HRESULT ( STDMETHODCALLTYPE *CompleteCall )( 
+       HRESULT ( __stdcall *CompleteCall )( 
            IAsyncManager * This,
-           /* [annotation][in] */ 
-           _In_  HRESULT Result);
+            
+             HRESULT Result);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCallContext )( 
+       HRESULT ( __stdcall *GetCallContext )( 
            IAsyncManager * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
+            
+             REFIID riid,
            /* [annotation][out] */ 
            _Outptr_  void **pInterface);
        
-       HRESULT ( STDMETHODCALLTYPE *GetState )( 
+       HRESULT ( __stdcall *GetState )( 
            IAsyncManager * This,
            /* [annotation][out] */ 
            _Out_  ULONG *pulStateFlags);
@@ -5556,14 +5463,14 @@ EXTERN_C const IID IID_ICallFactory;
    ICallFactory : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE CreateCall( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_opt_  IUnknown *pCtrlUnk,
-           /* [annotation][in] */ 
-           _In_  REFIID riid2,
-           /* [annotation][iid_is][out] */ 
+       virtual HRESULT __stdcall CreateCall( 
+            
+             REFIID riid,
+            
+             IUnknown *pCtrlUnk,
+            
+             REFIID riid2,
+            
            _Outptr_  IUnknown **ppv) = 0;
        
    };
@@ -5575,27 +5482,27 @@ EXTERN_C const IID IID_ICallFactory;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            ICallFactory * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            ICallFactory * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            ICallFactory * This);
        
-       HRESULT ( STDMETHODCALLTYPE *CreateCall )( 
+       HRESULT ( __stdcall *CreateCall )( 
            ICallFactory * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][in] */ 
-           _In_opt_  IUnknown *pCtrlUnk,
-           /* [annotation][in] */ 
-           _In_  REFIID riid2,
-           /* [annotation][iid_is][out] */ 
+            
+             REFIID riid,
+            
+             IUnknown *pCtrlUnk,
+            
+             REFIID riid2,
+            
            _Outptr_  IUnknown **ppv);
        
        END_INTERFACE
@@ -5650,13 +5557,13 @@ EXTERN_C const IID IID_IRpcHelper;
    IRpcHelper : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetDCOMProtocolVersion( 
+       virtual HRESULT __stdcall GetDCOMProtocolVersion( 
            /* [annotation][out] */ 
            _Out_  DWORD *pComVersion) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetIIDFromOBJREF( 
-           /* [annotation][in] */ 
-           _In_  void *pObjRef,
+       virtual HRESULT __stdcall GetIIDFromOBJREF( 
+            
+             void *pObjRef,
            /* [annotation][out] */ 
            _Outptr_  IID **piid) = 0;
        
@@ -5669,27 +5576,27 @@ EXTERN_C const IID IID_IRpcHelper;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IRpcHelper * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IRpcHelper * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IRpcHelper * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetDCOMProtocolVersion )( 
+       HRESULT ( __stdcall *GetDCOMProtocolVersion )( 
            IRpcHelper * This,
            /* [annotation][out] */ 
            _Out_  DWORD *pComVersion);
        
-       HRESULT ( STDMETHODCALLTYPE *GetIIDFromOBJREF )( 
+       HRESULT ( __stdcall *GetIIDFromOBJREF )( 
            IRpcHelper * This,
-           /* [annotation][in] */ 
-           _In_  void *pObjRef,
+            
+             void *pObjRef,
            /* [annotation][out] */ 
            _Outptr_  IID **piid);
        
@@ -5748,13 +5655,13 @@ EXTERN_C const IID IID_IReleaseMarshalBuffers;
    IReleaseMarshalBuffers : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE ReleaseMarshalBuffer( 
+       virtual HRESULT __stdcall ReleaseMarshalBuffer( 
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  DWORD dwFlags,
-           /* [annotation][unique][in] */ 
-           _In_opt_  IUnknown *pChnl) = 0;
+            
+             DWORD dwFlags,
+            
+             IUnknown *pChnl) = 0;
        
    };
    
@@ -5765,26 +5672,26 @@ EXTERN_C const IID IID_IReleaseMarshalBuffers;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IReleaseMarshalBuffers * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IReleaseMarshalBuffers * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IReleaseMarshalBuffers * This);
        
-       HRESULT ( STDMETHODCALLTYPE *ReleaseMarshalBuffer )( 
+       HRESULT ( __stdcall *ReleaseMarshalBuffer )( 
            IReleaseMarshalBuffers * This,
            /* [annotation][out][in] */ 
            _Inout_  RPCOLEMESSAGE *pMsg,
-           /* [annotation][in] */ 
-           _In_  DWORD dwFlags,
-           /* [annotation][unique][in] */ 
-           _In_opt_  IUnknown *pChnl);
+            
+             DWORD dwFlags,
+            
+             IUnknown *pChnl);
        
        END_INTERFACE
    } IReleaseMarshalBuffersVtbl;
@@ -5838,15 +5745,15 @@ EXTERN_C const IID IID_IWaitMultiple;
    IWaitMultiple : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE WaitMultiple( 
-           /* [annotation][in] */ 
-           _In_  DWORD timeout,
+       virtual HRESULT __stdcall WaitMultiple( 
+            
+             DWORD timeout,
            /* [annotation][out] */ 
            _Outptr_  ISynchronize **pSync) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE AddSynchronize( 
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync) = 0;
+       virtual HRESULT __stdcall AddSynchronize( 
+            
+             ISynchronize *pSync) = 0;
        
    };
    
@@ -5857,29 +5764,29 @@ EXTERN_C const IID IID_IWaitMultiple;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IWaitMultiple * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IWaitMultiple * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IWaitMultiple * This);
        
-       HRESULT ( STDMETHODCALLTYPE *WaitMultiple )( 
+       HRESULT ( __stdcall *WaitMultiple )( 
            IWaitMultiple * This,
-           /* [annotation][in] */ 
-           _In_  DWORD timeout,
+            
+             DWORD timeout,
            /* [annotation][out] */ 
            _Outptr_  ISynchronize **pSync);
        
-       HRESULT ( STDMETHODCALLTYPE *AddSynchronize )( 
+       HRESULT ( __stdcall *AddSynchronize )( 
            IWaitMultiple * This,
-           /* [annotation][in] */ 
-           _In_  ISynchronize *pSync);
+            
+             ISynchronize *pSync);
        
        END_INTERFACE
    } IWaitMultipleVtbl;
@@ -5927,7 +5834,7 @@ if not __IAddrTrackingControl_INTERFACE_DEFINED__
 /* interface IAddrTrackingControl */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IAddrTrackingControl *LPADDRTRACKINGCONTROL;
+typedef  IAddrTrackingControl *LPADDRTRACKINGCONTROL;
 
 
 EXTERN_C const IID IID_IAddrTrackingControl;
@@ -5938,9 +5845,9 @@ EXTERN_C const IID IID_IAddrTrackingControl;
    IAddrTrackingControl : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE EnableCOMDynamicAddrTracking( void) = 0;
+       virtual HRESULT __stdcall EnableCOMDynamicAddrTracking( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE DisableCOMDynamicAddrTracking( void) = 0;
+       virtual HRESULT __stdcall DisableCOMDynamicAddrTracking( void) = 0;
        
    };
    
@@ -5951,22 +5858,22 @@ EXTERN_C const IID IID_IAddrTrackingControl;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAddrTrackingControl * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAddrTrackingControl * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAddrTrackingControl * This);
        
-       HRESULT ( STDMETHODCALLTYPE *EnableCOMDynamicAddrTracking )( 
+       HRESULT ( __stdcall *EnableCOMDynamicAddrTracking )( 
            IAddrTrackingControl * This);
        
-       HRESULT ( STDMETHODCALLTYPE *DisableCOMDynamicAddrTracking )( 
+       HRESULT ( __stdcall *DisableCOMDynamicAddrTracking )( 
            IAddrTrackingControl * This);
        
        END_INTERFACE
@@ -6015,7 +5922,7 @@ if not __IAddrExclusionControl_INTERFACE_DEFINED__
 /* interface IAddrExclusionControl */
 /* [uuid][object][local] */ 
 
-typedef /* [unique] */ IAddrExclusionControl *LPADDREXCLUSIONCONTROL;
+typedef  IAddrExclusionControl *LPADDREXCLUSIONCONTROL;
 
 
 EXTERN_C const IID IID_IAddrExclusionControl;
@@ -6026,15 +5933,15 @@ EXTERN_C const IID IID_IAddrExclusionControl;
    IAddrExclusionControl : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetCurrentAddrExclusionList( 
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][iid_is][out] */ 
+       virtual HRESULT __stdcall GetCurrentAddrExclusionList( 
+            
+             REFIID riid,
+            
            _Outptr_  void **ppEnumerator) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE UpdateAddrExclusionList( 
-           /* [annotation][in] */ 
-           _In_  IUnknown *pEnumerator) = 0;
+       virtual HRESULT __stdcall UpdateAddrExclusionList( 
+            
+             IUnknown *pEnumerator) = 0;
        
    };
    
@@ -6045,29 +5952,29 @@ EXTERN_C const IID IID_IAddrExclusionControl;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAddrExclusionControl * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAddrExclusionControl * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAddrExclusionControl * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCurrentAddrExclusionList )( 
+       HRESULT ( __stdcall *GetCurrentAddrExclusionList )( 
            IAddrExclusionControl * This,
-           /* [annotation][in] */ 
-           _In_  REFIID riid,
-           /* [annotation][iid_is][out] */ 
+            
+             REFIID riid,
+            
            _Outptr_  void **ppEnumerator);
        
-       HRESULT ( STDMETHODCALLTYPE *UpdateAddrExclusionList )( 
+       HRESULT ( __stdcall *UpdateAddrExclusionList )( 
            IAddrExclusionControl * This,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pEnumerator);
+            
+             IUnknown *pEnumerator);
        
        END_INTERFACE
    } IAddrExclusionControlVtbl;
@@ -6124,14 +6031,14 @@ EXTERN_C const IID IID_IPipeByte;
    IPipeByte : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Pull( 
+       virtual HRESULT __stdcall Pull( 
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) BYTE *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+            ULONG cRequest,
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Push( 
+       virtual HRESULT __stdcall Push( 
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) BYTE *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
    };
    
@@ -6142,28 +6049,28 @@ EXTERN_C const IID IID_IPipeByte;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IPipeByte * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IPipeByte * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IPipeByte * This);
+       ULONG ( __stdcall *AddRef )( 
+            IPipeByte * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IPipeByte * This);
+       ULONG ( __stdcall *Release )( 
+            IPipeByte * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Pull )( 
-           __RPC__in IPipeByte * This,
+       HRESULT ( __stdcall *Pull )( 
+            IPipeByte * This,
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) BYTE *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+            ULONG cRequest,
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Push )( 
-           __RPC__in IPipeByte * This,
+       HRESULT ( __stdcall *Push )( 
+            IPipeByte * This,
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) BYTE *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
        END_INTERFACE
    } IPipeByteVtbl;
@@ -6220,18 +6127,18 @@ EXTERN_C const IID IID_AsyncIPipeByte;
    AsyncIPipeByte : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Begin_Pull( 
-           /* [in] */ ULONG cRequest) = 0;
+       virtual HRESULT __stdcall Begin_Pull( 
+            ULONG cRequest) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Pull( 
+       virtual HRESULT __stdcall Finish_Pull( 
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) BYTE *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Begin_Push( 
+       virtual HRESULT __stdcall Begin_Push( 
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) BYTE *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Push( void) = 0;
+       virtual HRESULT __stdcall Finish_Push( void) = 0;
        
    };
    
@@ -6242,34 +6149,34 @@ EXTERN_C const IID IID_AsyncIPipeByte;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in AsyncIPipeByte * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            AsyncIPipeByte * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in AsyncIPipeByte * This);
+       ULONG ( __stdcall *AddRef )( 
+            AsyncIPipeByte * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in AsyncIPipeByte * This);
+       ULONG ( __stdcall *Release )( 
+            AsyncIPipeByte * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Pull )( 
-           __RPC__in AsyncIPipeByte * This,
-           /* [in] */ ULONG cRequest);
+       HRESULT ( __stdcall *Begin_Pull )( 
+            AsyncIPipeByte * This,
+            ULONG cRequest);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Pull )( 
-           __RPC__in AsyncIPipeByte * This,
+       HRESULT ( __stdcall *Finish_Pull )( 
+            AsyncIPipeByte * This,
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) BYTE *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Push )( 
-           __RPC__in AsyncIPipeByte * This,
+       HRESULT ( __stdcall *Begin_Push )( 
+            AsyncIPipeByte * This,
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) BYTE *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Push )( 
-           __RPC__in AsyncIPipeByte * This);
+       HRESULT ( __stdcall *Finish_Push )( 
+            AsyncIPipeByte * This);
        
        END_INTERFACE
    } AsyncIPipeByteVtbl;
@@ -6332,14 +6239,14 @@ EXTERN_C const IID IID_IPipeLong;
    IPipeLong : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Pull( 
+       virtual HRESULT __stdcall Pull( 
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) LONG *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+            ULONG cRequest,
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Push( 
+       virtual HRESULT __stdcall Push( 
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) LONG *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
    };
    
@@ -6350,28 +6257,28 @@ EXTERN_C const IID IID_IPipeLong;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IPipeLong * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IPipeLong * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IPipeLong * This);
+       ULONG ( __stdcall *AddRef )( 
+            IPipeLong * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IPipeLong * This);
+       ULONG ( __stdcall *Release )( 
+            IPipeLong * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Pull )( 
-           __RPC__in IPipeLong * This,
+       HRESULT ( __stdcall *Pull )( 
+            IPipeLong * This,
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) LONG *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+            ULONG cRequest,
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Push )( 
-           __RPC__in IPipeLong * This,
+       HRESULT ( __stdcall *Push )( 
+            IPipeLong * This,
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) LONG *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
        END_INTERFACE
    } IPipeLongVtbl;
@@ -6428,18 +6335,18 @@ EXTERN_C const IID IID_AsyncIPipeLong;
    AsyncIPipeLong : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Begin_Pull( 
-           /* [in] */ ULONG cRequest) = 0;
+       virtual HRESULT __stdcall Begin_Pull( 
+            ULONG cRequest) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Pull( 
+       virtual HRESULT __stdcall Finish_Pull( 
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) LONG *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Begin_Push( 
+       virtual HRESULT __stdcall Begin_Push( 
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) LONG *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Push( void) = 0;
+       virtual HRESULT __stdcall Finish_Push( void) = 0;
        
    };
    
@@ -6450,34 +6357,34 @@ EXTERN_C const IID IID_AsyncIPipeLong;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in AsyncIPipeLong * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            AsyncIPipeLong * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in AsyncIPipeLong * This);
+       ULONG ( __stdcall *AddRef )( 
+            AsyncIPipeLong * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in AsyncIPipeLong * This);
+       ULONG ( __stdcall *Release )( 
+            AsyncIPipeLong * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Pull )( 
-           __RPC__in AsyncIPipeLong * This,
-           /* [in] */ ULONG cRequest);
+       HRESULT ( __stdcall *Begin_Pull )( 
+            AsyncIPipeLong * This,
+            ULONG cRequest);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Pull )( 
-           __RPC__in AsyncIPipeLong * This,
+       HRESULT ( __stdcall *Finish_Pull )( 
+            AsyncIPipeLong * This,
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) LONG *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Push )( 
-           __RPC__in AsyncIPipeLong * This,
+       HRESULT ( __stdcall *Begin_Push )( 
+            AsyncIPipeLong * This,
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) LONG *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Push )( 
-           __RPC__in AsyncIPipeLong * This);
+       HRESULT ( __stdcall *Finish_Push )( 
+            AsyncIPipeLong * This);
        
        END_INTERFACE
    } AsyncIPipeLongVtbl;
@@ -6540,14 +6447,14 @@ EXTERN_C const IID IID_IPipeDouble;
    IPipeDouble : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Pull( 
+       virtual HRESULT __stdcall Pull( 
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) DOUBLE *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+            ULONG cRequest,
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Push( 
+       virtual HRESULT __stdcall Push( 
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) DOUBLE *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
    };
    
@@ -6558,28 +6465,28 @@ EXTERN_C const IID IID_IPipeDouble;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IPipeDouble * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IPipeDouble * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IPipeDouble * This);
+       ULONG ( __stdcall *AddRef )( 
+            IPipeDouble * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IPipeDouble * This);
+       ULONG ( __stdcall *Release )( 
+            IPipeDouble * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Pull )( 
-           __RPC__in IPipeDouble * This,
+       HRESULT ( __stdcall *Pull )( 
+            IPipeDouble * This,
            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cRequest, *pcReturned) DOUBLE *buf,
-           /* [in] */ ULONG cRequest,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+            ULONG cRequest,
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Push )( 
-           __RPC__in IPipeDouble * This,
+       HRESULT ( __stdcall *Push )( 
+            IPipeDouble * This,
            /* [size_is][in] */ __RPC__in_ecount_full(cSent) DOUBLE *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
        END_INTERFACE
    } IPipeDoubleVtbl;
@@ -6636,18 +6543,18 @@ EXTERN_C const IID IID_AsyncIPipeDouble;
    AsyncIPipeDouble : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Begin_Pull( 
-           /* [in] */ ULONG cRequest) = 0;
+       virtual HRESULT __stdcall Begin_Pull( 
+            ULONG cRequest) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Pull( 
+       virtual HRESULT __stdcall Finish_Pull( 
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) DOUBLE *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned) = 0;
+             ULONG *pcReturned) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Begin_Push( 
+       virtual HRESULT __stdcall Begin_Push( 
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) DOUBLE *buf,
-           /* [in] */ ULONG cSent) = 0;
+            ULONG cSent) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Finish_Push( void) = 0;
+       virtual HRESULT __stdcall Finish_Push( void) = 0;
        
    };
    
@@ -6658,34 +6565,34 @@ EXTERN_C const IID IID_AsyncIPipeDouble;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in AsyncIPipeDouble * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            AsyncIPipeDouble * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in AsyncIPipeDouble * This);
+       ULONG ( __stdcall *AddRef )( 
+            AsyncIPipeDouble * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in AsyncIPipeDouble * This);
+       ULONG ( __stdcall *Release )( 
+            AsyncIPipeDouble * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Pull )( 
-           __RPC__in AsyncIPipeDouble * This,
-           /* [in] */ ULONG cRequest);
+       HRESULT ( __stdcall *Begin_Pull )( 
+            AsyncIPipeDouble * This,
+            ULONG cRequest);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Pull )( 
-           __RPC__in AsyncIPipeDouble * This,
+       HRESULT ( __stdcall *Finish_Pull )( 
+            AsyncIPipeDouble * This,
            /* [length_is][size_is][out] */ __RPC__out_xcount_part(cRequest, *pcReturned) DOUBLE *buf,
-           /* [out] */ __RPC__out ULONG *pcReturned);
+             ULONG *pcReturned);
        
-       HRESULT ( STDMETHODCALLTYPE *Begin_Push )( 
-           __RPC__in AsyncIPipeDouble * This,
+       HRESULT ( __stdcall *Begin_Push )( 
+            AsyncIPipeDouble * This,
            /* [size_is][in] */ __RPC__in_xcount_full(cSent) DOUBLE *buf,
-           /* [in] */ ULONG cSent);
+            ULONG cSent);
        
-       HRESULT ( STDMETHODCALLTYPE *Finish_Push )( 
-           __RPC__in AsyncIPipeDouble * This);
+       HRESULT ( __stdcall *Finish_Push )( 
+            AsyncIPipeDouble * This);
        
        END_INTERFACE
    } AsyncIPipeDoubleVtbl;
@@ -6734,7 +6641,7 @@ end 	/* __AsyncIPipeDouble_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0045 */
-/* [local] */ 
+ 
 
 #if defined USE_COM_CONTEXT_DEF || defined BUILDTYPE_COMSVCS || defined _COMBASEAPI_ || defined _OLE32_
 typedef DWORD CPFLAGS;
@@ -6743,7 +6650,7 @@ typedef struct tagContextProperty
    {
    GUID policyId;
    CPFLAGS flags;
-   /* [unique] */ IUnknown *pUnk;
+    IUnknown *pUnk;
    } 	ContextProperty;
 
 
@@ -6757,7 +6664,7 @@ if not __IEnumContextProps_INTERFACE_DEFINED__
 /* interface IEnumContextProps */
 /* [unique][uuid][object][local] */ 
 
-typedef /* [unique] */ IEnumContextProps *LPENUMCONTEXTPROPS;
+typedef  IEnumContextProps *LPENUMCONTEXTPROPS;
 
 
 EXTERN_C const IID IID_IEnumContextProps;
@@ -6768,25 +6675,25 @@ EXTERN_C const IID IID_IEnumContextProps;
    IEnumContextProps : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Next( 
-           /* [annotation][in] */ 
-           _In_  ULONG celt,
+       virtual HRESULT __stdcall Next( 
+            
+             ULONG celt,
            /* [annotation][length_is][size_is][out] */ 
            _Out_writes_to_(celt, *pceltFetched)  ContextProperty *pContextProperties,
            /* [annotation][out] */ 
            _Out_  ULONG *pceltFetched) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Skip( 
-           /* [annotation][in] */ 
-           _In_  ULONG celt) = 0;
+       virtual HRESULT __stdcall Skip( 
+            
+             ULONG celt) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+       virtual HRESULT __stdcall Reset( void) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
+       virtual HRESULT __stdcall Clone( 
            /* [annotation][out] */ 
            _Outptr_  IEnumContextProps **ppEnumContextProps) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE Count( 
+       virtual HRESULT __stdcall Count( 
            /* [annotation][out] */ 
            _Out_  ULONG *pcelt) = 0;
        
@@ -6799,41 +6706,41 @@ EXTERN_C const IID IID_IEnumContextProps;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IEnumContextProps * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IEnumContextProps * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IEnumContextProps * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Next )( 
+       HRESULT ( __stdcall *Next )( 
            IEnumContextProps * This,
-           /* [annotation][in] */ 
-           _In_  ULONG celt,
+            
+             ULONG celt,
            /* [annotation][length_is][size_is][out] */ 
            _Out_writes_to_(celt, *pceltFetched)  ContextProperty *pContextProperties,
            /* [annotation][out] */ 
            _Out_  ULONG *pceltFetched);
        
-       HRESULT ( STDMETHODCALLTYPE *Skip )( 
+       HRESULT ( __stdcall *Skip )( 
            IEnumContextProps * This,
-           /* [annotation][in] */ 
-           _In_  ULONG celt);
+            
+             ULONG celt);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
+       HRESULT ( __stdcall *Reset )( 
            IEnumContextProps * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
+       HRESULT ( __stdcall *Clone )( 
            IEnumContextProps * This,
            /* [annotation][out] */ 
            _Outptr_  IEnumContextProps **ppEnumContextProps);
        
-       HRESULT ( STDMETHODCALLTYPE *Count )( 
+       HRESULT ( __stdcall *Count )( 
            IEnumContextProps * This,
            /* [annotation][out] */ 
            _Out_  ULONG *pcelt);
@@ -6902,27 +6809,27 @@ EXTERN_C const IID IID_IContext;
    IContext : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE SetProperty( 
-           /* [annotation][in] */ 
-           _In_  REFGUID rpolicyId,
-           /* [annotation][in] */ 
-           _In_  CPFLAGS flags,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnk) = 0;
+       virtual HRESULT __stdcall SetProperty( 
+            
+             REFGUID rpolicyId,
+            
+             CPFLAGS flags,
+            
+             IUnknown *pUnk) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE RemoveProperty( 
-           /* [annotation][in] */ 
-           _In_  REFGUID rPolicyId) = 0;
+       virtual HRESULT __stdcall RemoveProperty( 
+            
+             REFGUID rPolicyId) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetProperty( 
-           /* [annotation][in] */ 
-           _In_  REFGUID rGuid,
+       virtual HRESULT __stdcall GetProperty( 
+            
+             REFGUID rGuid,
            /* [annotation][out] */ 
            _Out_  CPFLAGS *pFlags,
            /* [annotation][out] */ 
            _Outptr_  IUnknown **ppUnk) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE EnumContextProps( 
+       virtual HRESULT __stdcall EnumContextProps( 
            /* [annotation][out] */ 
            _Outptr_  IEnumContextProps **ppEnumContextProps) = 0;
        
@@ -6935,42 +6842,42 @@ EXTERN_C const IID IID_IContext;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IContext * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IContext * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IContext * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetProperty )( 
+       HRESULT ( __stdcall *SetProperty )( 
            IContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rpolicyId,
-           /* [annotation][in] */ 
-           _In_  CPFLAGS flags,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnk);
+            
+             REFGUID rpolicyId,
+            
+             CPFLAGS flags,
+            
+             IUnknown *pUnk);
        
-       HRESULT ( STDMETHODCALLTYPE *RemoveProperty )( 
+       HRESULT ( __stdcall *RemoveProperty )( 
            IContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rPolicyId);
+            
+             REFGUID rPolicyId);
        
-       HRESULT ( STDMETHODCALLTYPE *GetProperty )( 
+       HRESULT ( __stdcall *GetProperty )( 
            IContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rGuid,
+            
+             REFGUID rGuid,
            /* [annotation][out] */ 
            _Out_  CPFLAGS *pFlags,
            /* [annotation][out] */ 
            _Outptr_  IUnknown **ppUnk);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumContextProps )( 
+       HRESULT ( __stdcall *EnumContextProps )( 
            IContext * This,
            /* [annotation][out] */ 
            _Outptr_  IEnumContextProps **ppEnumContextProps);
@@ -7022,7 +6929,7 @@ end 	/* __IContext_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0047 */
-/* [local] */ 
+ 
 
 #if !defined BUILDTYPE_COMSVCS && ! (defined _COMBASEAPI_ || defined _OLE32_)
 
@@ -7045,19 +6952,19 @@ EXTERN_C const IID IID_IObjContext;
    IObjContext : public IContext
    {
    public:
-       virtual void STDMETHODCALLTYPE Reserved1( void) = 0;
+       virtual void __stdcall Reserved1( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved2( void) = 0;
+       virtual void __stdcall Reserved2( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved3( void) = 0;
+       virtual void __stdcall Reserved3( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved4( void) = 0;
+       virtual void __stdcall Reserved4( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved5( void) = 0;
+       virtual void __stdcall Reserved5( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved6( void) = 0;
+       virtual void __stdcall Reserved6( void) = 0;
        
-       virtual void STDMETHODCALLTYPE Reserved7( void) = 0;
+       virtual void __stdcall Reserved7( void) = 0;
        
    };
    
@@ -7068,65 +6975,65 @@ EXTERN_C const IID IID_IObjContext;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IObjContext * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IObjContext * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IObjContext * This);
        
-       HRESULT ( STDMETHODCALLTYPE *SetProperty )( 
+       HRESULT ( __stdcall *SetProperty )( 
            IObjContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rpolicyId,
-           /* [annotation][in] */ 
-           _In_  CPFLAGS flags,
-           /* [annotation][in] */ 
-           _In_  IUnknown *pUnk);
+            
+             REFGUID rpolicyId,
+            
+             CPFLAGS flags,
+            
+             IUnknown *pUnk);
        
-       HRESULT ( STDMETHODCALLTYPE *RemoveProperty )( 
+       HRESULT ( __stdcall *RemoveProperty )( 
            IObjContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rPolicyId);
+            
+             REFGUID rPolicyId);
        
-       HRESULT ( STDMETHODCALLTYPE *GetProperty )( 
+       HRESULT ( __stdcall *GetProperty )( 
            IObjContext * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rGuid,
+            
+             REFGUID rGuid,
            /* [annotation][out] */ 
            _Out_  CPFLAGS *pFlags,
            /* [annotation][out] */ 
            _Outptr_  IUnknown **ppUnk);
        
-       HRESULT ( STDMETHODCALLTYPE *EnumContextProps )( 
+       HRESULT ( __stdcall *EnumContextProps )( 
            IObjContext * This,
            /* [annotation][out] */ 
            _Outptr_  IEnumContextProps **ppEnumContextProps);
        
-       void ( STDMETHODCALLTYPE *Reserved1 )( 
+       void ( __stdcall *Reserved1 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved2 )( 
+       void ( __stdcall *Reserved2 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved3 )( 
+       void ( __stdcall *Reserved3 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved4 )( 
+       void ( __stdcall *Reserved4 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved5 )( 
+       void ( __stdcall *Reserved5 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved6 )( 
+       void ( __stdcall *Reserved6 )( 
            IObjContext * This);
        
-       void ( STDMETHODCALLTYPE *Reserved7 )( 
+       void ( __stdcall *Reserved7 )( 
            IObjContext * This);
        
        END_INTERFACE
@@ -7198,7 +7105,7 @@ end 	/* __IObjContext_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0048 */
-/* [local] */ 
+ 
 
 end
 end
@@ -7261,21 +7168,21 @@ EXTERN_C const IID IID_IComThreadingInfo;
    IComThreadingInfo : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetCurrentApartmentType( 
+       virtual HRESULT __stdcall GetCurrentApartmentType( 
            /* [annotation][out] */ 
            _Out_  APTTYPE *pAptType) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetCurrentThreadType( 
+       virtual HRESULT __stdcall GetCurrentThreadType( 
            /* [annotation][out] */ 
            _Out_  THDTYPE *pThreadType) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE GetCurrentLogicalThreadId( 
+       virtual HRESULT __stdcall GetCurrentLogicalThreadId( 
            /* [annotation][out] */ 
            _Out_  GUID *pguidLogicalThreadId) = 0;
        
-       virtual HRESULT STDMETHODCALLTYPE SetCurrentLogicalThreadId( 
-           /* [annotation][in] */ 
-           _In_  REFGUID rguid) = 0;
+       virtual HRESULT __stdcall SetCurrentLogicalThreadId( 
+            
+             REFGUID rguid) = 0;
        
    };
    
@@ -7286,37 +7193,37 @@ EXTERN_C const IID IID_IComThreadingInfo;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IComThreadingInfo * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IComThreadingInfo * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IComThreadingInfo * This);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCurrentApartmentType )( 
+       HRESULT ( __stdcall *GetCurrentApartmentType )( 
            IComThreadingInfo * This,
            /* [annotation][out] */ 
            _Out_  APTTYPE *pAptType);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCurrentThreadType )( 
+       HRESULT ( __stdcall *GetCurrentThreadType )( 
            IComThreadingInfo * This,
            /* [annotation][out] */ 
            _Out_  THDTYPE *pThreadType);
        
-       HRESULT ( STDMETHODCALLTYPE *GetCurrentLogicalThreadId )( 
+       HRESULT ( __stdcall *GetCurrentLogicalThreadId )( 
            IComThreadingInfo * This,
            /* [annotation][out] */ 
            _Out_  GUID *pguidLogicalThreadId);
        
-       HRESULT ( STDMETHODCALLTYPE *SetCurrentLogicalThreadId )( 
+       HRESULT ( __stdcall *SetCurrentLogicalThreadId )( 
            IComThreadingInfo * This,
-           /* [annotation][in] */ 
-           _In_  REFGUID rguid);
+            
+             REFGUID rguid);
        
        END_INTERFACE
    } IComThreadingInfoVtbl;
@@ -7379,8 +7286,8 @@ EXTERN_C const IID IID_IProcessInitControl;
    IProcessInitControl : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE ResetInitializerTimeout( 
-           /* [in] */ DWORD dwSecondsRemaining) = 0;
+       virtual HRESULT __stdcall ResetInitializerTimeout( 
+            DWORD dwSecondsRemaining) = 0;
        
    };
    
@@ -7391,21 +7298,21 @@ EXTERN_C const IID IID_IProcessInitControl;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-           __RPC__in IProcessInitControl * This,
-           /* [in] */ __RPC__in REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+       HRESULT ( __stdcall *QueryInterface )( 
+            IProcessInitControl * This,
+             REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
-           __RPC__in IProcessInitControl * This);
+       ULONG ( __stdcall *AddRef )( 
+            IProcessInitControl * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
-           __RPC__in IProcessInitControl * This);
+       ULONG ( __stdcall *Release )( 
+            IProcessInitControl * This);
        
-       HRESULT ( STDMETHODCALLTYPE *ResetInitializerTimeout )( 
-           __RPC__in IProcessInitControl * This,
-           /* [in] */ DWORD dwSecondsRemaining);
+       HRESULT ( __stdcall *ResetInitializerTimeout )( 
+            IProcessInitControl * This,
+            DWORD dwSecondsRemaining);
        
        END_INTERFACE
    } IProcessInitControlVtbl;
@@ -7468,16 +7375,16 @@ EXTERN_C const IID IID_IFastRundown;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IFastRundown * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IFastRundown * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IFastRundown * This);
        
        END_INTERFACE
@@ -7515,7 +7422,7 @@ end 	/* __IFastRundown_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0051 */
-/* [local] */ 
+ 
 
 typedef 
 enum CO_MARSHALING_CONTEXT_ATTRIBUTES
@@ -7555,9 +7462,9 @@ EXTERN_C const IID IID_IMarshalingStream;
    IMarshalingStream : public IStream
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE GetMarshalingContextAttribute( 
-           /* [in] */ CO_MARSHALING_CONTEXT_ATTRIBUTES attribute,
-           /* [out] */ ULONG_PTR *pAttributeValue) = 0;
+       virtual HRESULT __stdcall GetMarshalingContextAttribute( 
+            CO_MARSHALING_CONTEXT_ATTRIBUTES attribute,
+            ULONG_PTR *pAttributeValue) = 0;
        
    };
    
@@ -7568,89 +7475,89 @@ EXTERN_C const IID IID_IMarshalingStream;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IMarshalingStream * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IMarshalingStream * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IMarshalingStream * This);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Read )( 
+        HRESULT ( __stdcall *Read )( 
            IMarshalingStream * This,
-           /* [annotation] */ 
-           _Out_writes_bytes_to_(cb, *pcbRead)  void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbRead);
+            
+             void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbRead);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Write )( 
+        HRESULT ( __stdcall *Write )( 
            IMarshalingStream * This,
-           /* [annotation] */ 
-           _In_reads_bytes_(cb)  const void *pv,
-           /* [annotation][in] */ 
-           _In_  ULONG cb,
-           /* [annotation] */ 
-           _Out_opt_  ULONG *pcbWritten);
+            
+             const void *pv,
+            
+             ULONG cb,
+            
+             ULONG *pcbWritten);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *Seek )( 
+        HRESULT ( __stdcall *Seek )( 
            IMarshalingStream * This,
-           /* [in] */ LARGE_INTEGER dlibMove,
-           /* [in] */ DWORD dwOrigin,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *plibNewPosition);
+            LARGE_INTEGER dlibMove,
+            DWORD dwOrigin,
+            
+             ULARGE_INTEGER *plibNewPosition);
        
-       HRESULT ( STDMETHODCALLTYPE *SetSize )( 
+       HRESULT ( __stdcall *SetSize )( 
            IMarshalingStream * This,
-           /* [in] */ ULARGE_INTEGER libNewSize);
+            ULARGE_INTEGER libNewSize);
        
-       /* [local] */ HRESULT ( STDMETHODCALLTYPE *CopyTo )( 
+        HRESULT ( __stdcall *CopyTo )( 
            IMarshalingStream * This,
-           /* [annotation][unique][in] */ 
-           _In_  IStream *pstm,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbRead,
-           /* [annotation] */ 
-           _Out_opt_  ULARGE_INTEGER *pcbWritten);
+            
+             IStream *pstm,
+            ULARGE_INTEGER cb,
+            
+             ULARGE_INTEGER *pcbRead,
+            
+             ULARGE_INTEGER *pcbWritten);
        
-       HRESULT ( STDMETHODCALLTYPE *Commit )( 
+       HRESULT ( __stdcall *Commit )( 
            IMarshalingStream * This,
-           /* [in] */ DWORD grfCommitFlags);
+            DWORD grfCommitFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *Revert )( 
+       HRESULT ( __stdcall *Revert )( 
            IMarshalingStream * This);
        
-       HRESULT ( STDMETHODCALLTYPE *LockRegion )( 
+       HRESULT ( __stdcall *LockRegion )( 
            IMarshalingStream * This,
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType);
+            ULARGE_INTEGER libOffset,
+            ULARGE_INTEGER cb,
+            DWORD dwLockType);
        
-       HRESULT ( STDMETHODCALLTYPE *UnlockRegion )( 
+       HRESULT ( __stdcall *UnlockRegion )( 
            IMarshalingStream * This,
-           /* [in] */ ULARGE_INTEGER libOffset,
-           /* [in] */ ULARGE_INTEGER cb,
-           /* [in] */ DWORD dwLockType);
+            ULARGE_INTEGER libOffset,
+            ULARGE_INTEGER cb,
+            DWORD dwLockType);
        
-       HRESULT ( STDMETHODCALLTYPE *Stat )( 
+       HRESULT ( __stdcall *Stat )( 
            IMarshalingStream * This,
-           /* [out] */ STATSTG *pstatstg,
-           /* [in] */ DWORD grfStatFlag);
+            STATSTG *pstatstg,
+            DWORD grfStatFlag);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
+       HRESULT ( __stdcall *Clone )( 
            IMarshalingStream * This,
-           /* [out] */ IStream **ppstm);
+            IStream **ppstm);
        
-       HRESULT ( STDMETHODCALLTYPE *GetMarshalingContextAttribute )( 
+       HRESULT ( __stdcall *GetMarshalingContextAttribute )( 
            IMarshalingStream * This,
-           /* [in] */ CO_MARSHALING_CONTEXT_ATTRIBUTES attribute,
-           /* [out] */ ULONG_PTR *pAttributeValue);
+            CO_MARSHALING_CONTEXT_ATTRIBUTES attribute,
+            ULONG_PTR *pAttributeValue);
        
        END_INTERFACE
    } IMarshalingStreamVtbl;
@@ -7725,7 +7632,7 @@ end 	/* __IMarshalingStream_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0052 */
-/* [local] */ 
+ 
 
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 #pragma endregion
@@ -7750,8 +7657,8 @@ if not __IAgileReference_INTERFACE_DEFINED__
        IAgileReference : public IUnknown
        {
        public:
-           virtual HRESULT STDMETHODCALLTYPE Resolve( 
-               /* [in] */ REFIID riid,
+           virtual HRESULT __stdcall Resolve( 
+                REFIID riid,
                /* [iid_is][retval][out] */ void **ppvObjectReference) = 0;
 
            template<class Q>
@@ -7759,9 +7666,9 @@ if not __IAgileReference_INTERFACE_DEFINED__
 #ifdef _M_CEE_PURE
            __clrcall
 #else
-           STDMETHODCALLTYPE
+           __stdcall
 end
-           Resolve(_COM_Outptr_ Q** pp)
+           Resolve( Q** pp)
            {
                return Resolve(__uuidof(Q), (void **)pp);
            }
@@ -7778,8 +7685,8 @@ EXTERN_C const IID IID_IAgileReference;
    IAgileReference : public IUnknown
    {
    public:
-       virtual HRESULT STDMETHODCALLTYPE Resolve( 
-           /* [in] */ REFIID riid,
+       virtual HRESULT __stdcall Resolve( 
+            REFIID riid,
            /* [iid_is][retval][out] */ void **ppvObjectReference) = 0;
        
    };
@@ -7791,21 +7698,21 @@ EXTERN_C const IID IID_IAgileReference;
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
            IAgileReference * This,
-           /* [in] */ REFIID riid,
-           /* [annotation][iid_is][out] */ 
-           _COM_Outptr_  void **ppvObject);
+            REFIID riid,
+            
+             void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
            IAgileReference * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
            IAgileReference * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Resolve )( 
+       HRESULT ( __stdcall *Resolve )( 
            IAgileReference * This,
-           /* [in] */ REFIID riid,
+            REFIID riid,
            /* [iid_is][retval][out] */ void **ppvObjectReference);
        
        END_INTERFACE
@@ -7846,7 +7753,7 @@ end 	/* __IAgileReference_INTERFACE_DEFINED__ */
 
 
 /* interface __MIDL_itf_objidlbase_0000_0053 */
-/* [local] */ 
+ 
 
 end
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -7872,100 +7779,100 @@ extern RPC_IF_HANDLE __MIDL_itf_objidlbase_0000_0053_v0_0_s_ifspec;
 
 /* Additional Prototypes for ALL interfaces */
 
-/* [local] */ HRESULT STDMETHODCALLTYPE IEnumUnknown_Next_Proxy( 
+ HRESULT __stdcall IEnumUnknown_Next_Proxy( 
    IEnumUnknown * This,
-   /* [annotation][in] */ 
-   _In_  ULONG celt,
+    
+     ULONG celt,
    /* [annotation][out] */ 
    _Out_writes_to_(celt,*pceltFetched)  IUnknown **rgelt,
    /* [annotation][out] */ 
-   _Out_opt_  ULONG *pceltFetched);
+     ULONG *pceltFetched);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IEnumUnknown_Next_Stub( 
-   __RPC__in IEnumUnknown * This,
-   /* [in] */ ULONG celt,
+ HRESULT __stdcall IEnumUnknown_Next_Stub( 
+    IEnumUnknown * This,
+    ULONG celt,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, *pceltFetched) IUnknown **rgelt,
-   /* [out] */ __RPC__out ULONG *pceltFetched);
+     ULONG *pceltFetched);
 
-/* [local] */ HRESULT STDMETHODCALLTYPE IEnumString_Next_Proxy( 
+ HRESULT __stdcall IEnumString_Next_Proxy( 
    IEnumString * This,
-   /* [in] */ ULONG celt,
-   /* [annotation] */ 
+    ULONG celt,
+    
    _Out_writes_to_(celt,*pceltFetched)  LPOLESTR *rgelt,
-   /* [annotation] */ 
-   _Out_opt_  ULONG *pceltFetched);
+    
+     ULONG *pceltFetched);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IEnumString_Next_Stub( 
-   __RPC__in IEnumString * This,
-   /* [in] */ ULONG celt,
+ HRESULT __stdcall IEnumString_Next_Stub( 
+    IEnumString * This,
+    ULONG celt,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, *pceltFetched) LPOLESTR *rgelt,
-   /* [out] */ __RPC__out ULONG *pceltFetched);
+     ULONG *pceltFetched);
 
-/* [local] */ HRESULT STDMETHODCALLTYPE ISequentialStream_Read_Proxy( 
+ HRESULT __stdcall ISequentialStream_Read_Proxy( 
    ISequentialStream * This,
-   /* [annotation] */ 
-   _Out_writes_bytes_to_(cb, *pcbRead)  void *pv,
-   /* [annotation][in] */ 
-   _In_  ULONG cb,
-   /* [annotation] */ 
-   _Out_opt_  ULONG *pcbRead);
+    
+     void *pv,
+    
+     ULONG cb,
+    
+     ULONG *pcbRead);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE ISequentialStream_Read_Stub( 
-   __RPC__in ISequentialStream * This,
+ HRESULT __stdcall ISequentialStream_Read_Stub( 
+    ISequentialStream * This,
    /* [length_is][size_is][out] */ __RPC__out_ecount_part(cb, *pcbRead) byte *pv,
-   /* [in] */ ULONG cb,
-   /* [out] */ __RPC__out ULONG *pcbRead);
+    ULONG cb,
+     ULONG *pcbRead);
 
-/* [local] */ HRESULT STDMETHODCALLTYPE ISequentialStream_Write_Proxy( 
+ HRESULT __stdcall ISequentialStream_Write_Proxy( 
    ISequentialStream * This,
-   /* [annotation] */ 
-   _In_reads_bytes_(cb)  const void *pv,
-   /* [annotation][in] */ 
-   _In_  ULONG cb,
-   /* [annotation] */ 
-   _Out_opt_  ULONG *pcbWritten);
+    
+     const void *pv,
+    
+     ULONG cb,
+    
+     ULONG *pcbWritten);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE ISequentialStream_Write_Stub( 
-   __RPC__in ISequentialStream * This,
+ HRESULT __stdcall ISequentialStream_Write_Stub( 
+    ISequentialStream * This,
    /* [size_is][in] */ __RPC__in_ecount_full(cb) const byte *pv,
-   /* [in] */ ULONG cb,
-   /* [out] */ __RPC__out ULONG *pcbWritten);
+    ULONG cb,
+     ULONG *pcbWritten);
 
-/* [local] */ HRESULT STDMETHODCALLTYPE IStream_Seek_Proxy( 
+ HRESULT __stdcall IStream_Seek_Proxy( 
    IStream * This,
-   /* [in] */ LARGE_INTEGER dlibMove,
-   /* [in] */ DWORD dwOrigin,
-   /* [annotation] */ 
-   _Out_opt_  ULARGE_INTEGER *plibNewPosition);
+    LARGE_INTEGER dlibMove,
+    DWORD dwOrigin,
+    
+     ULARGE_INTEGER *plibNewPosition);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IStream_Seek_Stub( 
-   __RPC__in IStream * This,
-   /* [in] */ LARGE_INTEGER dlibMove,
-   /* [in] */ DWORD dwOrigin,
-   /* [out] */ __RPC__out ULARGE_INTEGER *plibNewPosition);
+ HRESULT __stdcall IStream_Seek_Stub( 
+    IStream * This,
+    LARGE_INTEGER dlibMove,
+    DWORD dwOrigin,
+     ULARGE_INTEGER *plibNewPosition);
 
-/* [local] */ HRESULT STDMETHODCALLTYPE IStream_CopyTo_Proxy( 
+ HRESULT __stdcall IStream_CopyTo_Proxy( 
    IStream * This,
-   /* [annotation][unique][in] */ 
-   _In_  IStream *pstm,
-   /* [in] */ ULARGE_INTEGER cb,
-   /* [annotation] */ 
-   _Out_opt_  ULARGE_INTEGER *pcbRead,
-   /* [annotation] */ 
-   _Out_opt_  ULARGE_INTEGER *pcbWritten);
+    
+     IStream *pstm,
+    ULARGE_INTEGER cb,
+    
+     ULARGE_INTEGER *pcbRead,
+    
+     ULARGE_INTEGER *pcbWritten);
 
 
-/* [call_as] */ HRESULT STDMETHODCALLTYPE IStream_CopyTo_Stub( 
-   __RPC__in IStream * This,
-   /* [unique][in] */ __RPC__in_opt IStream *pstm,
-   /* [in] */ ULARGE_INTEGER cb,
-   /* [out] */ __RPC__out ULARGE_INTEGER *pcbRead,
-   /* [out] */ __RPC__out ULARGE_INTEGER *pcbWritten);
+ HRESULT __stdcall IStream_CopyTo_Stub( 
+    IStream * This,
+     IStream *pstm,
+    ULARGE_INTEGER cb,
+     ULARGE_INTEGER *pcbRead,
+     ULARGE_INTEGER *pcbWritten);
 --]=]
 
 

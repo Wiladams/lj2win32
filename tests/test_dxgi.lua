@@ -1,5 +1,7 @@
 package.path = "../?.lua;"..package.path;
 
+--COM_NO_WINDOWS_H = true
+
 local dxgi = require("win32.dxgi")
 local C = ffi.C 
 

@@ -28460,7 +28460,11 @@ static const int ERROR_API_UNAVAILABLE            15841L
 --]=]
 
 function MAKE_HRESULT(sev,fac,code) 
-    return ffi.cast("HRESULT", bor(lshift((unsigned long)sev,31) , lshift(ffi.cast("unsigned long",fac),16) , ffi.cast("unsigned long",code)) )
+    return ffi.cast("HRESULT", bor(
+        lshift(ffi.cast("unsigned long",sev),31) , 
+        lshift(ffi.cast("unsigned long",fac),16) , 
+        ffi.cast("unsigned long",code)
+    ))
 end
 
 --[=[

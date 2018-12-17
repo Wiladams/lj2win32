@@ -8,8 +8,7 @@ require("win32.winapifamily")
 require("win32.rpcndr")
 
 
---#if !defined( _OBJBASE_H_ )
---#define _OBJBASE_H_
+
 
 
 ffi.cdef[[
@@ -19,6 +18,7 @@ ffi.cdef[[
 require("win32.combaseapi")
 require("win32.coml2api")
 
+--[=[
 // COM initialization flags; passed to CoInitialize.
 typedef enum tagCOINIT
 {
@@ -27,7 +27,7 @@ typedef enum tagCOINIT
 #if  (_WIN32_WINNT >= 0x0400 ) || defined(_WIN32_DCOM) // DCOM
   // These constants are only valid on Windows NT 4.0
   COINIT_MULTITHREADED      = COINITBASE_MULTITHREADED,
-  COINIT_DISABLE_OLE1DDE    = 0x4,      // Don't use DDE for Ole1 support.
+  COINIT_DISABLE_OLE1DDE    = 0x4,      // Dont use DDE for Ole1 support.
   COINIT_SPEED_OVER_MEMORY  = 0x8,      // Trade memory for speed.
 #endif // DCOM
 } COINIT;
@@ -191,7 +191,7 @@ _Check_return_ WINOLEAPI StgOpenLayoutDocfile(_In_ _Null_terminated_ OLECHAR con
              _Outptr_ IStorage** ppstgOpen);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #pragma region Desktop Partition
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
@@ -204,7 +204,7 @@ WINOLEAPI  CoInstall(
     _In_ LPWSTR         pszCodeBase);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #pragma region PC Application Partition
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PC_APP)
@@ -238,7 +238,7 @@ _Check_return_ WINOLEAPI  CreatePointerMoniker(_In_opt_ LPUNKNOWN punk, _Outptr_
 _Check_return_ WINOLEAPI  CreateObjrefMoniker(_In_opt_ LPUNKNOWN punk, _Outptr_ LPMONIKER FAR * ppmk);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_PC_APP) */
-#pragma endregion
+
 
 #pragma region Desktop Partition
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
@@ -246,7 +246,7 @@ _Check_return_ WINOLEAPI  CreateObjrefMoniker(_In_opt_ LPUNKNOWN punk, _Outptr_ 
 _Check_return_ WINOLEAPI  GetRunningObjectTable( _In_ DWORD reserved, _Outptr_ LPRUNNINGOBJECTTABLE FAR* pprot);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #include <urlmon.h>
 #include <propidl.h>
@@ -263,11 +263,9 @@ WINOLEAPI CreateStdProgressIndicator(_In_ HWND hwndParent,
                                    _Outptr_ IBindStatusCallback ** ppIbsc);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+--]=]
 
+ffi.cdef[[
+    #pragma pack (pop)
+]]
 
-#ifndef RC_INVOKED
-#include <poppack.h>
-#endif // RC_INVOKED
-
-#endif     // __OBJBASE_H__

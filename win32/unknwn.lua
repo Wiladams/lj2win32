@@ -25,7 +25,7 @@ local ffi = require("ffi")
 
 if not COM_NO_WINDOWS_H then
 require("win32.windows")
---require("win32.ole2.h")
+require("win32.ole2")
 end -- COM_NO_WINDOWS_H
 
 
