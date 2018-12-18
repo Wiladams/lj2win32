@@ -242,61 +242,18 @@ static const int ERROR_TOO_MANY_OPEN_FILES        = 4L;
 // Access is denied.
 //
 static const int ERROR_ACCESS_DENIED             =  5L;
+--]=]
 
-//
-// MessageId: ERROR_INVALID_HANDLE
-//
-// MessageText:
-//
-// The handle is invalid.
-//
-static const int ERROR_INVALID_HANDLE            =  6L;
+ffi.cdef[[
+static const int ERROR_INVALID_HANDLE         =  6L;
+static const int ERROR_ARENA_TRASHED          =    7L;
+static const int ERROR_NOT_ENOUGH_MEMORY      =    8L;    // dderror
+static const int ERROR_INVALID_BLOCK          =    9L;
+static const int ERROR_BAD_ENVIRONMENT        =    10L;
+static const int ERROR_BAD_FORMAT             =   11L;
+]]
 
-//
-// MessageId: ERROR_ARENA_TRASHED
-//
-// MessageText:
-//
-// The storage control blocks were destroyed.
-//
-static const int ERROR_ARENA_TRASHED              7L
-
-//
-// MessageId: ERROR_NOT_ENOUGH_MEMORY
-//
-// MessageText:
-//
-// Not enough memory resources are available to process this command.
-//
-static const int ERROR_NOT_ENOUGH_MEMORY          8L    // dderror
-
-//
-// MessageId: ERROR_INVALID_BLOCK
-//
-// MessageText:
-//
-// The storage control block address is invalid.
-//
-static const int ERROR_INVALID_BLOCK              9L
-
-//
-// MessageId: ERROR_BAD_ENVIRONMENT
-//
-// MessageText:
-//
-// The environment is incorrect.
-//
-static const int ERROR_BAD_ENVIRONMENT            10L
-
-//
-// MessageId: ERROR_BAD_FORMAT
-//
-// MessageText:
-//
-// An attempt was made to load a program with an incorrect format.
-//
-static const int ERROR_BAD_FORMAT                 11L
-
+--[=[
 //
 // MessageId: ERROR_INVALID_ACCESS
 //
@@ -783,61 +740,18 @@ static const int ERROR_OUT_OF_STRUCTURES          84L
 // The local device name is already in use.
 //
 static const int ERROR_ALREADY_ASSIGNED           85L
+--]=]
 
-//
-// MessageId: ERROR_INVALID_PASSWORD
-//
-// MessageText:
-//
-// The specified network password is not correct.
-//
-static const int ERROR_INVALID_PASSWORD           86L
+ffi.cdef[[
+static const int ERROR_INVALID_PASSWORD         =  86L;
+static const int ERROR_INVALID_PARAMETER        =  87L;    // dderror
+static const int ERROR_NET_WRITE_FAULT          =  88L;
+static const int ERROR_NO_PROC_SLOTS            =  89L;
+static const int ERROR_TOO_MANY_SEMAPHORES      =  100L;
+static const int ERROR_EXCL_SEM_ALREADY_OWNED   =  101L;
+]]
 
-//
-// MessageId: ERROR_INVALID_PARAMETER
-//
-// MessageText:
-//
-// The parameter is incorrect.
-//
-static const int ERROR_INVALID_PARAMETER          87L    // dderror
-
-//
-// MessageId: ERROR_NET_WRITE_FAULT
-//
-// MessageText:
-//
-// A write fault occurred on the network.
-//
-static const int ERROR_NET_WRITE_FAULT            88L
-
-//
-// MessageId: ERROR_NO_PROC_SLOTS
-//
-// MessageText:
-//
-// The system cannot start another process at this time.
-//
-static const int ERROR_NO_PROC_SLOTS              89L
-
-//
-// MessageId: ERROR_TOO_MANY_SEMAPHORES
-//
-// MessageText:
-//
-// Cannot create another system semaphore.
-//
-static const int ERROR_TOO_MANY_SEMAPHORES        100L
-
-//
-// MessageId: ERROR_EXCL_SEM_ALREADY_OWNED
-//
-// MessageText:
-//
-// The exclusive semaphore is owned by another process.
-//
-static const int ERROR_EXCL_SEM_ALREADY_OWNED     101L
-
+--[=[
 //
 // MessageId: ERROR_SEM_IS_SET
 //
@@ -1872,199 +1786,69 @@ static const int ERROR_INVALID_EA_NAME           = 254L
 // The extended attributes are inconsistent.
 //
 static const int ERROR_EA_LIST_INCONSISTENT      = 255L
-
-//
-// MessageId: WAIT_TIMEOUT
-//
-// MessageText:
-//
-// The wait operation timed out.
-//
-static const int WAIT_TIMEOUT                    = 258L    // dderror
 --]=]
 
 ffi.cdef[[
-//
-// MessageId: ERROR_NO_MORE_ITEMS
-//
-// MessageText:
-//
-// No more data is available.
-//
+
+static const int WAIT_TIMEOUT                    = 258L;    // dderror
 static const int ERROR_NO_MORE_ITEMS             = 259L;
 ]]
 
 --[=[
-//
-// MessageId: ERROR_CANNOT_COPY
-//
-// MessageText:
-//
-// The copy functions cannot be used.
-//
+
 static const int ERROR_CANNOT_COPY               = 266L
 
-//
-// MessageId: ERROR_DIRECTORY
-//
-// MessageText:
-//
-// The directory name is invalid.
-//
+
 static const int ERROR_DIRECTORY                 = 267L
 
-//
-// MessageId: ERROR_EAS_DIDNT_FIT
-//
-// MessageText:
-//
-// The extended attributes did not fit in the buffer.
-//
 static const int ERROR_EAS_DIDNT_FIT             = 275L
 
-//
-// MessageId: ERROR_EA_FILE_CORRUPT
-//
-// MessageText:
-//
-// The extended attribute file on the mounted file system is corrupt.
-//
+
 static const int ERROR_EA_FILE_CORRUPT           = 276L
 
-//
-// MessageId: ERROR_EA_TABLE_FULL
-//
-// MessageText:
-//
-// The extended attribute table file is full.
-//
+
 static const int ERROR_EA_TABLE_FULL             = 277L
 
-//
-// MessageId: ERROR_INVALID_EA_HANDLE
-//
-// MessageText:
-//
-// The specified extended attribute handle is invalid.
-//
+
 static const int ERROR_INVALID_EA_HANDLE         = 278L
 
-//
-// MessageId: ERROR_EAS_NOT_SUPPORTED
-//
-// MessageText:
-//
-// The mounted file system does not support extended attributes.
-//
+
 static const int ERROR_EAS_NOT_SUPPORTED         = 282L
 
-//
-// MessageId: ERROR_NOT_OWNER
-//
-// MessageText:
-//
-// Attempt to release mutex not owned by caller.
-//
+
 static const int ERROR_NOT_OWNER                =  288L
 
-//
-// MessageId: ERROR_TOO_MANY_POSTS
-//
-// MessageText:
-//
-// Too many posts were made to a semaphore.
-//
+
 static const int ERROR_TOO_MANY_POSTS             298L
 
-//
-// MessageId: ERROR_PARTIAL_COPY
-//
-// MessageText:
-//
-// Only part of a ReadProcessMemory or WriteProcessMemory request was completed.
-//
+
 static const int ERROR_PARTIAL_COPY               299L
 
-//
-// MessageId: ERROR_OPLOCK_NOT_GRANTED
-//
-// MessageText:
-//
-// The oplock request is denied.
-//
+
 static const int ERROR_OPLOCK_NOT_GRANTED         300L
 
-//
-// MessageId: ERROR_INVALID_OPLOCK_PROTOCOL
-//
-// MessageText:
-//
-// An invalid oplock acknowledgment was received by the system.
-//
+
 static const int ERROR_INVALID_OPLOCK_PROTOCOL    301L
 
-//
-// MessageId: ERROR_DISK_TOO_FRAGMENTED
-//
-// MessageText:
-//
-// The volume is too fragmented to complete this operation.
-//
+
 static const int ERROR_DISK_TOO_FRAGMENTED        302L
 
-//
-// MessageId: ERROR_DELETE_PENDING
-//
-// MessageText:
-//
-// The file cannot be opened because it is in the process of being deleted.
-//
+
 static const int ERROR_DELETE_PENDING             303L
 
-//
-// MessageId: ERROR_INCOMPATIBLE_WITH_GLOBAL_SHORT_NAME_REGISTRY_SETTING
-//
-// MessageText:
-//
-// Short name settings may not be changed on this volume due to the global registry setting.
-//
+
 static const int ERROR_INCOMPATIBLE_WITH_GLOBAL_SHORT_NAME_REGISTRY_SETTING 304L
 
-//
-// MessageId: ERROR_SHORT_NAMES_NOT_ENABLED_ON_VOLUME
-//
-// MessageText:
-//
-// Short names are not enabled on this volume.
-//
+
 static const int ERROR_SHORT_NAMES_NOT_ENABLED_ON_VOLUME 305L
 
-//
-// MessageId: ERROR_SECURITY_STREAM_IS_INCONSISTENT
-//
-// MessageText:
-//
-// The security stream for the given volume is in an inconsistent state.
-// Please run CHKDSK on the volume.
-//
+
 static const int ERROR_SECURITY_STREAM_IS_INCONSISTENT 306L
 
-//
-// MessageId: ERROR_INVALID_LOCK_RANGE
-//
-// MessageText:
-//
-// A requested file lock operation cannot be processed due to an invalid byte range.
-//
+
 static const int ERROR_INVALID_LOCK_RANGE         307L
 
-//
-// MessageId: ERROR_IMAGE_SUBSYSTEM_NOT_PRESENT
-//
-// MessageText:
-//
-// The subsystem needed to support the image type is not present.
-//
+
 static const int ERROR_IMAGE_SUBSYSTEM_NOT_PRESENT 308L
 
 //
@@ -5747,43 +5531,16 @@ static const int ERROR_ENCLAVE_VIOLATION          815L
 // Access to the extended attribute was denied.
 //
 static const int ERROR_EA_ACCESS_DENIED           994L
+--]=]
 
-//
-// MessageId: ERROR_OPERATION_ABORTED
-//
-// MessageText:
-//
-// The I/O operation has been aborted because of either a thread exit or an application request.
-//
-static const int ERROR_OPERATION_ABORTED          995L
+ffi.cdef[[
+static const int ERROR_OPERATION_ABORTED        =  995L;
+static const int ERROR_IO_INCOMPLETE            =  996L;
+static const int ERROR_IO_PENDING               =  997L;    // dderror
+static const int ERROR_NOACCESS                 =  998L;
+]]
 
-//
-// MessageId: ERROR_IO_INCOMPLETE
-//
-// MessageText:
-//
-// Overlapped I/O event is not in a signaled state.
-//
-static const int ERROR_IO_INCOMPLETE              996L
-
-//
-// MessageId: ERROR_IO_PENDING
-//
-// MessageText:
-//
-// Overlapped I/O operation is in progress.
-//
-static const int ERROR_IO_PENDING                 997L    // dderror
-
-//
-// MessageId: ERROR_NOACCESS
-//
-// MessageText:
-//
-// Invalid access to memory location.
-//
-static const int ERROR_NOACCESS                   998L
-
+--[=[
 //
 // MessageId: ERROR_SWAPERROR
 //

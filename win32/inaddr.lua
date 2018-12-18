@@ -1,5 +1,4 @@
 local ffi = require("ffi")
-local intsafe = require("win32.intsafe")
 
 -- Basic socket definitions
 --[[
@@ -15,12 +14,12 @@ ffi.cdef[[
 typedef struct in_addr {
     union {
         struct {
-            UCHAR s_b1,s_b2,s_b3,s_b4;
+            uint8_t s_b1,s_b2,s_b3,s_b4;
             } S_un_b;
         struct {
-            USHORT s_w1,s_w2;
+            uint16_t s_w1,s_w2;
         } S_un_w;
-        ULONG S_addr;
+        uint32_t S_addr;
     };
 } IN_ADDR, *PIN_ADDR, *LPIN_ADDR;
 ]]

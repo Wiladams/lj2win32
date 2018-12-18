@@ -675,8 +675,13 @@ WINBASEAPI DWORD WINAPI GetFreeSpace( UINT);
 #define TWOSTOPBITS         2
 
 #define IGNORE              0       // Ignore signal
-#define INFINITE            0xFFFFFFFF  // Infinite timeout
+--]=]
 
+ffi.cdef[[
+static const int INFINITE   =         0xFFFFFFFF;  // Infinite timeout
+]]
+
+--[=[
 //
 // Baud rates at which the communication device operates
 //
