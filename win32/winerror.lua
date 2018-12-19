@@ -22989,8 +22989,9 @@ static const int DNS_ERROR_POLICY_INVALID_CRITERIA_TIME_OF_DAY 9996L
 //                                               //
 //                  9000 to 9999                 //
 ///////////////////////////////////////////////////
+--]=]
 
-
+--[[
 ///////////////////////////////////////////////////
 //                                               //
 //               WinSock Error Codes             //
@@ -23002,837 +23003,182 @@ static const int DNS_ERROR_POLICY_INVALID_CRITERIA_TIME_OF_DAY 9996L
 // WinSock error codes are also defined in WinSock.h
 // and WinSock2.h, hence the IFDEF
 //
-#ifndef WSABASEERR
-static const int WSABASEERR 10000
-//
-// MessageId: WSAEINTR
-//
-// MessageText:
-//
-// A blocking operation was interrupted by a call to WSACancelBlockingCall.
-//
-static const int WSAEINTR                         10004L
-
-//
-// MessageId: WSAEBADF
-//
-// MessageText:
-//
-// The file handle supplied is not valid.
-//
-static const int WSAEBADF                         10009L
-
-//
-// MessageId: WSAEACCES
-//
-// MessageText:
-//
-// An attempt was made to access a socket in a way forbidden by its access permissions.
-//
-static const int WSAEACCES                        10013L
-
-//
-// MessageId: WSAEFAULT
-//
-// MessageText:
-//
-// The system detected an invalid pointer address in attempting to use a pointer argument in a call.
-//
-static const int WSAEFAULT                        10014L
-
-//
-// MessageId: WSAEINVAL
-//
-// MessageText:
-//
-// An invalid argument was supplied.
-//
-static const int WSAEINVAL                        10022L
-
-//
-// MessageId: WSAEMFILE
-//
-// MessageText:
-//
-// Too many open sockets.
-//
-static const int WSAEMFILE                        10024L
-
-//
-// MessageId: WSAEWOULDBLOCK
-//
-// MessageText:
-//
-// A non-blocking socket operation could not be completed immediately.
-//
-static const int WSAEWOULDBLOCK                   10035L
-
-//
-// MessageId: WSAEINPROGRESS
-//
-// MessageText:
-//
-// A blocking operation is currently executing.
-//
-static const int WSAEINPROGRESS                   10036L
-
-//
-// MessageId: WSAEALREADY
-//
-// MessageText:
-//
-// An operation was attempted on a non-blocking socket that already had an operation in progress.
-//
-static const int WSAEALREADY                      10037L
-
-//
-// MessageId: WSAENOTSOCK
-//
-// MessageText:
-//
-// An operation was attempted on something that is not a socket.
-//
-static const int WSAENOTSOCK                      10038L
-
-//
-// MessageId: WSAEDESTADDRREQ
-//
-// MessageText:
-//
-// A required address was omitted from an operation on a socket.
-//
-static const int WSAEDESTADDRREQ                  10039L
-
-//
-// MessageId: WSAEMSGSIZE
-//
-// MessageText:
-//
-// A message sent on a datagram socket was larger than the internal message buffer or some other network limit, or the buffer used to receive a datagram into was smaller than the datagram itself.
-//
-static const int WSAEMSGSIZE                      10040L
-
-//
-// MessageId: WSAEPROTOTYPE
-//
-// MessageText:
-//
-// A protocol was specified in the socket function call that does not support the semantics of the socket type requested.
-//
-static const int WSAEPROTOTYPE                    10041L
-
-//
-// MessageId: WSAENOPROTOOPT
-//
-// MessageText:
-//
-// An unknown, invalid, or unsupported option or level was specified in a getsockopt or setsockopt call.
-//
-static const int WSAENOPROTOOPT                   10042L
-
-//
-// MessageId: WSAEPROTONOSUPPORT
-//
-// MessageText:
-//
-// The requested protocol has not been configured into the system, or no implementation for it exists.
-//
-static const int WSAEPROTONOSUPPORT               10043L
-
-//
-// MessageId: WSAESOCKTNOSUPPORT
-//
-// MessageText:
-//
-// The support for the specified socket type does not exist in this address family.
-//
-static const int WSAESOCKTNOSUPPORT               10044L
-
-//
-// MessageId: WSAEOPNOTSUPP
-//
-// MessageText:
-//
-// The attempted operation is not supported for the type of object referenced.
-//
-static const int WSAEOPNOTSUPP                    10045L
-
-//
-// MessageId: WSAEPFNOSUPPORT
-//
-// MessageText:
-//
-// The protocol family has not been configured into the system or no implementation for it exists.
-//
-static const int WSAEPFNOSUPPORT                  10046L
-
-//
-// MessageId: WSAEAFNOSUPPORT
-//
-// MessageText:
-//
-// An address incompatible with the requested protocol was used.
-//
-static const int WSAEAFNOSUPPORT                  10047L
-
-//
-// MessageId: WSAEADDRINUSE
-//
-// MessageText:
-//
-// Only one usage of each socket address (protocol/network address/port) is normally permitted.
-//
-static const int WSAEADDRINUSE                    10048L
-
-//
-// MessageId: WSAEADDRNOTAVAIL
-//
-// MessageText:
-//
-// The requested address is not valid in its context.
-//
-static const int WSAEADDRNOTAVAIL                 10049L
-
-//
-// MessageId: WSAENETDOWN
-//
-// MessageText:
-//
-// A socket operation encountered a dead network.
-//
-static const int WSAENETDOWN                      10050L
-
-//
-// MessageId: WSAENETUNREACH
-//
-// MessageText:
-//
-// A socket operation was attempted to an unreachable network.
-//
-static const int WSAENETUNREACH                   10051L
-
-//
-// MessageId: WSAENETRESET
-//
-// MessageText:
-//
-// The connection has been broken due to keep-alive activity detecting a failure while the operation was in progress.
-//
-static const int WSAENETRESET                     10052L
-
-//
-// MessageId: WSAECONNABORTED
-//
-// MessageText:
-//
-// An established connection was aborted by the software in your host machine.
-//
-static const int WSAECONNABORTED                  10053L
-
-//
-// MessageId: WSAECONNRESET
-//
-// MessageText:
-//
-// An existing connection was forcibly closed by the remote host.
-//
-static const int WSAECONNRESET                    10054L
-
-//
-// MessageId: WSAENOBUFS
-//
-// MessageText:
-//
-// An operation on a socket could not be performed because the system lacked sufficient buffer space or because a queue was full.
-//
-static const int WSAENOBUFS                       10055L
-
-//
-// MessageId: WSAEISCONN
-//
-// MessageText:
-//
-// A connect request was made on an already connected socket.
-//
-static const int WSAEISCONN                       10056L
-
-//
-// MessageId: WSAENOTCONN
-//
-// MessageText:
-//
-// A request to send or receive data was disallowed because the socket is not connected and (when sending on a datagram socket using a sendto call) no address was supplied.
-//
-static const int WSAENOTCONN                      10057L
-
-//
-// MessageId: WSAESHUTDOWN
-//
-// MessageText:
-//
-// A request to send or receive data was disallowed because the socket had already been shut down in that direction with a previous shutdown call.
-//
-static const int WSAESHUTDOWN                     10058L
-
-//
-// MessageId: WSAETOOMANYREFS
-//
-// MessageText:
-//
-// Too many references to some kernel object.
-//
-static const int WSAETOOMANYREFS                  10059L
-
-//
-// MessageId: WSAETIMEDOUT
-//
-// MessageText:
-//
-// A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
-//
-static const int WSAETIMEDOUT                     10060L
-
-//
-// MessageId: WSAECONNREFUSED
-//
-// MessageText:
-//
-// No connection could be made because the target machine actively refused it.
-//
-static const int WSAECONNREFUSED                  10061L
-
-//
-// MessageId: WSAELOOP
-//
-// MessageText:
-//
-// Cannot translate name.
-//
-static const int WSAELOOP                         10062L
-
-//
-// MessageId: WSAENAMETOOLONG
-//
-// MessageText:
-//
-// Name component or name was too long.
-//
-static const int WSAENAMETOOLONG                  10063L
-
-//
-// MessageId: WSAEHOSTDOWN
-//
-// MessageText:
-//
-// A socket operation failed because the destination host was down.
-//
-static const int WSAEHOSTDOWN                     10064L
-
-//
-// MessageId: WSAEHOSTUNREACH
-//
-// MessageText:
-//
-// A socket operation was attempted to an unreachable host.
-//
-static const int WSAEHOSTUNREACH                  10065L
-
-//
-// MessageId: WSAENOTEMPTY
-//
-// MessageText:
-//
-// Cannot remove a directory that is not empty.
-//
-static const int WSAENOTEMPTY                     10066L
-
-//
-// MessageId: WSAEPROCLIM
-//
-// MessageText:
-//
-// A Windows Sockets implementation may have a limit on the number of applications that may use it simultaneously.
-//
-static const int WSAEPROCLIM                      10067L
-
-//
-// MessageId: WSAEUSERS
-//
-// MessageText:
-//
-// Ran out of quota.
-//
-static const int WSAEUSERS                        10068L
-
-//
-// MessageId: WSAEDQUOT
-//
-// MessageText:
-//
-// Ran out of disk quota.
-//
-static const int WSAEDQUOT                        10069L
-
-//
-// MessageId: WSAESTALE
-//
-// MessageText:
-//
-// File handle reference is no longer available.
-//
-static const int WSAESTALE                        10070L
-
-//
-// MessageId: WSAEREMOTE
-//
-// MessageText:
-//
-// Item is not available locally.
-//
-static const int WSAEREMOTE                       10071L
-
-//
-// MessageId: WSASYSNOTREADY
-//
-// MessageText:
-//
-// WSAStartup cannot function at this time because the underlying system it uses to provide network services is currently unavailable.
-//
-static const int WSASYSNOTREADY                   10091L
-
-//
-// MessageId: WSAVERNOTSUPPORTED
-//
-// MessageText:
-//
-// The Windows Sockets version requested is not supported.
-//
-static const int WSAVERNOTSUPPORTED               10092L
-
-//
-// MessageId: WSANOTINITIALISED
-//
-// MessageText:
-//
-// Either the application has not called WSAStartup, or WSAStartup failed.
-//
-static const int WSANOTINITIALISED                10093L
-
-//
-// MessageId: WSAEDISCON
-//
-// MessageText:
-//
-// Returned by WSARecv or WSARecvFrom to indicate the remote party has initiated a graceful shutdown sequence.
-//
-static const int WSAEDISCON                       10101L
-
-//
-// MessageId: WSAENOMORE
-//
-// MessageText:
-//
-// No more results can be returned by WSALookupServiceNext.
-//
-static const int WSAENOMORE                       10102L
-
-//
-// MessageId: WSAECANCELLED
-//
-// MessageText:
-//
-// A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
-//
-static const int WSAECANCELLED                    10103L
-
-//
-// MessageId: WSAEINVALIDPROCTABLE
-//
-// MessageText:
-//
-// The procedure call table is invalid.
-//
-static const int WSAEINVALIDPROCTABLE             10104L
-
-//
-// MessageId: WSAEINVALIDPROVIDER
-//
-// MessageText:
-//
-// The requested service provider is invalid.
-//
-static const int WSAEINVALIDPROVIDER              10105L
-
-//
-// MessageId: WSAEPROVIDERFAILEDINIT
-//
-// MessageText:
-//
-// The requested service provider could not be loaded or initialized.
-//
-static const int WSAEPROVIDERFAILEDINIT           10106L
-
-//
-// MessageId: WSASYSCALLFAILURE
-//
-// MessageText:
-//
-// A system call has failed.
-//
-static const int WSASYSCALLFAILURE                10107L
-
-//
-// MessageId: WSASERVICE_NOT_FOUND
-//
-// MessageText:
-//
-// No such service is known. The service cannot be found in the specified name space.
-//
-static const int WSASERVICE_NOT_FOUND             10108L
-
-//
-// MessageId: WSATYPE_NOT_FOUND
-//
-// MessageText:
-//
-// The specified class was not found.
-//
-static const int WSATYPE_NOT_FOUND                10109L
-
-//
-// MessageId: WSA_E_NO_MORE
-//
-// MessageText:
-//
-// No more results can be returned by WSALookupServiceNext.
-//
-static const int WSA_E_NO_MORE                    10110L
-
-//
-// MessageId: WSA_E_CANCELLED
-//
-// MessageText:
-//
-// A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
-//
-static const int WSA_E_CANCELLED                  10111L
-
-//
-// MessageId: WSAEREFUSED
-//
-// MessageText:
-//
-// A database query failed because it was actively refused.
-//
-static const int WSAEREFUSED                      10112L
-
-//
-// MessageId: WSAHOST_NOT_FOUND
-//
-// MessageText:
-//
-// No such host is known.
-//
-static const int WSAHOST_NOT_FOUND                11001L
-
-//
-// MessageId: WSATRY_AGAIN
-//
-// MessageText:
-//
-// This is usually a temporary error during hostname resolution and means that the local server did not receive a response from an authoritative server.
-//
-static const int WSATRY_AGAIN                     11002L
-
-//
-// MessageId: WSANO_RECOVERY
-//
-// MessageText:
-//
-// A non-recoverable error occurred during a database lookup.
-//
-static const int WSANO_RECOVERY                   11003L
-
-//
-// MessageId: WSANO_DATA
-//
-// MessageText:
-//
-// The requested name is valid, but no data of the requested type was found.
-//
-static const int WSANO_DATA                       11004L
-
-//
-// MessageId: WSA_QOS_RECEIVERS
-//
-// MessageText:
-//
-// At least one reserve has arrived.
-//
-static const int WSA_QOS_RECEIVERS                11005L
-
-//
-// MessageId: WSA_QOS_SENDERS
-//
-// MessageText:
-//
-// At least one path has arrived.
-//
-static const int WSA_QOS_SENDERS                  11006L
-
-//
-// MessageId: WSA_QOS_NO_SENDERS
-//
-// MessageText:
-//
-// There are no senders.
-//
-static const int WSA_QOS_NO_SENDERS               11007L
-
-//
-// MessageId: WSA_QOS_NO_RECEIVERS
-//
-// MessageText:
-//
-// There are no receivers.
-//
-static const int WSA_QOS_NO_RECEIVERS             11008L
-
-//
-// MessageId: WSA_QOS_REQUEST_CONFIRMED
-//
-// MessageText:
-//
-// Reserve has been confirmed.
-//
-static const int WSA_QOS_REQUEST_CONFIRMED        11009L
-
-//
-// MessageId: WSA_QOS_ADMISSION_FAILURE
-//
-// MessageText:
-//
-// Error due to lack of resources.
-//
-static const int WSA_QOS_ADMISSION_FAILURE        11010L
-
-//
-// MessageId: WSA_QOS_POLICY_FAILURE
-//
-// MessageText:
-//
-// Rejected for administrative reasons - bad credentials.
-//
-static const int WSA_QOS_POLICY_FAILURE           11011L
-
-//
-// MessageId: WSA_QOS_BAD_STYLE
-//
-// MessageText:
-//
-// Unknown or conflicting style.
-//
-static const int WSA_QOS_BAD_STYLE                11012L
-
-//
-// MessageId: WSA_QOS_BAD_OBJECT
-//
-// MessageText:
-//
-// Problem with some part of the filterspec or providerspecific buffer in general.
-//
-static const int WSA_QOS_BAD_OBJECT               11013L
-
-//
-// MessageId: WSA_QOS_TRAFFIC_CTRL_ERROR
-//
-// MessageText:
-//
-// Problem with some part of the flowspec.
-//
-static const int WSA_QOS_TRAFFIC_CTRL_ERROR       11014L
-
-//
-// MessageId: WSA_QOS_GENERIC_ERROR
-//
-// MessageText:
-//
-// General QOS error.
-//
-static const int WSA_QOS_GENERIC_ERROR            11015L
-
-//
-// MessageId: WSA_QOS_ESERVICETYPE
-//
-// MessageText:
-//
-// An invalid or unrecognized service type was found in the flowspec.
-//
-static const int WSA_QOS_ESERVICETYPE             11016L
-
-//
-// MessageId: WSA_QOS_EFLOWSPEC
-//
-// MessageText:
-//
-// An invalid or inconsistent flowspec was found in the QOS structure.
-//
-static const int WSA_QOS_EFLOWSPEC                11017L
-
-//
-// MessageId: WSA_QOS_EPROVSPECBUF
-//
-// MessageText:
-//
-// Invalid QOS provider-specific buffer.
-//
-static const int WSA_QOS_EPROVSPECBUF             11018L
-
-//
-// MessageId: WSA_QOS_EFILTERSTYLE
-//
-// MessageText:
-//
-// An invalid QOS filter style was used.
-//
-static const int WSA_QOS_EFILTERSTYLE             11019L
-
-//
-// MessageId: WSA_QOS_EFILTERTYPE
-//
-// MessageText:
-//
-// An invalid QOS filter type was used.
-//
-static const int WSA_QOS_EFILTERTYPE              11020L
-
-//
-// MessageId: WSA_QOS_EFILTERCOUNT
-//
-// MessageText:
-//
-// An incorrect number of QOS FILTERSPECs were specified in the FLOWDESCRIPTOR.
-//
-static const int WSA_QOS_EFILTERCOUNT             11021L
-
-//
-// MessageId: WSA_QOS_EOBJLENGTH
-//
-// MessageText:
-//
-// An object with an invalid ObjectLength field was specified in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_EOBJLENGTH               11022L
-
-//
-// MessageId: WSA_QOS_EFLOWCOUNT
-//
-// MessageText:
-//
-// An incorrect number of flow descriptors was specified in the QOS structure.
-//
-static const int WSA_QOS_EFLOWCOUNT               11023L
-
-//
-// MessageId: WSA_QOS_EUNKOWNPSOBJ
-//
-// MessageText:
-//
-// An unrecognized object was found in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_EUNKOWNPSOBJ             11024L
-
-//
-// MessageId: WSA_QOS_EPOLICYOBJ
-//
-// MessageText:
-//
-// An invalid policy object was found in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_EPOLICYOBJ               11025L
-
-//
-// MessageId: WSA_QOS_EFLOWDESC
-//
-// MessageText:
-//
-// An invalid QOS flow descriptor was found in the flow descriptor list.
-//
-static const int WSA_QOS_EFLOWDESC                11026L
-
-//
-// MessageId: WSA_QOS_EPSFLOWSPEC
-//
-// MessageText:
-//
-// An invalid or inconsistent flowspec was found in the QOS provider specific buffer.
-//
-static const int WSA_QOS_EPSFLOWSPEC              11027L
-
-//
-// MessageId: WSA_QOS_EPSFILTERSPEC
-//
-// MessageText:
-//
-// An invalid FILTERSPEC was found in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_EPSFILTERSPEC            11028L
-
-//
-// MessageId: WSA_QOS_ESDMODEOBJ
-//
-// MessageText:
-//
-// An invalid shape discard mode object was found in the QOS provider specific buffer.
-//
-static const int WSA_QOS_ESDMODEOBJ               11029L
-
-//
-// MessageId: WSA_QOS_ESHAPERATEOBJ
-//
-// MessageText:
-//
-// An invalid shaping rate object was found in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_ESHAPERATEOBJ            11030L
-
-//
-// MessageId: WSA_QOS_RESERVED_PETYPE
-//
-// MessageText:
-//
-// A reserved policy element was found in the QOS provider-specific buffer.
-//
-static const int WSA_QOS_RESERVED_PETYPE          11031L
-
-//
-// MessageId: WSA_SECURE_HOST_NOT_FOUND
-//
-// MessageText:
-//
-// No such host is known securely.
-//
-static const int WSA_SECURE_HOST_NOT_FOUND        11032L
-
-//
-// MessageId: WSA_IPSEC_NAME_POLICY_ERROR
-//
-// MessageText:
-//
-// Name based IPSEC policy could not be added.
-//
-static const int WSA_IPSEC_NAME_POLICY_ERROR      11033L
-
-#endif // defined(WSABASEERR)
+--]]
 
+if not WSABASEERR_DEFINED then
+WSABASEERR_DEFINED = true
+ffi.cdef[[
+static const int WSABASEERR = 10000;
+
+
+static const int WSAEINTR                        = 10004;
+static const int WSAEBADF                        = 10009;
+static const int WSAEACCES                       = 10013;
+static const int WSAEFAULT                       = 10014;
+static const int WSAEINVAL                       = 10022;
+static const int WSAEMFILE                       = 10024;
+static const int WSAEWOULDBLOCK                  = 10035;
+static const int WSAEINPROGRESS                  = 10036;
+static const int WSAEALREADY                     = 10037;
+static const int WSAENOTSOCK                     = 10038;
+static const int WSAEDESTADDRREQ                 = 10039;
+static const int WSAEMSGSIZE                     = 10040;
+static const int WSAEPROTOTYPE                   = 10041;
+static const int WSAENOPROTOOPT                  = 10042;
+static const int WSAEPROTONOSUPPORT              = 10043;
+static const int WSAESOCKTNOSUPPORT              = 10044;
+static const int WSAEOPNOTSUPP                   = 10045;
+static const int WSAEPFNOSUPPORT                 = 10046;
+static const int WSAEAFNOSUPPORT                 = 10047;
+static const int WSAEADDRINUSE                   = 10048;
+static const int WSAEADDRNOTAVAIL                = 10049;
+static const int WSAENETDOWN                     = 10050;
+
+
+static const int WSAENETUNREACH                  = 10051;
+
+
+static const int WSAENETRESET                    = 10052;
+
+
+static const int WSAECONNABORTED                 = 10053;
+
+
+static const int WSAECONNRESET                   = 10054;
+
+
+static const int WSAENOBUFS                      = 10055;
+
+
+static const int WSAEISCONN                      = 10056;
+
+
+static const int WSAENOTCONN                     = 10057;
+
+
+static const int WSAESHUTDOWN                    = 10058;
+
+
+static const int WSAETOOMANYREFS                 = 10059;
+
+
+static const int WSAETIMEDOUT                    = 10060;
+
+
+static const int WSAECONNREFUSED                 = 10061;
+
+
+static const int WSAELOOP                        = 10062;
+
+static const int WSAENAMETOOLONG                 = 10063;
+
+
+static const int WSAEHOSTDOWN                    = 10064;
+
+
+static const int WSAEHOSTUNREACH                 = 10065;
+
+
+static const int WSAENOTEMPTY                    = 10066;
+
+static const int WSAEPROCLIM                     = 10067;
+
+static const int WSAEUSERS                       = 10068;
+
+
+static const int WSAEDQUOT                       = 10069;
+
+
+static const int WSAESTALE                       = 10070;
+
+
+static const int WSAEREMOTE                      = 10071;
+
+
+static const int WSASYSNOTREADY                  = 10091;
+
+
+static const int WSAVERNOTSUPPORTED              = 10092;
+
+
+static const int WSANOTINITIALISED               = 10093;
+
+
+static const int WSAEDISCON                      = 10101;
+
+
+static const int WSAENOMORE                      = 10102;
+
+
+static const int WSAECANCELLED                   = 10103;
+
+
+static const int WSAEINVALIDPROCTABLE            = 10104;
+
+static const int WSAEINVALIDPROVIDER             = 10105;
+
+
+static const int WSAEPROVIDERFAILEDINIT          = 10106;
+
+
+static const int WSASYSCALLFAILURE               = 10107;
+
+
+static const int WSASERVICE_NOT_FOUND            = 10108;
+
+
+static const int WSATYPE_NOT_FOUND               = 10109;
+static const int WSA_E_NO_MORE                   = 10110;
+static const int WSA_E_CANCELLED                 = 10111;
+static const int WSAEREFUSED                     = 10112;
+static const int WSAHOST_NOT_FOUND               = 11001;
+static const int WSATRY_AGAIN                    = 11002;
+static const int WSANO_RECOVERY                  = 11003;
+static const int WSANO_DATA                      = 11004;
+static const int WSA_QOS_RECEIVERS               = 11005;
+static const int WSA_QOS_SENDERS                 = 11006;
+static const int WSA_QOS_NO_SENDERS              = 11007;
+static const int WSA_QOS_NO_RECEIVERS            = 11008;
+static const int WSA_QOS_REQUEST_CONFIRMED       = 11009;
+static const int WSA_QOS_ADMISSION_FAILURE       = 11010;
+static const int WSA_QOS_POLICY_FAILURE          = 11011;
+static const int WSA_QOS_BAD_STYLE               = 11012;
+static const int WSA_QOS_BAD_OBJECT              = 11013;
+static const int WSA_QOS_TRAFFIC_CTRL_ERROR      = 11014;
+static const int WSA_QOS_GENERIC_ERROR           = 11015;
+static const int WSA_QOS_ESERVICETYPE            = 11016;
+static const int WSA_QOS_EFLOWSPEC               = 11017;
+static const int WSA_QOS_EPROVSPECBUF            = 11018;
+static const int WSA_QOS_EFILTERSTYLE            = 11019;
+static const int WSA_QOS_EFILTERTYPE             = 11020;
+static const int WSA_QOS_EFILTERCOUNT            = 11021;
+static const int WSA_QOS_EOBJLENGTH              = 11022;
+static const int WSA_QOS_EFLOWCOUNT              = 11023;
+static const int WSA_QOS_EUNKOWNPSOBJ            = 11024;
+static const int WSA_QOS_EPOLICYOBJ              = 11025;
+static const int WSA_QOS_EFLOWDESC               = 11026;
+static const int WSA_QOS_EPSFLOWSPEC             = 11027;
+static const int WSA_QOS_EPSFILTERSPEC           = 11028;
+static const int WSA_QOS_ESDMODEOBJ              = 11029;
+static const int WSA_QOS_ESHAPERATEOBJ           = 11030;
+static const int WSA_QOS_RESERVED_PETYPE         = 11031;
+static const int WSA_SECURE_HOST_NOT_FOUND       = 11032;
+static const int WSA_IPSEC_NAME_POLICY_ERROR     = 11033L;
+]]
+
+--[[
 ///////////////////////////////////////////////////
 //                                               //
 //           End of WinSock Error Codes          //
 //                                               //
 //                 10000 to 11999                //
 ///////////////////////////////////////////////////
+--]]
+end -- defined(WSABASEERR_DEFINED)
 
 
+
+--[=[
 ///////////////////////////////////////////////////
 //                                               //
 //                  Available                    //

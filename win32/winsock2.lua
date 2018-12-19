@@ -20,6 +20,8 @@ local byte = string.byte
 */
 --]]
 
+local exports = {}
+
 if not _WINSOCK2API_ then
 _WINSOCK2API_ = true
 _WINSOCKAPI_ = true  --/* Prevent inclusion of winsock.h in windows.h */
@@ -151,17 +153,23 @@ typedef UINT_PTR        SOCKET;
 * CAVEAT IMPLEMENTOR and USER: THESE MACROS AND TYPES MUST BE
 * INCLUDED  WINSOCK2.H EXACTLY AS SHOWN HERE.
 */
-if not FD_SETSIZE
-#define FD_SETSIZE      64
+--]]
+if not FD_SETSIZE then
+ffi.cdef[[
+static const int FD_SETSIZE     = 64;
+]]
 end --/* FD_SETSIZE */
 
+ffi.cdef[[
 typedef struct fd_set {
        u_int fd_count;               /* how many are SET? */
        SOCKET  fd_array[FD_SETSIZE];   /* an array of SOCKETs */
 } fd_set;
+]]
 
-extern int PASCAL  __WSAFDIsSet(SOCKET fd, fd_set  *);
+--extern int __stdcall  __WSAFDIsSet(SOCKET fd, fd_set  *);
 
+--[[
 #define FD_CLR(fd, set) do { \
    u_int __i; \
    for (__i = 0; __i < ((fd_set  *)(set))->fd_count ; __i++) { \
@@ -335,7 +343,7 @@ struct  protoent {
 
 
 -- BUGBUG
--- dont need there IPPORT declarations as they're in ws2def
+-- dont need these IPPORT declarations as they're in ws2def
 --
 --[[
 /*
@@ -397,7 +405,7 @@ static const int IMPLINK_HIGHEXPER     =  158;
 ]]
 
 --[[
-    -- BUGBUG, this is in inaddr, so don't do this here
+-- BUGBUG, this is in inaddr, so don't do this here
 if not s_addr
 /*
 * Internet address (old style... should be updated)
@@ -424,49 +432,63 @@ struct in_addr {
 end
 --]]
 
---[=[
-#define ADDR_ANY                INADDR_ANY
+ffi.cdef[[
+static const int ADDR_ANY               = INADDR_ANY;
 
-#define WSADESCRIPTION_LEN      256
-#define WSASYS_STATUS_LEN       128
+static const int WSADESCRIPTION_LEN     = 256;
+static const int WSASYS_STATUS_LEN      = 128;
+]]
 
+if _WIN64 then
+ffi.cdef[[
 typedef struct WSAData {
-       WORD                    wVersion;
-       WORD                    wHighVersion;
-#ifdef _WIN64
-       unsigned short          iMaxSockets;
-       unsigned short          iMaxUdpDg;
-       char  *              lpVendorInfo;
-       char                    szDescription[WSADESCRIPTION_LEN+1];
-       char                    szSystemStatus[WSASYS_STATUS_LEN+1];
-#else
-       char                    szDescription[WSADESCRIPTION_LEN+1];
-       char                    szSystemStatus[WSASYS_STATUS_LEN+1];
-       unsigned short          iMaxSockets;
-       unsigned short          iMaxUdpDg;
-       char  *              lpVendorInfo;
-end
+        WORD                    wVersion;
+        WORD                    wHighVersion;
+        unsigned short          iMaxSockets;
+        unsigned short          iMaxUdpDg;
+        char  *              lpVendorInfo;
+        char                    szDescription[WSADESCRIPTION_LEN+1];
+        char                    szSystemStatus[WSASYS_STATUS_LEN+1];
 } WSADATA,  * LPWSADATA;
+]]
+else
+ffi.cdef[[
+    typedef struct WSAData {
+        WORD                    wVersion;
+        WORD                    wHighVersion;
+        char                    szDescription[WSADESCRIPTION_LEN+1];
+        char                    szSystemStatus[WSASYS_STATUS_LEN+1];
+        unsigned short          iMaxSockets;
+        unsigned short          iMaxUdpDg;
+        char  *              lpVendorInfo;
+ } WSADATA,  * LPWSADATA;
+]]
+end
 
-/*
-* Definitions related to sockets: types, address families, options,
-* taken from the BSD file sys/socket.h.
-*/
 
-/*
-* This is used instead of -1, since the
-* SOCKET type is unsigned.
-*/
-#define INVALID_SOCKET  (SOCKET)(~0)
-#define SOCKET_ERROR            (-1)
 
-/*
-* The  following  may  be used in place of the address family, socket type, or
-* protocol  in  a  call  to WSASocket to indicate that the corresponding value
-* should  be taken from the supplied WSAPROTOCOL_INFO structure instead of the
-* parameter itself.
-*/
-#define FROM_PROTOCOL_INFO (-1)
+-- SOCKET poses an interesting case.  INVALID_SOCKET
+-- is defined as (SOCKET)~0 in the windows headers.
+-- SOCKET_ERROR == -1
+-- On a twos complement machine, these should be the same,
+-- so which one to use for LuaJIT?
+-- words on the definition of INVALID_SOCKET
+-- http://stackoverflow.com/questions/10817252/why-is-invalid-socket-defined-as-0-in-winsock2-h-c
+--
+-- The bottom line is, we'll use -1 because it will work in all cases
+ffi.cdef[[
+static const int INVALID_SOCKET = -1;
+static const int SOCKET_ERROR = -1;
+]]
+--#define INVALID_SOCKET  (SOCKET)(~0)
+--#define SOCKET_ERROR            (-1)
+
+ffi.cdef[[
+static const int FROM_PROTOCOL_INFO = -1;
+]]
+
+--[[
+-- these are in ws2def, so not needed here
 
 /*
 * Types
@@ -476,6 +498,7 @@ end
 #define SOCK_RAW        3               /* raw-protocol interface */
 #define SOCK_RDM        4               /* reliably-delivered message */
 #define SOCK_SEQPACKET  5               /* sequenced packet stream */
+
 
 /*
 * Option flags per-socket.
@@ -504,26 +527,43 @@ end
 #define SO_RCVTIMEO     0x1006          /* receive timeout */
 #define SO_ERROR        0x1007          /* get error status and clear */
 #define SO_TYPE         0x1008          /* get socket type */
+--]]
 
+--[[
 /*
 * WinSock 2 extension -- new options
 */
 #define SO_GROUP_ID       0x2001      /* ID of a socket group */
 #define SO_GROUP_PRIORITY 0x2002      /* the relative priority within a group*/
 #define SO_MAX_MSG_SIZE   0x2003      /* maximum message size */
-#define SO_PROTOCOL_INFOA 0x2004      /* WSAPROTOCOL_INFOA structure */
-#define SO_PROTOCOL_INFOW 0x2005      /* WSAPROTOCOL_INFOW structure */
+--]]
+
+ffi.cdef[[
+static const int SO_PROTOCOL_INFOA = 0x2004;      /* WSAPROTOCOL_INFOA structure */
+static const int SO_PROTOCOL_INFOW = 0x2005;      /* WSAPROTOCOL_INFOW structure */
+]]
+
+--[[
 #ifdef UNICODE
 #define SO_PROTOCOL_INFO  SO_PROTOCOL_INFOW
 #else
 #define SO_PROTOCOL_INFO  SO_PROTOCOL_INFOA
 end --/* UNICODE */
-#define PVD_CONFIG        0x3001       /* configuration info for service provider */
+--]]
+
+ffi.cdef[[
+static const int PVD_CONFIG     =   0x3001;       /* configuration info for service provider */
+]]
+
+--[[
+-- BUGBUG, already defined in ws2def
 #define SO_CONDITIONAL_ACCEPT 0x3002   /* enable true conditional accept: */
                                       /*  connection is not ack-ed to the */
                                       /*  other side until conditional */
                                       /*  function returns CF_ACCEPT */
+--]]
 
+ffi.cdef[[
 /*
 * Structure used by kernel to pass protocol
 * information in raw sockets.
@@ -532,7 +572,9 @@ struct sockproto {
        u_short sp_family;              /* address family */
        u_short sp_protocol;            /* protocol */
 };
+]]
 
+--[[
 /*
 * Protocol families, same as address families for now.
 */
@@ -566,6 +608,9 @@ if (_WIN32_WINNT >= 0x0600)
 end --(_WIN32_WINNT >= 0x0600)
 
 #define PF_MAX          AF_MAX
+--]]
+
+ffi.cdef[[
 
 /*
 * Structure used for manipulating linger option.
@@ -574,45 +619,35 @@ struct  linger {
        u_short l_onoff;                /* option on/off */
        u_short l_linger;               /* linger time */
 };
+]]
 
+--[[
+-- BUGBUG, in ws2def
 /*
 * Level number for (get/set)sockopt() to apply to socket itself.
 */
 #define SOL_SOCKET      0xffff          /* options for socket level */
+--]]
 
-/*
-* Maximum queue length specifiable by listen.
-*/
-#define SOMAXCONN       0x7fffffff
-#define SOMAXCONN_HINT(b) (-(b))
 
-#define MSG_OOB         0x1             /* process out-of-band data */
-#define MSG_PEEK        0x2             /* peek at incoming message */
-#define MSG_DONTROUTE   0x4             /* send without using routing tables */
+ffi.cdef[[
+static const int SOMAXCONN      = 0x7fffffff
+]]
 
-if (_WIN32_WINNT >= 0x0502)
-#define MSG_WAITALL     0x8             /* do not complete until packet is completely filled */
-end --(_WIN32_WINNT >= 0x0502)
+function exports.SOMAXCONN_HINT(b) return -(b) end
 
-if (_WIN32_WINNT >= 0x0603)
-#define MSG_PUSH_IMMEDIATE 0x20         /* Do not delay receive request completion if data is available */
-end --(_WIN32_WINNT >= 0x0603)
+ffi.cdef[[
+static const int MSG_OOB         = 0x1;             /* process out-of-band data */
+static const int MSG_PEEK        = 0x2;             /* peek at incoming message */
+static const int MSG_DONTROUTE   = 0x4;             /* send without using routing tables */
+static const int MSG_WAITALL     = 0x8;             /* do not complete until packet is completely filled */
+static const int MSG_PUSH_IMMEDIATE = 0x20;         /* Do not delay receive request completion if data is available */
+static const int MSG_PARTIAL     = 0x8000;          /* partial send or recv for message xport */
+static const int MSG_INTERRUPT   = 0x10;            /* send/recv in the interrupt context */
 
-#define MSG_PARTIAL     0x8000          /* partial send or recv for message xport */
-
-/*
-* WinSock 2 extension -- new flags for WSASend(), WSASendTo(), WSARecv() and
-*                          WSARecvFrom()
-*/
-#define MSG_INTERRUPT   0x10            /* send/recv in the interrupt context */
-
-#define MSG_MAXIOVLEN   16
-
-/*
-* Define constant based on rfc883, used by gethostbyxxxx() calls.
-*/
-#define MAXGETHOSTSTRUCT        1024
---]=]
+static const int MSG_MAXIOVLEN   = 16;
+static const int MAXGETHOSTSTRUCT      =  1024;
+]]
 
 ffi.cdef[[
 /*
@@ -652,180 +687,6 @@ static const int FD_MAX_EVENTS   = 10;
 static const int FD_ALL_EVENTS   = ((1 << FD_MAX_EVENTS) - 1);
 ]]
 
---[[
-/*
-* WinSock error codes are also defined in winerror.h
-* Hence the IFDEF.
-*/
-if not WSABASEERR
-
-/*
-* All Windows Sockets error constants are biased by WSABASEERR from
-* the "normal"
-*/
-#define WSABASEERR              10000
-
-/*
-* Windows Sockets definitions of regular Microsoft C error constants
-*/
-#define WSAEINTR                (WSABASEERR+4)
-#define WSAEBADF                (WSABASEERR+9)
-#define WSAEACCES               (WSABASEERR+13)
-#define WSAEFAULT               (WSABASEERR+14)
-#define WSAEINVAL               (WSABASEERR+22)
-#define WSAEMFILE               (WSABASEERR+24)
-
-/*
-* Windows Sockets definitions of regular Berkeley error constants
-*/
-#define WSAEWOULDBLOCK          (WSABASEERR+35)
-#define WSAEINPROGRESS          (WSABASEERR+36)
-#define WSAEALREADY             (WSABASEERR+37)
-#define WSAENOTSOCK             (WSABASEERR+38)
-#define WSAEDESTADDRREQ         (WSABASEERR+39)
-#define WSAEMSGSIZE             (WSABASEERR+40)
-#define WSAEPROTOTYPE           (WSABASEERR+41)
-#define WSAENOPROTOOPT          (WSABASEERR+42)
-#define WSAEPROTONOSUPPORT      (WSABASEERR+43)
-#define WSAESOCKTNOSUPPORT      (WSABASEERR+44)
-#define WSAEOPNOTSUPP           (WSABASEERR+45)
-#define WSAEPFNOSUPPORT         (WSABASEERR+46)
-#define WSAEAFNOSUPPORT         (WSABASEERR+47)
-#define WSAEADDRINUSE           (WSABASEERR+48)
-#define WSAEADDRNOTAVAIL        (WSABASEERR+49)
-#define WSAENETDOWN             (WSABASEERR+50)
-#define WSAENETUNREACH          (WSABASEERR+51)
-#define WSAENETRESET            (WSABASEERR+52)
-#define WSAECONNABORTED         (WSABASEERR+53)
-#define WSAECONNRESET           (WSABASEERR+54)
-#define WSAENOBUFS              (WSABASEERR+55)
-#define WSAEISCONN              (WSABASEERR+56)
-#define WSAENOTCONN             (WSABASEERR+57)
-#define WSAESHUTDOWN            (WSABASEERR+58)
-#define WSAETOOMANYREFS         (WSABASEERR+59)
-#define WSAETIMEDOUT            (WSABASEERR+60)
-#define WSAECONNREFUSED         (WSABASEERR+61)
-#define WSAELOOP                (WSABASEERR+62)
-#define WSAENAMETOOLONG         (WSABASEERR+63)
-#define WSAEHOSTDOWN            (WSABASEERR+64)
-#define WSAEHOSTUNREACH         (WSABASEERR+65)
-#define WSAENOTEMPTY            (WSABASEERR+66)
-#define WSAEPROCLIM             (WSABASEERR+67)
-#define WSAEUSERS               (WSABASEERR+68)
-#define WSAEDQUOT               (WSABASEERR+69)
-#define WSAESTALE               (WSABASEERR+70)
-#define WSAEREMOTE              (WSABASEERR+71)
-
-/*
-* Extended Windows Sockets error constant definitions
-*/
-#define WSASYSNOTREADY          (WSABASEERR+91)
-#define WSAVERNOTSUPPORTED      (WSABASEERR+92)
-#define WSANOTINITIALISED       (WSABASEERR+93)
-#define WSAEDISCON              (WSABASEERR+101)
-#define WSAENOMORE              (WSABASEERR+102)
-#define WSAECANCELLED           (WSABASEERR+103)
-#define WSAEINVALIDPROCTABLE    (WSABASEERR+104)
-#define WSAEINVALIDPROVIDER     (WSABASEERR+105)
-#define WSAEPROVIDERFAILEDINIT  (WSABASEERR+106)
-#define WSASYSCALLFAILURE       (WSABASEERR+107)
-#define WSASERVICE_NOT_FOUND    (WSABASEERR+108)
-#define WSATYPE_NOT_FOUND       (WSABASEERR+109)
-#define WSA_E_NO_MORE           (WSABASEERR+110)
-#define WSA_E_CANCELLED         (WSABASEERR+111)
-#define WSAEREFUSED             (WSABASEERR+112)
-
-/*
-* Error return codes from gethostbyname() and gethostbyaddr()
-* (when using the resolver). Note that these errors are
-* retrieved via WSAGetLastError() and must therefore follow
-* the rules for avoiding clashes with error numbers from
-* specific implementations or language run-time systems.
-* For this reason the codes are based at WSABASEERR+1001.
-* Note also that [WSA]NO_ADDRESS is defined only for
-* compatibility purposes.
-*/
-
-/* Authoritative Answer: Host not found */
-#define WSAHOST_NOT_FOUND       (WSABASEERR+1001)
-
-/* Non-Authoritative: Host not found, or SERVERFAIL */
-#define WSATRY_AGAIN            (WSABASEERR+1002)
-
-/* Non-recoverable errors, FORMERR, REFUSED, NOTIMP */
-#define WSANO_RECOVERY          (WSABASEERR+1003)
-
-/* Valid name, no data record of requested type */
-#define WSANO_DATA              (WSABASEERR+1004)
-
-/*
-* Define QOS related error return codes
-*
-*/
-#define  WSA_QOS_RECEIVERS               (WSABASEERR + 1005)
-        /* at least one Reserve has arrived */
-#define  WSA_QOS_SENDERS                 (WSABASEERR + 1006)
-        /* at least one Path has arrived */
-#define  WSA_QOS_NO_SENDERS              (WSABASEERR + 1007)
-        /* there are no senders */
-#define  WSA_QOS_NO_RECEIVERS            (WSABASEERR + 1008)
-        /* there are no receivers */
-#define  WSA_QOS_REQUEST_CONFIRMED       (WSABASEERR + 1009)
-        /* Reserve has been confirmed */
-#define  WSA_QOS_ADMISSION_FAILURE       (WSABASEERR + 1010)
-        /* error due to lack of resources */
-#define  WSA_QOS_POLICY_FAILURE          (WSABASEERR + 1011)
-        /* rejected for administrative reasons - bad credentials */
-#define  WSA_QOS_BAD_STYLE               (WSABASEERR + 1012)
-        /* unknown or conflicting style */
-#define  WSA_QOS_BAD_OBJECT              (WSABASEERR + 1013)
-        /* problem with some part of the filterspec or providerspecific
-         * buffer in general */
-#define  WSA_QOS_TRAFFIC_CTRL_ERROR      (WSABASEERR + 1014)
-        /* problem with some part of the flowspec */
-#define  WSA_QOS_GENERIC_ERROR           (WSABASEERR + 1015)
-        /* general error */
-#define  WSA_QOS_ESERVICETYPE            (WSABASEERR + 1016)
-        /* invalid service type in flowspec */
-#define  WSA_QOS_EFLOWSPEC               (WSABASEERR + 1017)
-        /* invalid flowspec */
-#define  WSA_QOS_EPROVSPECBUF            (WSABASEERR + 1018)
-        /* invalid provider specific buffer */
-#define  WSA_QOS_EFILTERSTYLE            (WSABASEERR + 1019)
-        /* invalid filter style */
-#define  WSA_QOS_EFILTERTYPE             (WSABASEERR + 1020)
-        /* invalid filter type */
-#define  WSA_QOS_EFILTERCOUNT            (WSABASEERR + 1021)
-        /* incorrect number of filters */
-#define  WSA_QOS_EOBJLENGTH              (WSABASEERR + 1022)
-        /* invalid object length */
-#define  WSA_QOS_EFLOWCOUNT              (WSABASEERR + 1023)
-        /* incorrect number of flows */
-#define  WSA_QOS_EUNKOWNPSOBJ            (WSABASEERR + 1024)
-        /* unknown object in provider specific buffer */
-#define  WSA_QOS_EPOLICYOBJ              (WSABASEERR + 1025)
-        /* invalid policy object in provider specific buffer */
-#define  WSA_QOS_EFLOWDESC               (WSABASEERR + 1026)
-        /* invalid flow descriptor in the list */
-#define  WSA_QOS_EPSFLOWSPEC             (WSABASEERR + 1027)
-        /* inconsistent flow spec in provider specific buffer */
-#define  WSA_QOS_EPSFILTERSPEC           (WSABASEERR + 1028)
-        /* invalid filter spec in provider specific buffer */
-#define  WSA_QOS_ESDMODEOBJ              (WSABASEERR + 1029)
-        /* invalid shape discard mode object in provider specific buffer */
-#define  WSA_QOS_ESHAPERATEOBJ           (WSABASEERR + 1030)
-        /* invalid shaping rate object in provider specific buffer */
-#define  WSA_QOS_RESERVED_PETYPE         (WSABASEERR + 1031)
-        /* reserved policy element in provider specific buffer */
-
-
-
-/*
-* WinSock error codes are also defined in winerror.h
-* Hence the IFDEF.
-*/
-end --/* ifdef WSABASEERR */
---]]
 
 --[[
 /*
@@ -851,7 +712,7 @@ end --/* ifdef WSABASEERR */
 
 if WIN32 then
 
---#define __stdcall                   PASCAL
+--#define __stdcall                   __stdcall
 ffi.cdef[[
 typedef HANDLE                  WSAEVENT;
 typedef LPHANDLE                LPWSAEVENT;
@@ -884,7 +745,7 @@ static const int WSA_INFINITE           = (INFINITE);
 
 else --/* WIN16 */
 --[[
-#define __stdcall                   PASCAL
+#define __stdcall                   __stdcall
 typedef DWORD                   WSAEVENT,  * LPWSAEVENT;
 
 typedef struct _WSAOVERLAPPED {
@@ -1052,7 +913,7 @@ typedef LPWSAPROTOCOL_INFOA LPWSAPROTOCOL_INFO;
 end --/* UNICODE */
 --]]
 
---[=[
+--[[
 /* Flag bit definitions for dwProviderFlags */
 #define PFL_MULTIPLE_PROTO_ENTRIES       =   0x00000001;
 #define PFL_RECOMMENDED_PROTO_ENTRY      =   0x00000002;
@@ -1081,18 +942,21 @@ end --/* UNICODE */
 #define XP1_IFS_HANDLES                  =   0x00020000;
 #define XP1_PARTIAL_MESSAGE              =   0x00040000;
 #define XP1_SAN_SUPPORT_SDP              =   0x00080000;
+--]]
 
-#define BIGENDIAN                        =   0x0000;
-#define LITTLEENDIAN                     =   0x0001;
+ffi.cdef[[
+static const int BIGENDIAN                        =   0x0000;
+static const int LITTLEENDIAN                     =   0x0001;
 
-#define SECURITY_PROTOCOL_NONE           =   0x0000;
+static const int SECURITY_PROTOCOL_NONE           =   0x0000;
 
 /*
 * WinSock 2 extension -- manifest constants for WSAJoinLeaf()
 */
-#define JL_SENDER_ONLY   = 0x01;
-#define JL_RECEIVER_ONLY = 0x02;
-#define JL_BOTH          = 0x04;
+static const int JL_SENDER_ONLY   = 0x01;
+static const int JL_RECEIVER_ONLY = 0x02;
+static const int JL_BOTH          = 0x04;
+]]
 
 ffi.cdef[[
 /*
@@ -1109,10 +973,7 @@ static const int WSA_FLAG_REGISTERED_IO      = 0x100;
 ]]
 
 ffi.cdef[[
-/*
-* WinSock 2 extensions -- data types for the condition function in
-* WSAAccept() and overlapped I/O completion routine.
-*/
+
 
 typedef
 int
@@ -1138,12 +999,12 @@ void
 ]]
 
 if (_WIN32_WINNT >= 0x0501) then
-
+ffi.cdef[[
 /*
 * WinSock 2 extension -- manifest constants and associated structures
 * for WSANSPIoctl()
 */
-#define SIO_NSP_NOTIFY_CHANGE         _WSAIOW(IOC_WS2,25)
+//#define SIO_NSP_NOTIFY_CHANGE         _WSAIOW(IOC_WS2,25)
 
 typedef enum _WSACOMPLETIONTYPE {
    NSP_NOTIFY_IMMEDIATELY = 0,
@@ -1175,18 +1036,17 @@ typedef struct _WSACOMPLETION {
        } Port;
    } Parameters;
 } WSACOMPLETION, *PWSACOMPLETION,  *LPWSACOMPLETION;
+]]
 end --(_WIN32_WINNT >= 0x0501)
 
+ffi.cdef[[
 /*
 * WinSock 2 extension -- manifest constants for SIO_TRANSLATE_HANDLE ioctl
 */
-#define TH_NETDEV        0x00000001
-#define TH_TAPI          0x00000002
+static const int TH_NETDEV     =   0x00000001;
+static const int TH_TAPI       =   0x00000002;
+]]
 
-/*
-* Manifest constants and type definitions related to name resolution and
-* registration (RNR) API
-*/
 
 if not _tagBLOB_DEFINED then
 _tagBLOB_DEFINED = true
@@ -1197,108 +1057,59 @@ typedef struct _BLOB {
    ULONG cbSize ;
    BYTE *pBlobData ;
 } BLOB, *LPBLOB ;
+]]
 end
 
-/*
-* Service Install Flags
-*/
 
-#define SERVICE_MULTIPLE       (0x00000001)
+ffi.cdef[[
+static const int SERVICE_MULTIPLE      = (0x00000001);
+]]
 
-/*
-*& Name Spaces
-*/
+-- BUGBUG, some are defined in ws2def
+ffi.cdef[[
 
-#define NS_ALL                      (0)
+//static const int NS_ALL                      = 0;
 
-#define NS_SAP                      (1)
-#define NS_NDS                      (2)
-#define NS_PEER_BROWSE              (3)
-#define NS_SLP                      (5)
-#define NS_DHCP                     (6)
+//static const int NS_SAP                      = 1;
+//static const int NS_NDS                      = 2;
+//static const int NS_PEER_BROWSE              = 3;
+//static const int NS_SLP                      = 5;
+//static const int NS_DHCP                     = 6;
 
-#define NS_TCPIP_LOCAL              (10)
-#define NS_TCPIP_HOSTS              (11)
-#define NS_DNS                      (12)
-#define NS_NETBT                    (13)
-#define NS_WINS                     (14)
+//static const int NS_TCPIP_LOCAL              = 10;
+//static const int NS_TCPIP_HOSTS              = 11;
+//static const int NS_DNS                      = 12;
+//static const int NS_NETBT                    = 13;
+//static const int NS_WINS                     = 14;
 
-if (_WIN32_WINNT >= 0x0501)
-#define NS_NLA                      (15)    /* Network Location Awareness */
-end --(_WIN32_WINNT >= 0x0501)
+//static const int NS_NLA                      = 15;    /* Network Location Awareness */
 
-if (_WIN32_WINNT >= 0x0600)
-#define NS_BTH                      (16)    /* Bluetooth SDP Namespace */
-end --(_WIN32_WINNT >= 0x0600)
+//static const int NS_BTH                      = 16;    /* Bluetooth SDP Namespace */
 
-#define NS_NBP                      (20)
+//static const int NS_NBP                      = 20;
 
-#define NS_MS                       (30)
-#define NS_STDA                     (31)
-#define NS_NTDS                     (32)
+//static const int NS_MS                       = 30;
+//static const int NS_STDA                     = 31;
+//static const int NS_NTDS                     = 32;
 
-if (_WIN32_WINNT >= 0x0600)
-#define NS_EMAIL                    (37)
-#define NS_PNRPNAME                 (38)
-#define NS_PNRPCLOUD                (39)
-end --(_WIN32_WINNT >= 0x0600)
 
-#define NS_X500                     (40)
-#define NS_NIS                      (41)
-#define NS_NISPLUS                  (42)
+//static const int NS_EMAIL                    = 37;
+//static const int NS_PNRPNAME                 = 38;
+//static const int NS_PNRPCLOUD                = 39;
 
-#define NS_WRQ                      (50)
 
-#define NS_NETDES                   (60)    /* Network Designers Limited */
+//static const int NS_X500                     = 40;
+//static const int NS_NIS                      = 41;
+//static const int NS_NISPLUS                  = 42;
 
-/*
-*& Name Spaces
-*/
+//static const int NS_WRQ                      = 50;
 
-#define NS_ALL                      (0)
+//static const int NS_NETDES                   = 60;    /* Network Designers Limited */
+]]
 
-#define NS_SAP                      (1)
-#define NS_NDS                      (2)
-#define NS_PEER_BROWSE              (3)
-#define NS_SLP                      (5)
-#define NS_DHCP                     (6)
 
-#define NS_TCPIP_LOCAL              (10)
-#define NS_TCPIP_HOSTS              (11)
-#define NS_DNS                      (12)
-#define NS_NETBT                    (13)
-#define NS_WINS                     (14)
 
-if (_WIN32_WINNT >= 0x0501)
-#define NS_NLA                      (15)    /* Network Location Awareness */
-end --(_WIN32_WINNT >= 0x0501)
-
-if (_WIN32_WINNT >= 0x0600)
-#define NS_BTH                      (16)    /* Bluetooth SDP Namespace */
-end --(_WIN32_WINNT >= 0x0600)
-
-#define NS_LOCALNAME                (19)    /* Windows Live */
-
-#define NS_NBP                      (20)
-
-#define NS_MS                       (30)
-#define NS_STDA                     (31)
-#define NS_NTDS                     (32)
-
-if (_WIN32_WINNT >= 0x0600)
-#define NS_EMAIL                    (37)
-#define NS_PNRPNAME                 (38)
-#define NS_PNRPCLOUD                (39)
-end --(_WIN32_WINNT >= 0x0600)
-
-#define NS_X500                     (40)
-#define NS_NIS                      (41)
-#define NS_NISPLUS                  (42)
-
-#define NS_WRQ                      (50)
-
-#define NS_NETDES                   (60)    /* Network Designers Limited */
-
+--[=[
 /*
 * Resolution flags for WSAGetAddressByName().
 * Note these are also used by the 1.1 API GetAddressByName, so
@@ -1327,7 +1138,9 @@ end --/* RES_SERVICE */
 
 #define SERVICE_TYPE_VALUE_OBJECTIDA     "ObjectId"
 #define SERVICE_TYPE_VALUE_OBJECTIDW    L"ObjectId"
+--]=]
 
+--[[
 #ifdef UNICODE
 
 #define SERVICE_TYPE_VALUE_SAPID        SERVICE_TYPE_VALUE_SAPIDW
@@ -1343,7 +1156,9 @@ end --/* RES_SERVICE */
 #define SERVICE_TYPE_VALUE_OBJECTID     SERVICE_TYPE_VALUE_OBJECTIDA
 
 end
+--]]
 
+ffi.cdef[[
 /*
 *  Address Family/Protocol Tuples
 */
@@ -1351,14 +1166,9 @@ typedef struct _AFPROTOCOLS {
    INT iAddressFamily;
    INT iProtocol;
 } AFPROTOCOLS, *PAFPROTOCOLS, *LPAFPROTOCOLS;
+]]
 
-/*
-* Client Query API Typedefs
-*/
-
-/*
-* The comparators
-*/
+ffi.cdef[[
 typedef enum _WSAEcomparator
 {
    COMP_EQUAL = 0,
@@ -1370,7 +1180,9 @@ typedef struct _WSAVersion
    DWORD           dwVersion;
    WSAECOMPARATOR  ecHow;
 }WSAVERSION, *PWSAVERSION, *LPWSAVERSION;
+]]
 
+--[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSAQUERYSETW") _WSAQuerySetA
 {
    DWORD           dwSize;
@@ -1389,10 +1201,12 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSAQUERYSETW") _WSAQuerySetA
    DWORD           dwOutputFlags;
    LPBLOB          lpBlob;
 } WSAQUERYSETA, *PWSAQUERYSETA, *LPWSAQUERYSETA;
+--]]
 
-typedef _Struct_size_bytes_(dwSize) struct _WSAQuerySetW
+ffi.cdef[[
+typedef  struct _WSAQuerySetW
 {
-   _Field_range_(>=,sizeof(struct _WSAQuerySetW)) DWORD           dwSize;
+    DWORD           dwSize;
    LPWSTR          lpszServiceInstanceName;
    LPGUID          lpServiceClassId;
    LPWSAVERSION    lpVersion;
@@ -1401,17 +1215,18 @@ typedef _Struct_size_bytes_(dwSize) struct _WSAQuerySetW
    LPGUID          lpNSProviderId;
    LPWSTR          lpszContext;
    DWORD           dwNumberOfProtocols;
-   _Field_size_(dwNumberOfProtocols) LPAFPROTOCOLS   lpafpProtocols;
+   LPAFPROTOCOLS   lpafpProtocols;
    LPWSTR          lpszQueryString;
    DWORD           dwNumberOfCsAddrs;
-   _Field_size_(dwNumberOfCsAddrs) LPCSADDR_INFO   lpcsaBuffer;
+    LPCSADDR_INFO   lpcsaBuffer;
    DWORD           dwOutputFlags;
    LPBLOB          lpBlob;
 } WSAQUERYSETW, *PWSAQUERYSETW, *LPWSAQUERYSETW;
+]]
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSAQUERYSET2W") _WSAQuerySet2A
 {
    DWORD           dwSize;
@@ -1429,6 +1244,9 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSAQUERYSET2W") _WSAQuerySet2A
    DWORD           dwOutputFlags;
    LPBLOB          lpBlob;   
 } WSAQUERYSET2A, *PWSAQUERYSET2A, *LPWSAQUERYSET2A;
+--]]
+
+ffi.cdef[[
 typedef struct _WSAQuerySet2W
 {
    DWORD           dwSize;
@@ -1439,14 +1257,16 @@ typedef struct _WSAQuerySet2W
    LPGUID          lpNSProviderId;
    LPWSTR          lpszContext;
    DWORD           dwNumberOfProtocols;
-   _Field_size_(dwNumberOfProtocols) LPAFPROTOCOLS   lpafpProtocols;
+    LPAFPROTOCOLS   lpafpProtocols;
    LPWSTR          lpszQueryString;
    DWORD           dwNumberOfCsAddrs;
-   _Field_size_(dwNumberOfCsAddrs) LPCSADDR_INFO   lpcsaBuffer;
+    LPCSADDR_INFO   lpcsaBuffer;
    DWORD           dwOutputFlags;
    LPBLOB          lpBlob;   
 } WSAQUERYSET2W, *PWSAQUERYSET2W, *LPWSAQUERYSET2W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef WSAQUERYSETW WSAQUERYSET;
 typedef PWSAQUERYSETW PWSAQUERYSET;
@@ -1462,52 +1282,57 @@ typedef WSAQUERYSET2A WSAQUERYSET2;
 typedef PWSAQUERYSET2A PWSAQUERYSET2;
 typedef LPWSAQUERYSET2A LPWSAQUERYSET2;
 end --/* UNICODE */
+--]]
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#define LUP_DEEP                0x0001
-#define LUP_CONTAINERS          0x0002
-#define LUP_NOCONTAINERS        0x0004
-#define LUP_NEAREST             0x0008
-#define LUP_RETURN_NAME         0x0010
-#define LUP_RETURN_TYPE         0x0020
-#define LUP_RETURN_VERSION      0x0040
-#define LUP_RETURN_COMMENT      0x0080
-#define LUP_RETURN_ADDR         0x0100
-#define LUP_RETURN_BLOB         0x0200
-#define LUP_RETURN_ALIASES      0x0400
-#define LUP_RETURN_QUERY_STRING 0x0800
-#define LUP_RETURN_ALL          0x0FF0
-#define LUP_RES_SERVICE         0x8000
+ffi.cdef[[
+static const int LUP_DEEP                = 0x0001;
+static const int LUP_CONTAINERS          = 0x0002;
+static const int LUP_NOCONTAINERS        = 0x0004;
+static const int LUP_NEAREST             = 0x0008;
+static const int LUP_RETURN_NAME         = 0x0010;
+static const int LUP_RETURN_TYPE         = 0x0020;
+static const int LUP_RETURN_VERSION      = 0x0040;
+static const int LUP_RETURN_COMMENT      = 0x0080;
+static const int LUP_RETURN_ADDR         = 0x0100;
+static const int LUP_RETURN_BLOB         = 0x0200;
+static const int LUP_RETURN_ALIASES      = 0x0400;
+static const int LUP_RETURN_QUERY_STRING = 0x0800;
+static const int LUP_RETURN_ALL          = 0x0FF0;
+static const int LUP_RES_SERVICE         = 0x8000;
 
-#define LUP_FLUSHCACHE          0x1000
-#define LUP_FLUSHPREVIOUS       0x2000
+static const int LUP_FLUSHCACHE          = 0x1000;
+static const int LUP_FLUSHPREVIOUS       = 0x2000;
 
-#define LUP_NON_AUTHORITATIVE   0x4000
-#define LUP_SECURE              0x8000
-#define LUP_RETURN_PREFERRED_NAMES  0x10000
-#define LUP_DNS_ONLY            0x20000
+static const int LUP_NON_AUTHORITATIVE   = 0x4000;
+static const int LUP_SECURE              = 0x8000;
+static const int LUP_RETURN_PREFERRED_NAMES  = 0x10000;
+static const int LUP_DNS_ONLY            = 0x20000;
 
-#define LUP_ADDRCONFIG          0x00100000
-#define LUP_DUAL_ADDR           0x00200000
-#define LUP_FILESERVER          0x00400000
-#define LUP_DISABLE_IDN_ENCODING    0x00800000
-#define LUP_API_ANSI            0x01000000
+static const int LUP_ADDRCONFIG          = 0x00100000;
+static const int LUP_DUAL_ADDR           = 0x00200000;
+static const int LUP_FILESERVER          = 0x00400000;
+static const int LUP_DISABLE_IDN_ENCODING    = 0x00800000;
+static const int LUP_API_ANSI            = 0x01000000;
 
-#define LUP_RESOLUTION_HANDLE   0x80000000
+static const int LUP_RESOLUTION_HANDLE   = 0x80000000;
+]]
 
-/*
-* Return flags
-*/
 
-#define  RESULT_IS_ALIAS      0x0001
-if (_WIN32_WINNT >= 0x0501)
-#define  RESULT_IS_ADDED      0x0010
-#define  RESULT_IS_CHANGED    0x0020
-#define  RESULT_IS_DELETED    0x0040
+ffi.cdef[[
+static const int  RESULT_IS_ALIAS      = 0x0001;
+]]
+
+if (_WIN32_WINNT >= 0x0501) then
+ffi.cdef[[
+static const int  RESULT_IS_ADDED      = 0x0010;
+static const int  RESULT_IS_CHANGED    = 0x0020;
+static const int  RESULT_IS_DELETED    = 0x0040;
+]]
 end --(_WIN32_WINNT >= 0x0501)
 
+ffi.cdef[[
 /*
 * Service Address Registration and Deregistration Data Types.
 */
@@ -1518,13 +1343,12 @@ typedef enum _WSAESETSERVICEOP
    RNRSERVICE_DEREGISTER,
    RNRSERVICE_DELETE
 } WSAESETSERVICEOP, *PWSAESETSERVICEOP, *LPWSAESETSERVICEOP;
+]]
 
-/*
-* Service Installation/Removal Data Types.
-*/
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+--[=[
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP, WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSANSCLASSINFOW") _WSANSClassInfoA
 {
    LPSTR   lpszName;
@@ -1533,9 +1357,11 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSANSCLASSINFOW") _WSANSClassInfoA
    DWORD   dwValueSize;
    LPVOID  lpValue;
 }WSANSCLASSINFOA, *PWSANSCLASSINFOA, *LPWSANSCLASSINFOA;
+]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+--]=]
 
+ffi.cdef[[
 typedef struct _WSANSClassInfoW
 {
    LPWSTR  lpszName;
@@ -1544,6 +1370,9 @@ typedef struct _WSANSClassInfoW
    DWORD   dwValueSize;
    LPVOID  lpValue;
 }WSANSCLASSINFOW, *PWSANSCLASSINFOW, *LPWSANSCLASSINFOW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef WSANSCLASSINFOW WSANSCLASSINFO;
 typedef PWSANSCLASSINFOW PWSANSCLASSINFO;
@@ -1555,11 +1384,13 @@ typedef WSANSCLASSINFOA WSANSCLASSINFO;
 typedef PWSANSCLASSINFOA PWSANSCLASSINFO;
 typedef LPWSANSCLASSINFOA LPWSANSCLASSINFO;
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-end --/* UNICODE */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+end --/* UNICODE */
+--]]
+
+--[=[
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSASERVICECLASSINFOW") _WSAServiceClassInfoA
 {
    LPGUID              lpServiceClassId;
@@ -1568,8 +1399,9 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSASERVICECLASSINFOW") _WSAServiceClassIn
    LPWSANSCLASSINFOA   lpClassInfos;
 }WSASERVICECLASSINFOA, *PWSASERVICECLASSINFOA, *LPWSASERVICECLASSINFOA;
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+--]=]
 
+ffi.cdef[[
 typedef struct _WSAServiceClassInfoW
 {
    LPGUID              lpServiceClassId;
@@ -1577,7 +1409,9 @@ typedef struct _WSAServiceClassInfoW
    DWORD               dwCount;
    LPWSANSCLASSINFOW   lpClassInfos;
 }WSASERVICECLASSINFOW, *PWSASERVICECLASSINFOW, *LPWSASERVICECLASSINFOW;
+]]
 
+--[[
 #ifdef UNICODE
 typedef WSASERVICECLASSINFOW WSASERVICECLASSINFO;
 typedef PWSASERVICECLASSINFOW PWSASERVICECLASSINFO;
@@ -1589,9 +1423,11 @@ typedef WSASERVICECLASSINFOA WSASERVICECLASSINFO;
 typedef PWSASERVICECLASSINFOA PWSASERVICECLASSINFO;
 typedef LPWSASERVICECLASSINFOA LPWSASERVICECLASSINFO;
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-end --/* UNICODE */
 
+end --/* UNICODE */
+--]]
+
+--[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSANAMESPACE_INFOW") _WSANAMESPACE_INFOA {
    GUID                NSProviderId;
    DWORD               dwNameSpace;
@@ -1599,7 +1435,9 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSANAMESPACE_INFOW") _WSANAMESPACE_INFOA 
    DWORD               dwVersion;
    LPSTR               lpszIdentifier;
 } WSANAMESPACE_INFOA, *PWSANAMESPACE_INFOA, *LPWSANAMESPACE_INFOA;
+--]]
 
+ffi.cdef[[
 typedef struct _WSANAMESPACE_INFOW {
    GUID                NSProviderId;
    DWORD               dwNameSpace;
@@ -1607,7 +1445,9 @@ typedef struct _WSANAMESPACE_INFOW {
    DWORD               dwVersion;
    LPWSTR              lpszIdentifier;
 } WSANAMESPACE_INFOW, *PWSANAMESPACE_INFOW, *LPWSANAMESPACE_INFOW;
+]]
 
+--[[
 typedef struct _WINSOCK_DEPRECATED_BY("WSANAMESPACE_INFOEXW") _WSANAMESPACE_INFOEXA {
    GUID                NSProviderId;
    DWORD               dwNameSpace;
@@ -1616,7 +1456,9 @@ typedef struct _WINSOCK_DEPRECATED_BY("WSANAMESPACE_INFOEXW") _WSANAMESPACE_INFO
    LPSTR               lpszIdentifier;
    BLOB                ProviderSpecific;
 } WSANAMESPACE_INFOEXA, *PWSANAMESPACE_INFOEXA, *LPWSANAMESPACE_INFOEXA;
+--]]
 
+ffi.cdef[[
 typedef struct _WSANAMESPACE_INFOEXW {
    GUID                NSProviderId;
    DWORD               dwNameSpace;
@@ -1625,7 +1467,9 @@ typedef struct _WSANAMESPACE_INFOEXW {
    LPWSTR              lpszIdentifier;
    BLOB                ProviderSpecific;
 } WSANAMESPACE_INFOEXW, *PWSANAMESPACE_INFOEXW, *LPWSANAMESPACE_INFOEXW;
+]]
 
+--[[
 #ifdef UNICODE
 typedef WSANAMESPACE_INFOW WSANAMESPACE_INFO;
 typedef PWSANAMESPACE_INFOW PWSANAMESPACE_INFO;
@@ -1641,24 +1485,24 @@ typedef WSANAMESPACE_INFOEXA WSANAMESPACE_INFOEX;
 typedef PWSANAMESPACE_INFOEXA PWSANAMESPACE_INFOEX;
 typedef LPWSANAMESPACE_INFOEXA LPWSANAMESPACE_INFOEX;
 end --/* UNICODE */
+--]]
 
-
-if (_WIN32_WINNT >= 0x0600)
-
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
 /* Event flag definitions for WSAPoll(). */
 
-#define POLLRDNORM  0x0100
-#define POLLRDBAND  0x0200
-#define POLLIN      (POLLRDNORM | POLLRDBAND)
-#define POLLPRI     0x0400
+static const int POLLRDNORM = 0x0100;
+static const int POLLRDBAND = 0x0200;
+static const int POLLIN     = (POLLRDNORM | POLLRDBAND);
+static const int POLLPRI    = 0x0400;
 
-#define POLLWRNORM  0x0010
-#define POLLOUT     (POLLWRNORM)
-#define POLLWRBAND  0x0020
+static const int POLLWRNORM = 0x0010;
+static const int POLLOUT    = (POLLWRNORM);
+static const int POLLWRBAND = 0x0020;
 
-#define POLLERR     0x0001
-#define POLLHUP     0x0002
-#define POLLNVAL    0x0004
+static const int POLLERR    = 0x0001;
+static const int POLLHUP    = 0x0002;
+static const int POLLNVAL   = 0x0004;
 
 typedef struct pollfd {
 
@@ -1667,15 +1511,15 @@ typedef struct pollfd {
    SHORT   revents;
 
 } WSAPOLLFD, *PWSAPOLLFD,  *LPWSAPOLLFD;
-
+]]
 end -- (_WIN32_WINNT >= 0x0600)
 
 
-/* Socket function prototypes */
-
-#if INCL_WINSOCK_API_PROTOTYPES
 
 
+if INCL_WINSOCK_API_PROTOTYPES then
+
+ffi.cdef[[
 SOCKET
 __stdcall
 accept(
@@ -1683,10 +1527,12 @@ accept(
     struct sockaddr  * addr,
     int  * addrlen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-typedef
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
+    typedef
 
 SOCKET
 (__stdcall * LPFN_ACCEPT)(
@@ -1694,81 +1540,91 @@ SOCKET
     struct sockaddr  * addr,
     int  * addrlen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 bind(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_BIND)(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 closesocket(
     SOCKET s
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-typedef
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
+    typedef
 int
 (__stdcall * LPFN_CLOSESOCKET)(
     SOCKET s
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 connect(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_CONNECT)(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 ioctlsocket(
     SOCKET s,
     long cmd,
-   _When_(cmd != FIONREAD, )
-   _When_(cmd == FIONREAD, _Out_)
    u_long  * argp
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_IOCTLSOCKET)(
@@ -1776,146 +1632,169 @@ int
     long cmd,
     u_long  * argp
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 getpeername(
     SOCKET s,
-   _Out_writes_bytes_to_(*namelen,*namelen) struct sockaddr  * name,
+   struct sockaddr  * name,
     int  * namelen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETPEERNAME)(
     SOCKET s,
-   _Out_writes_bytes_to_(*namelen,*namelen) struct sockaddr  * name,
+    struct sockaddr  * name,
     int  * namelen
-   );
+   );]]
+
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
 
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 getsockname(
     SOCKET s,
-   _Out_writes_bytes_to_(*namelen,*namelen) struct sockaddr  * name,
+    struct sockaddr  * name,
     int  * namelen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETSOCKNAME)(
     SOCKET s,
-   _Out_writes_bytes_to_(*namelen,*namelen) struct sockaddr  * name,
+    struct sockaddr  * name,
     int  * namelen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 getsockopt(
     SOCKET s,
     int level,
     int optname,
-   _Out_writes_bytes_(*optlen) char  * optval,
+    char  * optval,
     int  * optlen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETSOCKOPT)(
     SOCKET s,
     int level,
     int optname,
-   _Out_writes_bytes_(*optlen) char  * optval,
+    char  * optval,
     int  * optlen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 u_long
 __stdcall
 htonl(
     u_long hostlong
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 u_long
 (__stdcall * LPFN_HTONL)(
     u_long hostlong
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 u_short
 __stdcall
 htons(
     u_short hostshort
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 u_short
 (__stdcall * LPFN_HTONS)(
     u_short hostshort
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-_WINSOCK_DEPRECATED_BY("inet_pton() or InetPton()")
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--_WINSOCK_DEPRECATED_BY("inet_pton() or InetPton()")
+ffi.cdef[[
 unsigned long
 __stdcall
 inet_addr(
-   _In_z_ const char  * cp
+    const char  * cp
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 unsigned long
 (__stdcall * LPFN_INET_ADDR)(
     const char  * cp
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-_WINSOCK_DEPRECATED_BY("inet_ntop() or InetNtop()")
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--_WINSOCK_DEPRECATED_BY("inet_ntop() or InetNtop()")
+ffi.cdef[[
 char  *
 __stdcall
 inet_ntoa(
     struct in_addr in
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 char  *
 (__stdcall * LPFN_INET_NTOA)(
     struct in_addr in
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-
+--[=[
 #if !defined(NO_EXTRA_HTON_FUNCTIONS) && !defined(__midl) && (defined(INCL_EXTRA_HTON_FUNCTIONS) || NTDDI_VERSION>=NTDDI_WIN8)
 /*
 * Byte order conversion functions for 64-bit integers and 32 + 64 bit 
@@ -1997,112 +1876,128 @@ __inline double ntohd ( unsigned __int64 Value )
 }
 end --/* ntohd */
 end --/* NO_EXTRA_HTON_FUNCTIONS */
+--]=]
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 listen(
     SOCKET s,
     int backlog
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_LISTEN)(
     SOCKET s,
     int backlog
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 u_long
 __stdcall
 ntohl(
     u_long netlong
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 u_long
 (__stdcall * LPFN_NTOHL)(
     u_long netlong
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 u_short
 __stdcall
 ntohs(
     u_short netshort
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 u_short
 (__stdcall * LPFN_NTOHS)(
     u_short netshort
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 recv(
     SOCKET s,
-   _Out_writes_bytes_to_(len, return) __out_data_source(NETWORK) char  * buf,
+    char  * buf,
     int len,
     int flags
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_RECV)(
     SOCKET s,
-   _Out_writes_bytes_to_(len, return) char  * buf,
+    char  * buf,
     int len,
     int flags
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 recvfrom(
     SOCKET s,
-   _Out_writes_bytes_to_(len, return) __out_data_source(NETWORK) char  * buf,
+    char  * buf,
     int len,
     int flags,
-   _Out_writes_bytes_to_opt_(*fromlen, *fromlen) struct sockaddr  * from,
+    struct sockaddr  * from,
     int  * fromlen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_RECVFROM)(
     SOCKET s,
-   _Out_writes_bytes_to_(len, return) char  * buf,
+    char  * buf,
     int len,
     int flags,
-   _Out_writes_bytes_to_opt_(*fromlen, *fromlen) struct sockaddr  * from,
+    struct sockaddr  * from,
     int  * fromlen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 select(
@@ -2112,9 +2007,11 @@ select(
     fd_set  * exceptfds,
     const struct timeval  * timeout
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_SELECT)(
@@ -2124,51 +2021,57 @@ int
     fd_set  *exceptfds,
     const struct timeval  * timeout
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 send(
     SOCKET s,
-   _In_reads_bytes_(len) const char  * buf,
+    const char  * buf,
     int len,
     int flags
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_SEND)(
     SOCKET s,
-   _In_reads_bytes_(len) const char  * buf,
+    const char  * buf,
     int len,
     int flags
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 sendto(
     SOCKET s,
-   _In_reads_bytes_(len) const char  * buf,
+    const char  * buf,
     int len,
     int flags,
-   _In_reads_bytes_(tolen) const struct sockaddr  * to,
+    const struct sockaddr  * to,
     int tolen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+--[=[
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_SENDTO)(
     SOCKET s,
-   _In_reads_bytes_(len) const char  * buf,
+    const char  * buf,
     int len,
     int flags,
    _In_reads_bytes_(tolen) const struct sockaddr  * to,
@@ -2176,7 +2079,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2189,7 +2092,7 @@ setsockopt(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_SETSOCKOPT)(
@@ -2201,7 +2104,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2211,7 +2114,7 @@ shutdown(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_SHUTDOWN)(
@@ -2220,7 +2123,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 
 SOCKET
@@ -2232,7 +2135,7 @@ socket(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 
 SOCKET
@@ -2245,39 +2148,39 @@ end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 /* Database function prototypes */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getnameinfo() or GetNameInfoW()")
 
 struct hostent  *
 __stdcall
 gethostbyaddr(
-   _In_reads_bytes_(len) const char  * addr,
+    const char  * addr,
     int len,
     int type
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct hostent  *
 (__stdcall * LPFN_GETHOSTBYADDR)(
-   _In_reads_bytes_(len) const char  * addr,
+    const char  * addr,
     int len,
     int type
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getaddrinfo() or GetAddrInfoW()")
 
 struct hostent  *
 __stdcall
 gethostbyname(
-   _In_z_ const char  * name
+    const char  * name
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct hostent  *
 (__stdcall * LPFN_GETHOSTBYNAME)(
@@ -2285,7 +2188,7 @@ struct hostent  *
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2296,7 +2199,7 @@ gethostname(
 
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_GETHOSTNAME)(
@@ -2305,7 +2208,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2316,7 +2219,7 @@ GetHostNameW(
 
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_GETHOSTNAMEW)(
@@ -2325,7 +2228,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 struct servent  *
 __stdcall
@@ -2335,7 +2238,7 @@ getservbyport(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct servent  *
 (__stdcall * LPFN_GETSERVBYPORT)(
@@ -2344,26 +2247,26 @@ struct servent  *
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 struct servent  *
 __stdcall
 getservbyname(
-   _In_z_ const char  * name,
+    const char  * name,
    z_ const char  * proto
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct servent  *
 (__stdcall * LPFN_GETSERVBYNAME)(
-   _In_z_ const char  * name,
+    const char  * name,
    z_ const char  * proto
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 struct protoent  *
 __stdcall
@@ -2372,7 +2275,7 @@ getprotobynumber(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct protoent  *
 (__stdcall * LPFN_GETPROTOBYNUMBER)(
@@ -2380,47 +2283,47 @@ struct protoent  *
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 struct protoent  *
 __stdcall
 getprotobyname(
-   _In_z_ const char  * name
+    const char  * name
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 struct protoent  *
 (__stdcall * LPFN_GETPROTOBYNAME)(
-   _In_z_ const char  * name
+    const char  * name
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 /* Microsoft Windows Extension function prototypes */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 
 int
 __stdcall
 WSAStartup(
     WORD wVersionRequested,
-   _Out_ LPWSADATA lpWSAData
+    LPWSADATA lpWSAData
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 
 int
 (__stdcall * LPFN_WSASTARTUP)(
     WORD wVersionRequested,
-   _Out_ LPWSADATA lpWSAData
+    LPWSADATA lpWSAData
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2429,7 +2332,7 @@ WSACleanup(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSACLEANUP)(
@@ -2437,7 +2340,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 void
 __stdcall
@@ -2446,7 +2349,7 @@ WSASetLastError(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 void
 (__stdcall * LPFN_WSASETLASTERROR)(
@@ -2454,7 +2357,7 @@ void
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -2463,7 +2366,7 @@ WSAGetLastError(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAGETLASTERROR)(
@@ -2471,10 +2374,10 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("Winsock 2")
 
 BOOL
@@ -2484,7 +2387,7 @@ WSAIsBlocking(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 BOOL
 (__stdcall * LPFN_WSAISBLOCKING)(
@@ -2492,7 +2395,7 @@ BOOL
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("Winsock 2")
 
 int
@@ -2502,7 +2405,7 @@ WSAUnhookBlockingHook(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAUNHOOKBLOCKINGHOOK)(
@@ -2510,7 +2413,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("Winsock 2")
 
 FARPROC
@@ -2520,7 +2423,7 @@ WSASetBlockingHook(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 FARPROC
 (__stdcall * LPFN_WSASETBLOCKINGHOOK)(
@@ -2528,7 +2431,7 @@ FARPROC
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("Winsock 2")
 
 int
@@ -2538,7 +2441,7 @@ WSACancelBlockingCall(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSACANCELBLOCKINGCALL)(
@@ -2546,7 +2449,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getservbyname()")
 
 HANDLE
@@ -2554,27 +2457,27 @@ __stdcall
 WSAAsyncGetServByName(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
-   _In_z_ const char  * proto,
+    const char  * name,
+    const char  * proto,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETSERVBYNAME)(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
-   _In_z_ const char  * proto,
+    const char  * name,
+    const char  * proto,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getservbyport()")
 
 HANDLE
@@ -2589,7 +2492,7 @@ WSAAsyncGetServByPort(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETSERVBYPORT)(
@@ -2602,7 +2505,7 @@ HANDLE
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getprotobyname()")
 
 HANDLE
@@ -2610,25 +2513,25 @@ __stdcall
 WSAAsyncGetProtoByName(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
+    const char  * name,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETPROTOBYNAME)(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
+    const char  * name,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getprotobynumber()")
 
 HANDLE
@@ -2642,7 +2545,7 @@ WSAAsyncGetProtoByNumber(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETPROTOBYNUMBER)(
@@ -2654,7 +2557,7 @@ HANDLE
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("GetAddrInfoExW()")
 
 HANDLE
@@ -2662,25 +2565,25 @@ __stdcall
 WSAAsyncGetHostByName(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
+    const char  * name,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETHOSTBYNAME)(
     HWND hWnd,
     u_int wMsg,
-   _In_z_ const char  * name,
+    const char  * name,
    _Out_writes_bytes_(buflen) char  * buf,
     int buflen
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getnameinfo() or GetNameInfoW()")
 
 HANDLE
@@ -2688,7 +2591,7 @@ __stdcall
 WSAAsyncGetHostByAddr(
     HWND hWnd,
     u_int wMsg,
-   _In_reads_bytes_(len) const char  * addr,
+    const char  * addr,
     int len,
     int type,
    _Out_writes_bytes_(buflen) char  * buf,
@@ -2696,13 +2599,13 @@ WSAAsyncGetHostByAddr(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 HANDLE
 (__stdcall * LPFN_WSAASYNCGETHOSTBYADDR)(
     HWND hWnd,
     u_int wMsg,
-   _In_reads_bytes_(len) const char  * addr,
+    const char  * addr,
     int len,
     int type,
    _Out_writes_bytes_(buflen) char  * buf,
@@ -2710,7 +2613,7 @@ HANDLE
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED
 
 int
@@ -2720,7 +2623,7 @@ WSACancelAsyncRequest(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSACANCELASYNCREQUEST)(
@@ -2728,7 +2631,7 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("WSAEventSelect()")
 
 int
@@ -2741,7 +2644,7 @@ WSAAsyncSelect(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAASYNCSELECT)(
@@ -2753,149 +2656,168 @@ int
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-/* WinSock 2 API new function prototypes */
-
-#if INCL_WINSOCK_API_PROTOTYPES
+--]=]
 
 
+if INCL_WINSOCK_API_PROTOTYPES then
+
+ffi.cdef[[
 SOCKET
 __stdcall
 WSAAccept(
     SOCKET s,
-   _Out_writes_bytes_to_opt_(*addrlen,*addrlen) struct sockaddr  * addr,
+    struct sockaddr  * addr,
     LPINT addrlen,
     LPCONDITIONPROC lpfnCondition,
     DWORD_PTR dwCallbackData
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 
 SOCKET
 (__stdcall * LPFN_WSAACCEPT)(
     SOCKET s,
-   _Out_writes_bytes_to_opt_(*addrlen,*addrlen) struct sockaddr  * addr,
+    struct sockaddr  * addr,
     LPINT addrlen,
     LPCONDITIONPROC lpfnCondition,
     DWORD_PTR dwCallbackData
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 BOOL
 __stdcall
 WSACloseEvent(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 BOOL
 (__stdcall * LPFN_WSACLOSEEVENT)(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 WSAConnect(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen,
     LPWSABUF lpCallerData,
-   _Out_opt_ LPWSABUF lpCalleeData,
+    LPWSABUF lpCalleeData,
     LPQOS lpSQOS,
     LPQOS lpGQOS
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 #ifdef UNICODE
 #define WSAConnectByName    WSAConnectByNameW
 #else
 #define WSAConnectByName    WSAConnectByNameA
 end
+--]]
 
+ffi.cdef[[
 BOOL
-PASCAL
+__stdcall
 WSAConnectByNameW(
     SOCKET s,
     LPWSTR nodename,
     LPWSTR servicename,
     LPDWORD LocalAddressLength,
-   _Out_writes_bytes_to_opt_(*LocalAddressLength,*LocalAddressLength) LPSOCKADDR LocalAddress,
+    LPSOCKADDR LocalAddress,
     LPDWORD RemoteAddressLength,
-   _Out_writes_bytes_to_opt_(*RemoteAddressLength,*RemoteAddressLength) LPSOCKADDR RemoteAddress,
+    LPSOCKADDR RemoteAddress,
     const struct timeval * timeout,
-   _Reserved_ LPWSAOVERLAPPED Reserved);
+    LPWSAOVERLAPPED Reserved);
+]]
 
+--[[
 _WINSOCK_DEPRECATED_BY("WSAConnectByNameW()")
 BOOL
-PASCAL
+__stdcall
 WSAConnectByNameA(
     SOCKET s,
     LPCSTR nodename,
     LPCSTR servicename,
     LPDWORD LocalAddressLength,
-   _Out_writes_bytes_to_opt_(*LocalAddressLength,*LocalAddressLength) LPSOCKADDR LocalAddress,
+    LPSOCKADDR LocalAddress,
     LPDWORD RemoteAddressLength,
-   _Out_writes_bytes_to_opt_(*RemoteAddressLength,*RemoteAddressLength) LPSOCKADDR RemoteAddress,
+    LPSOCKADDR RemoteAddress,
     const struct timeval * timeout,
-   _Reserved_ LPWSAOVERLAPPED Reserved);
+    LPWSAOVERLAPPED Reserved);
+--]]
 
+ffi.cdef[[
 BOOL
-PASCAL
+__stdcall
 WSAConnectByList(
     SOCKET s,
     PSOCKET_ADDRESS_LIST SocketAddress,
     LPDWORD LocalAddressLength,
-   _Out_writes_bytes_to_opt_(*LocalAddressLength,*LocalAddressLength) LPSOCKADDR LocalAddress,
+    LPSOCKADDR LocalAddress,
     LPDWORD RemoteAddressLength,
-   _Out_writes_bytes_to_opt_(*RemoteAddressLength,*RemoteAddressLength) LPSOCKADDR RemoteAddress,
+    LPSOCKADDR RemoteAddress,
     const struct timeval * timeout,
-   _Reserved_ LPWSAOVERLAPPED Reserved);
+    LPWSAOVERLAPPED Reserved);
+]]
 end
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSACONNECT)(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen,
     LPWSABUF lpCallerData,
-   _Out_opt_ LPWSABUF lpCalleeData,
+    LPWSABUF lpCalleeData,
     LPQOS lpSQOS,
     LPQOS lpGQOS
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 WSAEVENT
 __stdcall
 WSACreateEvent(
    void
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 WSAEVENT
 (__stdcall * LPFN_WSACREATEEVENT)(
    void
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 _WINSOCK_DEPRECATED_BY("WSADuplicateSocketW()")
 
 int
@@ -2903,31 +2825,38 @@ __stdcall
 WSADuplicateSocketA(
     SOCKET s,
     DWORD dwProcessId,
-   _Out_ LPWSAPROTOCOL_INFOA lpProtocolInfo
+    LPWSAPROTOCOL_INFOA lpProtocolInfo
    );
+]]
 
-
+ffi.cdef[[
 int
 __stdcall
 WSADuplicateSocketW(
     SOCKET s,
     DWORD dwProcessId,
-   _Out_ LPWSAPROTOCOL_INFOW lpProtocolInfo
+    LPWSAPROTOCOL_INFOW lpProtocolInfo
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSADuplicateSocket  WSADuplicateSocketW
 #else
 #define WSADuplicateSocket  WSADuplicateSocketA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+--[=[
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSADUPLICATESOCKETA)(
     SOCKET s,
     DWORD dwProcessId,
-   _Out_ LPWSAPROTOCOL_INFOA lpProtocolInfo
+    LPWSAPROTOCOL_INFOA lpProtocolInfo
    );
 
 typedef
@@ -2935,37 +2864,41 @@ int
 (__stdcall * LPFN_WSADUPLICATESOCKETW)(
     SOCKET s,
     DWORD dwProcessId,
-   _Out_ LPWSAPROTOCOL_INFOW lpProtocolInfo
+    LPWSAPROTOCOL_INFOW lpProtocolInfo
    );
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSADUPLICATESOCKET  LPFN_WSADUPLICATESOCKETW
 #else
 #define LPFN_WSADUPLICATESOCKET  LPFN_WSADUPLICATESOCKETA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSAEnumNetworkEvents(
     SOCKET s,
     WSAEVENT hEventObject,
-   _Out_ LPWSANETWORKEVENTS lpNetworkEvents
+    LPWSANETWORKEVENTS lpNetworkEvents
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAENUMNETWORKEVENTS)(
     SOCKET s,
     WSAEVENT hEventObject,
-   _Out_ LPWSANETWORKEVENTS lpNetworkEvents
+    LPWSANETWORKEVENTS lpNetworkEvents
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("WSAEnumProtocolsW()")
 
 int
@@ -2991,7 +2924,7 @@ WSAEnumProtocolsW(
 end --/* !UNICODE */
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAENUMPROTOCOLSA)(
@@ -3014,7 +2947,7 @@ int
 end --/* !UNICODE */
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
@@ -3025,7 +2958,7 @@ WSAEventSelect(
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAEVENTSELECT)(
@@ -3035,35 +2968,35 @@ int
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 BOOL
 __stdcall
 WSAGetOverlappedResult(
     SOCKET s,
     LPWSAOVERLAPPED lpOverlapped,
-   _Out_ LPDWORD lpcbTransfer,
+    LPDWORD lpcbTransfer,
     BOOL fWait,
-   _Out_ LPDWORD lpdwFlags
+    LPDWORD lpdwFlags
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 BOOL
 (__stdcall * LPFN_WSAGETOVERLAPPEDRESULT)(
     SOCKET s,
     LPWSAOVERLAPPED lpOverlapped,
-   _Out_ LPDWORD lpcbTransfer,
+    LPDWORD lpcbTransfer,
     BOOL fWait,
-   _Out_ LPDWORD lpdwFlags
+    LPDWORD lpdwFlags
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED
 
 BOOL
@@ -3071,325 +3004,345 @@ __stdcall
 WSAGetQOSByName(
     SOCKET s,
     LPWSABUF lpQOSName,
-   _Out_ LPQOS lpQOS
+    LPQOS lpQOS
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 BOOL
 (__stdcall * LPFN_WSAGETQOSBYNAME)(
     SOCKET s,
     LPWSABUF lpQOSName,
-   _Out_ LPQOS lpQOS
+    LPQOS lpQOS
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if INCL_WINSOCK_API_PROTOTYPES
+
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSAHtonl(
      SOCKET s,
      u_long hostlong,
-   _Out_  u_long  * lpnetlong
+     u_long  * lpnetlong
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAHTONL)(
     SOCKET s,
     u_long hostlong,
-   _Out_ u_long  * lpnetlong
+    u_long  * lpnetlong
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSAHtons(
      SOCKET s,
      u_short hostshort,
-   _Out_  u_short  * lpnetshort
+     u_short  * lpnetshort
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAHTONS)(
     SOCKET s,
     u_short hostshort,
-   _Out_ u_short  * lpnetshort
+    u_short  * lpnetshort
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSAIoctl(
     SOCKET s,
     DWORD dwIoControlCode,
-   _In_reads_bytes_opt_(cbInBuffer) LPVOID lpvInBuffer,
+    LPVOID lpvInBuffer,
     DWORD cbInBuffer,
-   _Out_writes_bytes_to_opt_(cbOutBuffer, *lpcbBytesReturned) LPVOID lpvOutBuffer,
+    LPVOID lpvOutBuffer,
     DWORD cbOutBuffer,
-   _Out_ LPDWORD lpcbBytesReturned,
+    LPDWORD lpcbBytesReturned,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSAIOCTL)(
     SOCKET s,
     DWORD dwIoControlCode,
-   _In_reads_bytes_opt_(cbInBuffer) LPVOID lpvInBuffer,
+    LPVOID lpvInBuffer,
     DWORD cbInBuffer,
-   _Out_writes_bytes_to_opt_(cbOutBuffer, *lpcbBytesReturned) LPVOID lpvOutBuffer,
+    LPVOID lpvOutBuffer,
     DWORD cbOutBuffer,
-   _Out_ LPDWORD lpcbBytesReturned,
+    LPDWORD lpcbBytesReturned,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 SOCKET
 __stdcall
 WSAJoinLeaf(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen,
     LPWSABUF lpCallerData,
-   _Out_opt_ LPWSABUF lpCalleeData,
+    LPWSABUF lpCalleeData,
     LPQOS lpSQOS,
     LPQOS lpGQOS,
     DWORD dwFlags
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 SOCKET
 (__stdcall * LPFN_WSAJOINLEAF)(
     SOCKET s,
-   _In_reads_bytes_(namelen) const struct sockaddr  * name,
+    const struct sockaddr  * name,
     int namelen,
     LPWSABUF lpCallerData,
-   _Out_opt_ LPWSABUF lpCalleeData,
+    LPWSABUF lpCalleeData,
     LPQOS lpSQOS,
     LPQOS lpGQOS,
     DWORD dwFlags
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
+--]=]
 
-#if INCL_WINSOCK_API_PROTOTYPES
+--[[
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSANtohl(
     SOCKET s,
     u_long netlong,
-   _Out_ u_long  * lphostlong
+    u_long  * lphostlong
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSANTOHL)(
     SOCKET s,
     u_long netlong,
-   _Out_ u_long  * lphostlong
+    u_long  * lphostlong
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if INCL_WINSOCK_API_PROTOTYPES then
 
 int
 __stdcall
 WSANtohs(
     SOCKET s,
     u_short netshort,
-   _Out_ u_short  * lphostshort
+    u_short  * lphostshort
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
 typedef
 int
 (__stdcall * LPFN_WSANTOHS)(
     SOCKET s,
     u_short netshort,
-   _Out_ u_short  * lphostshort
+    u_short  * lphostshort
    );
 end --/* INCL_WINSOCK_API_TYPEDEFS */
+--]]
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 WSARecv(
     SOCKET s,
-   _In_reads_(dwBufferCount) __out_data_source(NETWORK) LPWSABUF lpBuffers,
+     LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesRecvd,
+    LPDWORD lpNumberOfBytesRecvd,
     LPDWORD lpFlags,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSARECV)(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesRecvd,
+    LPDWORD lpNumberOfBytesRecvd,
     LPDWORD lpFlags,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--[[
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("WSARecv()")
 
 int
 __stdcall
 WSARecvDisconnect(
     SOCKET s,
-    __out_data_source(NETWORK) LPWSABUF lpInboundDisconnectData
+     LPWSABUF lpInboundDisconnectData
    );
-end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+end --/* INCL_WINSOCK_API_PROTOTYPES */
+--]]
+
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSARECVDISCONNECT)(
     SOCKET s,
-   __out_data_source(NETWORK) LPWSABUF lpInboundDisconnectData
+    LPWSABUF lpInboundDisconnectData
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if INCL_WINSOCK_API_PROTOTYPES
 
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 WSARecvFrom(
     SOCKET s,
-   _In_reads_(dwBufferCount) __out_data_source(NETWORK) LPWSABUF lpBuffers,
+     LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesRecvd,
+    LPDWORD lpNumberOfBytesRecvd,
     LPDWORD lpFlags,
-   _Out_writes_bytes_to_opt_(*lpFromlen,*lpFromlen) struct sockaddr  * lpFrom,
+    struct sockaddr  * lpFrom,
     LPINT lpFromlen,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSARECVFROM)(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesRecvd,
+    LPDWORD lpNumberOfBytesRecvd,
     LPDWORD lpFlags,
-   _Out_writes_bytes_to_opt_(*lpFromlen,*lpFromLen) struct sockaddr  * lpFrom,
+    struct sockaddr  * lpFrom,
     LPINT lpFromlen,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 BOOL
 __stdcall
 WSAResetEvent(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 BOOL
 (__stdcall * LPFN_WSARESETEVENT)(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 WSASend(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesSent,
+    LPDWORD lpNumberOfBytesSent,
     DWORD dwFlags,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSASEND)(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesSent,
+    LPDWORD lpNumberOfBytesSent,
      DWORD dwFlags,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-if (_WIN32_WINNT >= 0x0600)
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if (_WIN32_WINNT >= 0x0600) then
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int 
 __stdcall 
 WSASendMsg(
     SOCKET Handle,
     LPWSAMSG lpMsg,
     DWORD dwFlags,
-   _Out_opt_ LPDWORD lpNumberOfBytesSent,
+    LPDWORD lpNumberOfBytesSent,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 end -- (_WIN32_WINNT >= 0x0600)
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-#if INCL_WINSOCK_API_PROTOTYPES
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--[[
+if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("WSASend()")
 
 int
@@ -3398,75 +3351,84 @@ WSASendDisconnect(
     SOCKET s,
     LPWSABUF lpOutboundDisconnectData
    );
-end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+end --/* INCL_WINSOCK_API_PROTOTYPES */
+--]]
+
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSASENDDISCONNECT)(
     SOCKET s,
     LPWSABUF lpOutboundDisconnectData
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if INCL_WINSOCK_API_PROTOTYPES
 
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 int
 __stdcall
 WSASendTo(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesSent,
+    LPDWORD lpNumberOfBytesSent,
     DWORD dwFlags,
-   _In_reads_bytes_opt_(iTolen) const struct sockaddr  * lpTo,
+    const struct sockaddr  * lpTo,
     int iTolen,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_WSASENDTO)(
     SOCKET s,
-   _In_reads_(dwBufferCount) LPWSABUF lpBuffers,
+    LPWSABUF lpBuffers,
     DWORD dwBufferCount,
-   _Out_opt_ LPDWORD lpNumberOfBytesSent,
+    LPDWORD lpNumberOfBytesSent,
     DWORD dwFlags,
-   _In_reads_bytes_opt_(iTolen) const struct sockaddr  * lpTo,
+    const struct sockaddr  * lpTo,
     int iTolen,
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 BOOL
 __stdcall
 WSASetEvent(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 BOOL
 (__stdcall * LPFN_WSASETEVENT)(
     WSAEVENT hEvent
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
 
+if INCL_WINSOCK_API_PROTOTYPES then
 
-
-
+ffi.cdef[[
 SOCKET
 __stdcall
 WSASocketA(
@@ -3478,8 +3440,6 @@ WSASocketA(
     DWORD dwFlags
    );
 
-
-
 SOCKET
 __stdcall
 WSASocketW(
@@ -3490,15 +3450,20 @@ WSASocketW(
     GROUP g,
     DWORD dwFlags
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSASocket  WSASocketW
 #else
 #define WSASocket  WSASocketA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 
 SOCKET
@@ -3522,99 +3487,117 @@ SOCKET
     GROUP g,
     DWORD dwFlags
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSASOCKET  LPFN_WSASOCKETW
 #else
 #define LPFN_WSASOCKET  LPFN_WSASOCKETA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 DWORD
 __stdcall
 WSAWaitForMultipleEvents(
     DWORD cEvents,
-   _In_reads_(cEvents) const WSAEVENT  * lphEvents,
+    const WSAEVENT  * lphEvents,
     BOOL fWaitAll,
     DWORD dwTimeout,
     BOOL fAlertable
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 DWORD
 (__stdcall * LPFN_WSAWAITFORMULTIPLEEVENTS)(
     DWORD cEvents,
-   _In_reads_(cEvents) const WSAEVENT  * lphEvents,
+    const WSAEVENT  * lphEvents,
     BOOL fWaitAll,
     DWORD dwTimeout,
     BOOL fAlertable
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 _WINSOCK_DEPRECATED_BY("WSAAddressToStringW()")
 
 INT
 __stdcall
 WSAAddressToStringA(
-   _In_reads_bytes_(dwAddressLength) LPSOCKADDR lpsaAddress,
+    LPSOCKADDR lpsaAddress,
         DWORD               dwAddressLength,
     LPWSAPROTOCOL_INFOA lpProtocolInfo,
-   _Out_writes_to_(*lpdwAddressStringLength,*lpdwAddressStringLength) LPSTR lpszAddressString,
+    LPSTR lpszAddressString,
      LPDWORD             lpdwAddressStringLength
    );
+]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSAAddressToStringW(
-   _In_reads_bytes_(dwAddressLength) LPSOCKADDR lpsaAddress,
+    LPSOCKADDR lpsaAddress,
         DWORD               dwAddressLength,
     LPWSAPROTOCOL_INFOW lpProtocolInfo,
-   _Out_writes_to_(*lpdwAddressStringLength,*lpdwAddressStringLength) LPWSTR lpszAddressString,
+    LPWSTR lpszAddressString,
      LPDWORD             lpdwAddressStringLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSAAddressToString  WSAAddressToStringW
 #else
 #define WSAAddressToString  WSAAddressToStringA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAADDRESSTOSTRINGA)(
-   _In_reads_bytes_(dwAddressLength) LPSOCKADDR lpsaAddress,
+    LPSOCKADDR lpsaAddress,
         DWORD               dwAddressLength,
     LPWSAPROTOCOL_INFOA lpProtocolInfo,
-   _Out_writes_to_(*lpdwAddressStringLength,*lpdwAddressStringLength) LPSTR lpszAddressString,
+    LPSTR lpszAddressString,
      LPDWORD             lpdwAddressStringLength
    );
 
 typedef
 INT
 (__stdcall * LPFN_WSAADDRESSTOSTRINGW)(
-   _In_reads_bytes_(dwAddressLength) LPSOCKADDR lpsaAddress,
+    LPSOCKADDR lpsaAddress,
         DWORD               dwAddressLength,
     LPWSAPROTOCOL_INFOW lpProtocolInfo,
-   _Out_writes_to_(*lpdwAddressStringLength,*lpdwAddressStringLength) LPWSTR lpszAddressString,
+    LPWSTR lpszAddressString,
      LPDWORD             lpdwAddressStringLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSAADDRESSTOSTRING  LPFN_WSAADDRESSTOSTRINGW
 #else
 #define LPFN_WSAADDRESSTOSTRING  LPFN_WSAADDRESSTOSTRINGA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 _WINSOCK_DEPRECATED_BY("WSAStringToAddressW()")
 
 INT
@@ -3623,36 +3606,42 @@ WSAStringToAddressA(
        LPSTR               AddressString,
        INT                 AddressFamily,
     LPWSAPROTOCOL_INFOA lpProtocolInfo,
-   _Out_writes_bytes_to_(*lpAddressLength,*lpAddressLength) LPSOCKADDR lpAddress,
+    LPSOCKADDR lpAddress,
     LPINT               lpAddressLength
    );
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSAStringToAddressW(
        LPWSTR             AddressString,
        INT                AddressFamily,
     LPWSAPROTOCOL_INFOW lpProtocolInfo,
-   _Out_writes_bytes_to_(*lpAddressLength,*lpAddressLength) LPSOCKADDR lpAddress,
+    LPSOCKADDR lpAddress,
     LPINT              lpAddressLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSAStringToAddress  WSAStringToAddressW
 #else
 #define WSAStringToAddress  WSAStringToAddressA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSASTRINGTOADDRESSA)(
        LPSTR              AddressString,
        INT                AddressFamily,
     LPWSAPROTOCOL_INFOA lpProtocolInfo,
-   _Out_writes_bytes_to_(*lpAddressLength,*lpAddressLength) LPSOCKADDR lpAddress,
+    LPSOCKADDR lpAddress,
     LPINT              lpAddressLength
    );
 
@@ -3662,21 +3651,26 @@ INT
        LPWSTR             AddressString,
        INT                AddressFamily,
     LPWSAPROTOCOL_INFOW lpProtocolInfo,
-   _Out_writes_bytes_to_(*lpAddressLength,*lpAddressLength) LPSOCKADDR lpAddress,
+    LPSOCKADDR lpAddress,
     LPINT              lpAddressLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSASTRINGTOADDRESS  LPFN_WSASTRINGTOADDRESSW
 #else
 #define LPFN_WSASTRINGTOADDRESS  LPFN_WSASTRINGTOADDRESSA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-/* Registration and Name Resolution API functions */
+
+--/* Registration and Name Resolution API functions */
 
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 _WINSOCK_DEPRECATED_BY("WSALookupServiceBeginW()")
 
 INT
@@ -3684,32 +3678,37 @@ __stdcall
 WSALookupServiceBeginA(
     LPWSAQUERYSETA lpqsRestrictions,
     DWORD          dwControlFlags,
-   _Out_ LPHANDLE       lphLookup
+    LPHANDLE       lphLookup
    );
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSALookupServiceBeginW(
     LPWSAQUERYSETW lpqsRestrictions,
     DWORD          dwControlFlags,
-   _Out_ LPHANDLE       lphLookup
+    LPHANDLE       lphLookup
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSALookupServiceBegin  WSALookupServiceBeginW
 #else
 #define WSALookupServiceBegin  WSALookupServiceBeginA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSALOOKUPSERVICEBEGINA)(
      LPWSAQUERYSETA lpqsRestrictions,
      DWORD          dwControlFlags,
-   _Out_ LPHANDLE       lphLookup
+    LPHANDLE       lphLookup
    );
 
 typedef
@@ -3717,17 +3716,21 @@ INT
 (__stdcall * LPFN_WSALOOKUPSERVICEBEGINW)(
      LPWSAQUERYSETW lpqsRestrictions,
      DWORD          dwControlFlags,
-   _Out_ LPHANDLE       lphLookup
+    LPHANDLE       lphLookup
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSALOOKUPSERVICEBEGIN  LPFN_WSALOOKUPSERVICEBEGINW
 #else
 #define LPFN_WSALOOKUPSERVICEBEGIN  LPFN_WSALOOKUPSERVICEBEGINA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
 _WINSOCK_DEPRECATED_BY("WSALookupServiceNextW()")
 
 INT
@@ -3736,34 +3739,40 @@ WSALookupServiceNextA(
     HANDLE           hLookup,
     DWORD            dwControlFlags,
     LPDWORD       lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSAQUERYSETA lpqsResults
+    LPWSAQUERYSETA lpqsResults
    );
+]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSALookupServiceNextW(
     HANDLE           hLookup,
     DWORD            dwControlFlags,
     LPDWORD       lpdwBufferLength,
-   _Out_writes_bytes_to_opt_(*lpdwBufferLength,*lpdwBufferLength) LPWSAQUERYSETW lpqsResults
+    LPWSAQUERYSETW lpqsResults
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSALookupServiceNext  WSALookupServiceNextW
 #else
 #define WSALookupServiceNext  WSALookupServiceNextA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSALOOKUPSERVICENEXTA)(
       HANDLE           hLookup,
       DWORD            dwControlFlags,
     LPDWORD         lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSAQUERYSETA   lpqsResults
+    LPWSAQUERYSETA   lpqsResults
    );
 
 typedef
@@ -3774,129 +3783,159 @@ INT
     LPDWORD         lpdwBufferLength,
    _Out_writes_bytes_to_opt_(*lpdwBufferLength,*lpdwBufferLength) LPWSAQUERYSETW   lpqsResults
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSALOOKUPSERVICENEXT  LPFN_WSALOOKUPSERVICENEXTW
 #else
 #define LPFN_WSALOOKUPSERVICENEXT  LPFN_WSALOOKUPSERVICENEXTA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-if (_WIN32_WINNT >= 0x0501)
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if (_WIN32_WINNT >= 0x0501) then
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 INT
 __stdcall
 WSANSPIoctl(
     HANDLE           hLookup,
     DWORD            dwControlCode,
-   _In_reads_bytes_opt_(cbInBuffer) LPVOID lpvInBuffer,
+    LPVOID lpvInBuffer,
     DWORD            cbInBuffer,
-   _Out_writes_bytes_to_opt_(cbOutBuffer, *lpcbBytesReturned) LPVOID lpvOutBuffer,
+    LPVOID lpvOutBuffer,
     DWORD            cbOutBuffer,
-   _Out_ LPDWORD        lpcbBytesReturned,
+    LPDWORD        lpcbBytesReturned,
     LPWSACOMPLETION lpCompletion
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSANSPIOCTL)(
      HANDLE           hLookup,
      DWORD            dwControlCode,
-   _In_reads_bytes_opt_(cbInBuffer) LPVOID lpvInBuffer,
+    LPVOID lpvInBuffer,
      DWORD            cbInBuffer,
-   _Out_writes_bytes_to_opt_(cbOutBuffer, *lpcbBytesReturned) LPVOID lpvOutBuffer,
+    LPVOID lpvOutBuffer,
      DWORD            cbOutBuffer,
-   _Out_ LPDWORD        lpcbBytesReturned,
+    LPDWORD        lpcbBytesReturned,
     LPWSACOMPLETION lpCompletion
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 end --(_WIN32_WINNT >= 0x0501)
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 INT
 __stdcall
 WSALookupServiceEnd(
     HANDLE  hLookup
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSALOOKUPSERVICEEND)(
     HANDLE  hLookup
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-#if INCL_WINSOCK_API_PROTOTYPES
-_WINSOCK_DEPRECATED_BY("WSAInstallServiceClassW()")
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
+    _WINSOCK_DEPRECATED_BY("WSAInstallServiceClassW()")
 
 INT
 __stdcall
 WSAInstallServiceClassA(
      LPWSASERVICECLASSINFOA   lpServiceClassInfo
    );
+--]]
 
+ffi.cdef[[
 INT
 __stdcall
 WSAInstallServiceClassW(
      LPWSASERVICECLASSINFOW   lpServiceClassInfo
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSAInstallServiceClass  WSAInstallServiceClassW
 #else
 #define WSAInstallServiceClass  WSAInstallServiceClassA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAINSTALLSERVICECLASSA)(
      LPWSASERVICECLASSINFOA   lpServiceClassInfo
    );
-typedef
+
+   typedef
 INT
 (__stdcall * LPFN_WSAINSTALLSERVICECLASSW)(
      LPWSASERVICECLASSINFOW   lpServiceClassInfo
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSAINSTALLSERVICECLASS  LPFN_WSAINSTALLSERVICECLASSW
 #else
 #define LPFN_WSAINSTALLSERVICECLASS  LPFN_WSAINSTALLSERVICECLASSA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
 
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 INT
 __stdcall
 WSARemoveServiceClass(
      LPGUID  lpServiceClassId
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAREMOVESERVICECLASS)(
      LPGUID  lpServiceClassId
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if INCL_WINSOCK_API_PROTOTYPES
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-_WINSOCK_DEPRECATED_BY("WSAGetServiceClassInfoW()")
+
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+    _WINSOCK_DEPRECATED_BY("WSAGetServiceClassInfoW()")
 
 INT
 __stdcall
@@ -3904,212 +3943,258 @@ WSAGetServiceClassInfoA(
      LPGUID  lpProviderId,
      LPGUID  lpServiceClassId,
     LPDWORD  lpdwBufSize,
-   _Out_writes_bytes_to_(*lpdwBufSize,*lpdwBufSize) LPWSASERVICECLASSINFOA lpServiceClassInfo
+    LPWSASERVICECLASSINFOA lpServiceClassInfo
    );
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSAGetServiceClassInfoW(
      LPGUID  lpProviderId,
      LPGUID  lpServiceClassId,
     LPDWORD  lpdwBufSize,
-   _Out_writes_bytes_to_(*lpdwBufSize,*lpdwBufSize) LPWSASERVICECLASSINFOW lpServiceClassInfo
+    LPWSASERVICECLASSINFOW lpServiceClassInfo
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSAGetServiceClassInfo  WSAGetServiceClassInfoW
 #else
 #define WSAGetServiceClassInfo  WSAGetServiceClassInfoA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+
+if INCL_WINSOCK_API_TYPEDEFS then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAGETSERVICECLASSINFOA)(
      LPGUID  lpProviderId,
      LPGUID  lpServiceClassId,
     LPDWORD  lpdwBufSize,
-   _Out_writes_bytes_to_(*lpdwBufSize,*lpdwBufSize) LPWSASERVICECLASSINFOA lpServiceClassInfo
+    LPWSASERVICECLASSINFOA lpServiceClassInfo
    );
+]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAGETSERVICECLASSINFOW)(
      LPGUID  lpProviderId,
      LPGUID  lpServiceClassId,
     LPDWORD  lpdwBufSize,
-   _Out_writes_bytes_to_(*lpdwBufSize,*lpdwBufSize) LPWSASERVICECLASSINFOW lpServiceClassInfo
+    LPWSASERVICECLASSINFOW lpServiceClassInfo
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSAGETSERVICECLASSINFO  LPFN_WSAGETSERVICECLASSINFOW
 #else
 #define LPFN_WSAGETSERVICECLASSINFO  LPFN_WSAGETSERVICECLASSINFOA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-_WINSOCK_DEPRECATED_BY("WSAEnumNameSpaceProvidersW()")
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
+    _WINSOCK_DEPRECATED_BY("WSAEnumNameSpaceProvidersW()")
 
 INT
 __stdcall
 WSAEnumNameSpaceProvidersA(
     LPDWORD             lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOA lpnspBuffer
+    LPWSANAMESPACE_INFOA lpnspBuffer
    );
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSAEnumNameSpaceProvidersW(
     LPDWORD             lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOW lpnspBuffer
+    LPWSANAMESPACE_INFOW lpnspBuffer
    );
-
+]]
+--[[
 #ifdef UNICODE
 #define WSAEnumNameSpaceProviders   WSAEnumNameSpaceProvidersW
 #else
 #define WSAEnumNameSpaceProviders   WSAEnumNameSpaceProvidersA
 end --/* !UNICODE */
+--]]
 
-if (_WIN32_WINNT >= 0x0600 )
+if (_WIN32_WINNT >= 0x0600 ) then
+--[[
 _WINSOCK_DEPRECATED_BY("WSAEnumNameSpaceProvidersW()")
 
 INT
 __stdcall
 WSAEnumNameSpaceProvidersExA(
     LPDWORD             lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOEXA lpnspBuffer
+    LPWSANAMESPACE_INFOEXA lpnspBuffer
    );
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSAEnumNameSpaceProvidersExW(
     LPDWORD             lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOEXW lpnspBuffer
+    LPWSANAMESPACE_INFOEXW lpnspBuffer
    );
-
+]]
+--[[
 #ifdef UNICODE
 #define WSAEnumNameSpaceProvidersEx WSAEnumNameSpaceProvidersExW
 #else
 #define WSAEnumNameSpaceProvidersEx WSAEnumNameSpaceProvidersExA
 end --/* !UNICODE */
+--]]
 
 end --(_WIN32_WINNT >= 0x0600 )
 
 
 end --/* INCL_WINSOCK_API_PROTOTYPES */
+--]=]
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAENUMNAMESPACEPROVIDERSA)(
     LPDWORD              lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOA lpnspBuffer
+    LPWSANAMESPACE_INFOA lpnspBuffer
    );
 
 typedef
 INT
 (__stdcall * LPFN_WSAENUMNAMESPACEPROVIDERSW)(
     LPDWORD              lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOW lpnspBuffer
+    LPWSANAMESPACE_INFOW lpnspBuffer
    );
+]]
+
+ --[[
 #ifdef UNICODE
 #define LPFN_WSAENUMNAMESPACEPROVIDERS  LPFN_WSAENUMNAMESPACEPROVIDERSW
 #else
 #define LPFN_WSAENUMNAMESPACEPROVIDERS  LPFN_WSAENUMNAMESPACEPROVIDERSA
 end --/* !UNICODE */
+--]]
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAENUMNAMESPACEPROVIDERSEXA)(
     LPDWORD              lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOEXA lpnspBuffer
+    LPWSANAMESPACE_INFOEXA lpnspBuffer
    );
 
 typedef
 INT
 (__stdcall * LPFN_WSAENUMNAMESPACEPROVIDERSEXW)(
     LPDWORD              lpdwBufferLength,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSANAMESPACE_INFOEXW lpnspBuffer
+    LPWSANAMESPACE_INFOEXW lpnspBuffer
    );
+]]
+--[[
 #ifdef UNICODE
 #define LPFN_WSAENUMNAMESPACEPROVIDERSEX  LPFN_WSAENUMNAMESPACEPROVIDERSEXW
 #else
 #define LPFN_WSAENUMNAMESPACEPROVIDERSEX  LPFN_WSAENUMNAMESPACEPROVIDERSEXA
 end --/* !UNICODE */
+--]]
 
 end --(_WIN32_WINNT >= 0x600)
 
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if INCL_WINSOCK_API_PROTOTYPES then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--[[
 _WINSOCK_DEPRECATED_BY("WSAGetServiceClassNameByClassIdW()")
 
-_Success_(return == 0) INT
+ INT
 __stdcall
 WSAGetServiceClassNameByClassIdA(
           LPGUID  lpServiceClassId,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPSTR lpszServiceClassName,
+    LPSTR lpszServiceClassName,
     LPDWORD lpdwBufferLength
    );
+--]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
 
-_Success_(return == 0) INT
+ffi.cdef[[
+ INT
 __stdcall
 WSAGetServiceClassNameByClassIdW(
           LPGUID  lpServiceClassId,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSTR lpszServiceClassName,
+    LPWSTR lpszServiceClassName,
     LPDWORD lpdwBufferLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSAGetServiceClassNameByClassId  WSAGetServiceClassNameByClassIdW
 #else
 #define WSAGetServiceClassNameByClassId  WSAGetServiceClassNameByClassIdA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if INCL_WINSOCK_API_TYPEDEFS then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAGETSERVICECLASSNAMEBYCLASSIDA)(
          LPGUID  lpServiceClassId,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPSTR lpszServiceClassName,
+    LPSTR lpszServiceClassName,
     LPDWORD lpdwBufferLength
    );
+]]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAGETSERVICECLASSNAMEBYCLASSIDW)(
          LPGUID  lpServiceClassId,
-   _Out_writes_bytes_to_(*lpdwBufferLength,*lpdwBufferLength) LPWSTR lpszServiceClassName,
+    LPWSTR lpszServiceClassName,
     LPDWORD lpdwBufferLength
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSAGETSERVICECLASSNAMEBYCLASSID  LPFN_WSAGETSERVICECLASSNAMEBYCLASSIDW
 #else
 #define LPFN_WSAGETSERVICECLASSNAMEBYCLASSID  LPFN_WSAGETSERVICECLASSNAMEBYCLASSIDA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-_WINSOCK_DEPRECATED_BY("WSASetServiceW()")
+
+
+if INCL_WINSOCK_API_PROTOTYPES then
+--[[
+    _WINSOCK_DEPRECATED_BY("WSASetServiceW()")
 
 INT
 __stdcall
@@ -4118,8 +4203,9 @@ WSASetServiceA(
     WSAESETSERVICEOP essoperation,
     DWORD dwControlFlags
    );
+--]]
 
-
+ffi.cdef[[
 INT
 __stdcall
 WSASetServiceW(
@@ -4127,14 +4213,19 @@ WSASetServiceW(
     WSAESETSERVICEOP essoperation,
     DWORD dwControlFlags
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define WSASetService  WSASetServiceW
 #else
 #define WSASetService  WSASetServiceA
 end --/* !UNICODE */
+--]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSASETSERVICEA)(
@@ -4150,15 +4241,20 @@ INT
     WSAESETSERVICEOP essoperation,
     DWORD dwControlFlags
    );
+]]
+
+--[[
 #ifdef UNICODE
 #define LPFN_WSASETSERVICE  LPFN_WSASETSERVICEW
 #else
 #define LPFN_WSASETSERVICE  LPFN_WSASETSERVICEA
 end --/* !UNICODE */
+--]]
+
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-#if INCL_WINSOCK_API_PROTOTYPES
-
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 INT
 __stdcall
 WSAProviderConfigChange(
@@ -4166,9 +4262,11 @@ WSAProviderConfigChange(
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_WSAPROVIDERCONFIGCHANGE)(
@@ -4176,11 +4274,12 @@ INT
     LPWSAOVERLAPPED lpOverlapped,
     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if(_WIN32_WINNT >= 0x0600) then
 if INCL_WINSOCK_API_PROTOTYPES then
-
+ffi.cdef[[
 int
 __stdcall
 WSAPoll(
@@ -4188,9 +4287,10 @@ WSAPoll(
     ULONG fds,
     INT timeout
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 end -- (_WIN32_WINNT >= 0x0600)
---]=]
+
 
 ffi.cdef[[
 /* Microsoft Windows Extended data types */
@@ -4278,3 +4378,6 @@ end --(_WIN32_WINNT >= 0x0501)
 
 end  --/* _WINSOCK2API_ */
 
+exports.Lib = ffi.load("ws2_32");
+
+return exports
