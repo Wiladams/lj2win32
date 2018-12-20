@@ -9,7 +9,7 @@ local bnot = bit.bnot
 local bswap = bit.bswap
 
 
-local wsock = require("win32.winsock");
+local wsock = require("win32.winsock2");
 
 IN_CLASSA = wsock.IN4_CLASSA;
 IN_CLASSB = wsock.IN4_CLASSB
@@ -41,62 +41,62 @@ IN4_MULTICAST = IN4_CLASSD
 	BSD Style functions
 --]]
 local accept = function(s, addr, addrlen)
-	local socket = ws2_32.accept(s,addr,addrlen);
+	local socket = wsock.accept(s,addr,addrlen);
 	if socket == INVALID_SOCKET then
-		return false, ws2_32.WSAGetLastError();
+		return false, wsock.WSAGetLastError();
 	end
 	
 	return socket;
 end
 
 local bind = function(s, name, namelen)
-	if 0 == ws2_32.bind(s, ffi.cast("const struct sockaddr *",name), namelen) then
+	if 0 == wsock.bind(s, ffi.cast("const struct sockaddr *",name), namelen) then
 		return true;
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local connect = function(s, name, namelen)
-	if 0 == ws2_32.connect(s, ffi.cast("const struct sockaddr *", name), namelen) then
+	if 0 == wsock.connect(s, ffi.cast("const struct sockaddr *", name), namelen) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local closesocket = function(s)
-	if 0 == ws2_32.closesocket(s) then
+	if 0 == wsock.closesocket(s) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local ioctlsocket = function(s, cmd, argp)
-	if 0 == ws2_32.ioctlsocket(s, cmd, argp) then
+	if 0 == wsock.ioctlsocket(s, cmd, argp) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local listen = function(s, backlog)
-	if 0 == ws2_32.listen(s, backlog) then
+	if 0 == wsock.listen(s, backlog) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local recv = function(s, buf, len, flags)
 	len = len or #buf;
 	flags = flags or 0;
 	
-	local bytesreceived = ws2_32.recv(s, ffi.cast("char*", buf), len, flags);
+	local bytesreceived = wsock.recv(s, ffi.cast("char*", buf), len, flags);
 
 	if bytesreceived == SOCKET_ERROR then
-		return false, ws2_32.WSAGetLastError();
+		return false, wsock.WSAGetLastError();
 	end
 	
 	return bytesreceived;
@@ -106,47 +106,47 @@ local send = function(s, buf, len, flags)
 	len = len or #buf;
 	flags = flags or 0;
 	
-	local bytessent = ws2_32.send(s, ffi.cast("const char*", buf), len, flags);
+	local bytessent = wsock.send(s, ffi.cast("const char*", buf), len, flags);
 
 	if bytessent == SOCKET_ERROR then
-		return false, ws2_32.WSAGetLastError();
+		return false, wsock.WSAGetLastError();
 	end
 	
 	return bytessent;
 end
 
 local getsockopt = function(s, optlevel, optname, optval, optlen)
-	if 0 == ws2_32.getsockopt(s, optlevel, optname, ffi.cast("char *",optval), optlen) then
+	if 0 == wsock.getsockopt(s, optlevel, optname, ffi.cast("char *",optval), optlen) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local setsockopt = function(s, optlevel, optname, optval, optlen)
-	if 0 == ws2_32.setsockopt(s, optlevel, optname, ffi.cast("const uint8_t *", optval), optlen) then
+	if 0 == wsock.setsockopt(s, optlevel, optname, ffi.cast("const uint8_t *", optval), optlen) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local shutdown = function(s, how)
-	if 0 == ws2_32.shutdown(s, how) then
+	if 0 == wsock.shutdown(s, how) then
 		return true
 	end
 	
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local socket = function(af, socktype, protocol)
-	af = af or AF_INET
-	socktype = socktype or SOCK_STREAM
-	protocol = protocol or IPPROTO_TCP
+	af = af or ffi.C.AF_INET
+	socktype = socktype or ffi.C.SOCK_STREAM
+	protocol = protocol or ffi.C.IPPROTO_TCP
 	
-	local sock = ws2_32.socket(af, socktype, protocol);
-	if sock == INVALID_SOCKET then
-		return false, ws2_32.WSAGetLastError();
+	local sock = wsock.socket(af, socktype, protocol);
+	if sock == ffi.C.INVALID_SOCKET then
+		return false, wsock.WSAGetLastError();
 	end
 	
 	return sock;
@@ -160,10 +160,10 @@ local WSAEnumProtocols = function()
 	local dwBufferLen = 16384;
 	local lpProtocolBuffer = ffi.cast("LPWSAPROTOCOL_INFOA", ffi.new("uint8_t[?]", dwBufferLen));	-- LPWSAPROTOCOL_INFO
 	local lpdwBufferLength = ffi.new('int32_t[1]',dwBufferLen)
-	local res = ws2_32.WSAEnumProtocolsA(lpiProtocols, lpProtocolBuffer, lpdwBufferLength);
+	local res = wsock.WSAEnumProtocolsA(lpiProtocols, lpProtocolBuffer, lpdwBufferLength);
 
-	if res == SOCKET_ERROR then
-		return false, ws2_32.WSAGetLastError();
+	if res == ffi.C.SOCKET_ERROR then
+		return false, wsock.WSAGetLastError();
 	end
 
 	local dwBufferLength = lpdwBufferLength[0];
@@ -180,7 +180,7 @@ local WSAIoctl = function(s,
     lpcbBytesReturned,
     lpOverlapped, lpCompletionRoutine)
 
-	local res = ws2_32.WSAIoctl(s, dwIoControlCode, 
+	local res = wsock.WSAIoctl(s, dwIoControlCode, 
 		lpvInBuffer, cbInBuffer,
 		lpvOutBuffer, cbOutBuffer,
 		lpcbBytesReturned,
@@ -191,31 +191,31 @@ local WSAIoctl = function(s,
 		return true
 	end
 
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 local WSAPoll = function(fdArray, fds, timeout)
-	local res = ws2_32.WSAPoll(fdArray, fds, timeout)
+	local res = wsock.WSAPoll(fdArray, fds, timeout)
 	
-	if SOCKET_ERROR == res then
-		return false, ws2_32.WSAGetLastError();
+	if ffi.C.SOCKET_ERROR == res then
+		return false, wsock.WSAGetLastError();
 	end
 	
 	return res 
 end
 
 local WSASocket = function(af, socktype, protocol, lpProtocolInfo, g, dwFlags)
-	af = af or AF_INET;
-	socktype = socktype or SOCK_STREAM;
+	af = af or ffi.C.AF_INET;
+	socktype = socktype or ffi.C.SOCK_STREAM;
 	protocol = protocol or 0;
 	lpProtocolInfo = lpProtocolInfo or nil;
 	g = g or 0;
-	dwFlags = dwFlags or WSA_FLAG_OVERLAPPED;
+	dwFlags = dwFlags or ffi.C.WSA_FLAG_OVERLAPPED;
 
-	local socket = ws2_32.WSASocketA(af, socktype, protocol, lpProtocolInfo, g, dwFlags);
+	local socket = wsock.WSASocketA(af, socktype, protocol, lpProtocolInfo, g, dwFlags);
 	
-	if socket == INVALID_SOCKET then
-		return false, ws2_32.WSAGetLastError();
+	if socket == ffi.C.INVALID_SOCKET then
+		return false, wsock.WSAGetLastError();
 	end
 
 	return socket;
@@ -261,16 +261,16 @@ typedef BOOL ( * LPFN_DISCONNECTEX) (
 
 ]]
 
-local GetExtensionFunctionPointer = function(funcguid)
+local function GetExtensionFunctionPointer(funcguid)
 --print("GetExtensionFunctionPointer: ", funcguid)
 
-	local sock = WSASocket();
+	local sock = wsock.WSASocket();
 
 	local outbuffsize = ffi.sizeof("intptr_t")
 	local outbuff = ffi.new("intptr_t[1]");
 	local pbytesreturned = ffi.new("int32_t[1]")
 
-	local success, err = WSAIoctl(sock, SIO_GET_EXTENSION_FUNCTION_POINTER, 
+	local success, err = wsock.WSAIoctl(sock, ffi.C.SIO_GET_EXTENSION_FUNCTION_POINTER, 
 		funcguid, ffi.sizeof(funcguid),
 		outbuff, outbuffsize,
 		pbytesreturned);
@@ -320,7 +320,7 @@ end
 
 local function GetLocalHostName()
 	local name = ffi.new("char[255]")
-	local err = ws2_32.gethostname(name, 255);
+	local err = wsock.gethostname(name, 255);
 
 	return ffi.string(name)
 end
@@ -337,9 +337,9 @@ function WinsockStartup()
 	local wVersionRequested = MAKEWORD( 2, 2 );
 
 	local wsadata = ffi.new("WSADATA");
-    local status = ws2_32.WSAStartup(wVersionRequested, wsadata);
+    local status = wsock.WSAStartup(wVersionRequested, wsadata);
     if status ~= 0 then
-    	return false, ws2_32.WSAGetLastError();
+    	return false, wsock.WSAGetLastError();
     end
 
 	return true;
@@ -387,7 +387,7 @@ local AcceptEx = function(sock,
 		return true;
 	end
 
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 
@@ -397,7 +397,7 @@ local DisconnectEx = function(sock, dwFlags, lpOverlapped)
 		return true;
 	end
 
-	return false, ws2_32.WSAGetLastError();
+	return false, wsock.WSAGetLastError();
 end
 
 

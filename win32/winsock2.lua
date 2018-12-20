@@ -22,6 +22,10 @@ local byte = string.byte
 
 local exports = {}
 
+function makeStatic(name, value)
+   ffi.cdef(string.format("static const int %s = %d;", name, value))
+end
+
 if not _WINSOCK2API_ then
 _WINSOCK2API_ = true
 _WINSOCKAPI_ = true  --/* Prevent inclusion of winsock.h in windows.h */
@@ -128,6 +132,11 @@ typedef unsigned int    u_int;
 typedef unsigned long   u_long;
 ]]
 
+local u_char = ffi.typeof("u_char")
+local u_short = ffi.typeof("u_short")
+local u_int = ffi.typeof("u_int")
+local u_long = ffi.typeof("u_long")
+
 if _WIN32_WINNT >= 0x0501 then
 ffi.cdef[[
 typedef uint64_t u_int64;
@@ -229,66 +238,25 @@ struct timeval {
 #define timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 ]]
 
-ffi.cdef[[
-/*
-* Commands for ioctlsocket(),  taken from the BSD file fcntl.h.
-*
-*
-* Ioctls have the command encoded in the lower word,
-* and the size of any in or out parameters in the upper
-* word.  The high 2 bits of the upper word are used
-* to encode the in/out status of the parameter; for now
-* we restrict parameters to at most 128 bytes.
-*/
-static const int IOCPARM_MASK   = 0x7f;            /* parameters must be < 128 bytes */
-static const int IOC_VOID       = 0x20000000;      /* no parameters */
-static const int IOC_OUT        = 0x40000000;      /* copy out parameters */
-static const int IOC_IN         = 0x80000000;      /* copy in parameters */
-static const int IOC_INOUT      = (IOC_IN|IOC_OUT);
-                                       /* 0x20000000 distinguishes new &
-                                          old ioctls */
-]]
 
-local function _IO(x,y)
-    return bor(ffi.C.IOC_VOID, lshift(x,8), y)
-end
-                                        
-local function _IOR(x,y,t)
-    return bor(ffi.C.IOC_OUT, lshift(band(ffi.sizeof(t),ffi.C.IOCPARM_MASK), 16), lshift(x,8), y)
-end
-                                        
-local function _IOW(x,y,t)
-    return bor(ffi.C.IOC_IN, lshift(band(ffi.sizeof(t),ffi.C.IOCPARM_MASK),16), lshift(x,8), y)
-end
 
---[[
-#define _IO(x,y)        (IOC_VOID|((x)<<8)|(y))
 
-#define _IOR(x,y,t)     (IOC_OUT|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
 
-#define _IOW(x,y,t)     (IOC_IN|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
---]]
 
---[=[
-#define FIONREAD    _IOR('f', 127, u_long) /* get # bytes to read */
-#define FIONBIO     _IOW('f', 126, u_long) /* set/clear non-blocking i/o */
-#define FIOASYNC    _IOW('f', 125, u_long) /* set/clear async i/o */
 
-/* Socket I/O Controls */
-#define SIOCSHIWAT  _IOW('s',  0, u_long)  /* set high watermark */
-#define SIOCGHIWAT  _IOR('s',  1, u_long)  /* get high watermark */
-#define SIOCSLOWAT  _IOW('s',  2, u_long)  /* set low watermark */
-#define SIOCGLOWAT  _IOR('s',  3, u_long)  /* get low watermark */
-#define SIOCATMARK  _IOR('s',  7, u_long)  /* at oob mark? */
---]=]
+makeStatic("FIONREAD",    _IOR(byte'f', 127, u_long)) -- get # bytes to read 
+makeStatic("FIONBIO",     _IOW(byte'f', 126, u_long)) -- set/clear non-blocking i/o 
+makeStatic("FIOASYNC",    _IOW(byte'f', 125, u_long)) -- set/clear async i/o 
+
+-- Socket I/O Controls 
+makeStatic("SIOCSHIWAT",  _IOW(byte's',  0, u_long))  -- set high watermark 
+makeStatic("SIOCGHIWAT",  _IOR(byte's',  1, u_long))  -- get high watermark 
+makeStatic("SIOCSLOWAT",  _IOW(byte's',  2, u_long))  -- set low watermark 
+makeStatic("SIOCGLOWAT",  _IOR(byte's',  3, u_long))  -- get low watermark 
+makeStatic("SIOCATMARK",  _IOR(byte's',  7, u_long))  -- at oob mark? 
+
 
 ffi.cdef[[
-/*
-* Structures returned by network data base library, taken from the
-* BSD file netdb.h.  All addresses are supplied in host order, and
-* returned in network order (suitable for use in system calls).
-*/
-
 struct  hostent {
        char     * h_name;           /* official name of host */
        char     *  * h_aliases;  /* alias list */

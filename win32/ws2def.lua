@@ -1,4 +1,7 @@
 local ffi = require("ffi")
+local bit = require("bit")
+local band, bor = bit.band, bit.bor
+local lshift, rshift = bit.lshift, bit.rshift
 
 if not _WS2DEF_ then
 _WS2DEF_ = true
@@ -318,48 +321,88 @@ typedef struct _SOCKET_PROCESSOR_AFFINITY {
 ]]
 end --//(_WIN32_WINNT >= 0x0602)
 
---[=[
+ffi.cdef[[
+
+static const int IOCPARM_MASK   = 0x7f;            /* parameters must be < 128 bytes */
+static const int IOC_VOID       = 0x20000000;      /* no parameters */
+static const int IOC_OUT        = 0x40000000;      /* copy out parameters */
+static const int IOC_IN         = 0x80000000;      /* copy in parameters */
+static const int IOC_INOUT      = (IOC_IN|IOC_OUT);
+                                       /* 0x20000000 distinguishes new &
+                                          old ioctls */
+]]
+
+
+function _IO(x,y)
+    return bor(ffi.C.IOC_VOID, lshift(x,8), y)
+end
+                                        
+function _IOR(x,y,t)
+    return bor(ffi.C.IOC_OUT, lshift(band(ffi.sizeof(t),ffi.C.IOCPARM_MASK), 16), lshift(x,8), y)
+end
+                                        
+function _IOW(x,y,t)
+    return bor(ffi.C.IOC_IN, lshift(band(ffi.sizeof(t),ffi.C.IOCPARM_MASK),16), lshift(x,8), y)
+end
+
+ffi.cdef[[
 /*
  * WinSock 2 extension -- manifest constants for WSAIoctl()
  */
-#define IOC_UNIX                      0x00000000
-#define IOC_WS2                       0x08000000
-#define IOC_PROTOCOL                  0x10000000
-#define IOC_VENDOR                    0x18000000
+static const int IOC_UNIX                    =  0x00000000;
+static const int IOC_WS2                     =  0x08000000;
+static const int IOC_PROTOCOL                =  0x10000000;
+static const int IOC_VENDOR                  =  0x18000000;
+]]
 
-#if (_WIN32_WINNT >= 0x0600)
-/*
- * WSK-specific IO control codes are Winsock2 codes with the highest-order
- * 3 bits of the Vendor/AddressFamily-specific field set to 1.
- */
-#define IOC_WSK                       (IOC_WS2|0x07000000)
-#endif //(_WIN32_WINNT >= 0x0600)
 
-#define _WSAIO(x,y)                   (IOC_VOID|(x)|(y))
-#define _WSAIOR(x,y)                  (IOC_OUT|(x)|(y))
-#define _WSAIOW(x,y)                  (IOC_IN|(x)|(y))
-#define _WSAIORW(x,y)                 (IOC_INOUT|(x)|(y))
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
+static const int IOC_WSK              =         (IOC_WS2|0x07000000);
+]]
+end --//(_WIN32_WINNT >= 0x0600)
 
-#define SIO_ASSOCIATE_HANDLE          _WSAIOW(IOC_WS2,1)
-#define SIO_ENABLE_CIRCULAR_QUEUEING  _WSAIO(IOC_WS2,2)
-#define SIO_FIND_ROUTE                _WSAIOR(IOC_WS2,3)
-#define SIO_FLUSH                     _WSAIO(IOC_WS2,4)
-#define SIO_GET_BROADCAST_ADDRESS     _WSAIOR(IOC_WS2,5)
-#define SIO_GET_EXTENSION_FUNCTION_POINTER  _WSAIORW(IOC_WS2,6)
-#define SIO_GET_QOS                   _WSAIORW(IOC_WS2,7)
-#define SIO_GET_GROUP_QOS             _WSAIORW(IOC_WS2,8)
-#define SIO_MULTIPOINT_LOOPBACK       _WSAIOW(IOC_WS2,9)
-#define SIO_MULTICAST_SCOPE           _WSAIOW(IOC_WS2,10)
-#define SIO_SET_QOS                   _WSAIOW(IOC_WS2,11)
-#define SIO_SET_GROUP_QOS             _WSAIOW(IOC_WS2,12)
-#define SIO_TRANSLATE_HANDLE          _WSAIORW(IOC_WS2,13)
-#define SIO_ROUTING_INTERFACE_QUERY   _WSAIORW(IOC_WS2,20)
-#define SIO_ROUTING_INTERFACE_CHANGE  _WSAIOW(IOC_WS2,21)
-#define SIO_ADDRESS_LIST_QUERY        _WSAIOR(IOC_WS2,22)
-#define SIO_ADDRESS_LIST_CHANGE       _WSAIO(IOC_WS2,23)
-#define SIO_QUERY_TARGET_PNP_HANDLE   _WSAIOR(IOC_WS2,24)
-#define SIO_QUERY_RSS_PROCESSOR_INFO  _WSAIOR(IOC_WS2,37)
 
+local function _WSAIO(x,y)                   
+    return bor(ffi.C.IOC_VOID, x, y)
+end
+
+local function _WSAIOR(x,y)                  
+    return bor(ffi.C.IOC_OUT, x,y)
+end
+
+local function _WSAIOW(x,y)
+    return bor(ffi.C.IOC_IN,x,y)
+end
+
+local function _WSAIORW(x,y) 
+    return  bor(ffi.C.IOC_INOUT,x,y)
+end
+
+
+
+
+makeStatic("SIO_ASSOCIATE_HANDLE",          _WSAIOW(ffi.C.IOC_WS2,1))
+makeStatic("SIO_ENABLE_CIRCULAR_QUEUEING",  _WSAIO(ffi.C.IOC_WS2,2))
+makeStatic("SIO_FIND_ROUTE",                _WSAIOR(ffi.C.IOC_WS2,3))
+makeStatic("SIO_FLUSH",                     _WSAIO(ffi.C.IOC_WS2,4))
+makeStatic("SIO_GET_BROADCAST_ADDRESS",     _WSAIOR(ffi.C.IOC_WS2,5))
+makeStatic("SIO_GET_EXTENSION_FUNCTION_POINTER",  _WSAIORW(ffi.C.IOC_WS2,6))
+makeStatic("SIO_GET_QOS",                   _WSAIORW(ffi.C.IOC_WS2,7))
+makeStatic("SIO_GET_GROUP_QOS",             _WSAIORW(ffi.C.IOC_WS2,8))
+makeStatic("SIO_MULTIPOINT_LOOPBACK",       _WSAIOW(ffi.C.IOC_WS2,9))
+makeStatic("SIO_MULTICAST_SCOPE",           _WSAIOW(ffi.C.IOC_WS2,10))
+makeStatic("SIO_SET_QOS",                   _WSAIOW(ffi.C.IOC_WS2,11))
+makeStatic("SIO_SET_GROUP_QOS",             _WSAIOW(ffi.C.IOC_WS2,12))
+makeStatic("SIO_TRANSLATE_HANDLE",          _WSAIORW(ffi.C.IOC_WS2,13))
+makeStatic("SIO_ROUTING_INTERFACE_QUERY",   _WSAIORW(ffi.C.IOC_WS2,20))
+makeStatic("SIO_ROUTING_INTERFACE_CHANGE",  _WSAIOW(ffi.C.IOC_WS2,21))
+makeStatic("SIO_ADDRESS_LIST_QUERY",        _WSAIOR(ffi.C.IOC_WS2,22))
+makeStatic("SIO_ADDRESS_LIST_CHANGE",       _WSAIO(ffi.C.IOC_WS2,23))
+makeStatic("SIO_QUERY_TARGET_PNP_HANDLE",   _WSAIOR(ffi.C.IOC_WS2,24))
+makeStatic("SIO_QUERY_RSS_PROCESSOR_INFO",  _WSAIOR(ffi.C.IOC_WS2,37))
+
+--[[
 #if(_WIN32_WINNT >= 0x0501)
 #define SIO_ADDRESS_LIST_SORT         _WSAIORW(IOC_WS2,25)
 #endif //(_WIN32_WINNT >= 0x0501)
@@ -370,7 +413,7 @@ end --//(_WIN32_WINNT >= 0x0602)
 #endif //(_WIN32_WINNT >= 0x0600)
 
 #define SIO_GET_MULTIPLE_EXTENSION_FUNCTION_POINTER _WSAIORW(IOC_WS2,36)
---]=]
+--]]
 
 ffi.cdef[[
 static const int IPPROTO_IP       =       0;
@@ -597,22 +640,8 @@ typedef struct sockaddr_dl {
 ]]
 end --(_WIN32_WINNT >= 0x0601)
 
--- BUGBUG - these are already defined in winsock2
--- of course, if you're in the kernel, you probably don't have that
---[[
-#define IOCPARM_MASK    0x7f            /* parameters must be < 128 bytes */
-#define IOC_VOID        0x20000000      /* no parameters */
-#define IOC_OUT         0x40000000      /* copy out parameters */
-#define IOC_IN          0x80000000      /* copy in parameters */
-#define IOC_INOUT       (IOC_IN|IOC_OUT)
-                                        /* 0x20000000 distinguishes new &
-                                           old ioctl's */
-#define _IO(x,y)        (IOC_VOID|((x)<<8)|(y))
 
-#define _IOR(x,y,t)     (IOC_OUT|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
 
-#define _IOW(x,y,t)     (IOC_IN|(((long)sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y))
---]]
 
 ffi.cdef[[
 typedef struct _WSABUF {
