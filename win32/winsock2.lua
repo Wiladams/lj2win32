@@ -224,26 +224,70 @@ struct timeval {
 };
 ]]
 
--- BUGBUG, create a metatype
---[[
-/*
-* Operations on timevals.
-*
-* NB: timercmp does not work for >= or <=.
-*/
-#define timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
-#define timercmp(tvp, uvp, cmp) \
-       ((tvp)->tv_sec cmp (uvp)->tv_sec || \
-        (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
-#define timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
-]]
+-- metatype overkill!
+local timeval_mt = {
+   __eq = function(self, rhs)
+      return self.tv_sec == rhs.tv_sec and self.tv_usec == rhs.tv_usec
+   end,
+
+   __lt = function(lhs, rhs)
+      if lhs.tv_sec < rhs.tv_sec then
+         return true;
+      end
+
+      if lhs.tv_sec > rhs.tv_sec then
+         return false;
+      end
+
+      -- the case where the tv_sec are equal
+      return lhs.tv_usec < rhs.tv_usec;
+   end,
+
+   __le = function(lhs, rhs)
+      if lhs.tv_sec < rhs.tv_sec then
+         return true;
+      end
+
+      if lhs.tv_sec > rhs.tv_sec then
+         return false;
+      end
+
+      -- tv_sec are equal
+      if lhs.tv_usec < rhs.tv_usec then
+         return true;
+      end
+
+      if lhs.tv_usec > rhs.tv_usec then
+         return false;
+      end
+
+      -- tv_usec are equal
+      return true
+   end,
+
+   __tostring = function(self)
+      return string.format("{%d, %d}", self.tv_sec, self.tv_usec)
+   end,
+
+   __index = {
+      isSet = function(self)
+         return self.tv_sec ~= 0 or self.tv_usec ~= 0
+      end,
+
+      clear = function(self)
+         self.tv_sec = 0;
+         self.tv_usec = 0;
+         return self;
+      end,
+   }
+}
+ffi.metatype("struct timeval", timeval_mt)
 
 
 
 
-
-
-
+-- need to use the local functions, but want the 
+-- constants accesible through ffi.C.
 makeStatic("FIONREAD",    _IOR(byte'f', 127, u_long)) -- get # bytes to read 
 makeStatic("FIONBIO",     _IOW(byte'f', 126, u_long)) -- set/clear non-blocking i/o 
 makeStatic("FIOASYNC",    _IOW(byte'f', 125, u_long)) -- set/clear async i/o 
