@@ -354,95 +354,13 @@ struct  protoent {
 ]]
 
 
--- BUGBUG
--- dont need these IPPORT declarations as they're in ws2def
---
---[[
-/*
-* Port/socket numbers: network standard functions
-*/
-#define IPPORT_ECHO             7
-#define IPPORT_DISCARD          9
-#define IPPORT_SYSTAT           11
-#define IPPORT_DAYTIME          13
-#define IPPORT_NETSTAT          15
-#define IPPORT_FTP              21
-#define IPPORT_TELNET           23
-#define IPPORT_SMTP             25
-#define IPPORT_TIMESERVER       37
-#define IPPORT_NAMESERVER       42
-#define IPPORT_WHOIS            43
-#define IPPORT_MTP              57
-
-/*
-* Port/socket numbers: host specific functions
-*/
-#define IPPORT_TFTP             69
-#define IPPORT_RJE              77
-#define IPPORT_FINGER           79
-#define IPPORT_TTYLINK          87
-#define IPPORT_SUPDUP           95
-
-
-/*
-* UNIX TCP sockets
-*/
-#define IPPORT_EXECSERVER       512
-#define IPPORT_LOGINSERVER      513
-#define IPPORT_CMDSERVER        514
-#define IPPORT_EFSSERVER        520
-
-/*
-* UNIX UDP sockets
-*/
-#define IPPORT_BIFFUDP          512
-#define IPPORT_WHOSERVER        513
-#define IPPORT_ROUTESERVER      520
-                                       /* 520+1 also used */
-
-/*
-* Ports < IPPORT_RESERVED are reserved for
-* privileged processes (e.g. root).
-*/
-#define IPPORT_RESERVED         1024
---]]
-
 ffi.cdef[[
-/*
-* Link numbers
-*/
 static const int IMPLINK_IP            =  155;
 static const int IMPLINK_LOWEXPER      =  156;
 static const int IMPLINK_HIGHEXPER     =  158;
 ]]
 
---[[
--- BUGBUG, this is in inaddr, so don't do this here
-if not s_addr
-/*
-* Internet address (old style... should be updated)
-*/
-struct in_addr {
-       union {
-               struct { u_char s_b1,s_b2,s_b3,s_b4; } S_un_b;
-               struct { u_short s_w1,s_w2; } S_un_w;
-               u_long S_addr;
-       } S_un;
-#define s_addr  S_un.S_addr
-                               /* can be used for most tcp & ip code */
-#define s_host  S_un.S_un_b.s_b2
-                               /* host on imp */
-#define s_net   S_un.S_un_b.s_b1
-                               /* network */
-#define s_imp   S_un.S_un_w.s_w2
-                               /* imp */
-#define s_impno S_un.S_un_b.s_b4
-                               /* imp # */
-#define s_lh    S_un.S_un_b.s_b3
-                               /* logical host */
-};
-end
---]]
+
 
 ffi.cdef[[
 static const int ADDR_ANY               = INADDR_ANY;
@@ -492,63 +410,12 @@ ffi.cdef[[
 static const int INVALID_SOCKET = -1;
 static const int SOCKET_ERROR = -1;
 ]]
---#define INVALID_SOCKET  (SOCKET)(~0)
---#define SOCKET_ERROR            (-1)
+
 
 ffi.cdef[[
 static const int FROM_PROTOCOL_INFO = -1;
 ]]
 
---[[
--- these are in ws2def, so not needed here
-
-/*
-* Types
-*/
-#define SOCK_STREAM     1               /* stream socket */
-#define SOCK_DGRAM      2               /* datagram socket */
-#define SOCK_RAW        3               /* raw-protocol interface */
-#define SOCK_RDM        4               /* reliably-delivered message */
-#define SOCK_SEQPACKET  5               /* sequenced packet stream */
-
-
-/*
-* Option flags per-socket.
-*/
-#define SO_DEBUG        0x0001          /* turn on debugging info recording */
-#define SO_ACCEPTCONN   0x0002          /* socket has had listen() */
-#define SO_REUSEADDR    0x0004          /* allow local address reuse */
-#define SO_KEEPALIVE    0x0008          /* keep connections alive */
-#define SO_DONTROUTE    0x0010          /* just use interface addresses */
-#define SO_BROADCAST    0x0020          /* permit sending of broadcast msgs */
-#define SO_USELOOPBACK  0x0040          /* bypass hardware when possible */
-#define SO_LINGER       0x0080          /* linger on close if data present */
-#define SO_OOBINLINE    0x0100          /* leave received OOB data in line */
-
-#define SO_DONTLINGER   (int)(~SO_LINGER)
-#define SO_EXCLUSIVEADDRUSE ((int)(~SO_REUSEADDR)) /* disallow local address reuse */
-
-/*
-* Additional options.
-*/
-#define SO_SNDBUF       0x1001          /* send buffer size */
-#define SO_RCVBUF       0x1002          /* receive buffer size */
-#define SO_SNDLOWAT     0x1003          /* send low-water mark */
-#define SO_RCVLOWAT     0x1004          /* receive low-water mark */
-#define SO_SNDTIMEO     0x1005          /* send timeout */
-#define SO_RCVTIMEO     0x1006          /* receive timeout */
-#define SO_ERROR        0x1007          /* get error status and clear */
-#define SO_TYPE         0x1008          /* get socket type */
---]]
-
---[[
-/*
-* WinSock 2 extension -- new options
-*/
-#define SO_GROUP_ID       0x2001      /* ID of a socket group */
-#define SO_GROUP_PRIORITY 0x2002      /* the relative priority within a group*/
-#define SO_MAX_MSG_SIZE   0x2003      /* maximum message size */
---]]
 
 ffi.cdef[[
 static const int SO_PROTOCOL_INFOA = 0x2004;      /* WSAPROTOCOL_INFOA structure */
@@ -567,79 +434,54 @@ ffi.cdef[[
 static const int PVD_CONFIG     =   0x3001;       /* configuration info for service provider */
 ]]
 
---[[
--- BUGBUG, already defined in ws2def
-#define SO_CONDITIONAL_ACCEPT 0x3002   /* enable true conditional accept: */
-                                      /*  connection is not ack-ed to the */
-                                      /*  other side until conditional */
-                                      /*  function returns CF_ACCEPT */
---]]
+
 
 ffi.cdef[[
-/*
-* Structure used by kernel to pass protocol
-* information in raw sockets.
-*/
 struct sockproto {
        u_short sp_family;              /* address family */
        u_short sp_protocol;            /* protocol */
 };
 ]]
 
---[[
+ffi.cdef[[
 /*
 * Protocol families, same as address families for now.
 */
-#define PF_UNSPEC       AF_UNSPEC
-#define PF_UNIX         AF_UNIX
-#define PF_INET         AF_INET
-#define PF_IMPLINK      AF_IMPLINK
-#define PF_PUP          AF_PUP
-#define PF_CHAOS        AF_CHAOS
-#define PF_NS           AF_NS
-#define PF_IPX          AF_IPX
-#define PF_ISO          AF_ISO
-#define PF_OSI          AF_OSI
-#define PF_ECMA         AF_ECMA
-#define PF_DATAKIT      AF_DATAKIT
-#define PF_CCITT        AF_CCITT
-#define PF_SNA          AF_SNA
-#define PF_DECnet       AF_DECnet
-#define PF_DLI          AF_DLI
-#define PF_LAT          AF_LAT
-#define PF_HYLINK       AF_HYLINK
-#define PF_APPLETALK    AF_APPLETALK
-#define PF_VOICEVIEW    AF_VOICEVIEW
-#define PF_FIREFOX      AF_FIREFOX
-#define PF_UNKNOWN1     AF_UNKNOWN1
-#define PF_BAN          AF_BAN
-#define PF_ATM          AF_ATM
-#define PF_INET6        AF_INET6
-if (_WIN32_WINNT >= 0x0600)
-#define PF_BTH          AF_BTH
-end --(_WIN32_WINNT >= 0x0600)
-
-#define PF_MAX          AF_MAX
---]]
+static const int PF_UNSPEC       = AF_UNSPEC;
+static const int PF_UNIX         = AF_UNIX;
+static const int PF_INET         = AF_INET;
+static const int PF_IMPLINK      = AF_IMPLINK;
+static const int PF_PUP          = AF_PUP;
+static const int PF_CHAOS        = AF_CHAOS;
+static const int PF_NS           = AF_NS;
+static const int PF_IPX          = AF_IPX;
+static const int PF_ISO          = AF_ISO;
+static const int PF_OSI          = AF_OSI;
+static const int PF_ECMA         = AF_ECMA;
+static const int PF_DATAKIT      = AF_DATAKIT;
+static const int PF_CCITT        = AF_CCITT;
+static const int PF_SNA          = AF_SNA;
+static const int PF_DECnet       = AF_DECnet;
+static const int PF_DLI          = AF_DLI;
+static const int PF_LAT          = AF_LAT;
+static const int PF_HYLINK       = AF_HYLINK;
+static const int PF_APPLETALK    = AF_APPLETALK;
+static const int PF_VOICEVIEW    = AF_VOICEVIEW;
+static const int PF_FIREFOX      = AF_FIREFOX;
+static const int PF_UNKNOWN1     = AF_UNKNOWN1;
+static const int PF_BAN          = AF_BAN;
+static const int PF_ATM          = AF_ATM;
+static const int PF_INET6        = AF_INET6;
+static const int PF_BTH          = AF_BTH;
+static const int PF_MAX          = AF_MAX;
+]]
 
 ffi.cdef[[
-
-/*
-* Structure used for manipulating linger option.
-*/
 struct  linger {
        u_short l_onoff;                /* option on/off */
        u_short l_linger;               /* linger time */
 };
 ]]
-
---[[
--- BUGBUG, in ws2def
-/*
-* Level number for (get/set)sockopt() to apply to socket itself.
-*/
-#define SOL_SOCKET      0xffff          /* options for socket level */
---]]
 
 
 ffi.cdef[[
@@ -716,12 +558,6 @@ static const int FD_ALL_EVENTS   = ((1 << FD_MAX_EVENTS) - 1);
 --]]
 
 
-
-
-
---* WinSock 2 extension -- new error codes and type definition
-
-
 if WIN32 then
 
 --#define __stdcall                   __stdcall
@@ -744,7 +580,7 @@ static const int WSA_OPERATION_ABORTED   =(ERROR_OPERATION_ABORTED);
 
 
 ffi.cdef[[
-//static const int WSA_INVALID_EVENT    =   ((WSAEVENT)NULL);
+//static const int WSA_INVALID_EVENT    =   ((WSAEVENT)0);
 static const int WSA_MAXIMUM_WAIT_EVENTS= (MAXIMUM_WAIT_OBJECTS);
 static const int WSA_WAIT_FAILED        = (WAIT_FAILED);
 static const int WSA_WAIT_EVENT_0       = (WAIT_OBJECT_0);
@@ -807,23 +643,17 @@ typedef struct _QualityOfService
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 ffi.cdef[[
-/*
-* WinSock 2 extension -- manifest constants for return values of the condition function
-*/
+
 static const int CF_ACCEPT     =  0x0000;
 static const int CF_REJECT     =  0x0001;
 static const int CF_DEFER      =  0x0002;
 
-/*
-* WinSock 2 extension -- manifest constants for shutdown()
-*/
+
 static const int SD_RECEIVE    =  0x00;
 static const int SD_SEND       =  0x01;
 static const int SD_BOTH       =  0x02;
 
-/*
-* WinSock 2 extension -- data type and manifest constants for socket groups
-*/
+
 typedef unsigned int             GROUP;
 
 static const int SG_UNCONSTRAINED_GROUP  = 0x01;
@@ -831,19 +661,14 @@ static const int SG_CONSTRAINED_GROUP    = 0x02;
 ]]
 
 ffi.cdef[[
-/*
-* WinSock 2 extension -- data type for WSAEnumNetworkEvents()
-*/
+
 typedef struct _WSANETWORKEVENTS {
       long lNetworkEvents;
       int iErrorCode[FD_MAX_EVENTS];
 } WSANETWORKEVENTS,  * LPWSANETWORKEVENTS;
 ]]
 
---[[
-* WinSock 2 extension -- WSAPROTOCOL_INFO structure and associated
-* manifest constants
---]]
+
 
 if not GUID_DEFINED then
 require("win32.guiddef")
@@ -925,36 +750,36 @@ typedef LPWSAPROTOCOL_INFOA LPWSAPROTOCOL_INFO;
 end --/* UNICODE */
 --]]
 
---[[
+ffi.cdef[[
 /* Flag bit definitions for dwProviderFlags */
-#define PFL_MULTIPLE_PROTO_ENTRIES       =   0x00000001;
-#define PFL_RECOMMENDED_PROTO_ENTRY      =   0x00000002;
-#define PFL_HIDDEN                       =   0x00000004;
-#define PFL_MATCHES_PROTOCOL_ZERO        =   0x00000008;
-#define PFL_NETWORKDIRECT_PROVIDER       =   0x00000010;
+static const int PFL_MULTIPLE_PROTO_ENTRIES       =   0x00000001;
+static const int PFL_RECOMMENDED_PROTO_ENTRY      =   0x00000002;
+static const int PFL_HIDDEN                       =   0x00000004;
+static const int PFL_MATCHES_PROTOCOL_ZERO        =   0x00000008;
+static const int PFL_NETWORKDIRECT_PROVIDER       =   0x00000010;
 
 /* Flag bit definitions for dwServiceFlags1 */
-#define XP1_CONNECTIONLESS               =   0x00000001;
-#define XP1_GUARANTEED_DELIVERY          =   0x00000002;
-#define XP1_GUARANTEED_ORDER             =   0x00000004;
-#define XP1_MESSAGE_ORIENTED             =   0x00000008;
-#define XP1_PSEUDO_STREAM                =   0x00000010;
-#define XP1_GRACEFUL_CLOSE               =   0x00000020;
-#define XP1_EXPEDITED_DATA               =   0x00000040;
-#define XP1_CONNECT_DATA                 =   0x00000080;
-#define XP1_DISCONNECT_DATA              =   0x00000100;
-#define XP1_SUPPORT_BROADCAST            =   0x00000200;
-#define XP1_SUPPORT_MULTIPOINT           =   0x00000400;
-#define XP1_MULTIPOINT_CONTROL_PLANE     =   0x00000800;
-#define XP1_MULTIPOINT_DATA_PLANE        =   0x00001000;
-#define XP1_QOS_SUPPORTED                =   0x00002000;
-#define XP1_INTERRUPT                    =   0x00004000;
-#define XP1_UNI_SEND                     =   0x00008000;
-#define XP1_UNI_RECV                     =   0x00010000;
-#define XP1_IFS_HANDLES                  =   0x00020000;
-#define XP1_PARTIAL_MESSAGE              =   0x00040000;
-#define XP1_SAN_SUPPORT_SDP              =   0x00080000;
---]]
+static const int XP1_CONNECTIONLESS               =   0x00000001;
+static const int XP1_GUARANTEED_DELIVERY          =   0x00000002;
+static const int XP1_GUARANTEED_ORDER             =   0x00000004;
+static const int XP1_MESSAGE_ORIENTED             =   0x00000008;
+static const int XP1_PSEUDO_STREAM                =   0x00000010;
+static const int XP1_GRACEFUL_CLOSE               =   0x00000020;
+static const int XP1_EXPEDITED_DATA               =   0x00000040;
+static const int XP1_CONNECT_DATA                 =   0x00000080;
+static const int XP1_DISCONNECT_DATA              =   0x00000100;
+static const int XP1_SUPPORT_BROADCAST            =   0x00000200;
+static const int XP1_SUPPORT_MULTIPOINT           =   0x00000400;
+static const int XP1_MULTIPOINT_CONTROL_PLANE     =   0x00000800;
+static const int XP1_MULTIPOINT_DATA_PLANE        =   0x00001000;
+static const int XP1_QOS_SUPPORTED                =   0x00002000;
+static const int XP1_INTERRUPT                    =   0x00004000;
+static const int XP1_UNI_SEND                     =   0x00008000;
+static const int XP1_UNI_RECV                     =   0x00010000;
+static const int XP1_IFS_HANDLES                  =   0x00020000;
+static const int XP1_PARTIAL_MESSAGE              =   0x00040000;
+static const int XP1_SAN_SUPPORT_SDP              =   0x00080000;
+]]
 
 ffi.cdef[[
 static const int BIGENDIAN                        =   0x0000;
@@ -1012,10 +837,7 @@ void
 
 if (_WIN32_WINNT >= 0x0501) then
 ffi.cdef[[
-/*
-* WinSock 2 extension -- manifest constants and associated structures
-* for WSANSPIoctl()
-*/
+
 //#define SIO_NSP_NOTIFY_CHANGE         _WSAIOW(IOC_WS2,25)
 
 typedef enum _WSACOMPLETIONTYPE {
@@ -1052,9 +874,6 @@ typedef struct _WSACOMPLETION {
 end --(_WIN32_WINNT >= 0x0501)
 
 ffi.cdef[[
-/*
-* WinSock 2 extension -- manifest constants for SIO_TRANSLATE_HANDLE ioctl
-*/
 static const int TH_NETDEV     =   0x00000001;
 static const int TH_TAPI       =   0x00000002;
 ]]
@@ -1075,48 +894,6 @@ end
 
 ffi.cdef[[
 static const int SERVICE_MULTIPLE      = (0x00000001);
-]]
-
--- BUGBUG, some are defined in ws2def
-ffi.cdef[[
-
-//static const int NS_ALL                      = 0;
-
-//static const int NS_SAP                      = 1;
-//static const int NS_NDS                      = 2;
-//static const int NS_PEER_BROWSE              = 3;
-//static const int NS_SLP                      = 5;
-//static const int NS_DHCP                     = 6;
-
-//static const int NS_TCPIP_LOCAL              = 10;
-//static const int NS_TCPIP_HOSTS              = 11;
-//static const int NS_DNS                      = 12;
-//static const int NS_NETBT                    = 13;
-//static const int NS_WINS                     = 14;
-
-//static const int NS_NLA                      = 15;    /* Network Location Awareness */
-
-//static const int NS_BTH                      = 16;    /* Bluetooth SDP Namespace */
-
-//static const int NS_NBP                      = 20;
-
-//static const int NS_MS                       = 30;
-//static const int NS_STDA                     = 31;
-//static const int NS_NTDS                     = 32;
-
-
-//static const int NS_EMAIL                    = 37;
-//static const int NS_PNRPNAME                 = 38;
-//static const int NS_PNRPCLOUD                = 39;
-
-
-//static const int NS_X500                     = 40;
-//static const int NS_NIS                      = 41;
-//static const int NS_NISPLUS                  = 42;
-
-//static const int NS_WRQ                      = 50;
-
-//static const int NS_NETDES                   = 60;    /* Network Designers Limited */
 ]]
 
 
@@ -1345,10 +1122,6 @@ static const int  RESULT_IS_DELETED    = 0x0040;
 end --(_WIN32_WINNT >= 0x0501)
 
 ffi.cdef[[
-/*
-* Service Address Registration and Deregistration Data Types.
-*/
-
 typedef enum _WSAESETSERVICEOP
 {
    RNRSERVICE_REGISTER=0,
@@ -2077,8 +1850,9 @@ sendto(
 ]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
---[=[
+
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_SENDTO)(
@@ -2086,58 +1860,64 @@ int
     const char  * buf,
     int len,
     int flags,
-   _In_reads_bytes_(tolen) const struct sockaddr  * to,
+    const struct sockaddr  * to,
     int tolen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
+ffi.cdef[[
 int
 __stdcall
 setsockopt(
     SOCKET s,
     int level,
     int optname,
-   _In_reads_bytes_opt_(optlen) const char  * optval,
+    const char  * optval,
     int optlen
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_SETSOCKOPT)(
     SOCKET s,
     int level,
     int optname,
-   _In_reads_bytes_(optlen) const char  * optval,
+    const char  * optval,
     int optlen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
+ffi.cdef[[
 int
 __stdcall
 shutdown(
     SOCKET s,
     int how
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_SHUTDOWN)(
     SOCKET s,
     int how
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
-
+ffi.cdef[[
 SOCKET
 __stdcall
 socket(
@@ -2145,9 +1925,11 @@ socket(
     int type,
     int protocol
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 
 SOCKET
@@ -2156,10 +1938,11 @@ SOCKET
     int type,
     int protocol
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-/* Database function prototypes */
 
+--[[
 if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getnameinfo() or GetNameInfoW()")
 
@@ -2170,9 +1953,12 @@ gethostbyaddr(
     int len,
     int type
    );
+
 end --/* INCL_WINSOCK_API_PROTOTYPES */
+--]]
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct hostent  *
 (__stdcall * LPFN_GETHOSTBYADDR)(
@@ -2180,8 +1966,10 @@ struct hostent  *
     int len,
     int type
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
+--[[
 if INCL_WINSOCK_API_PROTOTYPES then
 _WINSOCK_DEPRECATED_BY("getaddrinfo() or GetAddrInfoW()")
 
@@ -2191,127 +1979,132 @@ gethostbyname(
     const char  * name
    );
 end --/* INCL_WINSOCK_API_PROTOTYPES */
+--]]
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct hostent  *
 (__stdcall * LPFN_GETHOSTBYNAME)(
     const char  * name
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
+ffi.cdef[[
 int
 __stdcall
 gethostname(
-   _Out_writes_bytes_(namelen) char  * name,
+    char  * name,
     int namelen
    );
-
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETHOSTNAME)(
-   _Out_writes_bytes_(namelen) char  * name,
+    char  * name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
+ffi.cdef[[
 int
 __stdcall
 GetHostNameW(
-   _Out_writes_(namelen) PWSTR name,
+    PWSTR name,
     int namelen
    );
-
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETHOSTNAMEW)(
-   _Out_writes_(namelen) PWSTR name,
+    PWSTR name,
     int namelen
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
-if INCL_WINSOCK_API_PROTOTYPES then
 
+if INCL_WINSOCK_API_PROTOTYPES then
+ffi.cdef[[
 struct servent  *
 __stdcall
 getservbyport(
     int port,
-   z_ const char  * proto
+   const char  * proto
    );
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct servent  *
 (__stdcall * LPFN_GETSERVBYPORT)(
     int port,
-   z_ const char  * proto
+    const char  * proto
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
-struct servent  *
-__stdcall
-getservbyname(
-    const char  * name,
-   z_ const char  * proto
-   );
+ffi.cdef[[
+struct servent  * __stdcall getservbyname(const char  * name, const char  * proto);
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct servent  *
 (__stdcall * LPFN_GETSERVBYNAME)(
     const char  * name,
-   z_ const char  * proto
+    const char  * proto
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
-struct protoent  *
-__stdcall
-getprotobynumber(
-    int number
-   );
+ffi.cdef[[
+struct protoent  * __stdcall getprotobynumber(int number);
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct protoent  *
-(__stdcall * LPFN_GETPROTOBYNUMBER)(
-    int number
-   );
+(__stdcall * LPFN_GETPROTOBYNUMBER)(int number);
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
 
 if INCL_WINSOCK_API_PROTOTYPES then
-
-struct protoent  *
-__stdcall
-getprotobyname(
-    const char  * name
-   );
+ffi.cdef[[
+struct protoent  * __stdcall getprotobyname(const char  * name);
+]]
 end --/* INCL_WINSOCK_API_PROTOTYPES */
 
 if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 struct protoent  *
 (__stdcall * LPFN_GETPROTOBYNAME)(
     const char  * name
    );
+]]
 end --/* INCL_WINSOCK_API_TYPEDEFS */
---]=]
+
 
 
 
