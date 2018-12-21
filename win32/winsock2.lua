@@ -4286,6 +4286,14 @@ end --(_WIN32_WINNT >= 0x0501)
 
 end  --/* _WINSOCK2API_ */
 
-exports.Lib = ffi.load("ws2_32");
+local wsocklib = ffi.load("ws2_32");
 
+exports.Lib = wsocklib
+exports.MAKEWORD = MAKEWORD
+
+setmetatable(exports , {
+   __index = function(self, key)
+      return wsocklib[key]
+   end
+})
 return exports
