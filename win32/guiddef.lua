@@ -185,19 +185,4 @@ __inline int IsEqualGUID(REFGUID rguid1, REFGUID rguid2)
 #define IsEqualIID(riid1, riid2) IsEqualGUID(riid1, riid2)
 #define IsEqualCLSID(rclsid1, rclsid2) IsEqualGUID(rclsid1, rclsid2)
 
-
-#if !defined _SYS_GUID_OPERATOR_EQ_ && !defined _NO_SYS_GUID_OPERATOR_EQ_
-#define _SYS_GUID_OPERATOR_EQ_
-// A couple of C++ helpers
-
-#ifdef __cplusplus
-__inline bool operator==(REFGUID guidOne, REFGUID guidOther)
-{
-    return !!IsEqualGUID(guidOne,guidOther);
-}
-
-__inline bool operator!=(REFGUID guidOne, REFGUID guidOther)
-{
-    return !(guidOne == guidOther);
-}
 --]=]

@@ -8,7 +8,14 @@ local ffi = require("ffi")
 require ("win32.basetsd")
 require ("win32.arch");
 --]]
+
+--require("win32.minwindef")
+--require("win32.winnt")
+-- or just
+require("win32.windef")
+
 local wtypes = require ("win32.wtypes");
+
 
 local function test_DECLARE_HANDLE()
     print("DECLARE_HANDLE: ", DECLARE_HANDLE)
