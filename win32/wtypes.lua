@@ -66,8 +66,9 @@ typedef struct tagRemBRUSH
    } 	RemHBRUSH;
 ]]
 
---[[
-#if !defined(_WIN32) && !defined(_MPPC_)
+
+if not _WIN32 and not _MPPC_ then
+--[=[
 // The following code is for Win16 only
 #ifndef WINAPI          // If not included with 3.1 headers...
 #define FAR             _far
@@ -194,7 +195,10 @@ typedef DWORD COLORREF;
 typedef DWORD *LPCOLORREF;
 
 #endif // !_LPCOLORREF_DEFINED
+--]]
 
+
+ffi.cdef[[
 typedef HANDLE *LPHANDLE;
 typedef struct _RECTL
    {
@@ -226,6 +230,8 @@ typedef struct _POINTL
 
 typedef struct _POINTL *PPOINTL;
 
+
+--[[
 #ifndef WIN16
 typedef struct tagSIZE
    {
@@ -255,9 +261,10 @@ typedef struct tagSIZEL *PSIZEL;
 
 typedef struct tagSIZEL *LPSIZEL;
 
-#endif  //WINAPI
-#endif  //!WIN32 && !MPPC
---]]
+end  --//WINAPI
+--]=]
+end  --//!WIN32 && !MPPC
+
 
 --[[
 #ifndef _PALETTEENTRY_DEFINED
@@ -296,7 +303,7 @@ typedef struct tagLOGPALETTE *LPLOGPALETTE;
 
 if not _WINDEF_ then
 ffi.cdef[[
-   typedef const RECTL *LPCRECTL;
+typedef  RECTL *LPCRECTL;
 
 typedef struct tagRECT
    {

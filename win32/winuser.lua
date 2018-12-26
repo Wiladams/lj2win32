@@ -14,8 +14,8 @@ if not NOAPISET then
 require("win32.libloaderapi") -- LoadString%
 end
 
-require("win32.wtypes")
-local wingdi = require("win32.wingdi")
+--require("win32.wtypes")
+--local wingdi = require("win32.wingdi")
 
 ffi.cdef[[
 typedef HANDLE HDWP;

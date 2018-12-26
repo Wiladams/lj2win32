@@ -130,7 +130,7 @@ local function test_DisplayConfig()
         currentTopologyId);
 
 
-    print(" Query: ", winerror[tonumber(res)], pnumPathArrayElements[0], pnumModeInfoArrayElements[0])
+    print(" Query: ", tonumber(res), pnumPathArrayElements[0], pnumModeInfoArrayElements[0])
 
     -- print modeInfo
     for idx=0, pnumModeInfoArrayElements[0]-1 do

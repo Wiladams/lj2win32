@@ -1,10 +1,7 @@
 local ffi = require("ffi")
 
 -- windef.h -- Basic Windows Type Definitions                                *
---if _WINDEF_ then
---    return;
---end
-
+if not _WINDEF_ then
 _WINDEF_ = true;
 
 
@@ -177,4 +174,4 @@ typedef enum DPI_HOSTING_BEHAVIOR {
 } DPI_HOSTING_BEHAVIOR;
 ]]
 
-return exports
+end
