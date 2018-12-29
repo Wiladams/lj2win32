@@ -1,85 +1,59 @@
-/*++
 
-Copyright (c) Microsoft Corporation. All rights reserved.
+local ffi = require("ffi")
 
-Module Name:
+if not _MSWSOCK_ then
+_MSWSOCK_ = true
 
-    mswsock.h
+require("win32.winapifamily")
 
-Abstract:
 
-    This module contains the Microsoft-specific extensions to the Windows
-    Sockets API.
+require("win32.mswsockdef")
 
-Revision History:
 
---*/
-
-#ifndef _MSWSOCK_
-#define _MSWSOCK_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif
-#include <winapifamily.h>
-
-#if !defined(_WINSOCK_DEPRECATED_BY)
-#if ((defined(_WINSOCK_DEPRECATED_NO_WARNINGS) || defined(BUILD_WINDOWS)) && !defined(_WINSOCK_DEPRECATE_WARNINGS)) || defined(MIDL_PASS)
-#define _WINSOCK_DEPRECATED_BY(replacement)
-#else
-#define _WINSOCK_DEPRECATED_BY(replacement) __declspec(deprecated("Use " ## replacement ## " instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings"))
-#endif
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <mswsockdef.h>
-
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 /*
  * Options for connect and disconnect data and options.  Used only by
  * non-TCP/IP transports such as DECNet, OSI TP4, etc.
  */
-#define SO_CONNDATA                 0x7000
-#define SO_CONNOPT                  0x7001
-#define SO_DISCDATA                 0x7002
-#define SO_DISCOPT                  0x7003
-#define SO_CONNDATALEN              0x7004
-#define SO_CONNOPTLEN               0x7005
-#define SO_DISCDATALEN              0x7006
-#define SO_DISCOPTLEN               0x7007
+static const int SO_CONNDATA                = 0x7000;
+static const int SO_CONNOPT                 = 0x7001;
+static const int SO_DISCDATA                = 0x7002;
+static const int SO_DISCOPT                 = 0x7003;
+static const int SO_CONNDATALEN             = 0x7004;
+static const int SO_CONNOPTLEN              = 0x7005;
+static const int SO_DISCDATALEN             = 0x7006;
+static const int SO_DISCOPTLEN              = 0x7007;
 
 /*
  * Option for opening sockets for synchronous access.
  */
-#define SO_OPENTYPE                 0x7008
+static const int SO_OPENTYPE                = 0x7008;
 
-#define SO_SYNCHRONOUS_ALERT        0x10
-#define SO_SYNCHRONOUS_NONALERT     0x20
+static const int SO_SYNCHRONOUS_ALERT       = 0x10;
+static const int SO_SYNCHRONOUS_NONALERT    = 0x20;
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
+--[[
 /*
  * Other NT-specific options.
  */
-#define SO_MAXDG                    0x7009
-#define SO_MAXPATHDG                0x700A
-#define SO_UPDATE_ACCEPT_CONTEXT    0x700B
-#define SO_CONNECT_TIME             0x700C
+#define SO_MAXDG                  =  0x7009;
+#define SO_MAXPATHDG              =  0x700A;
+#define SO_UPDATE_ACCEPT_CONTEXT  =  0x700B;
+#define SO_CONNECT_TIME           =  0x700C;
 #if(_WIN32_WINNT >= 0x0501)
-#define SO_UPDATE_CONNECT_CONTEXT   0x7010
+#define SO_UPDATE_CONNECT_CONTEXT =  0x7010;
 #endif //(_WIN32_WINNT >= 0x0501)
 
 /*
  * TCP options.
  */
-#define TCP_BSDURGENT               0x7000
+#define TCP_BSDURGENT              = 0x7000;
+--]]
 
+--[[
 /*
  * MS Transport Provider IOCTL to control
  * reporting PORT_UNREACHABLE messages
@@ -88,11 +62,11 @@ extern "C" {
  * FALSE to disable.
  */
 #define SIO_UDP_CONNRESET           _WSAIOW(IOC_VENDOR,12)
+--]]
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-#if((_WIN32_WINNT < 0x0600) && (_WIN32_WINNT >= 0x0501))
-
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+if((_WIN32_WINNT < 0x0600) and (_WIN32_WINNT >= 0x0501)) then
+--[[
 /*
  * MS Transport Provider IOCTL to request
  * notification when a given socket is closed.
@@ -105,11 +79,12 @@ extern "C" {
  * This Ioctl code is available only on WinXP SP2 and Win2k3 SP1.
  */
 #define SIO_SOCKET_CLOSE_NOTIFY     _WSAIOW(IOC_VENDOR,13)
+--]]
 
-#endif //(_WIN32_WINNT < 0x0600 && _WIN32_WINNT >= 0x0501)
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end --//(_WIN32_WINNT < 0x0600 && _WIN32_WINNT >= 0x0501)
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
+--[[
 /*
  * MS Transport Provider IOCTL to control
  * reporting NET_UNREACHABLE (TTL expired) messages
@@ -118,151 +93,161 @@ extern "C" {
  * FALSE to disable.
  */
 #define SIO_UDP_NETRESET            _WSAIOW(IOC_VENDOR,15)
+--]]
 
-/*
- * Microsoft extended APIs.
- */
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-_WINSOCK_DEPRECATED_BY("WSARecv()")
-#if(_WIN32_WINNT < 0x0600)
-int
-PASCAL FAR
-WSARecvEx(
-    _In_ SOCKET s,
-    _Out_writes_bytes_to_(len, return) char FAR *buf,
-    _In_ int len,
-    _Inout_ int FAR *flags
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--_WINSOCK_DEPRECATED_BY("WSARecv()")
+if(_WIN32_WINNT < 0x0600) then
+ffi.cdef[[
+int 
+WSARecvEx( then
+     SOCKET s,
+     char  *buf,
+     int len,
+     int  *flags
     );
-#else //(_WIN32_WINNT < 0x0600)
+]]
+else --//(_WIN32_WINNT < 0x0600)
+ffi.cdef[[
 INT
-PASCAL FAR
 WSARecvEx(
-    _In_ SOCKET s,
-    _Out_writes_bytes_to_(len, return) CHAR FAR *buf,
-    _In_ INT len,
-    _Inout_ INT FAR *flags
+     SOCKET s,
+     CHAR  *buf,
+     INT len,
+     INT  *flags
     );
-#endif //(_WIN32_WINNT < 0x0600)
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+]]
+end --//(_WIN32_WINNT < 0x0600)
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
+ffi.cdef[[
 typedef struct _TRANSMIT_FILE_BUFFERS {
     LPVOID Head;
     DWORD HeadLength;
     LPVOID Tail;
     DWORD TailLength;
-} TRANSMIT_FILE_BUFFERS, *PTRANSMIT_FILE_BUFFERS, FAR *LPTRANSMIT_FILE_BUFFERS;
+} TRANSMIT_FILE_BUFFERS, *PTRANSMIT_FILE_BUFFERS,  *LPTRANSMIT_FILE_BUFFERS;
+]]
 
-#define TF_DISCONNECT       0x01
-#define TF_REUSE_SOCKET     0x02
-#define TF_WRITE_BEHIND     0x04
-#define TF_USE_DEFAULT_WORKER 0x00
-#define TF_USE_SYSTEM_THREAD  0x10
-#define TF_USE_KERNEL_APC     0x20
+ffi.cdef[[
+static const int TF_DISCONNECT      = 0x01;
+static const int TF_REUSE_SOCKET    = 0x02;
+static const int TF_WRITE_BEHIND    = 0x04;
+static const int TF_USE_DEFAULT_WORKER =0x00;
+static const int TF_USE_SYSTEM_THREAD = 0x10;
+static const int TF_USE_KERNEL_APC    = 0x20;
+]]
 
+ffi.cdef[[
 BOOL
-PASCAL FAR
 TransmitFile (
-    _In_ SOCKET hSocket,
-    _In_ HANDLE hFile,
-    _In_ DWORD nNumberOfBytesToWrite,
-    _In_ DWORD nNumberOfBytesPerSend,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_opt_ LPTRANSMIT_FILE_BUFFERS lpTransmitBuffers,
-    _In_  DWORD dwReserved
+     SOCKET hSocket,
+     HANDLE hFile,
+     DWORD nNumberOfBytesToWrite,
+     DWORD nNumberOfBytesPerSend,
+     LPOVERLAPPED lpOverlapped,
+     LPTRANSMIT_FILE_BUFFERS lpTransmitBuffers,
+      DWORD dwReserved
     );
 
 BOOL
-PASCAL FAR
 AcceptEx (
-    _In_ SOCKET sListenSocket,
-    _In_ SOCKET sAcceptSocket,
-    _Out_writes_bytes_(dwReceiveDataLength+dwLocalAddressLength+dwRemoteAddressLength) PVOID lpOutputBuffer,
-    _In_ DWORD dwReceiveDataLength,
-    _In_ DWORD dwLocalAddressLength,
-    _In_ DWORD dwRemoteAddressLength,
-    _Out_ LPDWORD lpdwBytesReceived,
-    _Inout_ LPOVERLAPPED lpOverlapped
+     SOCKET sListenSocket,
+     SOCKET sAcceptSocket,
+     PVOID lpOutputBuffer,
+     DWORD dwReceiveDataLength,
+     DWORD dwLocalAddressLength,
+     DWORD dwRemoteAddressLength,
+     LPDWORD lpdwBytesReceived,
+     LPOVERLAPPED lpOverlapped
     );
 
 VOID
-PASCAL FAR
 GetAcceptExSockaddrs (
-    _In_reads_bytes_(dwReceiveDataLength+dwLocalAddressLength+dwRemoteAddressLength) PVOID lpOutputBuffer,
-    _In_ DWORD dwReceiveDataLength,
-    _In_ DWORD dwLocalAddressLength,
-    _In_ DWORD dwRemoteAddressLength,
-    _Outptr_result_bytebuffer_(*LocalSockaddrLength) struct sockaddr **LocalSockaddr,
-    _Out_ LPINT LocalSockaddrLength,
-    _Outptr_result_bytebuffer_(*RemoteSockaddrLength) struct sockaddr **RemoteSockaddr,
-    _Out_ LPINT RemoteSockaddrLength
+    PVOID lpOutputBuffer,
+     DWORD dwReceiveDataLength,
+     DWORD dwLocalAddressLength,
+     DWORD dwRemoteAddressLength,
+     struct sockaddr **LocalSockaddr,
+     LPINT LocalSockaddrLength,
+     struct sockaddr **RemoteSockaddr,
+     LPINT RemoteSockaddrLength
     );
+]]
 
+ffi.cdef[[
 /*
  * "QueryInterface" versions of the above APIs.
  */
 
 typedef
 BOOL
-(PASCAL FAR * LPFN_TRANSMITFILE)(
-    _In_ SOCKET hSocket,
-    _In_ HANDLE hFile,
-    _In_ DWORD nNumberOfBytesToWrite,
-    _In_ DWORD nNumberOfBytesPerSend,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_opt_ LPTRANSMIT_FILE_BUFFERS lpTransmitBuffers,
-    _In_ DWORD dwReserved
+(  * LPFN_TRANSMITFILE)(
+     SOCKET hSocket,
+     HANDLE hFile,
+     DWORD nNumberOfBytesToWrite,
+     DWORD nNumberOfBytesPerSend,
+     LPOVERLAPPED lpOverlapped,
+     LPTRANSMIT_FILE_BUFFERS lpTransmitBuffers,
+     DWORD dwReserved
     );
+]]
 
+--[[
 #define WSAID_TRANSMITFILE \
         {0xb5367df0,0xcbac,0x11cf,{0x95,0xca,0x00,0x80,0x5f,0x48,0xa1,0x92}}
+--]]
 
+ffi.cdef[[
 typedef
 BOOL
-(PASCAL FAR * LPFN_ACCEPTEX)(
-    _In_ SOCKET sListenSocket,
-    _In_ SOCKET sAcceptSocket,
-    _Out_writes_bytes_(dwReceiveDataLength+dwLocalAddressLength+dwRemoteAddressLength) PVOID lpOutputBuffer,
-    _In_ DWORD dwReceiveDataLength,
-    _In_ DWORD dwLocalAddressLength,
-    _In_ DWORD dwRemoteAddressLength,
-    _Out_ LPDWORD lpdwBytesReceived,
-    _Inout_ LPOVERLAPPED lpOverlapped
+(  * LPFN_ACCEPTEX)(
+     SOCKET sListenSocket,
+     SOCKET sAcceptSocket,
+     PVOID lpOutputBuffer,
+     DWORD dwReceiveDataLength,
+     DWORD dwLocalAddressLength,
+     DWORD dwRemoteAddressLength,
+     LPDWORD lpdwBytesReceived,
+     LPOVERLAPPED lpOverlapped
     );
+]]
 
+--[[
 #define WSAID_ACCEPTEX \
         {0xb5367df1,0xcbac,0x11cf,{0x95,0xca,0x00,0x80,0x5f,0x48,0xa1,0x92}}
+--]]
 
+ffi.cdef[[
 typedef
 VOID
-(PASCAL FAR * LPFN_GETACCEPTEXSOCKADDRS)(
-    _In_reads_bytes_(dwReceiveDataLength+dwLocalAddressLength+dwRemoteAddressLength) PVOID lpOutputBuffer,
-    _In_ DWORD dwReceiveDataLength,
-    _In_ DWORD dwLocalAddressLength,
-    _In_ DWORD dwRemoteAddressLength,
-    _Outptr_result_bytebuffer_(*LocalSockaddrLength) struct sockaddr **LocalSockaddr,
-    _Out_ LPINT LocalSockaddrLength,
-    _Outptr_result_bytebuffer_(*RemoteSockaddrLength) struct sockaddr **RemoteSockaddr,
-    _Out_ LPINT RemoteSockaddrLength
+(  * LPFN_GETACCEPTEXSOCKADDRS)(
+    PVOID lpOutputBuffer,
+     DWORD dwReceiveDataLength,
+     DWORD dwLocalAddressLength,
+     DWORD dwRemoteAddressLength,
+     struct sockaddr **LocalSockaddr,
+     LPINT LocalSockaddrLength,
+     struct sockaddr **RemoteSockaddr,
+     LPINT RemoteSockaddrLength
     );
+]]
 
+--[[
 #define WSAID_GETACCEPTEXSOCKADDRS \
         {0xb5367df2,0xcbac,0x11cf,{0x95,0xca,0x00,0x80,0x5f,0x48,0xa1,0x92}}
+--]]
 
-#if(_WIN32_WINNT >= 0x0501)
+if(_WIN32_WINNT >= 0x0501) then
 
-#if _MSC_VER >= 1200
-#pragma warning(push)
-#endif
-#pragma warning(disable:4201) /* Nonstandard extension, nameless struct/union */
-
+ffi.cdef[[
 typedef struct _TRANSMIT_PACKETS_ELEMENT {
     ULONG dwElFlags;
-#define TP_ELEMENT_MEMORY   1
-#define TP_ELEMENT_FILE     2
-#define TP_ELEMENT_EOP      4
+static const int TP_ELEMENT_MEMORY  = 1;
+static const int TP_ELEMENT_FILE    = 2;
+static const int TP_ELEMENT_EOP     = 4;
     ULONG cLength;
     union {
         struct {
@@ -271,65 +256,77 @@ typedef struct _TRANSMIT_PACKETS_ELEMENT {
         };
         PVOID             pBuffer;
     };
-} TRANSMIT_PACKETS_ELEMENT, *PTRANSMIT_PACKETS_ELEMENT, FAR *LPTRANSMIT_PACKETS_ELEMENT;
+} TRANSMIT_PACKETS_ELEMENT, *PTRANSMIT_PACKETS_ELEMENT,  *LPTRANSMIT_PACKETS_ELEMENT;
+]]
 
-#if _MSC_VER >= 1200
-#pragma warning(pop)
-#else
-#pragma warning(default:4201)
-#endif
-#define TP_DISCONNECT           TF_DISCONNECT
-#define TP_REUSE_SOCKET         TF_REUSE_SOCKET
-#define TP_USE_DEFAULT_WORKER   TF_USE_DEFAULT_WORKER
-#define TP_USE_SYSTEM_THREAD    TF_USE_SYSTEM_THREAD
-#define TP_USE_KERNEL_APC       TF_USE_KERNEL_APC
+ffi.cdef[[
+static const int TP_DISCONNECT          = TF_DISCONNECT;
+static const int TP_REUSE_SOCKET        = TF_REUSE_SOCKET;
+static const int TP_USE_DEFAULT_WORKER  = TF_USE_DEFAULT_WORKER;
+static const int TP_USE_SYSTEM_THREAD   = TF_USE_SYSTEM_THREAD;
+static const int TP_USE_KERNEL_APC      = TF_USE_KERNEL_APC;
+]]
 
+ffi.cdef[[
 typedef
 BOOL
-(PASCAL FAR * LPFN_TRANSMITPACKETS) (
-    _In_ SOCKET hSocket,      
-    _In_opt_ LPTRANSMIT_PACKETS_ELEMENT lpPacketArray,        
-    _In_ DWORD nElementCount,
-    _In_ DWORD nSendSize,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_ DWORD dwFlags        
+(  * LPFN_TRANSMITPACKETS) (
+     SOCKET hSocket,      
+     LPTRANSMIT_PACKETS_ELEMENT lpPacketArray,        
+     DWORD nElementCount,
+     DWORD nSendSize,
+     LPOVERLAPPED lpOverlapped,
+     DWORD dwFlags        
     );
+]]
 
+--[[
 #define WSAID_TRANSMITPACKETS \
     {0xd9689da0,0x1f90,0x11d3,{0x99,0x71,0x00,0xc0,0x4f,0x68,0xc8,0x76}}
+--]]
 
+ffi.cdef[[
 typedef
 BOOL
-(PASCAL FAR * LPFN_CONNECTEX) (
-    _In_ SOCKET s,
-    _In_reads_bytes_(namelen) const struct sockaddr FAR *name,
-    _In_ int namelen,
-    _In_reads_bytes_opt_(dwSendDataLength) PVOID lpSendBuffer,
-    _In_ DWORD dwSendDataLength,
-    _Out_ LPDWORD lpdwBytesSent,
-    _Inout_ LPOVERLAPPED lpOverlapped
+(  * LPFN_CONNECTEX) (
+     SOCKET s,
+     const struct sockaddr  *name,
+     int namelen,
+     PVOID lpSendBuffer,
+     DWORD dwSendDataLength,
+     LPDWORD lpdwBytesSent,
+     LPOVERLAPPED lpOverlapped
     );
+]]
 
+--[[
 #define WSAID_CONNECTEX \
     {0x25a207b9,0xddf3,0x4660,{0x8e,0xe9,0x76,0xe5,0x8c,0x74,0x06,0x3e}}
+--]]
 
+ffi.cdef[[
 typedef
 BOOL
-(PASCAL FAR * LPFN_DISCONNECTEX) (
-    _In_ SOCKET s,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
-    _In_ DWORD  dwFlags,
-    _In_ DWORD  dwReserved
+(  * LPFN_DISCONNECTEX) (
+     SOCKET s,
+     LPOVERLAPPED lpOverlapped,
+     DWORD  dwFlags,
+     DWORD  dwReserved
     );
+]]
 
+--[[
 #define WSAID_DISCONNECTEX \
     {0x7fda2e11,0x8630,0x436f,{0xa0, 0x31, 0xf5, 0x36, 0xa6, 0xee, 0xc1, 0x57}}
+--]]
 
-#define DE_REUSE_SOCKET TF_REUSE_SOCKET
+ffi.cdef[[
+static const int DE_REUSE_SOCKET = TF_REUSE_SOCKET;
+]]
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
+--[[
 /*
  * Network-location awareness -- Name registration values for use
  * with WSASetService and other structures.
@@ -342,10 +339,14 @@ BOOL
 // {6642243A-3BA8-4aa6-BAA5-2E0BD71FDD83}
 #define NLA_SERVICE_CLASS_GUID \
     {0x37e515,0xb5c9,0x4a43,{0xba,0xda,0x8b,0x48,0xa8,0x7a,0xd2,0x39}}
+--]]
 
-#define NLA_ALLUSERS_NETWORK   0x00000001
-#define NLA_FRIENDLY_NAME      0x00000002
+ffi.cdef[[
+static const int NLA_ALLUSERS_NETWORK  = 0x00000001;
+static const int NLA_FRIENDLY_NAME     = 0x00000002;
+]]
 
+ffi.cdef[[
 typedef enum _NLA_BLOB_DATA_TYPE {
     NLA_RAW_DATA          = 0,
     NLA_INTERFACE         = 1,
@@ -411,35 +412,38 @@ typedef struct _NLA_BLOB {
 
     } data;
 
-} NLA_BLOB, *PNLA_BLOB, * FAR LPNLA_BLOB;
+} NLA_BLOB, *PNLA_BLOB, *  LPNLA_BLOB;
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
+ffi.cdef[[
 /*
  * WSARecvMsg -- support for receiving ancilliary
  * data/control information with a message.
  */
 typedef
 INT
-(PASCAL FAR * LPFN_WSARECVMSG) (
-    _In_ SOCKET s,
-    _Inout_ LPWSAMSG lpMsg,
-    _Out_opt_ LPDWORD lpdwNumberOfBytesRecvd,
-    _Inout_opt_ LPWSAOVERLAPPED lpOverlapped,
-    _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
+(  * LPFN_WSARECVMSG) (
+     SOCKET s,
+     LPWSAMSG lpMsg,
+     LPDWORD lpdwNumberOfBytesRecvd,
+     LPWSAOVERLAPPED lpOverlapped,
+     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
+]]
 
+--[[
 #define WSAID_WSARECVMSG \
     {0xf689d7c8,0x6f1f,0x436b,{0x8a,0x53,0xe5,0x4f,0xe3,0x51,0xc3,0x22}}
+--]]
+end --//(_WIN32_WINNT >= 0x0501)
 
-#endif //(_WIN32_WINNT >= 0x0501)
+if(_WIN32_WINNT >= 0x0600) then
 
-#if(_WIN32_WINNT >= 0x0600)
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
+--[[
 /*
  * Ioctl codes for translating socket handles to the base provider handle.
  * This is performed to prevent breaking non-IFS LSPs when new Winsock extension
@@ -455,20 +459,19 @@ INT
  * by Winsock LSPs.
  */
 #define SIO_BASE_HANDLE         _WSAIOR(IOC_WS2,34)
+--]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
+--[[
 /*
  * Ioctl codes for Winsock extension functions.
  */
 #define SIO_EXT_SELECT          _WSAIORW(IOC_WS2,30)
 #define SIO_EXT_POLL            _WSAIORW(IOC_WS2,31)
 #define SIO_EXT_SENDMSG         _WSAIORW(IOC_WS2,32)
+--]]
 
-#pragma warning(push)
-#pragma warning(disable:4200) /* zero-sized array in struct/union */
-
+ffi.cdef[[
 /*
  * Data structure for passing WSAPoll arugments through WSAIoctl
  */
@@ -478,9 +481,9 @@ typedef struct {
     INT timeout;
     WSAPOLLFD fdArray[0];
 } WSAPOLLDATA, *LPWSAPOLLDATA;
+]]
 
-#pragma warning(pop)
-
+ffi.cdef[[
 /*
  * Data structure for passing WSASendMsg arguments through WSAIoctl
  */
@@ -507,86 +510,93 @@ typedef struct {
  */
 typedef
 INT
-(PASCAL FAR * LPFN_WSASENDMSG) (
-    _In_ SOCKET s,
-    _In_ LPWSAMSG lpMsg,
-    _In_ DWORD dwFlags,
-    _Out_opt_ LPDWORD lpNumberOfBytesSent,
-    _Inout_opt_ LPWSAOVERLAPPED lpOverlapped OPTIONAL,
-    _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine OPTIONAL
+(  * LPFN_WSASENDMSG) (
+     SOCKET s,
+     LPWSAMSG lpMsg,
+     DWORD dwFlags,
+     LPDWORD lpNumberOfBytesSent,
+     LPWSAOVERLAPPED lpOverlapped,
+     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
+]]
 
+--[[
 #define WSAID_WSASENDMSG /* a441e712-754f-43ca-84a7-0dee44cf606d */ \
     {0xa441e712,0x754f,0x43ca,{0x84,0xa7,0x0d,0xee,0x44,0xcf,0x60,0x6d}}
+--]]
 
+ffi.cdef[[
 //
 // WSAPoll
 //
 typedef
 INT
-(WSAAPI *LPFN_WSAPOLL)(
-    _Inout_ LPWSAPOLLFD fdarray,
-    _In_ ULONG nfds,
-    _In_ INT timeout
+(__stdcall *LPFN_WSAPOLL)(
+     LPWSAPOLLFD fdarray,
+     ULONG nfds,
+     INT timeout
     );
+]]
 
+--[[
 #define WSAID_WSAPOLL \
         {0x18C76F85,0xDC66,0x4964,{0x97,0x2E,0x23,0xC2,0x72,0x38,0x31,0x2B}}
+--]]
 
-#endif //(_WIN32_WINNT >= 0x0600)
+end --//(_WIN32_WINNT >= 0x0600)
 
-typedef BOOL (PASCAL FAR * LPFN_RIORECEIVE)(
-    _In_ RIO_RQ SocketQueue,
-    _In_reads_(DataBufferCount) PRIO_BUF pData,
-    _In_ ULONG DataBufferCount,
-    _In_ DWORD Flags,
-    _In_ PVOID RequestContext
+ffi.cdef[[
+typedef BOOL (  * LPFN_RIORECEIVE)(
+     RIO_RQ SocketQueue,
+     PRIO_BUF pData,
+     ULONG DataBufferCount,
+     DWORD Flags,
+     PVOID RequestContext
     );
 
-typedef int (PASCAL FAR * LPFN_RIORECEIVEEX)(
-    _In_ RIO_RQ SocketQueue,
-    _In_reads_(DataBufferCount) PRIO_BUF pData,
-    _In_ ULONG DataBufferCount,
-    _In_opt_ PRIO_BUF pLocalAddress,
-    _In_opt_ PRIO_BUF pRemoteAddress,
-    _In_opt_ PRIO_BUF pControlContext,
-    _In_opt_ PRIO_BUF pFlags,
-    _In_ DWORD Flags,
-    _In_ PVOID RequestContext
+typedef int (  * LPFN_RIORECEIVEEX)(
+     RIO_RQ SocketQueue,
+     PRIO_BUF pData,
+     ULONG DataBufferCount,
+     PRIO_BUF pLocalAddress,
+     PRIO_BUF pRemoteAddress,
+     PRIO_BUF pControlContext,
+     PRIO_BUF pFlags,
+     DWORD Flags,
+     PVOID RequestContext
 );
 
-typedef BOOL (PASCAL FAR * LPFN_RIOSEND)(
-    _In_ RIO_RQ SocketQueue,
-    _In_reads_(DataBufferCount) PRIO_BUF pData,
-    _In_ ULONG DataBufferCount,
-    _In_ DWORD Flags,
-    _In_ PVOID RequestContext
+typedef BOOL (  * LPFN_RIOSEND)(
+     RIO_RQ SocketQueue,
+     PRIO_BUF pData,
+     ULONG DataBufferCount,
+     DWORD Flags,
+     PVOID RequestContext
 );
 
-typedef BOOL (PASCAL FAR * LPFN_RIOSENDEX)(
-    _In_ RIO_RQ SocketQueue,
-    _In_reads_(DataBufferCount) PRIO_BUF pData,
-    _In_ ULONG DataBufferCount,
-    _In_opt_ PRIO_BUF pLocalAddress,
-    _In_opt_ PRIO_BUF pRemoteAddress,
-    _In_opt_ PRIO_BUF pControlContext,
-    _In_opt_ PRIO_BUF pFlags,
-    _In_ DWORD Flags,
-    _In_ PVOID RequestContext
+typedef BOOL (  * LPFN_RIOSENDEX)(
+     RIO_RQ SocketQueue,
+     PRIO_BUF pData,
+     ULONG DataBufferCount,
+     PRIO_BUF pLocalAddress,
+     PRIO_BUF pRemoteAddress,
+     PRIO_BUF pControlContext,
+     PRIO_BUF pFlags,
+     DWORD Flags,
+     PVOID RequestContext
 );
 
-typedef VOID (PASCAL FAR * LPFN_RIOCLOSECOMPLETIONQUEUE)(
-    _In_ RIO_CQ CQ
+typedef VOID (  * LPFN_RIOCLOSECOMPLETIONQUEUE)(
+     RIO_CQ CQ
 );
 
 typedef enum _RIO_NOTIFICATION_COMPLETION_TYPE {
     RIO_EVENT_COMPLETION      = 1,
     RIO_IOCP_COMPLETION       = 2,
 } RIO_NOTIFICATION_COMPLETION_TYPE, *PRIO_NOTIFICATION_COMPLETION_TYPE;
+]]
 
-#pragma warning(push)
-#pragma warning(disable : 4201) /* Nonstandard extension: nameless struct/union */
-
+ffi.cdef[[
 typedef struct _RIO_NOTIFICATION_COMPLETION {
     RIO_NOTIFICATION_COMPLETION_TYPE Type;
     union {
@@ -602,54 +612,56 @@ typedef struct _RIO_NOTIFICATION_COMPLETION {
     };
 } RIO_NOTIFICATION_COMPLETION, *PRIO_NOTIFICATION_COMPLETION;
 
-#pragma warning(pop)
 
-typedef RIO_CQ (PASCAL FAR * LPFN_RIOCREATECOMPLETIONQUEUE)(
-    _In_ DWORD QueueSize,
-    _In_opt_ PRIO_NOTIFICATION_COMPLETION NotificationCompletion
+
+typedef RIO_CQ (  * LPFN_RIOCREATECOMPLETIONQUEUE)(
+     DWORD QueueSize,
+     PRIO_NOTIFICATION_COMPLETION NotificationCompletion
 );
 
-typedef RIO_RQ (PASCAL FAR * LPFN_RIOCREATEREQUESTQUEUE)(
-    _In_ SOCKET Socket,
-    _In_ ULONG MaxOutstandingReceive,
-    _In_ ULONG MaxReceiveDataBuffers,
-    _In_ ULONG MaxOutstandingSend,
-    _In_ ULONG MaxSendDataBuffers,
-    _In_ RIO_CQ ReceiveCQ,
-    _In_ RIO_CQ SendCQ,
-    _In_ PVOID SocketContext
+typedef RIO_RQ (  * LPFN_RIOCREATEREQUESTQUEUE)(
+     SOCKET Socket,
+     ULONG MaxOutstandingReceive,
+     ULONG MaxReceiveDataBuffers,
+     ULONG MaxOutstandingSend,
+     ULONG MaxSendDataBuffers,
+     RIO_CQ ReceiveCQ,
+     RIO_CQ SendCQ,
+     PVOID SocketContext
 );
 
-typedef ULONG (PASCAL FAR * LPFN_RIODEQUEUECOMPLETION)(
-    _In_ RIO_CQ CQ,
-    _Out_writes_to_(ArraySize, return) PRIORESULT Array,
-    _In_ ULONG ArraySize
+typedef ULONG (  * LPFN_RIODEQUEUECOMPLETION)(
+     RIO_CQ CQ,
+     PRIORESULT Array,
+     ULONG ArraySize
 );
 
-typedef VOID (PASCAL FAR * LPFN_RIODEREGISTERBUFFER)(
-    _In_ RIO_BUFFERID BufferId
+typedef VOID (  * LPFN_RIODEREGISTERBUFFER)(
+     RIO_BUFFERID BufferId
 );
 
-typedef INT (PASCAL FAR * LPFN_RIONOTIFY)(
-    _In_ RIO_CQ CQ
+typedef INT (  * LPFN_RIONOTIFY)(
+     RIO_CQ CQ
 );
 
-typedef RIO_BUFFERID (PASCAL FAR * LPFN_RIOREGISTERBUFFER)(
-    _In_ PCHAR DataBuffer,
-    _In_ DWORD DataLength
+typedef RIO_BUFFERID (  * LPFN_RIOREGISTERBUFFER)(
+     PCHAR DataBuffer,
+     DWORD DataLength
 );
 
-typedef BOOL (PASCAL FAR * LPFN_RIORESIZECOMPLETIONQUEUE) (
-    _In_ RIO_CQ CQ,
-    _In_ DWORD QueueSize
+typedef BOOL (  * LPFN_RIORESIZECOMPLETIONQUEUE) (
+     RIO_CQ CQ,
+     DWORD QueueSize
 );
 
-typedef BOOL (PASCAL FAR * LPFN_RIORESIZEREQUESTQUEUE) (
-    _In_ RIO_RQ RQ,
-    _In_ DWORD MaxOutstandingReceive,
-    _In_ DWORD MaxOutstandingSend
+typedef BOOL (  * LPFN_RIORESIZEREQUESTQUEUE) (
+     RIO_RQ RQ,
+     DWORD MaxOutstandingReceive,
+     DWORD MaxOutstandingSend
 );
+]]
 
+ffi.cdef[[
 typedef struct _RIO_EXTENSION_FUNCTION_TABLE {
     DWORD cbSize;
 
@@ -667,10 +679,14 @@ typedef struct _RIO_EXTENSION_FUNCTION_TABLE {
     LPFN_RIORESIZECOMPLETIONQUEUE RIOResizeCompletionQueue;
     LPFN_RIORESIZEREQUESTQUEUE RIOResizeRequestQueue;
 } RIO_EXTENSION_FUNCTION_TABLE, *PRIO_EXTENSION_FUNCTION_TABLE;
+]]
 
+--[[
 #define WSAID_MULTIPLE_RIO /* 8509e081-96dd-4005-b165-9e2ee8c79e3f */ \
     {0x8509e081,0x96dd,0x4005,{0xb1,0x65,0x9e,0x2e,0xe8,0xc7,0x9e,0x3f}}
-
+--]]
 
 
 end  --/* _MSWSOCK_ */
+
+return ffi.load("mswsock") 

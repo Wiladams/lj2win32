@@ -37,7 +37,8 @@ ScopeLevel(
 --]]
 end --// _WS2DEF_
 
-#define SIO_SET_COMPATIBILITY_MODE  = _WSAIOW(IOC_VENDOR,300)
+-- BUGBUG, need to decide which WSAIOW will be global
+-- SIO_SET_COMPATIBILITY_MODE  = _WSAIOW(IOC_VENDOR,300)
 
 ffi.cdef[[
 typedef enum _WSA_COMPATIBILITY_BEHAVIOR_ID {
@@ -80,7 +81,7 @@ static const int RIO_MSG_COMMIT_ONLY        =   0x00000008;
 
 static const int RIO_INVALID_BUFFERID       =   ((RIO_BUFFERID)(ULONG_PTR)0xFFFFFFFF);
 static const int RIO_INVALID_CQ             =   ((RIO_CQ)0);
-static const int RIO_INVALID_RQ             =   ((RIO_RQ)0;)
+static const int RIO_INVALID_RQ             =   ((RIO_RQ)0);
 
 static const int RIO_MAX_CQ_SIZE            =   0x8000000;
 static const int RIO_CORRUPT_CQ             =   0xFFFFFFFF;
