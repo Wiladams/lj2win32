@@ -1,5 +1,16 @@
+--[[
+	sockutils
 
+	This file represents a nice easy consistent API for windows networking calls.
+	There are covers for the typical Berkeley socket calls.  All functions return
+	either false and an error code, or true or the value expected from the call.
+	
+	If you are going to do low level socket networking, you should be able
+	to require this file, and not much else.
+--]]
 local ffi = require "ffi"
+local C = ffi.C
+
 local bit = require "bit"
 local lshift = bit.lshift
 local rshift = bit.rshift
@@ -8,11 +19,12 @@ local bor = bit.bor
 local bnot = bit.bnot
 local bswap = bit.bswap
 
-
+require("win32.minwindef")
+require("win32.winerror")
 local wsock = require("win32.winsock2");
 
-IN_CLASSA = wsock.IN4_CLASSA;
-IN_CLASSB = wsock.IN4_CLASSB
+--IN_CLASSA = wsock.IN4_CLASSA;
+--IN_CLASSB = wsock.IN4_CLASSB
 --[[
 	Casual Macros
 --]]
@@ -40,16 +52,16 @@ IN4_MULTICAST = IN4_CLASSD
 --[[
 	BSD Style functions
 --]]
-local accept = function(s, addr, addrlen)
+local function accept(s, addr, addrlen)
 	local socket = wsock.accept(s,addr,addrlen);
-	if socket == INVALID_SOCKET then
+	if socket == C.INVALID_SOCKET then
 		return false, wsock.WSAGetLastError();
 	end
 	
 	return socket;
 end
 
-local bind = function(s, name, namelen)
+local function bind(s, name, namelen)
 	if 0 == wsock.bind(s, ffi.cast("const struct sockaddr *",name), namelen) then
 		return true;
 	end
@@ -57,7 +69,7 @@ local bind = function(s, name, namelen)
 	return false, wsock.WSAGetLastError();
 end
 
-local connect = function(s, name, namelen)
+local function connect(s, name, namelen)
 	if 0 == wsock.connect(s, ffi.cast("const struct sockaddr *", name), namelen) then
 		return true
 	end
@@ -65,7 +77,7 @@ local connect = function(s, name, namelen)
 	return false, wsock.WSAGetLastError();
 end
 
-local closesocket = function(s)
+local function closesocket(s)
 	if 0 == wsock.closesocket(s) then
 		return true
 	end
@@ -73,7 +85,7 @@ local closesocket = function(s)
 	return false, wsock.WSAGetLastError();
 end
 
-local ioctlsocket = function(s, cmd, argp)
+local function ioctlsocket(s, cmd, argp)
 	if 0 == wsock.ioctlsocket(s, cmd, argp) then
 		return true
 	end
@@ -81,7 +93,7 @@ local ioctlsocket = function(s, cmd, argp)
 	return false, wsock.WSAGetLastError();
 end
 
-local listen = function(s, backlog)
+local function listen(s, backlog)
 	if 0 == wsock.listen(s, backlog) then
 		return true
 	end
@@ -89,7 +101,7 @@ local listen = function(s, backlog)
 	return false, wsock.WSAGetLastError();
 end
 
-local recv = function(s, buf, len, flags)
+local function recv(s, buf, len, flags)
 	len = len or #buf;
 	flags = flags or 0;
 	
@@ -102,7 +114,7 @@ local recv = function(s, buf, len, flags)
 	return bytesreceived;
 end
 
-local send = function(s, buf, len, flags)
+local function send(s, buf, len, flags)
 	len = len or #buf;
 	flags = flags or 0;
 	
@@ -115,7 +127,7 @@ local send = function(s, buf, len, flags)
 	return bytessent;
 end
 
-local getsockopt = function(s, optlevel, optname, optval, optlen)
+local function getsockopt(s, optlevel, optname, optval, optlen)
 	if 0 == wsock.getsockopt(s, optlevel, optname, ffi.cast("char *",optval), optlen) then
 		return true
 	end
@@ -123,7 +135,7 @@ local getsockopt = function(s, optlevel, optname, optval, optlen)
 	return false, wsock.WSAGetLastError();
 end
 
-local setsockopt = function(s, optlevel, optname, optval, optlen)
+local function setsockopt(s, optlevel, optname, optval, optlen)
 	if 0 == wsock.setsockopt(s, optlevel, optname, ffi.cast("const uint8_t *", optval), optlen) then
 		return true
 	end
@@ -131,7 +143,7 @@ local setsockopt = function(s, optlevel, optname, optval, optlen)
 	return false, wsock.WSAGetLastError();
 end
 
-local shutdown = function(s, how)
+local function shutdown(s, how)
 	if 0 == wsock.shutdown(s, how) then
 		return true
 	end
@@ -139,7 +151,7 @@ local shutdown = function(s, how)
 	return false, wsock.WSAGetLastError();
 end
 
-local socket = function(af, socktype, protocol)
+local function socket(af, socktype, protocol)
 	af = af or ffi.C.AF_INET
 	socktype = socktype or ffi.C.SOCK_STREAM
 	protocol = protocol or ffi.C.IPPROTO_TCP
@@ -155,7 +167,7 @@ end
 --[[
 	Windows Specific Socket routines
 --]]
-local WSAEnumProtocols = function()
+local function WSAEnumProtocols()
 	local lpiProtocols = nil;
 	local dwBufferLen = 16384;
 	local lpProtocolBuffer = ffi.cast("LPWSAPROTOCOL_INFOA", ffi.new("uint8_t[?]", dwBufferLen));	-- LPWSAPROTOCOL_INFO
@@ -173,7 +185,7 @@ local WSAEnumProtocols = function()
 end
 
 
-local WSAIoctl = function(s,
+local function WSAIoctl(s,
     dwIoControlCode,
     lpvInBuffer,cbInBuffer,
     lpvOutBuffer, cbOutBuffer,
@@ -194,7 +206,7 @@ local WSAIoctl = function(s,
 	return false, wsock.WSAGetLastError();
 end
 
-local WSAPoll = function(fdArray, fds, timeout)
+local function WSAPoll(fdArray, fds, timeout)
 	local res = wsock.WSAPoll(fdArray, fds, timeout)
 	
 	if ffi.C.SOCKET_ERROR == res then
@@ -204,7 +216,7 @@ local WSAPoll = function(fdArray, fds, timeout)
 	return res 
 end
 
-local WSASocket = function(af, socktype, protocol, lpProtocolInfo, g, dwFlags)
+local function WSASocket(af, socktype, protocol, lpProtocolInfo, g, dwFlags)
 	af = af or ffi.C.AF_INET;
 	socktype = socktype or ffi.C.SOCK_STREAM;
 	protocol = protocol or 0;
@@ -264,13 +276,13 @@ typedef BOOL ( * LPFN_DISCONNECTEX) (
 local function GetExtensionFunctionPointer(funcguid)
 --print("GetExtensionFunctionPointer: ", funcguid)
 
-	local sock = wsock.WSASocket();
+	local sock = WSASocket();
 
 	local outbuffsize = ffi.sizeof("intptr_t")
 	local outbuff = ffi.new("intptr_t[1]");
 	local pbytesreturned = ffi.new("int32_t[1]")
 
-	local success, err = wsock.WSAIoctl(sock, ffi.C.SIO_GET_EXTENSION_FUNCTION_POINTER, 
+	local success, err = WSAIoctl(sock, ffi.C.SIO_GET_EXTENSION_FUNCTION_POINTER, 
 		funcguid, ffi.sizeof(funcguid),
 		outbuff, outbuffsize,
 		pbytesreturned);
@@ -290,30 +302,32 @@ end
 --]]
 
 local SocketErrors = {
-	[0]					= {0, "SUCCESS",},
-	[WSAEFAULT]			= {10014, "WSAEFAULT", "Bad Address"},
-	[WSAEINVAL]			= {10022, "WSAEINVAL", },
-	[WSAEWOULDBLOCK]	= {10035, "WSAEWOULDBLOCK", },
-	[WSAEINPROGRES]		= {10036, "WSAEINPROGRES", },
-	[WSAEALREADY]		= {10037, "WSAEALREADY", },
-	[WSAENOTSOCK]		= {10038, "WSAENOTSOCK", },
-	[WSAEAFNOSUPPORT]	= {10047, "WSAEAFNOSUPPORT", },
-	[WSAECONNABORTED]	= {10053, "WSAECONNABORTED", },
-	[WSAECONNRESET] 	= {10054, "WSAECONNRESET", },
-	[WSAENOBUFS] 		= {10055, "WSAENOBUFS", },
-	[WSAEISCONN]		= {10056, "WSAEISCONN", },
-	[WSAENOTCONN]		= {10057, "WSAENOTCONN", },
-	[WSAESHUTDOWN]		= {10058, "WSAESHUTDOWN", },
-	[WSAETOOMANYREFS]	= {10059, "WSAETOOMANYREFS", },
-	[WSAETIMEDOUT]		= {10060, "WSAETIMEDOUT", },
-	[WSAECONNREFUSED]	= {10061, "WSAECONNREFUSED", },
-	[WSAHOST_NOT_FOUND]	= {11001, "WSAHOST_NOT_FOUND", },
+	[0]					= "SUCCESS",
+	[C.WSAEFAULT]			= "WSAEFAULT",
+	[C.WSAEINVAL]			= "WSAEINVAL",
+	[C.WSAEWOULDBLOCK]	= "WSAEWOULDBLOCK",
+	[C.WSAEINPROGRESS]		= "WSAEINPROGRESS",
+	[C.WSAEALREADY]		= "WSAEALREADY",
+	[C.WSAENOTSOCK]		= "WSAENOTSOCK",
+	[C.WSAEAFNOSUPPORT]	= "WSAEAFNOSUPPORT",
+	[C.WSAECONNABORTED]	= "WSAECONNABORTED",
+	[C.WSAECONNRESET] 	= "WSAECONNRESET",
+	[C.WSAENOBUFS] 		= "WSAENOBUFS",
+	[C.WSAEISCONN]		= "WSAEISCONN",
+	[C.WSAENOTCONN]		= "WSAENOTCONN",
+	[C.WSAESHUTDOWN]		= "WSAESHUTDOWN",
+	[C.WSAETOOMANYREFS]	= "WSAETOOMANYREFS",
+	[C.WSAETIMEDOUT]		= "WSAETIMEDOUT",
+	[C.WSAECONNREFUSED]	= "WSAECONNREFUSED",
+	[C.WSAHOST_NOT_FOUND]	= "WSAHOST_NOT_FOUND",
 }
 
 function GetSocketErrorString(err)
-	if SocketErrors[err] then
-		return SocketErrors[err][2];
+	
+	if not SocketErrors[err] then
+		return SocketErrors[err];
 	end
+	
 	return tostring(err)
 end
 
@@ -358,7 +372,7 @@ local CAcceptEx, err = ffi.cast("LPFN_ACCEPTEX", GetExtensionFunctionPointer(WSA
 local CConnectEx, err = ffi.cast("LPFN_CONNECTEX", GetExtensionFunctionPointer(WSAID_CONNECTEX));
 local CDisconnectEx, err = ffi.cast("LPFN_DISCONNECTEX", GetExtensionFunctionPointer(WSAID_DISCONNECTEX));
 
-local AcceptEx = function(sock, 
+local function AcceptEx(sock, 
 	sListenSocket, 
 	sAcceptSocket, 
 	lpOutputBuffer, 
@@ -391,7 +405,7 @@ local AcceptEx = function(sock,
 end
 
 
-local DisconnectEx = function(sock, dwFlags, lpOverlapped)
+local function DisconnectEx(sock, dwFlags, lpOverlapped)
 	local success = CDisconnectEx(sock, nil,0,0);
 	if success == 1 then
 		return true;

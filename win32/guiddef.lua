@@ -9,7 +9,7 @@ typedef struct _GUID {
     uint8_t  Data4[ 8 ];
 } GUID;
 ]]
-
+GUID = ffi.typeof("GUID")
 
 local function bytecompare(a, b, n)
 	for i=0,n-1 do
@@ -23,6 +23,10 @@ end
 
 --local GUID = ffi.typeof("GUID");
 local GUID_mt = {
+	__new = function(ct, params)
+		return ffi.new(ct, params)
+	end,
+
 	__tostring = function(self)
 		local res = string.format("%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
 			self.Data1, self.Data2, self.Data3,
