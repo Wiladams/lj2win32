@@ -2,7 +2,7 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 local fileio = require("win32.core.file_l1_2_0")
-local core_string = require("win32.core.string_l1_1_0");
+local core_string = require("experimental.apiset.string_l1_1_0");
 local binstream = require("binstream")
 
 local L = core_string.toUnicode;

@@ -5,8 +5,18 @@
 	There are covers for the typical Berkeley socket calls.  All functions return
 	either false and an error code, or true or the value expected from the call.
 	
+	One very important aspect of windows networking is you MUST call the startup
+	function:
+
+		WSAStartup
+
+	BEFORE you can really do anything else with the networking functions.  This file
+	will call this startup function automatically.  After you require this file, you
+	are free to use the various functions without further delay.
+
 	If you are going to do low level socket networking, you should be able
 	to require this file, and not much else.
+
 --]]
 local ffi = require "ffi"
 local C = ffi.C
@@ -242,21 +252,32 @@ WSAID_CONNECTEX = GUID{0x25a207b9,0xddf3,0x4660,{0x8e,0xe9,0x76,0xe5,0x8c,0x74,0
 WSAID_DISCONNECTEX = GUID{0x7fda2e11,0x8630,0x436f,{0xa0, 0x31, 0xf5, 0x36, 0xa6, 0xee, 0xc1, 0x57}};
 
 
-local function GetExtensionFunctionPointer(funcguid)
+--[[
+	Get a pointer to a networking function based on the GUID
+]]
+local function GetExtensionFunctionPointer(funcguid, sock)
 --print("GetExtensionFunctionPointer: ", funcguid)
 
-	local sock = WSASocket();
+	local mustclose = false
+	local lsock  = sock
+
+	if not sock then
+		lsock = WSASocket();
+		mustclose = true;
+	end
 
 	local outbuffsize = ffi.sizeof("intptr_t")
 	local outbuff = ffi.new("intptr_t[1]");
 	local pbytesreturned = ffi.new("int32_t[1]")
 
-	local success, err = WSAIoctl(sock, ffi.C.SIO_GET_EXTENSION_FUNCTION_POINTER, 
+	local success, err = WSAIoctl(lsock, ffi.C.SIO_GET_EXTENSION_FUNCTION_POINTER, 
 		funcguid, ffi.sizeof(funcguid),
 		outbuff, outbuffsize,
 		pbytesreturned);
 
-	closesocket(sock);
+	if mustclose then
+		closesocket(lsock);
+	end
 
 	if not success then
 		return false, err
@@ -308,14 +329,11 @@ local function GetLocalHostName()
 	return ffi.string(name)
 end
 
+
 --[[
 	This startup routine must be called before any other functions
 	within the library are utilized.
 --]]
-local function MAKEWORD(low,high)
-	return bor(low , lshift(high , 8))
-end
-
 function WinsockStartup()
 	local wVersionRequested = MAKEWORD( 2, 2 );
 

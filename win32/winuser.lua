@@ -5446,7 +5446,7 @@ typedef struct tagINPUT {
         MOUSEINPUT      mi;
         KEYBDINPUT      ki;
         HARDWAREINPUT   hi;
-    } DUMMYUNIONNAME;
+    };
 } INPUT, *PINPUT, * LPINPUT;
 
 
@@ -5913,10 +5913,10 @@ IsMouseInPointerEnabled(
     void);
 ]]
 
---[=[
-#define TOUCH_HIT_TESTING_DEFAULT 0x0
-#define TOUCH_HIT_TESTING_CLIENT  0x1
-#define TOUCH_HIT_TESTING_NONE    0x2
+ffi.cdef[[
+static const int TOUCH_HIT_TESTING_DEFAULT = 0x0;
+static const int TOUCH_HIT_TESTING_CLIENT  = 0x1;
+static const int TOUCH_HIT_TESTING_NONE    = 0x2;
 
 
 BOOL
@@ -5945,8 +5945,8 @@ typedef struct tagTOUCH_HIT_TESTING_INPUT
 } TOUCH_HIT_TESTING_INPUT, *PTOUCH_HIT_TESTING_INPUT;
 
 
-#define TOUCH_HIT_TESTING_PROXIMITY_CLOSEST  0x0
-#define TOUCH_HIT_TESTING_PROXIMITY_FARTHEST  0xFFF
+static const int TOUCH_HIT_TESTING_PROXIMITY_CLOSEST  = 0x0;
+static const int TOUCH_HIT_TESTING_PROXIMITY_FARTHEST = 0xFFF;
 
 
 BOOL
@@ -5961,7 +5961,7 @@ BOOL
 __stdcall
 EvaluateProximityToPolygon(
     UINT32 numVertices,
-    _In_reads_(numVertices) const POINT *controlPolygon,
+     const POINT *controlPolygon,
      const TOUCH_HIT_TESTING_INPUT *pHitTestingInput,
      TOUCH_HIT_TESTING_PROXIMITY_EVALUATION *pProximityEval);
 
@@ -5987,9 +5987,10 @@ typedef enum tagFEEDBACK_TYPE {
     FEEDBACK_GESTURE_PRESSANDTAP        = 11,
     FEEDBACK_MAX                        = 0xFFFFFFFF
 } FEEDBACK_TYPE;
+]]
 
-
-#define GWFS_INCLUDE_ANCESTORS           0x00000001
+ffi.cdef[[
+static const int GWFS_INCLUDE_ANCESTORS  =         0x00000001;
 
 
 
@@ -6000,7 +6001,7 @@ GetWindowFeedbackSetting(
      FEEDBACK_TYPE feedback,
      DWORD dwFlags,
      UINT32* pSize,
-    _Out_writes_bytes_opt_(*pSize) VOID* config);
+     VOID* config);
 
 
 BOOL
@@ -6010,7 +6011,7 @@ SetWindowFeedbackSetting(
      FEEDBACK_TYPE feedback,
      DWORD dwFlags,
      UINT32 size,
-    _In_reads_bytes_opt_(size) const VOID* configuration);
+     const VOID* configuration);
 
 
 typedef struct tagINPUT_TRANSFORM {
@@ -6020,9 +6021,9 @@ typedef struct tagINPUT_TRANSFORM {
             float        _21, _22, _23, _24;
             float        _31, _32, _33, _34;
             float        _41, _42, _43, _44;
-        } DUMMYSTRUCTNAME;
+        } ;
         float m[4][4];
-    } DUMMYUNIONNAME;
+    } ;
 } INPUT_TRANSFORM;
 
 
@@ -6032,7 +6033,7 @@ __stdcall
 GetPointerInputTransform(
      UINT32 pointerId,
      UINT32 historyCount,
-    _Out_writes_(historyCount) INPUT_TRANSFORM *inputTransform);
+     INPUT_TRANSFORM *inputTransform);
 
 typedef struct tagLASTINPUTINFO {
     UINT cbSize;
@@ -6044,10 +6045,10 @@ BOOL
 __stdcall
 GetLastInputInfo(
      PLASTINPUTINFO plii);
+]]
 
 
-
-
+ffi.cdef[[
 UINT
 __stdcall
 MapVirtualKeyA(
@@ -6059,16 +6060,17 @@ __stdcall
 MapVirtualKeyW(
      UINT uCode,
      UINT uMapType);
+]]
 
-
+--[[
 #ifdef UNICODE
 #define MapVirtualKey  MapVirtualKeyW
 #else
 #define MapVirtualKey  MapVirtualKeyA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 UINT
 __stdcall
 MapVirtualKeyExA(
@@ -6082,25 +6084,25 @@ MapVirtualKeyExW(
      UINT uCode,
      UINT uMapType,
      HKL dwhkl);
+]]
 
-
+--[[
 #ifdef UNICODE
 #define MapVirtualKeyEx  MapVirtualKeyExW
 #else
 #define MapVirtualKeyEx  MapVirtualKeyExA
 #endif // !UNICODE
+--]]
+
+ffi.cdef[[
+static const int MAPVK_VK_TO_VSC     = 0;
+static const int MAPVK_VSC_TO_VK     = 1;
+static const int MAPVK_VK_TO_CHAR    = 2;
+static const int MAPVK_VSC_TO_VK_EX  = 3;
 
 
-
-#define MAPVK_VK_TO_VSC     (0);
-#define MAPVK_VSC_TO_VK     (1);
-#define MAPVK_VK_TO_CHAR    (2);
-#define MAPVK_VSC_TO_VK_EX  (3);
-
-
-#define MAPVK_VK_TO_VSC_EX  (4);
-
---]=]
+static const int MAPVK_VK_TO_VSC_EX  = 4;
+]]
 
 ffi.cdef[[
 BOOL

@@ -44,7 +44,7 @@ UIOSimulator.MouseDown = function(x, y, which)
 	minput.mi.mouseData = 0;
 	minput.mi.dwFlags =  bor(ffi.C.MOUSEEVENTF_ABSOLUTE, ffi.C.MOUSEEVENTF_LEFTDOWN);
 	
-	local written, err = User32.SendInput(1, minput, ffi.sizeof(minput))
+	local written, err = C.SendInput(1, minput, ffi.sizeof(minput))
 end
 
 UIOSimulator.MouseUp = function(x, y, which)
@@ -60,7 +60,7 @@ UIOSimulator.MouseUp = function(x, y, which)
 	minput.mi.mouseData = 0;
 	minput.mi.dwFlags =  bor(ffi.C.MOUSEEVENTF_ABSOLUTE, ffi.C.MOUSEEVENTF_LEFTUP);
 	
-	local written, err = User32.SendInput(1, minput, ffi.sizeof(minput))
+	local written, err = C.SendInput(1, minput, ffi.sizeof(minput))
 end
 
 UIOSimulator.MouseMove = function(x, y)
@@ -76,7 +76,7 @@ UIOSimulator.MouseMove = function(x, y)
 	sinput.mi.mouseData = 0;
 	sinput.mi.dwFlags =  bor(ffi.C.MOUSEEVENTF_ABSOLUTE, ffi.C.MOUSEEVENTF_MOVE);
 	
-	local written, err = User32.SendInput(1, sinput, ffi.sizeof(sinput))
+	local written, err = C.SendInput(1, sinput, ffi.sizeof(sinput))
 	
 	--print(written, err);
 end
@@ -115,7 +115,7 @@ UIOSimulator.KeyUp = function(code)
 	local written, err = User32.SendInput(1, sinput, ffi.sizeof(sinput))
 end
 
-local InjectKeyboardActivity = function(flags, code)
+function UIOSimulator.InjectKeyboardActivity(flags, code)
 	local sinput = ffi.new("INPUT");
 	sinput.type = ffi.C.INPUT_KEYBOARD;
 	sinput.ki.wVk = code;
@@ -124,15 +124,15 @@ local InjectKeyboardActivity = function(flags, code)
 	--sinput.ki.time = 0;
 	--sinput.ki.dwExtraInfo = nil;
 	
-	if band(flags, KBD_FLAGS_RELEASE) then
-		sinput.ki.dwFlags = bor(sinput.ki.dwFlags, KEYEVENTF_KEYUP);
+	if band(flags, KBD_FLAGS_RELEASE) ~= 0 then
+		sinput.ki.dwFlags = bor(sinput.ki.dwFlags, C.KEYEVENTF_KEYUP);
 	end
 	
-	if band(flags, KBD_FLAGS_EXTENDED) then
-		sinput.ki.dwFlags = bor(sinput.ki.dwFlags, KEYEVENTF_EXTENDEDKEY);
+	if band(flags, KBD_FLAGS_EXTENDED) ~= 0 then
+		sinput.ki.dwFlags = bor(sinput.ki.dwFlags, C.KEYEVENTF_EXTENDEDKEY);
 	end
 	
-	local written, err = User32.SendInput(1, sinput, ffi.sizeof(sinput))
+	local written, err = C.SendInput(1, sinput, ffi.sizeof(sinput))
 	
 	--print(written, err);
 end
