@@ -22,6 +22,7 @@ local bswap = bit.bswap
 require("win32.minwindef")
 require("win32.winerror")
 local wsock = require("win32.winsock2");
+local mswsock = require("win32.mswsock")
 
 --IN_CLASSA = wsock.IN4_CLASSA;
 --IN_CLASSB = wsock.IN4_CLASSB
@@ -240,38 +241,6 @@ WSAID_ACCEPTEX = GUID{0xb5367df1,0xcbac,0x11cf,{0x95,0xca,0x00,0x80,0x5f,0x48,0x
 WSAID_CONNECTEX = GUID{0x25a207b9,0xddf3,0x4660,{0x8e,0xe9,0x76,0xe5,0x8c,0x74,0x06,0x3e}};
 WSAID_DISCONNECTEX = GUID{0x7fda2e11,0x8630,0x436f,{0xa0, 0x31, 0xf5, 0x36, 0xa6, 0xee, 0xc1, 0x57}};
 
-
-ffi.cdef[[
-typedef BOOL
-( * LPFN_ACCEPTEX)(
-    SOCKET sListenSocket,
-    SOCKET sAcceptSocket,
-    PVOID lpOutputBuffer,
-    DWORD dwReceiveDataLength,
-    DWORD dwLocalAddressLength,
-    DWORD dwRemoteAddressLength,
-    LPDWORD lpdwBytesReceived,
-    LPOVERLAPPED lpOverlapped
-    );
-
-typedef BOOL ( * LPFN_CONNECTEX) (
-    SOCKET s,
-    const struct sockaddr *name,
-    int namelen,
-    PVOID lpSendBuffer,
-    DWORD dwSendDataLength,
-    LPDWORD lpdwBytesSent,
-    LPOVERLAPPED lpOverlapped);
-
-
-
-typedef BOOL ( * LPFN_DISCONNECTEX) (
-    SOCKET s,
-    LPOVERLAPPED lpOverlapped,
-    DWORD  dwFlags,
-    DWORD  dwReserved);
-
-]]
 
 local function GetExtensionFunctionPointer(funcguid)
 --print("GetExtensionFunctionPointer: ", funcguid)
