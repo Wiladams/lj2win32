@@ -8,14 +8,18 @@ require("win32.winapifamily")
 local exports = {}
 exports.Lib = ffi.load("user32");
 
+if not WINVER then
+WINVER  = 0x0500      --/* version 5.0 */
+end --/* !WINVER */
+
 --#include <stdarg.h>
 
 if not NOAPISET then
 require("win32.libloaderapi") -- LoadString%
 end
 
---require("win32.wtypes")
---local wingdi = require("win32.wingdi")
+--#ifndef NOUSER
+--#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 ffi.cdef[[
 typedef HANDLE HDWP;
@@ -793,115 +797,122 @@ typedef struct tagWTSSESSION_NOTIFICATION
 #define MSGF_NEXTWINDOW     6
 #define MSGF_MAX            8                       // unused
 #define MSGF_USER           4096
+--]=]
 
+ffi.cdef[[
 /*
  * Shell support
  */
-#define HSHELL_WINDOWCREATED        1
-#define HSHELL_WINDOWDESTROYED      2
-#define HSHELL_ACTIVATESHELLWINDOW  3
+static const int HSHELL_WINDOWCREATED       = 1;
+static const int HSHELL_WINDOWDESTROYED     = 2;
+static const int HSHELL_ACTIVATESHELLWINDOW = 3;
 
 
-#define HSHELL_WINDOWACTIVATED      4
-#define HSHELL_GETMINRECT           5
-#define HSHELL_REDRAW               6
-#define HSHELL_TASKMAN              7
-#define HSHELL_LANGUAGE             8
-#define HSHELL_SYSMENU              9
-#define HSHELL_ENDTASK              10
+static const int HSHELL_WINDOWACTIVATED    =  4;
+static const int HSHELL_GETMINRECT         =  5;
+static const int HSHELL_REDRAW             =  6;
+static const int HSHELL_TASKMAN            =  7;
+static const int HSHELL_LANGUAGE           =  8;
+static const int HSHELL_SYSMENU            =  9;
+static const int HSHELL_ENDTASK            =  10;
 
 
-#define HSHELL_ACCESSIBILITYSTATE   11
-#define HSHELL_APPCOMMAND           12
-
-
-
-#define HSHELL_WINDOWREPLACED       13
-#define HSHELL_WINDOWREPLACING      14
+static const int HSHELL_ACCESSIBILITYSTATE =  11;
+static const int HSHELL_APPCOMMAND         =  12;
 
 
 
-
-#define HSHELL_MONITORCHANGED            16
-
-
-
-#define HSHELL_HIGHBIT            0x8000
-#define HSHELL_FLASH              (HSHELL_REDRAW|HSHELL_HIGHBIT)
-#define HSHELL_RUDEAPPACTIVATED   (HSHELL_WINDOWACTIVATED|HSHELL_HIGHBIT)
+static const int HSHELL_WINDOWREPLACED     =  13;
+static const int HSHELL_WINDOWREPLACING    =  14;
 
 
+
+
+static const int HSHELL_MONITORCHANGED     =       16;
+
+
+
+static const int HSHELL_HIGHBIT           = 0x8000;
+static const int HSHELL_FLASH             = (HSHELL_REDRAW|HSHELL_HIGHBIT);
+static const int HSHELL_RUDEAPPACTIVATED  = (HSHELL_WINDOWACTIVATED|HSHELL_HIGHBIT);
+]]
+
+
+ffi.cdef[[
 /* cmd for HSHELL_APPCOMMAND and WM_APPCOMMAND */
-#define APPCOMMAND_BROWSER_BACKWARD       1
-#define APPCOMMAND_BROWSER_FORWARD        2
-#define APPCOMMAND_BROWSER_REFRESH        3
-#define APPCOMMAND_BROWSER_STOP           4
-#define APPCOMMAND_BROWSER_SEARCH         5
-#define APPCOMMAND_BROWSER_FAVORITES      6
-#define APPCOMMAND_BROWSER_HOME           7
-#define APPCOMMAND_VOLUME_MUTE            8
-#define APPCOMMAND_VOLUME_DOWN            9
-#define APPCOMMAND_VOLUME_UP              10
-#define APPCOMMAND_MEDIA_NEXTTRACK        11
-#define APPCOMMAND_MEDIA_PREVIOUSTRACK    12
-#define APPCOMMAND_MEDIA_STOP             13
-#define APPCOMMAND_MEDIA_PLAY_PAUSE       14
-#define APPCOMMAND_LAUNCH_MAIL            15
-#define APPCOMMAND_LAUNCH_MEDIA_SELECT    16
-#define APPCOMMAND_LAUNCH_APP1            17
-#define APPCOMMAND_LAUNCH_APP2            18
-#define APPCOMMAND_BASS_DOWN              19
-#define APPCOMMAND_BASS_BOOST             20
-#define APPCOMMAND_BASS_UP                21
-#define APPCOMMAND_TREBLE_DOWN            22
-#define APPCOMMAND_TREBLE_UP              23
+static const int APPCOMMAND_BROWSER_BACKWARD      = 1;
+static const int APPCOMMAND_BROWSER_FORWARD       = 2;
+static const int APPCOMMAND_BROWSER_REFRESH       = 3;
+static const int APPCOMMAND_BROWSER_STOP          = 4;
+static const int APPCOMMAND_BROWSER_SEARCH        = 5;
+static const int APPCOMMAND_BROWSER_FAVORITES     = 6;
+static const int APPCOMMAND_BROWSER_HOME          = 7;
+static const int APPCOMMAND_VOLUME_MUTE           = 8;
+static const int APPCOMMAND_VOLUME_DOWN           = 9;
+static const int APPCOMMAND_VOLUME_UP             = 10;
+static const int APPCOMMAND_MEDIA_NEXTTRACK       = 11;
+static const int APPCOMMAND_MEDIA_PREVIOUSTRACK   = 12;
+static const int APPCOMMAND_MEDIA_STOP            = 13;
+static const int APPCOMMAND_MEDIA_PLAY_PAUSE      = 14;
+static const int APPCOMMAND_LAUNCH_MAIL           = 15;
+static const int APPCOMMAND_LAUNCH_MEDIA_SELECT   = 16;
+static const int APPCOMMAND_LAUNCH_APP1           = 17;
+static const int APPCOMMAND_LAUNCH_APP2           = 18;
+static const int APPCOMMAND_BASS_DOWN             = 19;
+static const int APPCOMMAND_BASS_BOOST            = 20;
+static const int APPCOMMAND_BASS_UP               = 21;
+static const int APPCOMMAND_TREBLE_DOWN           = 22;
+static const int APPCOMMAND_TREBLE_UP             = 23;
 
-#define APPCOMMAND_MICROPHONE_VOLUME_MUTE 24
-#define APPCOMMAND_MICROPHONE_VOLUME_DOWN 25
-#define APPCOMMAND_MICROPHONE_VOLUME_UP   26
-#define APPCOMMAND_HELP                   27
-#define APPCOMMAND_FIND                   28
-#define APPCOMMAND_NEW                    29
-#define APPCOMMAND_OPEN                   30
-#define APPCOMMAND_CLOSE                  31
-#define APPCOMMAND_SAVE                   32
-#define APPCOMMAND_PRINT                  33
-#define APPCOMMAND_UNDO                   34
-#define APPCOMMAND_REDO                   35
-#define APPCOMMAND_COPY                   36
-#define APPCOMMAND_CUT                    37
-#define APPCOMMAND_PASTE                  38
-#define APPCOMMAND_REPLY_TO_MAIL          39
-#define APPCOMMAND_FORWARD_MAIL           40
-#define APPCOMMAND_SEND_MAIL              41
-#define APPCOMMAND_SPELL_CHECK            42
-#define APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE    43
-#define APPCOMMAND_MIC_ON_OFF_TOGGLE      44
-#define APPCOMMAND_CORRECTION_LIST        45
-#define APPCOMMAND_MEDIA_PLAY             46
-#define APPCOMMAND_MEDIA_PAUSE            47
-#define APPCOMMAND_MEDIA_RECORD           48
-#define APPCOMMAND_MEDIA_FAST_FORWARD     49
-#define APPCOMMAND_MEDIA_REWIND           50
-#define APPCOMMAND_MEDIA_CHANNEL_UP       51
-#define APPCOMMAND_MEDIA_CHANNEL_DOWN     52
-
-
-#define APPCOMMAND_DELETE                 53
-#define APPCOMMAND_DWM_FLIP3D             54
+static const int APPCOMMAND_MICROPHONE_VOLUME_MUTE= 24;
+static const int APPCOMMAND_MICROPHONE_VOLUME_DOWN= 25;
+static const int APPCOMMAND_MICROPHONE_VOLUME_UP  = 26;
+static const int APPCOMMAND_HELP                 =  27;
+static const int APPCOMMAND_FIND                 =  28;
+static const int APPCOMMAND_NEW                  =  29;
+static const int APPCOMMAND_OPEN                 =  30;
+static const int APPCOMMAND_CLOSE                =  31;
+static const int APPCOMMAND_SAVE                 =  32;
+static const int APPCOMMAND_PRINT                =  33;
+static const int APPCOMMAND_UNDO                 =  34;
+static const int APPCOMMAND_REDO                 =  35;
+static const int APPCOMMAND_COPY                 =  36;
+static const int APPCOMMAND_CUT                  =  37;
+static const int APPCOMMAND_PASTE                =  38;
+static const int APPCOMMAND_REPLY_TO_MAIL        =  39;
+static const int APPCOMMAND_FORWARD_MAIL         =  40;
+static const int APPCOMMAND_SEND_MAIL            =  41;
+static const int APPCOMMAND_SPELL_CHECK          =  42;
+static const int APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE   = 43;
+static const int APPCOMMAND_MIC_ON_OFF_TOGGLE    =  44;
+static const int APPCOMMAND_CORRECTION_LIST      =  45;
+static const int APPCOMMAND_MEDIA_PLAY           =  46;
+static const int APPCOMMAND_MEDIA_PAUSE          =  47;
+static const int APPCOMMAND_MEDIA_RECORD         =  48;
+static const int APPCOMMAND_MEDIA_FAST_FORWARD   =  49;
+static const int APPCOMMAND_MEDIA_REWIND         =  50;
+static const int APPCOMMAND_MEDIA_CHANNEL_UP     =  51;
+static const int APPCOMMAND_MEDIA_CHANNEL_DOWN   =  52;
 
 
-#define FAPPCOMMAND_MOUSE 0x8000
-#define FAPPCOMMAND_KEY   0
-#define FAPPCOMMAND_OEM   0x1000
-#define FAPPCOMMAND_MASK  0xF000
+static const int APPCOMMAND_DELETE               =  53;
+static const int APPCOMMAND_DWM_FLIP3D           =  54;
 
+
+static const int FAPPCOMMAND_MOUSE =0x8000;
+static const int FAPPCOMMAND_KEY  = 0;
+static const int FAPPCOMMAND_OEM  = 0x1000;
+static const int FAPPCOMMAND_MASK = 0xF000;
+]]
+
+
+--[[
 #define GET_APPCOMMAND_LPARAM(lParam) ((short)(HIWORD(lParam) & ~FAPPCOMMAND_MASK))
 #define GET_DEVICE_LPARAM(lParam)     ((WORD)(HIWORD(lParam) & FAPPCOMMAND_MASK))
 #define GET_MOUSEORKEY_LPARAM         GET_DEVICE_LPARAM
 #define GET_FLAGS_LPARAM(lParam)      (LOWORD(lParam))
 #define GET_KEYSTATE_LPARAM(lParam)   GET_FLAGS_LPARAM(lParam)
---]=]
+--]]
 
 ffi.cdef[[
 typedef struct
@@ -1518,7 +1529,7 @@ GetUserObjectInformationA(
      int nIndex,
     _Out_writes_bytes_opt_(nLength) PVOID pvInfo,
      DWORD nLength,
-    _Out_opt_ LPDWORD lpnLengthNeeded);
+     LPDWORD lpnLengthNeeded);
 
 BOOL
 __stdcall
@@ -1527,7 +1538,7 @@ GetUserObjectInformationW(
      int nIndex,
     _Out_writes_bytes_opt_(nLength) PVOID pvInfo,
      DWORD nLength,
-    _Out_opt_ LPDWORD lpnLengthNeeded);
+     LPDWORD lpnLengthNeeded);
 #ifdef UNICODE
 #define GetUserObjectInformation  GetUserObjectInformationW
 #else
@@ -2913,7 +2924,7 @@ typedef struct tagSTYLESTRUCT
 #endif /* _WIN32_WINNT >= 0x0500 */
 #endif /* WINVER >= 0x0500 */
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
@@ -3142,7 +3153,7 @@ UnregisterHotKey(
 #define EWX_HYBRID_SHUTDOWN         0x00400000
 #define EWX_BOOTOPTIONS             0x01000000
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 #define ExitWindows(dwReserved, Code) ExitWindowsEx(EWX_LOGOFF, 0xFFFFFFFF)
@@ -3197,15 +3208,16 @@ IsWow64Message(
     VOID);
 #endif /* _WIN32_WINNT >= 0x0501 */
 
-#if(WINVER >= 0x0400)
-
+if(WINVER >= 0x0400) then
+ffi.cdef[[
 LPARAM
 __stdcall
 SetMessageExtraInfo(
      LPARAM lParam);
-#endif /* WINVER >= 0x0400 */
+]]
+end --/* WINVER >= 0x0400 */
 
-
+ffi.cdef[[
 LRESULT
 __stdcall
 SendMessageA(
@@ -3221,12 +3233,17 @@ SendMessageW(
      UINT Msg,
       WPARAM wParam,
       LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define SendMessage  SendMessageW
 #else
 #define SendMessage  SendMessageA
 #endif // !UNICODE
+--]]
 
+--[[
 #if defined(_M_CEE)
 #undef SendMessage
 __inline
@@ -3250,10 +3267,10 @@ SendMessage(
         );
 }
 #endif  /* _M_CEE */
+--]]
 
 
-
-
+ffi.cdef[[
 LRESULT
 __stdcall
 SendMessageTimeoutA(
@@ -3263,7 +3280,7 @@ SendMessageTimeoutA(
      LPARAM lParam,
      UINT fuFlags,
      UINT uTimeout,
-    _Out_opt_ PDWORD_PTR lpdwResult);
+     PDWORD_PTR lpdwResult);
 
 LRESULT
 __stdcall
@@ -3274,14 +3291,18 @@ SendMessageTimeoutW(
      LPARAM lParam,
      UINT fuFlags,
      UINT uTimeout,
-    _Out_opt_ PDWORD_PTR lpdwResult);
+     PDWORD_PTR lpdwResult);
+]]
+
+--[[
 #ifdef UNICODE
 #define SendMessageTimeout  SendMessageTimeoutW
 #else
 #define SendMessageTimeout  SendMessageTimeoutA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SendNotifyMessageA(
@@ -3297,36 +3318,39 @@ SendNotifyMessageW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define SendNotifyMessage  SendNotifyMessageW
 #else
 #define SendNotifyMessage  SendNotifyMessageA
 #endif // !UNICODE
-
+--]]
 
 BOOL
 __stdcall
-SendMessage__stdcallA(
+SendMessageCallbackA(
      HWND hWnd,
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam,
-     SENDASYNCPROC lpResult__stdcall,
+     SENDASYNCPROC lpResultCallback,
      ULONG_PTR dwData);
 
 BOOL
 __stdcall
-SendMessage__stdcallW(
+SendMessageCallbackW(
      HWND hWnd,
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam,
-     SENDASYNCPROC lpResult__stdcall,
+     SENDASYNCPROC lpResultCallback,
      ULONG_PTR dwData);
 #ifdef UNICODE
-#define SendMessage__stdcall  SendMessage__stdcallW
+#define SendMessageCallback  SendMessageCallbackW
 #else
-#define SendMessage__stdcall  SendMessage__stdcallA
+#define SendMessageCallback  SendMessageCallbackA
 #endif // !UNICODE
 
 #if(_WIN32_WINNT >= 0x0501)
@@ -3346,7 +3370,7 @@ BroadcastSystemMessageExA(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam,
-    _Out_opt_ PBSMINFO pbsmInfo);
+     PBSMINFO pbsmInfo);
 
 long
 __stdcall
@@ -3356,7 +3380,7 @@ BroadcastSystemMessageExW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam,
-    _Out_opt_ PBSMINFO pbsmInfo);
+     PBSMINFO pbsmInfo);
 #ifdef UNICODE
 #define BroadcastSystemMessageEx  BroadcastSystemMessageExW
 #else
@@ -3365,11 +3389,11 @@ BroadcastSystemMessageExW(
 #endif /* _WIN32_WINNT >= 0x0501 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #if(WINVER >= 0x0400)
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 #if defined(_WIN32_WINNT)
@@ -3411,7 +3435,7 @@ BroadcastSystemMessage(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 //Broadcast Special Message Recipient list
 #define BSM_ALLCOMPONENTS       0x00000000
@@ -3443,7 +3467,7 @@ BroadcastSystemMessage(
 
 // RegisterDeviceNotification
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 #if(WINVER >= 0x0500)
@@ -4157,11 +4181,11 @@ SetWindowDisplayAffinity(
 #endif /* _WIN32_WINNT >= 0x0601 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #ifndef NODEFERWINDOWPOS
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
@@ -4191,11 +4215,11 @@ EndDeferWindowPos(
      HDWP hWinPosInfo);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #endif /* !NODEFERWINDOWPOS */
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
@@ -4229,7 +4253,7 @@ IsZoomed(
      HWND hWnd);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /*
  * SetWindowPos Flags
@@ -4286,9 +4310,9 @@ typedef struct {
 } DLGTEMPLATE;
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef DLGTEMPLATE *LPDLGTEMPLATEA;
@@ -4300,7 +4324,7 @@ typedef LPDLGTEMPLATEA LPDLGTEMPLATE;
 #endif // UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
@@ -4314,10 +4338,10 @@ typedef LPCDLGTEMPLATEA LPCDLGTEMPLATE;
 #endif // UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
 
-#pragma region Desktop Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 /*
@@ -4348,12 +4372,12 @@ typedef LPDLGITEMTEMPLATEA LPDLGITEMTEMPLATE;
 #endif // UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 
 #include <poppack.h> /* Resume normal packing */
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
@@ -4539,7 +4563,7 @@ __stdcall
 GetDlgItemInt(
      HWND hDlg,
      int nIDDlgItem,
-    _Out_opt_ BOOL *lpTranslated,
+     BOOL *lpTranslated,
      BOOL bSigned);
 
 
@@ -4716,11 +4740,11 @@ DefDlgProcW(
 #endif
 
 #endif /* !NOCTLMGR */
+--]=]
 
+if not NOMSG then
 
-#ifndef NOMSG
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 CallMsgFilterA(
@@ -4732,6 +4756,7 @@ __stdcall
 CallMsgFilterW(
      LPMSG lpMsg,
      int nCode);
+]]
 
 --[[
 #ifdef UNICODE
@@ -4740,9 +4765,10 @@ CallMsgFilterW(
 #define CallMsgFilter  CallMsgFilterA
 #endif // !UNICODE
 --]]
---]=]
 
+end --/* !NOMSG */
 
+if not NOCLIPBOARD then
 ffi.cdef[[
 BOOL
 __stdcall
@@ -4895,95 +4921,112 @@ GetUpdatedClipboardFormats(
      UINT cFormats,
      PUINT pcFormatsOut);
 ]]
+end --/* !NOCLIPBOARD */
 
 
---[=[
+ffi.cdef[[
 /*
  * Character Translation Routines
  */
-
-
 BOOL
 __stdcall
 CharToOemA(
      LPCSTR pSrc,
-    _Out_writes_(_Inexpressible_(strlen(pSrc) + 1)) LPSTR pDst);
+     LPSTR pDst);
 
 BOOL
 __stdcall
 CharToOemW(
      LPCWSTR pSrc,
-    _Out_writes_(_Inexpressible_(strlen(pSrc) + 1)) LPSTR pDst);
+     LPSTR pDst);
+]]
+
+--[[
 #ifdef UNICODE
 #define CharToOem  CharToOemW
 #else
 #define CharToOem  CharToOemA
 #endif // !UNICODE
+--]]
 
-__drv_preferredFunction("OemToCharBuff","Does not validate buffer size")
+ffi.cdef[[
+//__drv_preferredFunction("OemToCharBuff","Does not validate buffer size")
 
 BOOL
 __stdcall
 OemToCharA(
      LPCSTR pSrc,
-    _Out_writes_(_Inexpressible_(strlen(pSrc) + 1)) LPSTR pDst);
-__drv_preferredFunction("OemToCharBuff","Does not validate buffer size")
+     LPSTR pDst);
+//__drv_preferredFunction("OemToCharBuff","Does not validate buffer size")
 
 BOOL
 __stdcall
 OemToCharW(
      LPCSTR pSrc,
-    _Out_writes_(_Inexpressible_(strlen(pSrc) + 1)) LPWSTR pDst);
+     LPWSTR pDst);
+]]
+
+--[[
 #ifdef UNICODE
 #define OemToChar  OemToCharW
 #else
 #define OemToChar  OemToCharA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 CharToOemBuffA(
      LPCSTR lpszSrc,
-    _Out_writes_(cchDstLength) LPSTR lpszDst,
+     LPSTR lpszDst,
      DWORD cchDstLength);
 
 BOOL
 __stdcall
 CharToOemBuffW(
      LPCWSTR lpszSrc,
-    _Out_writes_(cchDstLength) LPSTR lpszDst,
+     LPSTR lpszDst,
      DWORD cchDstLength);
+]]
+
+--[[
 #ifdef UNICODE
 #define CharToOemBuff  CharToOemBuffW
 #else
 #define CharToOemBuff  CharToOemBuffA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 OemToCharBuffA(
      LPCSTR lpszSrc,
-    _Out_writes_(cchDstLength) LPSTR lpszDst,
+     LPSTR lpszDst,
      DWORD cchDstLength);
 
 BOOL
 __stdcall
 OemToCharBuffW(
      LPCSTR lpszSrc,
-    _Out_writes_(cchDstLength) LPWSTR lpszDst,
+     LPWSTR lpszDst,
      DWORD cchDstLength);
+]]
+
+--[[
 #ifdef UNICODE
 #define OemToCharBuff  OemToCharBuffW
 #else
 #define OemToCharBuff  OemToCharBuffA
 #endif // !UNICODE
+-]]
 
+--[=[
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 
@@ -5196,9 +5239,9 @@ IsCharLowerW(
 #endif  /* !NOLANGUAGE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 --]=]
 
@@ -5701,19 +5744,19 @@ function exports.IS_POINTER_FLAG_SET_WPARAM(wParam, flag)    return (((DWORD)HIW
 #define IS_POINTER_CANCELED_WPARAM(wParam)          IS_POINTER_FLAG_SET_WPARAM(wParam, POINTER_MESSAGE_FLAG_CANCELED)
 --]]
 
---[=[
+ffi.cdef[[
 /*
  * WM_POINTERACTIVATE return codes
  */
-#define PA_ACTIVATE                     MA_ACTIVATE
-#define PA_NOACTIVATE                   MA_NOACTIVATE
+static const int PA_ACTIVATE       =              MA_ACTIVATE;
+static const int PA_NOACTIVATE     =              MA_NOACTIVATE;
 
 
-#define MAX_TOUCH_COUNT 256
+static const int MAX_TOUCH_COUNT = 256;
 
-#define TOUCH_FEEDBACK_DEFAULT 0x1
-#define TOUCH_FEEDBACK_INDIRECT 0x2
-#define TOUCH_FEEDBACK_NONE 0x3
+static const int TOUCH_FEEDBACK_DEFAULT = 0x1;
+static const int TOUCH_FEEDBACK_INDIRECT = 0x2;
+static const int TOUCH_FEEDBACK_NONE = 0x3;
 
 
 BOOL
@@ -5727,7 +5770,7 @@ BOOL
 __stdcall
 InjectTouchInput(
      UINT32 count,
-    _In_reads_(count) const POINTER_TOUCH_INFO *contacts);
+     const POINTER_TOUCH_INFO *contacts);
 
 typedef struct tagUSAGE_PROPERTIES {
     USHORT level;
@@ -5747,7 +5790,7 @@ typedef struct tagPOINTER_TYPE_INFO {
     union{
         POINTER_TOUCH_INFO touchInfo;
         POINTER_PEN_INFO   penInfo;
-    } DUMMYUNIONNAME;
+    } ;
 }POINTER_TYPE_INFO, *PPOINTER_TYPE_INFO;
 
 typedef struct tagINPUT_INJECTION_VALUE {
@@ -5756,7 +5799,9 @@ typedef struct tagINPUT_INJECTION_VALUE {
     INT32  value;
     USHORT index;
 }INPUT_INJECTION_VALUE, *PINPUT_INJECTION_VALUE;
+]]
 
+ffi.cdef[[
 
 BOOL
 __stdcall
@@ -5776,7 +5821,7 @@ BOOL
 __stdcall
 GetPointerInfo(
      UINT32 pointerId,
-    _Out_writes_(1) POINTER_INFO *pointerInfo);
+     POINTER_INFO *pointerInfo);
 
 
 BOOL
@@ -5784,7 +5829,7 @@ __stdcall
 GetPointerInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
-    _Out_writes_opt_(*entriesCount) POINTER_INFO *pointerInfo);
+     POINTER_INFO *pointerInfo);
 
 
 BOOL
@@ -5792,7 +5837,7 @@ __stdcall
 GetPointerFrameInfo(
      UINT32 pointerId,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*pointerCount) POINTER_INFO *pointerInfo);
+     POINTER_INFO *pointerInfo);
 
 
 BOOL
@@ -5801,14 +5846,14 @@ GetPointerFrameInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*entriesCount * *pointerCount) POINTER_INFO *pointerInfo);
+     POINTER_INFO *pointerInfo);
 
 
 BOOL
 __stdcall
 GetPointerTouchInfo(
      UINT32 pointerId,
-    _Out_writes_(1) POINTER_TOUCH_INFO *touchInfo);
+     POINTER_TOUCH_INFO *touchInfo);
 
 
 BOOL
@@ -5816,7 +5861,7 @@ __stdcall
 GetPointerTouchInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
-    _Out_writes_opt_(*entriesCount) POINTER_TOUCH_INFO *touchInfo);
+     POINTER_TOUCH_INFO *touchInfo);
 
 
 BOOL
@@ -5824,7 +5869,7 @@ __stdcall
 GetPointerFrameTouchInfo(
      UINT32 pointerId,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*pointerCount) POINTER_TOUCH_INFO *touchInfo);
+     POINTER_TOUCH_INFO *touchInfo);
 
 
 BOOL
@@ -5833,14 +5878,14 @@ GetPointerFrameTouchInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*entriesCount * *pointerCount) POINTER_TOUCH_INFO *touchInfo);
+     POINTER_TOUCH_INFO *touchInfo);
 
 
 BOOL
 __stdcall
 GetPointerPenInfo(
      UINT32 pointerId,
-    _Out_writes_(1) POINTER_PEN_INFO *penInfo);
+     POINTER_PEN_INFO *penInfo);
 
 
 BOOL
@@ -5848,7 +5893,7 @@ __stdcall
 GetPointerPenInfoHistory(
      UINT32 pointerId,
      UINT32 *entriesCount,
-    _Out_writes_opt_(*entriesCount) POINTER_PEN_INFO *penInfo);
+     POINTER_PEN_INFO *penInfo);
 
 
 BOOL
@@ -5856,7 +5901,7 @@ __stdcall
 GetPointerFramePenInfo(
      UINT32 pointerId,
      UINT32 *pointerCount,
-    _Out_writes_opt_(*pointerCount) POINTER_PEN_INFO *penInfo);
+     POINTER_PEN_INFO *penInfo);
 
 
 BOOL
@@ -5866,7 +5911,7 @@ GetPointerFramePenInfoHistory(
      UINT32 *entriesCount,
      UINT32 *pointerCount,
     POINTER_PEN_INFO *penInfo);
---]=]
+]]
 
 ffi.cdef[[
 BOOL
@@ -6223,7 +6268,7 @@ MsgWaitForMultipleObjectsEx(
 #define USER_TIMER_MAXIMUM  0x7FFFFFFF
 #define USER_TIMER_MINIMUM  0x0000000A
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 --]=]
 
@@ -7767,11 +7812,10 @@ static const int RDW_FRAME               = 0x0400;
 static const int RDW_NOFRAME             = 0x0800;
 ]]
 
---[=[
+ffi.cdef[[
 /*
  * LockWindowUpdate API
  */
-
 
 BOOL
 __stdcall
@@ -7798,7 +7842,7 @@ ScrollDC(
      const RECT *lprcScroll,
      const RECT *lprcClip,
      HRGN hrgnUpdate,
-    _Out_opt_ LPRECT lprcUpdate);
+     LPRECT lprcUpdate);
 
 
 int
@@ -7810,25 +7854,29 @@ ScrollWindowEx(
      const RECT *prcScroll,
      const RECT *prcClip,
      HRGN hrgnUpdate,
-    _Out_opt_ LPRECT prcUpdate,
+     LPRECT prcUpdate,
      UINT flags);
+]]
+--#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+ffi.cdef[[
+static const int SW_SCROLLCHILDREN =  0x0001;  /* Scroll children within *lprcScroll. */
+static const int SW_INVALIDATE     =  0x0002;  /* Invalidate after scrolling */
+static const int SW_ERASE          =  0x0004;  /* If SW_INVALIDATE, dont send WM_ERASEBACKGROUND */
+]]
 
-#define SW_SCROLLCHILDREN   0x0001  /* Scroll children within *lprcScroll. */
-#define SW_INVALIDATE       0x0002  /* Invalidate after scrolling */
-#define SW_ERASE            0x0004  /* If SW_INVALIDATE, don't send WM_ERASEBACKGROUND */
-#if(WINVER >= 0x0500)
-#define SW_SMOOTHSCROLL     0x0010  /* Use smooth scrolling */
-#endif /* WINVER >= 0x0500 */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-#ifndef NOSCROLL
+if (WINVER >= 0x0500) then
+ffi.cdef[[
+static const int SW_SMOOTHSCROLL   =  0x0010;  /* Use smooth scrolling */
+]]
+end --/* WINVER >= 0x0500 */
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+if not NOSCROLL then
+
+ffi.cdef[[
 int
 __stdcall
 SetScrollPos(
@@ -7878,27 +7926,29 @@ EnableScrollBar(
      HWND hWnd,
      UINT wSBflags,
      UINT wArrows);
+]]
 
-
+ffi.cdef[[
 /*
  * EnableScrollBar() flags
  */
-#define ESB_ENABLE_BOTH     0x0000
-#define ESB_DISABLE_BOTH    0x0003
+static const int ESB_ENABLE_BOTH   =  0x0000;
+static const int ESB_DISABLE_BOTH  =  0x0003;
 
-#define ESB_DISABLE_LEFT    0x0001
-#define ESB_DISABLE_RIGHT   0x0002
+static const int ESB_DISABLE_LEFT  =  0x0001;
+static const int ESB_DISABLE_RIGHT =  0x0002;
 
-#define ESB_DISABLE_UP      0x0001
-#define ESB_DISABLE_DOWN    0x0002
+static const int ESB_DISABLE_UP    =  0x0001;
+static const int ESB_DISABLE_DOWN  =  0x0002;
 
-#define ESB_DISABLE_LTUP    ESB_DISABLE_LEFT
-#define ESB_DISABLE_RTDN    ESB_DISABLE_RIGHT
+static const int ESB_DISABLE_LTUP  =  ESB_DISABLE_LEFT;
+static const int ESB_DISABLE_RTDN  =  ESB_DISABLE_RIGHT;
+]]
+
+end  --/* !NOSCROLL */
 
 
-#endif  /* !NOSCROLL */
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetPropA(
@@ -7912,13 +7962,17 @@ SetPropW(
      HWND hWnd,
      LPCWSTR lpString,
      HANDLE hData);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetProp  SetPropW
 #else
 #define SetProp  SetPropA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 GetPropA(
@@ -7930,13 +7984,17 @@ __stdcall
 GetPropW(
      HWND hWnd,
      LPCWSTR lpString);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetProp  GetPropW
 #else
 #define GetProp  GetPropA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 RemovePropA(
@@ -7948,13 +8006,17 @@ __stdcall
 RemovePropW(
      HWND hWnd,
      LPCWSTR lpString);
+]]
+
+--[[
 #ifdef UNICODE
 #define RemoveProp  RemovePropW
 #else
 #define RemoveProp  RemovePropA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 EnumPropsExA(
@@ -7968,13 +8030,17 @@ EnumPropsExW(
      HWND hWnd,
      PROPENUMPROCEXW lpEnumFunc,
      LPARAM lParam);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumPropsEx  EnumPropsExW
 #else
 #define EnumPropsEx  EnumPropsExA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 EnumPropsA(
@@ -7986,13 +8052,17 @@ __stdcall
 EnumPropsW(
      HWND hWnd,
      PROPENUMPROCW lpEnumFunc);
+]]
+
+--[[
 #ifdef UNICODE
 #define EnumProps  EnumPropsW
 #else
 #define EnumProps  EnumPropsA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetWindowTextA(
@@ -8004,35 +8074,42 @@ __stdcall
 SetWindowTextW(
      HWND hWnd,
      LPCWSTR lpString);
+]]
+
+--[[
 #ifdef UNICODE
 #define SetWindowText  SetWindowTextW
 #else
 #define SetWindowText  SetWindowTextA
 #endif // !UNICODE
+--]]
 
-_Ret_range_(0, nMaxCount)
-
+ffi.cdef[[
 int
 __stdcall
 GetWindowTextA(
      HWND hWnd,
-    _Out_writes_(nMaxCount) LPSTR lpString,
+     LPSTR lpString,
      int nMaxCount);
-_Ret_range_(0, nMaxCount)
+
 
 int
 __stdcall
 GetWindowTextW(
      HWND hWnd,
-    _Out_writes_(nMaxCount) LPWSTR lpString,
+     LPWSTR lpString,
      int nMaxCount);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowText  GetWindowTextW
 #else
 #define GetWindowText  GetWindowTextA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 GetWindowTextLengthA(
@@ -8042,13 +8119,17 @@ int
 __stdcall
 GetWindowTextLengthW(
      HWND hWnd);
+]]
+
+--[[
 #ifdef UNICODE
 #define GetWindowTextLength  GetWindowTextLengthW
 #else
 #define GetWindowTextLength  GetWindowTextLengthA
 #endif // !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetClientRect(
@@ -8078,9 +8159,10 @@ AdjustWindowRectEx(
      DWORD dwStyle,
      BOOL bMenu,
      DWORD dwExStyle);
+]]
 
-#if(WINVER >= 0x0605)
-
+if(WINVER >= 0x0605) then
+ffi.cdef[[
 BOOL
 __stdcall
 AdjustWindowRectExForDpi(
@@ -8089,19 +8171,23 @@ AdjustWindowRectExForDpi(
      BOOL bMenu,
      DWORD dwExStyle,
      UINT dpi);
-#endif /* WINVER >= 0x0605 */
+]]
+end --/* WINVER >= 0x0605 */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#if(WINVER >= 0x0400)
-#define HELPINFO_WINDOW    0x0001
-#define HELPINFO_MENUITEM  0x0002
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int HELPINFO_WINDOW   = 0x0001;
+static const int HELPINFO_MENUITEM = 0x0002;
+]]
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+ffi.cdef[[
 typedef struct tagHELPINFO      /* Structure pointed to by lParam of WM_HELP */
 {
     UINT    cbSize;             /* Size in bytes of this struct  */
@@ -8111,8 +8197,9 @@ typedef struct tagHELPINFO      /* Structure pointed to by lParam of WM_HELP */
     DWORD_PTR dwContextId;      /* Context Id associated with this item */
     POINT   MousePos;           /* Mouse Position in screen co-ordinates */
 }  HELPINFO, *LPHELPINFO;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetWindowContextHelpId(
@@ -8137,87 +8224,115 @@ DWORD
 __stdcall
 GetMenuContextHelpId(
      HMENU);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* WINVER >= 0x0400 */
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#ifndef NOMB
+end --/* WINVER >= 0x0400 */
 
+
+
+if not NOMB then
+ffi.cdef[[
 /*
  * MessageBox() Flags
  */
-#define MB_OK                       0x00000000L
-#define MB_OKCANCEL                 0x00000001L
-#define MB_ABORTRETRYIGNORE         0x00000002L
-#define MB_YESNOCANCEL              0x00000003L
-#define MB_YESNO                    0x00000004L
-#define MB_RETRYCANCEL              0x00000005L
-#if(WINVER >= 0x0500)
-#define MB_CANCELTRYCONTINUE        0x00000006L
-#endif /* WINVER >= 0x0500 */
+static const int MB_OK                      = 0x00000000L;
+static const int MB_OKCANCEL                = 0x00000001L;
+static const int MB_ABORTRETRYIGNORE        = 0x00000002L;
+static const int MB_YESNOCANCEL             = 0x00000003L;
+static const int MB_YESNO                   = 0x00000004L;
+static const int MB_RETRYCANCEL             = 0x00000005L;
+]]
 
+if(WINVER >= 0x0500) then
+ffi.cdef[[
+static const int MB_CANCELTRYCONTINUE       = 0x00000006L;
+]]
+end --/* WINVER >= 0x0500 */
 
-#define MB_ICONHAND                 0x00000010L
-#define MB_ICONQUESTION             0x00000020L
-#define MB_ICONEXCLAMATION          0x00000030L
-#define MB_ICONASTERISK             0x00000040L
+ffi.cdef[[
+static const int MB_ICONHAND                = 0x00000010L;
+static const int MB_ICONQUESTION            = 0x00000020L;
+static const int MB_ICONEXCLAMATION         = 0x00000030L;
+static const int MB_ICONASTERISK            = 0x00000040L;
+]]
 
-#if(WINVER >= 0x0400)
-#define MB_USERICON                 0x00000080L
-#define MB_ICONWARNING              MB_ICONEXCLAMATION
-#define MB_ICONERROR                MB_ICONHAND
-#endif /* WINVER >= 0x0400 */
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MB_USERICON                = 0x00000080L;
+static const int MB_ICONWARNING             = MB_ICONEXCLAMATION;
+static const int MB_ICONERROR               = MB_ICONHAND;
+]]
+end --/* WINVER >= 0x0400 */
 
-#define MB_ICONINFORMATION          MB_ICONASTERISK
-#define MB_IconstOP                 MB_ICONHAND
+ffi.cdef[[
+static const int MB_ICONINFORMATION         = MB_ICONASTERISK;
+static const int MB_IconstOP                = MB_ICONHAND;
 
-#define MB_DEFBUTTON1               0x00000000L
-#define MB_DEFBUTTON2               0x00000100L
-#define MB_DEFBUTTON3               0x00000200L
-#if(WINVER >= 0x0400)
-#define MB_DEFBUTTON4               0x00000300L
-#endif /* WINVER >= 0x0400 */
+static const int MB_DEFBUTTON1              = 0x00000000L;
+static const int MB_DEFBUTTON2              = 0x00000100L;
+static const int MB_DEFBUTTON3              = 0x00000200L;
+]]
 
-#define MB_APPLMODAL                0x00000000L
-#define MB_SYSTEMMODAL              0x00001000L
-#define MB_TASKMODAL                0x00002000L
-#if(WINVER >= 0x0400)
-#define MB_HELP                     0x00004000L // Help Button
-#endif /* WINVER >= 0x0400 */
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MB_DEFBUTTON4              = 0x00000300L;
+]]
+end --/* WINVER >= 0x0400 */
 
-#define MB_NOFOCUS                  0x00008000L
-#define MB_SETFOREGROUND            0x00010000L
-#define MB_DEFAULT_DESKTOP_ONLY     0x00020000L
+ffi.cdef[[
+static const int MB_APPLMODAL               = 0x00000000L;
+static const int MB_SYSTEMMODAL             = 0x00001000L;
+static const int MB_TASKMODAL               = 0x00002000L;
+]]
 
-#if(WINVER >= 0x0400)
-#define MB_TOPMOST                  0x00040000L
-#define MB_RIGHT                    0x00080000L
-#define MB_RTLREADING               0x00100000L
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MB_HELP                    = 0x00004000L; // Help Button
+]]
+end --/* WINVER >= 0x0400 */
 
-#endif /* WINVER >= 0x0400 */
+ffi.cdef[[
+static const int MB_NOFOCUS                 = 0x00008000L;
+static const int MB_SETFOREGROUND           = 0x00010000L;
+static const int MB_DEFAULT_DESKTOP_ONLY    = 0x00020000L;
+]]
 
-#ifdef _WIN32_WINNT
-#if (_WIN32_WINNT >= 0x0400)
-#define MB_SERVICE_NOTIFICATION          0x00200000L
-#else
-#define MB_SERVICE_NOTIFICATION          0x00040000L
-#endif
-#define MB_SERVICE_NOTIFICATION_NT3X     0x00040000L
-#endif
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MB_TOPMOST                 = 0x00040000L;
+static const int MB_RIGHT                   = 0x00080000L;
+static const int MB_RTLREADING              = 0x00100000L;
+]]
+end --/* WINVER >= 0x0400 */
 
-#define MB_TYPEMASK                 0x0000000FL
-#define MB_ICONMASK                 0x000000F0L
-#define MB_DEFMASK                  0x00000F00L
-#define MB_MODEMASK                 0x00003000L
-#define MB_MISCMASK                 0x0000C000L
+if _WIN32_WINNT then
+if (_WIN32_WINNT >= 0x0400) then
+ffi.cdef[[
+     static const int MB_SERVICE_NOTIFICATION        =  0x00200000L;
+]]
+else
+ffi.cdef[[
+     static const int MB_SERVICE_NOTIFICATION        =  0x00040000L;
+]]
+end
+ffi.cdef[[
+static const int MB_SERVICE_NOTIFICATION_NT3X   =  0x00040000L;
+]]
+end
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+ffi.cdef[[
+static const int MB_TYPEMASK                = 0x0000000FL;
+static const int MB_ICONMASK                = 0x000000F0L;
+static const int MB_DEFMASK                 = 0x00000F00L;
+static const int MB_MODEMASK                = 0x00003000L;
+static const int MB_MISCMASK                = 0x0000C000L;
+]]
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
+ffi.cdef[[
 int
 __stdcall
 MessageBoxA(
@@ -8233,12 +8348,17 @@ MessageBoxW(
      LPCWSTR lpText,
      LPCWSTR lpCaption,
      UINT uType);
+]]
+
+--[[
 #ifdef UNICODE
 #define MessageBox  MessageBoxW
 #else
 #define MessageBox  MessageBoxA
 #endif // !UNICODE
+--]]
 
+--[[
 #if defined(_M_CEE)
 #undef MessageBox
 __inline
@@ -8262,8 +8382,9 @@ MessageBox(
         );
 }
 #endif  /* _M_CEE */
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 MessageBoxExA(
@@ -8281,15 +8402,20 @@ MessageBoxExW(
      LPCWSTR lpCaption,
      UINT uType,
      WORD wLanguageId);
+]]
+
+--[[
 #ifdef UNICODE
 #define MessageBoxEx  MessageBoxExW
 #else
 #define MessageBoxEx  MessageBoxExA
 #endif // !UNICODE
+--]]
 
-#if(WINVER >= 0x0400)
 
-typedef VOID (__stdcall *MSGBOX__stdcall)(LPHELPINFO lpHelpInfo);
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+typedef VOID (__stdcall *MSGBOXCallback)(LPHELPINFO lpHelpInfo);
 
 typedef struct tagMSGBOXPARAMSA
 {
@@ -8301,9 +8427,10 @@ typedef struct tagMSGBOXPARAMSA
     DWORD       dwStyle;
     LPCSTR      lpszIcon;
     DWORD_PTR   dwContextHelpId;
-    MSGBOX__stdcall      lpfnMsgBox__stdcall;
+    MSGBOXCallback      lpfnMsgBoxCallback;
     DWORD       dwLanguageId;
 } MSGBOXPARAMSA, *PMSGBOXPARAMSA, *LPMSGBOXPARAMSA;
+
 typedef struct tagMSGBOXPARAMSW
 {
     UINT        cbSize;
@@ -8314,9 +8441,12 @@ typedef struct tagMSGBOXPARAMSW
     DWORD       dwStyle;
     LPCWSTR     lpszIcon;
     DWORD_PTR   dwContextHelpId;
-    MSGBOX__stdcall      lpfnMsgBox__stdcall;
+    MSGBOXCallback      lpfnMsgBoxCallback;
     DWORD       dwLanguageId;
 } MSGBOXPARAMSW, *PMSGBOXPARAMSW, *LPMSGBOXPARAMSW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef MSGBOXPARAMSW MSGBOXPARAMS;
 typedef PMSGBOXPARAMSW PMSGBOXPARAMS;
@@ -8326,8 +8456,9 @@ typedef MSGBOXPARAMSA MSGBOXPARAMS;
 typedef PMSGBOXPARAMSA PMSGBOXPARAMS;
 typedef LPMSGBOXPARAMSA LPMSGBOXPARAMS;
 #endif // UNICODE
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 MessageBoxIndirectA(
@@ -8337,37 +8468,41 @@ int
 __stdcall
 MessageBoxIndirectW(
      const MSGBOXPARAMSW * lpmbp);
+]]
+
+--[[
 #ifdef UNICODE
 #define MessageBoxIndirect  MessageBoxIndirectW
 #else
 #define MessageBoxIndirect  MessageBoxIndirectA
 #endif // !UNICODE
-#endif /* WINVER >= 0x0400 */
+--]]
+
+end --/* WINVER >= 0x0400 */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+ffi.cdef[[
 BOOL
 __stdcall
 MessageBeep(
      UINT uType);
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-
-#endif /* !NOMB */
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
+end --/* !NOMB */
 
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+ffi.cdef[[
 int
 __stdcall
 ShowCursor(
@@ -8379,17 +8514,19 @@ __stdcall
 SetCursorPos(
      int X,
      int Y);
+]]
 
-#if(WINVER >= 0x0600)
-
+if(WINVER >= 0x0600) then
+ffi.cdef[[
 BOOL
 __stdcall
 SetPhysicalCursorPos(
      int X,
      int Y);
-#endif /* WINVER >= 0x0600 */
+]]
+end --/* WINVER >= 0x0600 */
 
-
+ffi.cdef[[
 HCURSOR
 __stdcall
 SetCursor(
@@ -8400,16 +8537,18 @@ BOOL
 __stdcall
 GetCursorPos(
      LPPOINT lpPoint);
+]]
 
-#if(WINVER >= 0x0600)
-
+if(WINVER >= 0x0600) then
+ffi.cdef[[
 BOOL
 __stdcall
 GetPhysicalCursorPos(
      LPPOINT lpPoint);
-#endif /* WINVER >= 0x0600 */
+]]
+end --/* WINVER >= 0x0600 */
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 ClipCursor(
@@ -8493,9 +8632,10 @@ __stdcall
 ScreenToClient(
      HWND hWnd,
      LPPOINT lpPoint);
+]]
 
-#if(WINVER >= 0x0600)
-
+if(WINVER >= 0x0600) then
+ffi.cdef[[
 BOOL
 __stdcall
 LogicalToPhysicalPoint(
@@ -8508,11 +8648,11 @@ __stdcall
 PhysicalToLogicalPoint(
      HWND hWnd,
      LPPOINT lpPoint);
+]]
+end --/* WINVER >= 0x0600 */
 
-#endif /* WINVER >= 0x0600 */
-
-#if(WINVER >= 0x0603)
-
+if(WINVER >= 0x0603) then
+ffi.cdef[[
 BOOL
 __stdcall
 LogicalToPhysicalPointForPerMonitorDPI(
@@ -8525,16 +8665,16 @@ __stdcall
 PhysicalToLogicalPointForPerMonitorDPI(
      HWND hWnd,
      LPPOINT lpPoint);
+]]
+end --/* WINVER >= 0x0603 */
 
-#endif /* WINVER >= 0x0603 */
-
-
+ffi.cdef[[
 int
 __stdcall
 MapWindowPoints(
      HWND hWndFrom,
      HWND hWndTo,
-    _Inout_updates_(cPoints) LPPOINT lpPoints,
+     LPPOINT lpPoints,
      UINT cPoints);
 
 
@@ -8542,30 +8682,34 @@ HWND
 __stdcall
 WindowFromPoint(
      POINT Point);
+]]
 
-#if(WINVER >= 0x0600)
-
+if(WINVER >= 0x0600) then
+ffi.cdef[[
 HWND
 __stdcall
 WindowFromPhysicalPoint(
      POINT Point);
-#endif /* WINVER >= 0x0600 */
+]]
+end --/* WINVER >= 0x0600 */
 
-
+ffi.cdef[[
 HWND
 __stdcall
 ChildWindowFromPoint(
      HWND hWndParent,
      POINT Point);
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#if(WINVER >= 0x0400)
-#define CWP_ALL             0x0000
-#define CWP_SKIPINVISIBLE   0x0001
-#define CWP_SKIPDISABLED    0x0002
-#define CWP_SKIPTRANSPARENT 0x0004
+
+--if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int CWP_ALL             =0x0000;
+static const int CWP_SKIPINVISIBLE   =0x0001;
+static const int CWP_SKIPDISABLED    =0x0002;
+static const int CWP_SKIPTRANSPARENT =0x0004;
 
 
 HWND
@@ -8574,7 +8718,7 @@ ChildWindowFromPointEx(
      HWND hwnd,
      POINT pt,
      UINT flags);
---]=]
+]]
 
 ffi.cdef[[
 /*
@@ -9179,6 +9323,7 @@ GetClassNameW(
 #define GetClassName  GetClassNameA
 #endif // !UNICODE
 
+--[[
 #if defined(_M_CEE)
 #undef GetClassName
 __inline
@@ -9200,7 +9345,7 @@ GetClassName(
         );
 }
 #endif  /* _M_CEE */
-
+--]]
 
 
 
@@ -9218,7 +9363,7 @@ DWORD
 __stdcall
 GetWindowThreadProcessId(
      HWND hWnd,
-    _Out_opt_ LPDWORD lpdwProcessId);
+     LPDWORD lpdwProcessId);
 
 #if(_WIN32_WINNT >= 0x0501)
 
@@ -9347,7 +9492,7 @@ CallNextHookEx(
 #endif /* !NOWH */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 --]=]
 
 ffi.cdef[[
@@ -10372,7 +10517,7 @@ typedef enum {
 #define DWLP_DLGPROC    DWLP_MSGRESULT + sizeof(LRESULT)
 #define DWLP_USER       DWLP_DLGPROC + sizeof(DLGPROC)
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 --]=]
 
@@ -10435,7 +10580,7 @@ DlgDirListW(
 #endif // !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /*
  * DlgDirList, DlgDirListComboBox flags values
@@ -10451,7 +10596,7 @@ DlgDirListW(
 #define DDL_DRIVES          0x4000
 #define DDL_EXCLUSIVE       0x8000
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
@@ -10523,7 +10668,7 @@ DlgDirSelectComboBoxExW(
 #endif // !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 
 
@@ -10867,7 +11012,7 @@ DlgDirSelectComboBoxExW(
 #define SIF_TRACKPOS        0x0010
 #define SIF_ALL             (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS)
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagSCROLLINFO
@@ -10901,7 +11046,7 @@ GetScrollInfo(
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 #endif /* WINVER >= 0x0400 */
 
 #endif /* !NOWINMESSAGES */
@@ -10924,7 +11069,7 @@ GetScrollInfo(
 #define MDITILE_ZORDER         0x0004
 #endif /* _WIN32_WINNT >= 0x0500 */
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagMDICREATESTRUCTA {
@@ -11092,7 +11237,7 @@ __stdcall CascadeWindows(
 #endif /* WINVER >= 0x0400 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #endif /* !NOMDI */
 
@@ -11426,7 +11571,7 @@ GetGuiResources(
 #if(WINVER >= 0x0602)
 #define MAX_TOUCH_PREDICTION_FILTER_TAPS 3
 
-#pragma region Desktop Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 typedef struct tagTouchPredictionParameters
@@ -11447,7 +11592,7 @@ typedef struct tagTouchPredictionParameters
 #define TOUCHPREDICTIONPARAMETERS_DEFAULT_RLS_EXPO_SMOOTH_ALPHA 0.99f
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #define SPI_GETTOUCHPREDICTIONPARAMETERS 0x009C
 #define SPI_SETTOUCHPREDICTIONPARAMETERS 0x009D
@@ -11821,7 +11966,7 @@ typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
 #endif // UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 /* flags for HIGHCONTRAST dwFlags field */
 #define HCF_HIGHCONTRASTON  0x00000001
