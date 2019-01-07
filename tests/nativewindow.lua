@@ -4,8 +4,8 @@ local bit = require("bit");
 local bor, band = bit.bor, bit.band;
 
 local errorhandling = require("win32.errhandlingapi");
---local core_library = require("experimental.apiset.libraryloader_l1_1_1");
-local libloader = require("win32.libloaderapi")
+
+local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser");
 local menu = require("menu")
 
