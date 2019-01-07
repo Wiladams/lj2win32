@@ -139,7 +139,9 @@ local function test_DisplayConfig()
 
 end
 
+
 test_DisplayConfig()
 --test_deviceinfo();
 
+ffi.C.MessageBeep(ffi.C.MB_ICONINFORMATION);
 

@@ -135,9 +135,9 @@ end
 
 exports.MAKEINTRESOURCE = MAKEINTRESOURCE;
 
---[=[
---#ifndef NORESOURCE
 
+--#ifndef NORESOURCE
+--[=[
 /*
  * Predefined Resource Types
  */
@@ -7467,22 +7467,22 @@ GrayStringW(
 #if(WINVER >= 0x0400)
 /* Monolithic state-drawing routine */
 /* Image type */
-#define DST_COMPLEX     0x0000
-#define DST_TEXT        0x0001
-#define DST_PREFIXTEXT  0x0002
-#define DST_ICON        0x0003
-#define DST_BITMAP      0x0004
+#define DST_COMPLEX     0x0000;
+#define DST_TEXT        0x0001;
+#define DST_PREFIXTEXT  0x0002;
+#define DST_ICON        0x0003;
+#define DST_BITMAP      0x0004;
 
 /* State type */
-#define DSS_NORMAL      0x0000
-#define DSS_UNION       0x0010  /* Gray string appearance */
-#define DSS_DISABLED    0x0020
-#define DSS_MONO        0x0080
+#define DSS_NORMAL      0x0000;
+#define DSS_UNION       0x0010;  /* Gray string appearance */
+#define DSS_DISABLED    0x0020;
+#define DSS_MONO        0x0080;
 
-#define DSS_HIDEPREFIX  0x0200
-#define DSS_PREFIXONLY  0x0400
+#define DSS_HIDEPREFIX  0x0200;
+#define DSS_PREFIXONLY  0x0400;
 
-#define DSS_RIGHT       0x8000
+#define DSS_RIGHT       0x8000;
 --]]
 
 
@@ -13828,39 +13828,38 @@ ChangeWindowMessageFilterEx(
     PCHANGEFILTERSTRUCT pChangeFilterStruct);   // Optional
 ]]
 
---[=[
-/*
- * Gesture defines and functions
- */
 
-
-/*
- * Gesture information handle
- */
-DECLARE_HANDLE(HGESTUREINFO);
+-- * Gesture defines and functions
 
 
 
+-- * Gesture information handle
+
+DECLARE_HANDLE("HGESTUREINFO");
+
+
+ffi.cdef[[
 /*
  * Gesture flags - GESTUREINFO.dwFlags
  */
-#define GF_BEGIN                       = 0x00000001;
-#define GF_INERTIA                     = 0x00000002;
-#define GF_END                         = 0x00000004;
+static const int GF_BEGIN                       = 0x00000001;
+static const int GF_INERTIA                     = 0x00000002;
+static const int GF_END                         = 0x00000004;
 
 /*
  * Gesture IDs
  */
-#define GID_BEGIN                      = 1;
-#define GID_END                        = 2;
-#define GID_ZOOM                       = 3;
-#define GID_PAN                        = 4;
-#define GID_ROTATE                     = 5;
-#define GID_TWOFINGERTAP               = 6;
-#define GID_PRESSANDTAP                = 7;
-#define GID_ROLLOVER                   = GID_PRESSANDTAP;
+static const int GID_BEGIN                      = 1;
+static const int GID_END                        = 2;
+static const int GID_ZOOM                       = 3;
+static const int GID_PAN                        = 4;
+static const int GID_ROTATE                     = 5;
+static const int GID_TWOFINGERTAP               = 6;
+static const int GID_PRESSANDTAP                = 7;
+static const int GID_ROLLOVER                   = GID_PRESSANDTAP;
+]]
 
-
+ffi.cdef[[
 /*
  * Gesture information structure
  *   - Pass the HGESTUREINFO received in the WM_GESTURE message lParam into the
@@ -13897,7 +13896,9 @@ typedef struct tagGESTURENOTIFYSTRUCT {
     POINTS ptsLocation;             // starting location
     DWORD dwInstanceID;             // internally used
 } GESTURENOTIFYSTRUCT, *PGESTURENOTIFYSTRUCT;
+]]
 
+--[[
 /*
  * Gesture argument helpers
  *   - Angle should be a double in the range of -2pi to +2pi
@@ -13905,7 +13906,9 @@ typedef struct tagGESTURENOTIFYSTRUCT {
  */
 #define GID_ROTATE_ANGLE_TO_ARGUMENT(_arg_)     ((USHORT)((((_arg_) + 2.0 * 3.14159265) / (4.0 * 3.14159265)) * 65535.0))
 #define GID_ROTATE_ANGLE_FROM_ARGUMENT(_arg_)   ((((double)(_arg_) / 65535.0) * 4.0 * 3.14159265) - 2.0 * 3.14159265)
+]]
 
+ffi.cdef[[
 /*
  * Gesture information retrieval
  *   - HGESTUREINFO is received by a window in the lParam of a WM_GESTURE message.
@@ -13923,7 +13926,7 @@ __stdcall
 GetGestureExtraArgs(
      HGESTUREINFO hGestureInfo,
      UINT cbExtraArgs,
-    _Out_writes_bytes_(cbExtraArgs) PBYTE pExtraArgs);
+     PBYTE pExtraArgs);
 
 
 BOOL
@@ -13938,58 +13941,58 @@ typedef struct tagGESTURECONFIG {
     DWORD dwWant;                   // settings related to gesture ID that are to be turned on
     DWORD dwBlock;                  // settings related to gesture ID that are to be turned off
 } GESTURECONFIG, *PGESTURECONFIG;
+]]
 
-
-
-#define GC_ALLGESTURES                              0x00000001
+ffi.cdef[[
+static const int GC_ALLGESTURES                            =  0x00000001;
 
 /*
  * Zoom gesture configuration flags - set GESTURECONFIG.dwID to GID_ZOOM
  */
-#define GC_ZOOM                                     0x00000001
+static const int GC_ZOOM                                   =  0x00000001;
 
 /*
  * Pan gesture configuration flags - set GESTURECONFIG.dwID to GID_PAN
  */
-#define GC_PAN                                      0x00000001
-#define GC_PAN_WITH_SINGLE_FINGER_VERTICALLY        0x00000002
-#define GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY      0x00000004
-#define GC_PAN_WITH_GUTTER                          0x00000008
-#define GC_PAN_WITH_INERTIA                         0x00000010
+static const int GC_PAN                                    =  0x00000001;
+static const int GC_PAN_WITH_SINGLE_FINGER_VERTICALLY      =  0x00000002;
+static const int GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY    =  0x00000004;
+static const int GC_PAN_WITH_GUTTER                        =  0x00000008;
+static const int GC_PAN_WITH_INERTIA                       =  0x00000010;
 
 /*
  * Rotate gesture configuration flags - set GESTURECONFIG.dwID to GID_ROTATE
  */
-#define GC_ROTATE                                   0x00000001
+static const int GC_ROTATE                                 =  0x00000001;
 
 /*
  * Two finger tap gesture configuration flags - set GESTURECONFIG.dwID to GID_TWOFINGERTAP
  */
-#define GC_TWOFINGERTAP                             0x00000001
+static const int GC_TWOFINGERTAP                           =  0x00000001;
 
 /*
  * PressAndTap gesture configuration flags - set GESTURECONFIG.dwID to GID_PRESSANDTAP
  */
-#define GC_PRESSANDTAP                              0x00000001
-#define GC_ROLLOVER                                 GC_PRESSANDTAP
+static const int GC_PRESSANDTAP                            =  0x00000001;
+static const int GC_ROLLOVER                               =  GC_PRESSANDTAP;
 
-#define GESTURECONFIGMAXCOUNT           256             // Maximum number of gestures that can be included
+static const int GESTURECONFIGMAXCOUNT         =  256;             // Maximum number of gestures that can be included
                                                         // in a single call to SetGestureConfig / GetGestureConfig
+]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetGestureConfig(
      HWND hwnd,                                     // window for which configuration is specified
      DWORD dwReserved,                              // reserved, must be 0
      UINT cIDs,                                     // count of GESTURECONFIG structures
-    _In_reads_(cIDs) PGESTURECONFIG pGestureConfig,    // array of GESTURECONFIG structures, dwIDs will be processed in the
+     PGESTURECONFIG pGestureConfig,    // array of GESTURECONFIG structures, dwIDs will be processed in the
                                                         // order specified and repeated occurances will overwrite previous ones
      UINT cbSize);                                  // sizeof(GESTURECONFIG)
 
 
-#define GCF_INCLUDE_ANCESTORS           0x00000001      // If specified, GetGestureConfig returns consolidated configuration
+static const int GCF_INCLUDE_ANCESTORS          = 0x00000001;      // If specified, GetGestureConfig returns consolidated configuration
                                                         // for the specified window and it's parent window chain
 
 
@@ -14004,7 +14007,7 @@ GetGestureConfig(
    PGESTURECONFIG pGestureConfig,
                                                         // pointer to buffer to receive the returned array of GESTURECONFIG structures
      UINT cbSize);                                  // sizeof(GESTURECONFIG)
---]=]
+]]
 
 
 ffi.cdef[[
