@@ -3152,16 +3152,19 @@ UnregisterHotKey(
 #endif /* _WIN32_WINNT >= 0x0600 */
 #define EWX_HYBRID_SHUTDOWN         0x00400000
 #define EWX_BOOTOPTIONS             0x01000000
+--]=]
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+--[[
 #define ExitWindows(dwReserved, Code) ExitWindowsEx(EWX_LOGOFF, 0xFFFFFFFF)
 
 _When_((uFlags&(EWX_POWEROFF|EWX_SHUTDOWN|EWX_FORCE))!=0,
     __drv_preferredFunction("InitiateSystemShutdownEx",
         "Legacy API. Rearchitect to avoid Reboot"))
+--]]
 
+ffi.cdef[[
 BOOL
 __stdcall
 ExitWindowsEx(
@@ -3190,23 +3193,26 @@ GetMessageTime(
 LPARAM
 __stdcall
 GetMessageExtraInfo(
-    VOID);
+    void);
+]]
 
-#if(_WIN32_WINNT >= 0x0602)
-
+if(_WIN32_WINNT >= 0x0602) then
+ffi.cdef[[
 DWORD
 __stdcall
 GetUnpredictedMessagePos(
-    VOID);
-#endif /* _WIN32_WINNT >= 0x0602 */
+    void);
+]]
+end --/* _WIN32_WINNT >= 0x0602 */
 
-#if(_WIN32_WINNT >= 0x0501)
-
+if(_WIN32_WINNT >= 0x0501) then
+ffi.cdef[[
 BOOL
 __stdcall
 IsWow64Message(
-    VOID);
-#endif /* _WIN32_WINNT >= 0x0501 */
+    void);
+]]
+end --/* _WIN32_WINNT >= 0x0501 */
 
 if(WINVER >= 0x0400) then
 ffi.cdef[[
@@ -3328,6 +3334,7 @@ SendNotifyMessageW(
 #endif // !UNICODE
 --]]
 
+ffi.cdef[[
 BOOL
 __stdcall
 SendMessageCallbackA(
@@ -3347,12 +3354,17 @@ SendMessageCallbackW(
      LPARAM lParam,
      SENDASYNCPROC lpResultCallback,
      ULONG_PTR dwData);
+]]
+
+--[[
 #ifdef UNICODE
 #define SendMessageCallback  SendMessageCallbackW
 #else
 #define SendMessageCallback  SendMessageCallbackA
 #endif // !UNICODE
+--]]
 
+--[=[
 #if(_WIN32_WINNT >= 0x0501)
 typedef struct {
     UINT  cbSize;
@@ -3387,10 +3399,11 @@ BroadcastSystemMessageExW(
 #define BroadcastSystemMessageEx  BroadcastSystemMessageExA
 #endif // !UNICODE
 #endif /* _WIN32_WINNT >= 0x0501 */
+--]=]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-
+--[=[
 #if(WINVER >= 0x0400)
 
 
