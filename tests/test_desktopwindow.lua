@@ -12,4 +12,4 @@ local dwinHandle = C.GetDesktopWindow()
 local dwin = NativeWindow:init(dwinHandle)
 
 print("Client Size: ", dwin:getClientSize())
-print("Title: ", dwin:getTitle())
+print("      Title: ", dwin:getTitle())
