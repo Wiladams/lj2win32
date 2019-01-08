@@ -2,6 +2,8 @@ local ffi = require("ffi")
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local lshift, rshift = bit.lshift, bit.rshift
+local utils = require("utils")
+local makeStatic = utils.makeStatic
 
 if not _WS2DEF_ then
 _WS2DEF_ = true
