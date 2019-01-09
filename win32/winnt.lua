@@ -15,7 +15,7 @@ Abstract:
 Revision History:
 --]]
 local ffi = require("ffi")
-
+local C = ffi.C 
 
 
 NT_INCLUDED = true;
@@ -1175,9 +1175,11 @@ typedef EXCEPTION_ROUTINE *PEXCEPTION_ROUTINE;
 #define PRODUCT_AZURE_NANO_SERVER                   0x000000A9
 
 #define PRODUCT_UNLICENSED                          0xABCDABCD
+--]==]
 
-#include <sdkddkver.h>
+require("win32.sdkddkver")
 
+--[==[
 //
 //  Language IDs.
 //

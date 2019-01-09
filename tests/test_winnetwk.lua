@@ -9,6 +9,8 @@ local ffi = require("ffi")
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 
+require("win32.sdkddkver")
+require("win32.wingdi")
 require("win32.winuser")
 require("win32.winerror")
 

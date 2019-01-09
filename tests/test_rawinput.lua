@@ -2,7 +2,11 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
+require("win32.sdkddkver")
+
+require("win32.wingdi")
 local winuser = require("win32.winuser")
+
 local msgpump = require("msgpump")
 local wmmsgs = require("wmmsgs")
 local scheduler = require("scheduler")
