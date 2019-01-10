@@ -2,6 +2,7 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
+require("sdkddkver")
 local sysinfo = require("win32.sysinfoapi")
 
 local function getComputerName()

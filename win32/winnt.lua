@@ -77,15 +77,15 @@ require("win32.basetsd")
 --]]
 
 
---[[
-#ifndef SYSTEM_CACHE_ALIGNMENT_SIZE
-#if defined(_AMD64_) || defined(_X86_)
-#define SYSTEM_CACHE_ALIGNMENT_SIZE 64
-#else
-#define SYSTEM_CACHE_ALIGNMENT_SIZE 128
-#endif
-#endif
---]]
+
+if not SYSTEM_CACHE_ALIGNMENT_SIZE then
+if _AMD64_ or _X86_ then
+SYSTEM_CACHE_ALIGNMENT_SIZE = 64;
+else
+SYSTEM_CACHE_ALIGNMENT_SIZE = 128;
+end
+end
+
 
 
 ffi.cdef[[
@@ -93,8 +93,6 @@ typedef void *PVOID;
 typedef void *  PVOID64;
 ]]
 
---#define NTAPI __stdcall
---#define NTAPI_INLINE    NTAPI
 
 if not VOID then
 ffi.cdef[[
@@ -519,21 +517,21 @@ typedef DWORDLONG *PDWORDLONG;
 
 
 ULONGLONG
-NTAPI
+__stdcall
 Int64ShllMod32 (
     _In_ ULONGLONG Value,
     _In_ DWORD ShiftCount
     );
 
 LONGLONG
-NTAPI
+__stdcall
 Int64ShraMod32 (
     _In_ LONGLONG Value,
     _In_ DWORD ShiftCount
     );
 
 ULONGLONG
-NTAPI
+__stdcall
 Int64ShrlMod32 (
     _In_ ULONGLONG Value,
     _In_ DWORD ShiftCount
@@ -545,7 +543,7 @@ Int64ShrlMod32 (
 #pragma warning(disable:4035 4793)               // re-enable below
 
 __inline ULONGLONG
-NTAPI
+__stdcall
 Int64ShllMod32 (
     _In_ ULONGLONG Value,
     _In_ DWORD ShiftCount
@@ -561,7 +559,7 @@ Int64ShllMod32 (
 }
 
 __inline LONGLONG
-NTAPI
+__stdcall
 Int64ShraMod32 (
     _In_ LONGLONG Value,
     _In_ DWORD ShiftCount
@@ -577,7 +575,7 @@ Int64ShraMod32 (
 }
 
 __inline ULONGLONG
-NTAPI
+__stdcall
 Int64ShrlMod32 (
     _In_ ULONGLONG Value,
     _In_ DWORD ShiftCount
@@ -986,7 +984,7 @@ typedef
 _IRQL_requires_same_
 _Function_class_(EXCEPTION_ROUTINE)
 EXCEPTION_DISPOSITION
-NTAPI
+__stdcall
 EXCEPTION_ROUTINE (
     _Inout_ struct _EXCEPTION_RECORD *ExceptionRecord,
     _In_ PVOID EstablisherFrame,
@@ -8186,7 +8184,7 @@ typedef struct _EXCEPTION_POINTERS {
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwind2 (
     _In_opt_ FRAME_POINTERS TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -15612,7 +15610,7 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;
 //
 
 typedef VOID
-(NTAPI *PIMAGE_TLS_CALLBACK) (
+(__stdcall *PIMAGE_TLS_CALLBACK) (
     PVOID DllHandle,
     DWORD Reason,
     PVOID Reserved
@@ -16401,7 +16399,7 @@ typedef struct IMAGE_COR20_HEADER
 NTSYSAPI
 _Success_(return != 0)
 WORD  
-NTAPI
+__stdcall
 RtlCaptureStackBackTrace(
     _In_ DWORD FramesToSkip,
     _In_ DWORD FramesToCapture,
@@ -16424,7 +16422,7 @@ RtlCaptureStackBackTrace(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlCaptureContext(
     _Out_ PCONTEXT ContextRecord
     );
@@ -16443,7 +16441,7 @@ RtlCaptureContext(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwind(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -16500,7 +16498,7 @@ RtlInstallFunctionTableCallback(
 
 NTSYSAPI
 DWORD   
-NTAPI
+__stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
@@ -16513,7 +16511,7 @@ RtlAddGrowableFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
     _In_ DWORD NewEntryCount
@@ -16522,7 +16520,7 @@ RtlGrowFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlDeleteGrowableFunctionTable(
     _In_ PVOID DynamicTable
     );
@@ -16541,7 +16539,7 @@ RtlDeleteGrowableFunctionTable(
 
 NTSYSAPI
 PRUNTIME_FUNCTION
-NTAPI
+__stdcall
 RtlLookupFunctionEntry(
     _In_ DWORD64 ControlPc,
     _Out_ PDWORD64 ImageBase,
@@ -16574,7 +16572,7 @@ RtlRestoreContext(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -16594,7 +16592,7 @@ RtlUnwindEx(
 
 NTSYSAPI
 PEXCEPTION_ROUTINE
-NTAPI
+__stdcall
 RtlVirtualUnwind(
     _In_ DWORD HandlerType,
     _In_ DWORD64 ImageBase,
@@ -16658,7 +16656,7 @@ RtlInstallFunctionTableCallback(
 
 NTSYSAPI
 DWORD   
-NTAPI
+__stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
@@ -16671,7 +16669,7 @@ RtlAddGrowableFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
     _In_ DWORD NewEntryCount
@@ -16680,7 +16678,7 @@ RtlGrowFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlDeleteGrowableFunctionTable(
     _In_ PVOID DynamicTable
     );
@@ -16699,7 +16697,7 @@ RtlDeleteGrowableFunctionTable(
 
 NTSYSAPI
 PRUNTIME_FUNCTION
-NTAPI
+__stdcall
 RtlLookupFunctionEntry(
     _In_ ULONG_PTR ControlPc,
     _Out_ PDWORD ImageBase,
@@ -16732,7 +16730,7 @@ RtlRestoreContext(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -16752,7 +16750,7 @@ RtlUnwindEx(
 
 NTSYSAPI
 PEXCEPTION_ROUTINE
-NTAPI
+__stdcall
 RtlVirtualUnwind(
     _In_ DWORD HandlerType,
     _In_ DWORD ImageBase,
@@ -16816,7 +16814,7 @@ RtlInstallFunctionTableCallback(
 
 NTSYSAPI
 DWORD   
-NTAPI
+__stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
@@ -16829,7 +16827,7 @@ RtlAddGrowableFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
     _In_ DWORD NewEntryCount
@@ -16838,7 +16836,7 @@ RtlGrowFunctionTable(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlDeleteGrowableFunctionTable(
     _In_ PVOID DynamicTable
     );
@@ -16857,7 +16855,7 @@ RtlDeleteGrowableFunctionTable(
 
 NTSYSAPI
 PRUNTIME_FUNCTION
-NTAPI
+__stdcall
 RtlLookupFunctionEntry(
     _In_ ULONG_PTR ControlPc,
     _Out_ PULONG_PTR ImageBase,
@@ -16890,7 +16888,7 @@ RtlRestoreContext(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -16910,7 +16908,7 @@ RtlUnwindEx(
 
 NTSYSAPI
 PEXCEPTION_ROUTINE
-NTAPI
+__stdcall
 RtlVirtualUnwind(
     _In_ DWORD HandlerType,
     _In_ ULONG_PTR ImageBase,
@@ -16940,7 +16938,7 @@ _IRQL_requires_max_(PASSIVE_LEVEL)
 _Success_(return!=0)
 NTSYSAPI
 BOOLEAN
-NTAPI
+__stdcall
 RtlAddFunctionTable(
     _In_reads_(EntryCount) PRUNTIME_FUNCTION FunctionTable,
     _In_ DWORD EntryCount,
@@ -16953,7 +16951,7 @@ _IRQL_requires_max_(PASSIVE_LEVEL)
 _Success_(return!=0)
 NTSYSAPI
 BOOLEAN
-NTAPI
+__stdcall
 RtlDeleteFunctionTable(
     _In_ PRUNTIME_FUNCTION FunctionTable
     );
@@ -16963,7 +16961,7 @@ _IRQL_requires_max_(PASSIVE_LEVEL)
 _Success_(return!=0)
 NTSYSAPI
 BOOLEAN
-NTAPI
+__stdcall
 RtlInstallFunctionTableCallback(
     _In_ DWORD64 TableIdentifier,
     _In_ DWORD64 BaseAddress,
@@ -16986,7 +16984,7 @@ _IRQL_requires_max_(SYNCH_LEVEL)
 _IRQL_requires_min_(PASSIVE_LEVEL)
 NTSYSAPI
 PRUNTIME_FUNCTION
-NTAPI
+__stdcall
 RtlLookupFunctionEntry(
     _In_ ULONGLONG ControlPc,
     _Out_ PULONGLONG ImageBase,
@@ -17003,7 +17001,7 @@ RtlLookupFunctionEntry(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlRestoreContext(
     _In_ PCONTEXT ContextRecord,
     _In_opt_ struct _EXCEPTION_RECORD * ExceptionRecord
@@ -17012,7 +17010,7 @@ RtlRestoreContext(
 
 NTSYSAPI
 ULONGLONG
-NTAPI
+__stdcall
 RtlVirtualUnwind(
     _In_ ULONGLONG ImageBase,
     _In_ ULONGLONG ControlPc,
@@ -17039,7 +17037,7 @@ RtlVirtualUnwind(
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlUnwindEx(
     _In_opt_ FRAME_POINTERS TargetFrame,
     _In_opt_ PVOID TargetIp,
@@ -17065,7 +17063,7 @@ RtlUnwindEx(
 
 NTSYSAPI
 PVOID
-NTAPI
+__stdcall
 RtlPcToFileHeader(
     _In_ PVOID PcValue,
     _Out_ PVOID * BaseOfImage
@@ -17090,7 +17088,7 @@ RtlPcToFileHeader(
 _Check_return_
 NTSYSAPI
 SIZE_T
-NTAPI
+__stdcall
 RtlCompareMemory(
     _In_ const VOID * Source1,
     _In_ const VOID * Source2,
@@ -17209,7 +17207,7 @@ typedef union _SLIST_HEADER {
 
 NTSYSAPI
 VOID
-NTAPI
+__stdcall
 RtlInitializeSListHead (
     _Out_ PSLIST_HEADER ListHead
     );
@@ -17217,21 +17215,21 @@ RtlInitializeSListHead (
 _Must_inspect_result_
 NTSYSAPI
 PSLIST_ENTRY
-NTAPI
+__stdcall
 RtlFirstEntrySList (
     _In_ const SLIST_HEADER *ListHead
     );
 
 NTSYSAPI
 PSLIST_ENTRY
-NTAPI
+__stdcall
 RtlInterlockedPopEntrySList (
     _Inout_ PSLIST_HEADER ListHead
     );
 
 NTSYSAPI
 PSLIST_ENTRY
-NTAPI
+__stdcall
 RtlInterlockedPushEntrySList (
     _Inout_ PSLIST_HEADER ListHead,
     _Inout_ __drv_aliasesMem PSLIST_ENTRY ListEntry
@@ -17239,7 +17237,7 @@ RtlInterlockedPushEntrySList (
 
 NTSYSAPI
 PSLIST_ENTRY
-NTAPI
+__stdcall
 RtlInterlockedPushListSListEx (
     _Inout_ PSLIST_HEADER ListHead,
     _Inout_ __drv_aliasesMem PSLIST_ENTRY List,
@@ -17249,14 +17247,14 @@ RtlInterlockedPushListSListEx (
 
 NTSYSAPI
 PSLIST_ENTRY
-NTAPI
+__stdcall
 RtlInterlockedFlushSList (
     _Inout_ PSLIST_HEADER ListHead
     );
 
 NTSYSAPI
 WORD  
-NTAPI
+__stdcall
 RtlQueryDepthSList (
     _In_ PSLIST_HEADER ListHead
     );
@@ -17686,7 +17684,7 @@ typedef LPOSVERSIONINFOEXA LPOSVERSIONINFOEX;
 
 NTSYSAPI
 ULONGLONG
-NTAPI
+__stdcall
 VerSetConditionMask(
     _In_ ULONGLONG ConditionMask,
     _In_ DWORD TypeMask,
@@ -17711,7 +17709,7 @@ VerSetConditionMask(
 
 NTSYSAPI
 BOOLEAN
-NTAPI
+__stdcall
 RtlGetProductInfo(
     _In_  DWORD  OSMajorVersion,
     _In_  DWORD  OSMinorVersion,
@@ -17749,7 +17747,7 @@ typedef enum _RTL_UMS_SCHEDULER_REASON {
 typedef
 _Function_class_(RTL_UMS_SCHEDULER_ENTRY_POINT)
 VOID
-NTAPI
+__stdcall
 RTL_UMS_SCHEDULER_ENTRY_POINT(
     _In_ RTL_UMS_SCHEDULER_REASON Reason,
     _In_ ULONG_PTR ActivationPayload,
@@ -17820,7 +17818,7 @@ typedef RTL_UMS_SCHEDULER_ENTRY_POINT *PRTL_UMS_SCHEDULER_ENTRY_POINT;
 
 NTSYSAPI
 DWORD
-NTAPI
+__stdcall
 RtlCrc32(
     _In_reads_bytes_(Size) const void *Buffer,
     _In_ size_t Size,
@@ -17829,7 +17827,7 @@ RtlCrc32(
 
 NTSYSAPI
 ULONGLONG
-NTAPI
+__stdcall
 RtlCrc64(
     _In_reads_bytes_(Size) const void *Buffer,
     _In_ size_t Size,
@@ -17863,7 +17861,7 @@ typedef enum _OS_DEPLOYEMENT_STATE_VALUES {
 
 NTSYSAPI
 OS_DEPLOYEMENT_STATE_VALUES
-NTAPI
+__stdcall
 RtlOsDeploymentState(
     _In_ DWORD Flags    /* No flags currently defined, passed 0 */
     );
@@ -17980,19 +17978,19 @@ typedef struct _HEAP_OPTIMIZE_RESOURCES_INFORMATION {
 #define WT_EXECUTEINPERSISTENTTHREAD 0x00000080                      
 #define WT_TRANSFER_IMPERSONATION 0x00000100                         
 #define WT_SET_MAX_THREADPOOL_THREADS(Flags, Limit)  ((Flags) |= (Limit)<<16) 
-typedef VOID (NTAPI * WAITORTIMERCALLBACKFUNC) (PVOID, BOOLEAN );   
-typedef VOID (NTAPI * WORKERCALLBACKFUNC) (PVOID );                 
-typedef VOID (NTAPI * APC_CALLBACK_FUNCTION) (DWORD   , PVOID, PVOID); 
+typedef VOID (__stdcall * WAITORTIMERCALLBACKFUNC) (PVOID, BOOLEAN );   
+typedef VOID (__stdcall * WORKERCALLBACKFUNC) (PVOID );                 
+typedef VOID (__stdcall * APC_CALLBACK_FUNCTION) (DWORD   , PVOID, PVOID); 
 typedef WAITORTIMERCALLBACKFUNC WAITORTIMERCALLBACK; 
 typedef
 VOID
-(NTAPI *PFLS_CALLBACK_FUNCTION) (
+(__stdcall *PFLS_CALLBACK_FUNCTION) (
     IN PVOID lpFlsData
     );
 
 typedef
 BOOLEAN
-(NTAPI *PSECURE_MEMORY_CACHE_CALLBACK) (
+(__stdcall *PSECURE_MEMORY_CACHE_CALLBACK) (
     _In_reads_bytes_(Range) PVOID Addr,
     _In_ SIZE_T Range
     );
@@ -18241,7 +18239,7 @@ typedef struct _PERFORMANCE_DATA {
 #define DEVICEFAMILYDEVICEFORM_MAX                      0x0000001D
 
 VOID
-NTAPI
+__stdcall
 RtlGetDeviceFamilyInfoEnum(
     _Out_opt_ ULONGLONG *pullUAPInfo,
     _Out_opt_ DWORD *pulDeviceFamily,
@@ -18249,7 +18247,7 @@ RtlGetDeviceFamilyInfoEnum(
 );
 
 DWORD   
-NTAPI
+__stdcall
 RtlConvertDeviceFamilyInfoToString(
     _Inout_ PDWORD pulDeviceFamilyBufferSize,
     _Inout_ PDWORD pulDeviceFormBufferSize,
@@ -18259,7 +18257,7 @@ RtlConvertDeviceFamilyInfoToString(
 );
 
 DWORD   
-NTAPI
+__stdcall
 RtlSwitchedVVI(
     _In_ PRTL_OSVERSIONINFOEXW VersionInfo,
     _In_ DWORD TypeMask,
@@ -19355,7 +19353,7 @@ typedef DWORD TP_VERSION, *PTP_VERSION;
 
 typedef struct _TP_CALLBACK_INSTANCE TP_CALLBACK_INSTANCE, *PTP_CALLBACK_INSTANCE;
 
-typedef VOID (NTAPI *PTP_SIMPLE_CALLBACK)(
+typedef VOID (__stdcall *PTP_SIMPLE_CALLBACK)(
     _Inout_     PTP_CALLBACK_INSTANCE Instance,
     _Inout_opt_ PVOID                 Context
     );
@@ -19377,7 +19375,7 @@ typedef struct _TP_POOL_STACK_INFORMATION {
 
 typedef struct _TP_CLEANUP_GROUP TP_CLEANUP_GROUP, *PTP_CLEANUP_GROUP; 
 
-typedef VOID (NTAPI *PTP_CLEANUP_GROUP_CANCEL_CALLBACK)(
+typedef VOID (__stdcall *PTP_CLEANUP_GROUP_CANCEL_CALLBACK)(
     _Inout_opt_ PVOID ObjectContext,
     _Inout_opt_ PVOID CleanupContext
     );
@@ -19585,7 +19583,7 @@ TpDestroyCallbackEnviron(
 
 typedef struct _TP_WORK TP_WORK, *PTP_WORK;
 
-typedef VOID (NTAPI *PTP_WORK_CALLBACK)(
+typedef VOID (__stdcall *PTP_WORK_CALLBACK)(
     _Inout_     PTP_CALLBACK_INSTANCE Instance,
     _Inout_opt_ PVOID                 Context,
     _Inout_     PTP_WORK              Work
@@ -19593,7 +19591,7 @@ typedef VOID (NTAPI *PTP_WORK_CALLBACK)(
 
 typedef struct _TP_TIMER TP_TIMER, *PTP_TIMER;
 
-typedef VOID (NTAPI *PTP_TIMER_CALLBACK)(
+typedef VOID (__stdcall *PTP_TIMER_CALLBACK)(
     _Inout_     PTP_CALLBACK_INSTANCE Instance,
     _Inout_opt_ PVOID                 Context,
     _Inout_     PTP_TIMER             Timer
@@ -19603,7 +19601,7 @@ typedef DWORD    TP_WAIT_RESULT;
 
 typedef struct _TP_WAIT TP_WAIT, *PTP_WAIT;
 
-typedef VOID (NTAPI *PTP_WAIT_CALLBACK)(
+typedef VOID (__stdcall *PTP_WAIT_CALLBACK)(
     _Inout_     PTP_CALLBACK_INSTANCE Instance,
     _Inout_opt_ PVOID                 Context,
     _Inout_     PTP_WAIT              Wait,
