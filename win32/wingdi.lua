@@ -99,80 +99,83 @@ static const int HALFTONE            =         4;
 static const int MAXSTRETCHBLTMODE   =         4;
 ]]
 
---[=[
-#if(WINVER >= 0x0400)
-/* New StretchBlt() Modes */
-#define STRETCH_ANDSCANS    BLACKONWHITE
-#define STRETCH_ORSCANS     WHITEONBLACK
-#define STRETCH_DELETESCANS COLORONCOLOR
-#define STRETCH_HALFTONE    HALFTONE
-#endif /* WINVER >= 0x0400 */
 
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+/* New StretchBlt() Modes */
+static const int STRETCH_ANDSCANS   = BLACKONWHITE;
+static const int STRETCH_ORSCANS    = WHITEONBLACK;
+static const int STRETCH_DELETESCANS = COLORONCOLOR;
+static const int STRETCH_HALFTONE    = HALFTONE;
+]]
+end --/* WINVER >= 0x0400 */
+
+--[=[
 /* PolyFill() Modes */
-#define ALTERNATE                    1
-#define WINDING                      2
-#define POLYFILL_LAST                2
+#define ALTERNATE                    1;
+#define WINDING                      2;
+#define POLYFILL_LAST                2;
 
 /* Layout Orientation Options */
 #if(WINVER >= 0x0500)
-#define LAYOUT_RTL                         0x00000001 // Right to left
-#define LAYOUT_BTT                         0x00000002 // Bottom to top
-#define LAYOUT_VBH                         0x00000004 // Vertical before horizontal
-#define LAYOUT_ORIENTATIONMASK             (LAYOUT_RTL | LAYOUT_BTT | LAYOUT_VBH)
-#define LAYOUT_BITMAPORIENTATIONPRESERVED  0x00000008
+#define LAYOUT_RTL                         0x00000001; // Right to left
+#define LAYOUT_BTT                         0x00000002; // Bottom to top
+#define LAYOUT_VBH                         0x00000004; // Vertical before horizontal
+#define LAYOUT_ORIENTATIONMASK             (LAYOUT_RTL | LAYOUT_BTT | LAYOUT_VBH);
+#define LAYOUT_BITMAPORIENTATIONPRESERVED  0x00000008;
 #endif /* WINVER >= 0x0500 */
 
 /* Text Alignment Options */
-#define TA_NOUPDATECP                0
-#define TA_UPDATECP                  1
+#define TA_NOUPDATECP                0;
+#define TA_UPDATECP                  1;
 
-#define TA_LEFT                      0
-#define TA_RIGHT                     2
-#define TA_CENTER                    6
+#define TA_LEFT                      0;
+#define TA_RIGHT                     2;
+#define TA_CENTER                    6;
 
-#define TA_TOP                       0
-#define TA_BOTTOM                    8
-#define TA_BASELINE                  24
+#define TA_TOP                       0;
+#define TA_BOTTOM                    8;
+#define TA_BASELINE                  24;
 #if (WINVER >= 0x0400)
-#define TA_RTLREADING                256
-#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING)
+#define TA_RTLREADING                256;
+#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
 #else
-#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP)
+#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP);
 #endif
 
-#define VTA_BASELINE TA_BASELINE
-#define VTA_LEFT     TA_BOTTOM
-#define VTA_RIGHT    TA_TOP
-#define VTA_CENTER   TA_CENTER
-#define VTA_BOTTOM   TA_RIGHT
-#define VTA_TOP      TA_LEFT
+#define VTA_BASELINE =TA_BASELINE;
+#define VTA_LEFT     =TA_BOTTOM;
+#define VTA_RIGHT    =TA_TOP;
+#define VTA_CENTER   =TA_CENTER;
+#define VTA_BOTTOM   =TA_RIGHT;
+#define VTA_TOP      =TA_LEFT;
 
-#define ETO_OPAQUE                   0x0002
-#define ETO_CLIPPED                  0x0004
+#define ETO_OPAQUE                 =  0x0002;
+#define ETO_CLIPPED                =  0x0004;
 #if(WINVER >= 0x0400)
-#define ETO_GLYPH_INDEX              0x0010
-#define ETO_RTLREADING               0x0080
-#define ETO_NUMERICSLOCAL            0x0400
-#define ETO_NUMERICSLATIN            0x0800
-#define ETO_IGNORELANGUAGE           0x1000
+#define ETO_GLYPH_INDEX            =  0x0010;
+#define ETO_RTLREADING             =  0x0080;
+#define ETO_NUMERICSLOCAL          =  0x0400;
+#define ETO_NUMERICSLATIN          =  0x0800;
+#define ETO_IGNORELANGUAGE         =  0x1000;
 #endif /* WINVER >= 0x0400 */
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#define ETO_PDY                      0x2000
+#define ETO_PDY                    =  0x2000;
 #endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
 #if (_WIN32_WINNT >= _WIN32_WINNT_LONGHORN)
-#define ETO_REVERSE_INDEX_MAP        0x10000
+#define ETO_REVERSE_INDEX_MAP      =  0x10000;
 #endif
 
-#define ASPECT_FILTERING             0x0001
+#define ASPECT_FILTERING           =  0x0001;
 
 /* Bounds Accumulation APIs */
 
-#define DCB_RESET       0x0001
-#define DCB_ACCUMULATE  0x0002
-#define DCB_DIRTY       DCB_ACCUMULATE
-#define DCB_SET         (DCB_RESET | DCB_ACCUMULATE)
-#define DCB_ENABLE      0x0004
-#define DCB_DISABLE     0x0008
+#define DCB_RESET      = 0x0001;
+#define DCB_ACCUMULATE = 0x0002;
+#define DCB_DIRTY      = DCB_ACCUMULATE;
+#define DCB_SET        = (DCB_RESET | DCB_ACCUMULATE);
+#define DCB_ENABLE     = 0x0004;
+#define DCB_DISABLE    = 0x0008;
 --]=]
 
 --[[
