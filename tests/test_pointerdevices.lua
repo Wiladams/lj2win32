@@ -2,6 +2,9 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
+require("win32.sdkddkver")
+
+local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
 local errorhandling = require("win32.errhandlingapi");
 local core_string = require("experimental.apiset.string_l1_1_0");

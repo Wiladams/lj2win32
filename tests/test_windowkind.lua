@@ -2,9 +2,11 @@ package.path = "../?.lua;"..package.path;
 
 local os = require("os")
 local ffi = require("ffi")
+local C = ffi.C 
+
+require("win32.sdkddkver")
 
 
-local User32 = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
 --local wmmsgs = require("wmmsgs")

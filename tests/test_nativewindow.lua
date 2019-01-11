@@ -2,9 +2,12 @@ package.path = "../?.lua;"..package.path;
 
 local os = require("os")
 local ffi = require("ffi")
+local C = ffi.C
 
+require("win32.sdkddkver")
 
-local User32 = require("win32.winuser")
+local wingdi = require("win32.wingdi")
+local winuser = require("win32.winuser")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("NativeWindow")
 local wmmsgs = require("wmmsgs")
@@ -21,23 +24,23 @@ local continueRunning = true;
     a PostQuitMessage(), but for this simple test, we 
     just want the app to exit when we close the window.
 ]]
-
+jit.off(WindowProc)
 function WindowProc(hwnd, msg, wparam, lparam)
     print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
     --print(string.format("WindowProc, msg: 0x%x", msg))
     if msg == ffi.C.WM_CLOSE then
-        --User32.PostQuitMessage(0);
+        --C.PostQuitMessage(0);
         os.exit();
     end
 
-    if msg == ffi.C.WM_QUIT then
+    if msg == C.WM_QUIT then
         print("WM_QUIT")
     --    error("QUIT")
     end
 
-	return User32.DefWindowProcA(hwnd, msg, wparam, lparam);
+	return C.DefWindowProcA(hwnd, msg, wparam, lparam);
 end
-jit.off(WindowProc)
+
 
 -- You MUST register a window class before you can use it.
 local winkind, err = WindowKind("NativeWindow", WindowProc);
@@ -62,10 +65,10 @@ local msg = ffi.new("MSG")
 local res = 0;
 while (continueRunning) do
 
-	res = User32.GetMessageA(msg, nil, 0,0)
-	res = User32.TranslateMessage(msg)
+	res = C.GetMessageA(msg, nil, 0,0)
+	res = C.TranslateMessage(msg)
 			
-	User32.DispatchMessageA(msg)
+	C.DispatchMessageA(msg)
 
 	if msg.message == ffi.C.WM_QUIT then
 			print("APP QUIT == TRUE")

@@ -20,7 +20,8 @@ local bit = require("bit");
 local bor = bit.bor;
 
 local errorhandling = require("win32.errhandlingapi");
-local libraryloader = require("win32.libloaderapi");
+
+require("win32.wingdi")
 local winuser = require("win32.winuser");
 
 

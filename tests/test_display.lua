@@ -1,9 +1,15 @@
 package.path = "../?.lua;"..package.path;
 
+--[[
+    Use the winuser 'EnumDisplayDevices' call to get some display
+    information.
+]]
 local ffi = require("ffi")
 local C = ffi.C 
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
+
+require("win32.sdkddkver")
 
 local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")

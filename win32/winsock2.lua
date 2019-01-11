@@ -6,6 +6,9 @@ local lshift, rshift = bit.lshift, bit.rshift
 
 local byte = string.byte
 
+local utils = require("utils")
+local makeStatic = utils.makeStatic
+
 --[[
 /* Winsock2.h -- definitions to be used with the WinSock 2 DLL and
 *               WinSock 2 applications.
@@ -22,9 +25,6 @@ local byte = string.byte
 
 local exports = {}
 
-function makeStatic(name, value)
-   ffi.cdef(string.format("static const int %s = %d;", name, value))
-end
 
 if not _WINSOCK2API_ then
 _WINSOCK2API_ = true
