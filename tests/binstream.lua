@@ -153,6 +153,17 @@ function binstream.readOctet(self)
     return self.data[self.cursor-1]
  end
  
+function binstream.writeOctet(self, octet)
+    if (self.cursor >= self.size) then
+        return false, "EOF";
+    end
+
+    self.data[self.cursor] = octet;
+    self.cursor = self.cursor + 1;
+
+    return true;
+end
+
 -- Read an integer value
 -- The parameter 'n' determines how many bytes to read.
 -- 'n' can be up to 8 
@@ -181,7 +192,29 @@ function binstream.read(self, n)
     return v;
 end
 
+function binstream.writeInt(self, value, n)
 
+
+    if self:remaining() < n then
+        return false, "NOT ENOUGH DATA AVAILABLE"
+    end
+
+    if self.bigend then
+        local i = n-1;
+        while  (i >= 0) do
+            self:writeOctet(band(rshift(value,i*8), 0xff))
+            i = i - 1;
+        end 
+    else
+        local i = 0;
+        while  (i < n) do
+            self:writeOctet(band(rshift(value,i*8), 0xff))
+            i = i + 1;
+        end 
+    end
+
+    return v;
+end
 
 -- BUGBUG, do error checking against end of stream
 function binstream.readBytes(self, n, bytes)
@@ -206,6 +239,17 @@ function binstream.readBytes(self, n, bytes)
     return bytes, nActual;
 end
 
+function binstream.writeBytes(self, bytes, n)
+    n = n or #bytes
+    if n > self:remaining() then 
+        return false, "Not enough space"
+    end
+
+    ffi.copy(self.data+self.cursor, ffi.cast("const char *", bytes, n))
+    self:skip(n)
+
+    return true;
+end
 
 
 -- Read bytes and turn into a Lua string
@@ -234,6 +278,10 @@ function binstream.readString(self, n)
     return str;
 end
 
+function binstream.writeString(self, str)
+    return self:writeBytes(str)
+end
+
 
 function binstream.readNumber(self, n)
     return tonumber(self:read(n));
@@ -245,9 +293,17 @@ function binstream.readInt8(self)
     return tonumber(ffi.cast('int8_t', self:read(1)))
 end
 
+function binstream.writeInt8(self, n)
+    return self:writeInt(n, 1);
+end
+
 -- Read 8-bit unsigned integer
 function binstream.readUInt8(self)
     return tonumber(ffi.cast('uint8_t', self:read(1)))
+end
+
+function binstream.writeUInt8(self, n)
+    return self:writeInt(ffi.cast("uint8_t",n), 1)
 end
 
 -- Read 16-bit signed integer
@@ -255,9 +311,17 @@ function binstream.readInt16(self)
     return tonumber(ffi.cast('int16_t', self:read(2)))
 end
 
+function binstream.writeInt16(self, n)
+    return self:writeInt(ffi.cast("int16_t",n), 2);
+end
+
 -- Read 16-bit unsigned integer
 function binstream.readUInt16(self)
     return tonumber(ffi.cast('uint16_t', self:read(2)))
+end
+
+function binstream.writeUint16(self, n)
+    return self:writeInt(ffi.cast("uint16_t",n), 2);
 end
 
 -- Read Signed 32-bit integer
@@ -265,14 +329,26 @@ function binstream.readInt32(self)
     return tonumber(ffi.cast('int32_t', self:read(4)))
 end
 
+function binstream.writeInt32(self, n)
+    return self:writeInt(ffi.cast("int32_t",n), 4);
+end
+
 -- Read unsigned 32-bit integer
 function binstream.readUInt32(self)
     return tonumber(ffi.cast('uint32_t', self:read(4)))
 end
 
+function binstream.writeUInt32(self, n)
+    return self:writeInt(ffi.cast("uint32_t",n), 4);
+end
+
 -- Read signed 64-bit integer
 function binstream.readInt64(self)
     return tonumber(ffi.cast('int64_t', self:read(8)))
+end
+
+function binstream.writeInt64(self, n)
+    return self:writeInt(ffi.cast("int64_t",n), 8);
 end
 
 -- Read unsigned 64-bit integer
@@ -300,6 +376,9 @@ function binstream.readUInt64(self)
     return v;
 end
 
+function binstream.writeUInt64(self, n)
+    return self:writeInt(ffi.cast("uint64_t",n), 8);
+end
 
 -- Some various fixed formats
 function binstream.readFixed(self)
