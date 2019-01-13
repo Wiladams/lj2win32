@@ -1731,7 +1731,7 @@ function exports.GetRValue(rgb)    return  LOBYTE(rgb) end
 function exports.GetGValue(rgb)    return  LOBYTE(rshift(rgb, 8)) end
 function exports.GetBValue(rgb)    return  LOBYTE(rshift(rgb,16)) end
 
-function exports.RGB(r,g,b)         return  ffi.cast("COLORREF",bor(ffi.cast("BYTE",r),lshift(ffi.cast("BYTE",g),8),lshift(b,16))) end
+function exports.RGB(r,g,b)         return  ffi.cast("COLORREF",bor(r,lshift(g,8),lshift(b,16))) end
 function exports.PALETTERGB(r,g,b)   return bor(0x02000000 , RGB(r,g,b)) end
 --function exports.PALETTEINDEX(i)     ffi.cast("COLORREF", bor(0x01000000, (DWORD)(WORD)(i)))
 
