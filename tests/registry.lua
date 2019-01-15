@@ -35,45 +35,18 @@ function RegistryKey.new(self, parent, subname, options, SAMDesired)
 
     -- Open the key
     phkResult = ffi.new("HKEY[1]")
-    C.RegOpenKeyExA(parent, subname, options, SAMDesired, phkResult)
+    local status = C.RegOpenKeyExA(parent, subname, options, SAMDesired, phkResult)
+
+    if status ~= C.ERROR_SUCCESS then
+        return nil;
+    end
 
     local hkResult = phkResult[0]
 
     return self:init(hkResult, true)
 end
 
-function RegistryKey.subkeys(self)
-    dwIndex = 0;
-    local function closure()
-        local lpcchName = ffi.new("DWORD[1]");
-        lpcchName[0] = 255;
-        local lpName = ffi.new("char[?]", 256)
-        local lpReserved = nil;
-        local lpClass = nil;
-        local lpcchClass = nil;
-        local lpftLastWriteTime = nil;
 
-        local status = C.RegEnumKeyExA(self.Key, dwIndex, 
-            lpName, lpcchName, 
-            lpReserved,
-            lpClass, lpcchClass, 
-            lpftLastWriteTime)
-
-            dwIndex = dwIndex + 1;
-   
-        if status == C.ERROR_NO_MORE_ITEMS then
-            return nil;
-        end
-
-        if status ~= C.ERROR_SUCCESS then
-            return nil;
-        end
-
-        return ffi.string(lpName, lpcchName[0])
-    end
-
-    return closure
-end
 
 function RegistryKey.getInfo(self, res)
     res = res or {}
@@ -121,6 +94,93 @@ end
 function RegistryKey.subkey(self, subkeyname, options, SAMDesired)
     return RegistryKey(self.Key, subkeyname, options, SAMDesired)
 end
+
+function RegistryKey.subkeys(self)
+    local dwIndex = 0;
+    local function closure()
+        local lpcchName = ffi.new("DWORD[1]");
+        lpcchName[0] = 255;
+        local lpName = ffi.new("char[?]", 256)
+        local lpReserved = nil;
+        local lpClass = nil;
+        local lpcchClass = nil;
+        local lpftLastWriteTime = nil;
+
+        local status = C.RegEnumKeyExA(self.Key, dwIndex, 
+            lpName, lpcchName, 
+            lpReserved,
+            lpClass, lpcchClass, 
+            lpftLastWriteTime)
+        
+        dwIndex = dwIndex + 1;
+
+        if status == C.ERROR_NO_MORE_ITEMS then
+            return nil;
+        end
+
+        if status ~= C.ERROR_SUCCESS then
+            return nil;
+        end
+
+        return ffi.string(lpName, lpcchName[0])
+    end
+
+    return closure
+end
+
+function RegistryKey.values(self)
+    local dwIndex = 0;
+
+    local function closure()
+        local lpValueName = ffi.new("char[256]")
+        local lpcchValueName = ffi.new("DWORD[1]", 256)
+        local lpReserved = nil;
+        local lpType = ffi.new("DWORD[1]")
+        local lpData = ffi.new("BYTE[?]", 256)
+        local lpcbData = ffi.new("DWORD[1]", 256)
+
+        local status = C.RegEnumValueA(
+            self.Key,
+            dwIndex,
+            lpValueName,
+            lpcchValueName,
+            lpReserved,
+            lpType,
+            lpData,
+            lpcbData);
+
+        dwIndex = dwIndex + 1;
+
+        if status == C.ERROR_NO_MORE_ITEMS then
+            return nil;
+        end
+
+        if status ~= C.ERROR_SUCCESS then
+            return nil;
+        end
+
+
+        local res = {
+            name = ffi.string(lpValueName, lpcchValueName[0]);
+            kind = lpType[0];
+        }
+
+        local len = lpcbData[0]
+        if lpType[0] == C.REG_SZ then
+            if len > 0 then len = len - 1 end
+            res.value = ffi.string(lpData, len)
+        elseif lpType[0] == C.REG_DWORD then
+            res.value = ffi.cast("DWORD *",lpData)[0]
+        end
+
+        return res
+    end
+
+    return closure
+end
+
+
+
 
 --[[
     The Registry itself

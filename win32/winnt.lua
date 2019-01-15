@@ -18520,30 +18520,29 @@ static const int KEY_ALL_ACCESS         = ((STANDARD_RIGHTS_ALL        |\
 // end_wdm
 --]=]
 
---[==[
-//
-//
+ffi.cdef[[
 // Predefined Value Types.
-//
 
-#define REG_NONE                    ( 0ul ) // No value type
-#define REG_SZ                      ( 1ul ) // Unicode nul terminated string
-#define REG_EXPAND_SZ               ( 2ul ) // Unicode nul terminated string
+static const int REG_NONE                    = 0; // No value type
+static const int REG_SZ                      = 1; // Unicode nul terminated string
+static const int REG_EXPAND_SZ               = 2; // Unicode nul terminated string
                                             // (with environment variable references)
-#define REG_BINARY                  ( 3ul ) // Free form binary
-#define REG_DWORD                   ( 4ul ) // 32-bit number
-#define REG_DWORD_LITTLE_ENDIAN     ( 4ul ) // 32-bit number (same as REG_DWORD)
-#define REG_DWORD_BIG_ENDIAN        ( 5ul ) // 32-bit number
-#define REG_LINK                    ( 6ul ) // Symbolic Link (unicode)
-#define REG_MULTI_SZ                ( 7ul ) // Multiple Unicode strings
-#define REG_RESOURCE_LIST           ( 8ul ) // Resource list in the resource map
-#define REG_FULL_RESOURCE_DESCRIPTOR ( 9ul ) // Resource list in the hardware description
-#define REG_RESOURCE_REQUIREMENTS_LIST ( 10ul )
-#define REG_QWORD                   ( 11ul ) // 64-bit number
-#define REG_QWORD_LITTLE_ENDIAN     ( 11ul ) // 64-bit number (same as REG_QWORD)
+static const int REG_BINARY                  = 3; // Free form binary
+static const int REG_DWORD                   = 4; // 32-bit number
+static const int REG_DWORD_LITTLE_ENDIAN     = 4; // 32-bit number (same as REG_DWORD)
+static const int REG_DWORD_BIG_ENDIAN        = 5; // 32-bit number
+static const int REG_LINK                    = 6; // Symbolic Link (unicode)
+static const int REG_MULTI_SZ                = 7; // Multiple Unicode strings
+static const int REG_RESOURCE_LIST           = 8; // Resource list in the resource map
+static const int REG_FULL_RESOURCE_DESCRIPTOR = 9; // Resource list in the hardware description
+static const int REG_RESOURCE_REQUIREMENTS_LIST = 10;
+static const int REG_QWORD                   = 11; // 64-bit number
+static const int REG_QWORD_LITTLE_ENDIAN     = 11; // 64-bit number (same as REG_QWORD)
 
 // end_wdm
+]]
 
+--[==[
 // begin_wdm
 //
 // Service Types (Bit Mask)
