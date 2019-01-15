@@ -15,7 +15,7 @@ local function getEnvironment()
         return false, "failed"
     end
 
-    local res =  strdelim.splitmultinull(environs)
+    local res =  strdelim.multinullpairs(environs)
     ffi.C.FreeEnvironmentStringsA(environs)
 
     return res;

@@ -23,7 +23,7 @@ end
 -- with two '\0' values. 
 -- this=value1\0is=value2\0an=value3\0example=value4\0\0
 --
-function exports.splitmultinull(multinull)
+function exports.multinullpairs(multinull)
     local res = {}
     local strptr = ffi.cast("const char *", multinull)
     local startoffset = 0;
@@ -44,5 +44,29 @@ function exports.splitmultinull(multinull)
 
     return res
 end
+
+-- an iterator over the multi null string.
+-- returns one string at a time
+function exports.multinullstrings(multinull)
+    local function closure(state, startoffset)
+        local strptr = ffi.cast("const char *", state)
+
+        if strptr[startoffset] == 0 then
+            return nil;
+        end
+        
+        local charoffset = startoffset 
+
+        while strptr[charoffset] ~= 0 do
+            charoffset = charoffset + 1;
+        end
+        local len = charoffset - startoffset
+
+        return charoffset+1, ffi.string(strptr+startoffset, len)
+    end
+
+    return closure, multinull, 0
+end
+
 
 return exports

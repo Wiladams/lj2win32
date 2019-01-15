@@ -4,7 +4,7 @@ local ffi = require("ffi")
 local C = ffi.C 
 
 require("win32.winreg")
-
+local strdelim = require("strdelim")
 
 --[[
     Registry Keys
@@ -133,6 +133,16 @@ function RegistryKey.subkeys(self)
     return closure
 end
 
+local function tblfrommultinull(multinull, res)
+    res = res or {}
+    for i, str in strdelim.multinullstrings(multinull) do
+        table.insert(res, str)
+    end
+    
+    return res;
+end
+
+
 function RegistryKey.values(self)
     local dwIndex = 0;
 
@@ -174,6 +184,8 @@ function RegistryKey.values(self)
         if lpType[0] == C.REG_SZ then
             if len > 0 then len = len - 1 end
             res.value = ffi.string(lpData, len)
+        elseif lpType[0] == C.REG_MULTI_SZ then
+            res.value = tblfrommultinull(lpData) 
         elseif lpType[0] == C.REG_DWORD then
             res.value = ffi.cast("DWORD *",lpData)[0]
         end

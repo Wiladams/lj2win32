@@ -59,6 +59,8 @@ printKey = function (akey, name, level)
         local valuestr = nil
         if value.kind == C.REG_SZ then
             valuestr = string.format("'%s'", value.value);
+        elseif value.kind == C.REG_MULTI_SZ then
+            valuestr = string.format("'%s'", table.concat(value.value,', '))
         elseif value.kind == C.REG_DWORD then
             valuestr = string.format("%d", value.value);
         else 
@@ -83,9 +85,12 @@ end
 --printKey(Registry.HKEY_CLASSES_ROOT, "HKEY_CLASSES_ROOT")
 --printKey(Registry.HKEY_CURRENT_USER, "HKEY_CURRENT_USER")
 --printKey(Registry.HKEY_CURRENT_USER.AppEvents, "HKEY_CURRENT_USER/AppEvents")
+
 --printKey(Registry.HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE")
 --printKey(Registry.HKEY_LOCAL_MACHINE.SYSTEM, "HKEY_LOCAL_MACHINE/SYSTEM")
-printKey(Registry.HKEY_LOCAL_MACHINE.HARDWARE.DESCRIPTION.System, "HKEY_LOCAL_MACHINE.HARDWARE.DESCRIPTION.System")
+printKey(Registry.HKEY_LOCAL_MACHINE.HARDWARE.DESCRIPTION, "HKEY_LOCAL_MACHINE.HARDWARE.DESCRIPTION")
+--printKey(Registry.HKEY_LOCAL_MACHINE.HARDWARE.DEVICEMAP, "HKEY_LOCAL_MACHINE.HARDWARE.DEVICEMAP")
+
 --printKey(Registry.HKEY_USERS, "HKEY_USERS")
 --printKey(Registry.HKEY_PERFORMANCE_DATA, "HKEY_PERFORMANCE_DATA")
 --printKey(Registry.HKEY_PERFORMANCE_TEXT, "HKEY_PERFORMANCE_TEXT")
