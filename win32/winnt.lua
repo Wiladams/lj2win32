@@ -8262,27 +8262,18 @@ static const int SYNCHRONIZE                   =   (0x00100000L);
 static const int STANDARD_RIGHTS_REQUIRED      =   (0x000F0000L);
 ]]
 
---[==[
-#define STANDARD_RIGHTS_READ             (READ_CONTROL)
-#define STANDARD_RIGHTS_WRITE            (READ_CONTROL)
-#define STANDARD_RIGHTS_EXECUTE          (READ_CONTROL)
+ffi.cdef[[
+static const int STANDARD_RIGHTS_READ          =   (READ_CONTROL);
+static const int STANDARD_RIGHTS_WRITE         =   (READ_CONTROL);
+static const int STANDARD_RIGHTS_EXECUTE       =   (READ_CONTROL);
+static const int STANDARD_RIGHTS_ALL           =   (0x001F0000L);
 
-#define STANDARD_RIGHTS_ALL              (0x001F0000L)
+static const int SPECIFIC_RIGHTS_ALL           =   (0x0000FFFFL);
 
-#define SPECIFIC_RIGHTS_ALL              (0x0000FFFFL)
+static const int ACCESS_SYSTEM_SECURITY        =   (0x01000000L);
 
-//
-// AccessSystemAcl access type
-//
-
-#define ACCESS_SYSTEM_SECURITY           (0x01000000L)
-
-//
-// MaximumAllowed access type
-//
-
-#define MAXIMUM_ALLOWED                  (0x02000000L)
---]==]
+static const int MAXIMUM_ALLOWED               =   (0x02000000L);
+]]
 
 ffi.cdef[[
 //
@@ -18384,43 +18375,43 @@ struct _PACKEDEVENTINFO
 #endif
 //SS: end of changes to support clustering
 //
-
+--]==]
+ffi.cdef[[
 // begin_wdm
 // begin_access
 
 //
 // Registry Specific Access Rights.
 //
+static const int KEY_QUERY_VALUE        = (0x0001);
+static const int KEY_SET_VALUE          = (0x0002);
+static const int KEY_CREATE_SUB_KEY     = (0x0004);
+static const int KEY_ENUMERATE_SUB_KEYS = (0x0008);
+static const int KEY_NOTIFY             = (0x0010);
+static const int KEY_CREATE_LINK        = (0x0020);
+static const int KEY_WOW64_32KEY        = (0x0200);
+static const int KEY_WOW64_64KEY        = (0x0100);
+static const int KEY_WOW64_RES          = (0x0300);
 
-#define KEY_QUERY_VALUE         (0x0001)
-#define KEY_SET_VALUE           (0x0002)
-#define KEY_CREATE_SUB_KEY      (0x0004)
-#define KEY_ENUMERATE_SUB_KEYS  (0x0008)
-#define KEY_NOTIFY              (0x0010)
-#define KEY_CREATE_LINK         (0x0020)
-#define KEY_WOW64_32KEY         (0x0200)
-#define KEY_WOW64_64KEY         (0x0100)
-#define KEY_WOW64_RES           (0x0300)
-
-#define KEY_READ                ((STANDARD_RIGHTS_READ       |\
+static const int KEY_READ               = ((STANDARD_RIGHTS_READ       |\
                                   KEY_QUERY_VALUE            |\
                                   KEY_ENUMERATE_SUB_KEYS     |\
                                   KEY_NOTIFY)                 \
                                   &                           \
-                                 (~SYNCHRONIZE))
+                                 (~SYNCHRONIZE));
 
 
-#define KEY_WRITE               ((STANDARD_RIGHTS_WRITE      |\
+static const int KEY_WRITE              = ((STANDARD_RIGHTS_WRITE      |\
                                   KEY_SET_VALUE              |\
                                   KEY_CREATE_SUB_KEY)         \
                                   &                           \
-                                 (~SYNCHRONIZE))
+                                 (~SYNCHRONIZE));
 
-#define KEY_EXECUTE             ((KEY_READ)                   \
+static const int KEY_EXECUTE            = ((KEY_READ)                   \
                                   &                           \
-                                 (~SYNCHRONIZE))
+                                 (~SYNCHRONIZE));
 
-#define KEY_ALL_ACCESS          ((STANDARD_RIGHTS_ALL        |\
+static const int KEY_ALL_ACCESS         = ((STANDARD_RIGHTS_ALL        |\
                                   KEY_QUERY_VALUE            |\
                                   KEY_SET_VALUE              |\
                                   KEY_CREATE_SUB_KEY         |\
@@ -18428,10 +18419,12 @@ struct _PACKEDEVENTINFO
                                   KEY_NOTIFY                 |\
                                   KEY_CREATE_LINK)            \
                                   &                           \
-                                 (~SYNCHRONIZE))
+                                 (~SYNCHRONIZE));
 
 // end_access
+]]
 
+--[=[
 //
 // Open/Create Options
 //
@@ -18525,7 +18518,9 @@ struct _PACKEDEVENTINFO
                  REG_NOTIFY_THREAD_AGNOSTIC)
 
 // end_wdm
+--]=]
 
+--[==[
 //
 //
 // Predefined Value Types.

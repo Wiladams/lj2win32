@@ -184,65 +184,41 @@ static const int FACILITY_PIX                    = 2748;
 ]]
 
 
---[=[
+
 ffi.cdef[[
-//
-// MessageId: ERROR_SUCCESS
-//
-// MessageText:
 //
 // The operation completed successfully.
 //
-static const int ERROR_SUCCESS                  =  0L;
+static const int ERROR_SUCCESS                  = 0L;
 
-static const int NO_ERROR = 0L;                  
-static const int SEC_E_OK                       =  ((HRESULT)0x00000000L);
+static const int NO_ERROR                       = 0L;                  
+static const int SEC_E_OK                       = 0x00000000L;
 
-//
-// MessageId: ERROR_INVALID_FUNCTION
-//
-// MessageText:
 //
 // Incorrect function.
 //
 static const int ERROR_INVALID_FUNCTION          = 1L;    // dderror
 
 //
-// MessageId: ERROR_FILE_NOT_FOUND
-//
-// MessageText:
-//
 // The system cannot find the file specified.
 //
 static const int ERROR_FILE_NOT_FOUND             = 2L;
 
-//
-// MessageId: ERROR_PATH_NOT_FOUND
-//
-// MessageText:
 //
 // The system cannot find the path specified.
 //
 static const int ERROR_PATH_NOT_FOUND            = 3L;
 
 //
-// MessageId: ERROR_TOO_MANY_OPEN_FILES
-//
-// MessageText:
-//
 // The system cannot open the file.
 //
 static const int ERROR_TOO_MANY_OPEN_FILES        = 4L;
 
 //
-// MessageId: ERROR_ACCESS_DENIED
-//
-// MessageText:
-//
 // Access is denied.
 //
 static const int ERROR_ACCESS_DENIED             =  5L;
---]=]
+]]
 
 ffi.cdef[[
 static const int ERROR_INVALID_HANDLE         =  6L;

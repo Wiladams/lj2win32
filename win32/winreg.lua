@@ -66,19 +66,18 @@ ffi.cdef[[
 typedef ACCESS_MASK REGSAM;
 ]]
 
---[[
-//
-// Reserved Key Handles.
-//
 
-#define HKEY_CLASSES_ROOT                   (( HKEY ) (ULONG_PTR)((LONG)0x80000000) )
-#define HKEY_CURRENT_USER                   (( HKEY ) (ULONG_PTR)((LONG)0x80000001) )
-#define HKEY_LOCAL_MACHINE                  (( HKEY ) (ULONG_PTR)((LONG)0x80000002) )
-#define HKEY_USERS                          (( HKEY ) (ULONG_PTR)((LONG)0x80000003) )
-#define HKEY_PERFORMANCE_DATA               (( HKEY ) (ULONG_PTR)((LONG)0x80000004) )
-#define HKEY_PERFORMANCE_TEXT               (( HKEY ) (ULONG_PTR)((LONG)0x80000050) )
-#define HKEY_PERFORMANCE_NLSTEXT            (( HKEY ) (ULONG_PTR)((LONG)0x80000060) )
---]]
+
+-- Reserved Key Handles.
+
+HKEY_CLASSES_ROOT           =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000000));
+HKEY_CURRENT_USER           =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000001));
+HKEY_LOCAL_MACHINE          =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000002));
+HKEY_USERS                  =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000003));
+HKEY_PERFORMANCE_DATA       =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000004));
+HKEY_PERFORMANCE_TEXT       =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000050));
+HKEY_PERFORMANCE_NLSTEXT    =       ffi.cast("HKEY", ffi.cast("ULONG_PTR",0x80000060));
+
 
 if (WINVER >= 0x0400) then
 --[[
@@ -705,9 +704,11 @@ RegNotifyChangeKeyValue(
      HANDLE hEvent,
      BOOL fAsynchronous
     );
+]]
 
-
-
+--[=[
+-- for 16-bit windows only
+ffi.cdef[[
 LSTATUS
 __stdcall
 RegOpenKeyA (
@@ -732,6 +733,7 @@ RegOpenKeyW (
 #define RegOpenKey  RegOpenKeyA
 end // !UNICODE
 --]]
+--]=]
 
 ffi.cdef[[
 LSTATUS
