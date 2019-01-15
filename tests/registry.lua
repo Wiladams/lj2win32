@@ -16,7 +16,12 @@ setmetatable(RegistryKey, {
     end
 })
 local RegistryKey_mt = {
-    __index = RegistryKey
+    __index = function(tbl, key)
+        if RegistryKey[key] then return RegistryKey[key] end
+    
+        -- try to return a subkey
+        return RegistryKey.subkey(tbl, key)
+    end;
 }
 
 function RegistryKey.init(self, key, isOwned)
