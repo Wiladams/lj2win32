@@ -138,10 +138,22 @@ local function tblfrommultinull(multinull, res)
     for i, str in strdelim.multinullstrings(multinull) do
         table.insert(res, str)
     end
-    
+
     return res;
 end
 
+--[[
+    return an iterator over all the value fields
+    
+    Reading this type: REG_FULL_RESOURCE_DESCRIPTOR
+    https://stackoverflow.com/questions/50418343/which-struct-is-used-to-extract-information-from-a-registry-value-data-of-type-r
+
+    https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_cm_full_resource_descriptor
+
+
+    In general, we need specific code to read each of the value types and turn them into something
+    that is easily consumed.
+]]
 
 function RegistryKey.values(self)
     local dwIndex = 0;
