@@ -26,19 +26,19 @@ typedef GUID *LPGUID;
 ]]
 end
 
---[=[
-require ("win32.spapidef")
 
+require ("win32.spapidef")
+--[=[
 #include <commctrl.h>
 #include <devpropdef.h>
 
-#if defined(_WIN64)
-#include <pshpack8.h>   // Assume 8-byte (64-bit) packing throughout
-#else
-#include <pshpack1.h>   // Assume byte packing throughout (32-bit processor)
-#endif
+if _WIN64 then
+--#include <pshpack8.h>   // Assume 8-byte (64-bit) packing throughout
+else
+--#include <pshpack1.h>   // Assume byte packing throughout (32-bit processor)
+end
 
-
+ffi.cdef[[
 //
 // Define maximum string length constants
 //
@@ -62,6 +62,7 @@ require ("win32.spapidef")
 // CM_Connect_Machine (i.e., "\\\\MachineName\0").
 //
 #define SP_MAX_MACHINENAME_LENGTH   (MAX_PATH + 3)
+]]
 
 //
 // Define type for reference to loaded inf file
@@ -7373,8 +7374,8 @@ typedef SP_INF_SIGNER_INFO_V1_A SP_INF_SIGNER_INFO_V1;
 typedef PSP_INF_SIGNER_INFO_V1_A PSP_INF_SIGNER_INFO_V1;
 #endif
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
-
+if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN then
+ffi.cdef[[
 typedef struct _SP_INF_SIGNER_INFO_V2_A {
     DWORD  cbSize;
     CHAR   CatalogFile[MAX_PATH];
@@ -7390,7 +7391,9 @@ typedef struct _SP_INF_SIGNER_INFO_V2_W {
     WCHAR  DigitalSignerVersion[MAX_PATH];
     DWORD  SignerScore;
 } SP_INF_SIGNER_INFO_V2_W, *PSP_INF_SIGNER_INFO_V2_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_INF_SIGNER_INFO_V2_W SP_INF_SIGNER_INFO_V2;
 typedef PSP_INF_SIGNER_INFO_V2_W PSP_INF_SIGNER_INFO_V2;
@@ -7398,6 +7401,7 @@ typedef PSP_INF_SIGNER_INFO_V2_W PSP_INF_SIGNER_INFO_V2;
 typedef SP_INF_SIGNER_INFO_V2_A SP_INF_SIGNER_INFO_V2;
 typedef PSP_INF_SIGNER_INFO_V2_A PSP_INF_SIGNER_INFO_V2;
 #endif
+--]]
 
 //
 // Driver signer scores (high order bit of the signing byte means unsigned)
@@ -7415,27 +7419,27 @@ typedef PSP_INF_SIGNER_INFO_V2_A PSP_INF_SIGNER_INFO_V2;
 #define SIGNERSCORE_MASK            0xFF000000  // Mask out all but the upper BYTE which contains the ranking signer information
 #define SIGNERSCORE_SIGNED_MASK     0xF0000000  // Mask out only the upper nibble, which tells us if the package is signed or not.
 
-#endif // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end --// _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
-#if USE_SP_INF_SIGNER_INFO_V1 || (_SETUPAPI_VER < _WIN32_WINNT_LONGHORN)  // use version 1 signer info structure
-
+if USE_SP_INF_SIGNER_INFO_V1 or (_SETUPAPI_VER < _WIN32_WINNT_LONGHORN)  then --// use version 1 signer info structure
+ffi.cdef[[
 typedef SP_INF_SIGNER_INFO_V1_A SP_INF_SIGNER_INFO_A;
 typedef PSP_INF_SIGNER_INFO_V1_A PSP_INF_SIGNER_INFO_A;
 typedef SP_INF_SIGNER_INFO_V1_W SP_INF_SIGNER_INFO_W;
 typedef PSP_INF_SIGNER_INFO_V1_W PSP_INF_SIGNER_INFO_W;
 typedef SP_INF_SIGNER_INFO_V1 SP_INF_SIGNER_INFO;
 typedef PSP_INF_SIGNER_INFO_V1 PSP_INF_SIGNER_INFO;
-
-#else                       // use version 2 signer info structure
-
+]]
+else                       --// use version 2 signer info structure
+ffi.cdef[[
 typedef SP_INF_SIGNER_INFO_V2_A SP_INF_SIGNER_INFO_A;
 typedef PSP_INF_SIGNER_INFO_V2_A PSP_INF_SIGNER_INFO_A;
 typedef SP_INF_SIGNER_INFO_V2_W SP_INF_SIGNER_INFO_W;
 typedef PSP_INF_SIGNER_INFO_V2_W PSP_INF_SIGNER_INFO_W;
 typedef SP_INF_SIGNER_INFO_V2 SP_INF_SIGNER_INFO;
 typedef PSP_INF_SIGNER_INFO_V2 PSP_INF_SIGNER_INFO;
-
-#endif  // use current version of signer info structure
+]]
+end  --// use current version of signer info structure
 
 
 ffi.cdef[[
@@ -7468,11 +7472,11 @@ SetupVerifyInfFileW(
 end --// _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
-
+ffi.cdef[[]
 //
 // Flags for use by SetupDiGetCustomDeviceProperty
 //
-#define DICUSTOMDEVPROP_MERGE_MULTISZ    0x00000001
+static const int DICUSTOMDEVPROP_MERGE_MULTISZ   = 0x00000001;
 
 
 
@@ -7503,30 +7507,25 @@ SetupDiGetCustomDevicePropertyW(
      DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define SetupDiGetCustomDeviceProperty SetupDiGetCustomDevicePropertyW
 #else
 #define SetupDiGetCustomDeviceProperty SetupDiGetCustomDevicePropertyA
 #endif
-
-#endif // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+--]]
+end --// _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WS03 then
-
-//
-// To configure WMI security for downlevel platforms where the [DDInstall.WMI]
-// section isn't natively supported by setupapi, a redistributable co-installer
-// is supplied in the DDK for use on those platforms.
-//
-
-//
-// Flags for use by SetupConfigureWmiFromInfSection
-//
-#define SCWMI_CLOBBER_SECURITY  0x00000001
-
 ffi.cdef[[
+
+
+static const int SCWMI_CLOBBER_SECURITY  = 0x00000001;
+
+
 BOOL
 __stdcall
 SetupConfigureWmiFromInfSectionA(
@@ -7561,7 +7560,7 @@ end --// _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 #endif // _INC_SETUPAPI

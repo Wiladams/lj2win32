@@ -47,9 +47,44 @@ end
 
 -- an iterator over a delimited string.
 -- returns one value at a time
+-- use a coroutine based iterator
 function exports.delimvalues(data, len, delim)
     len = len or #data
     delim = delim or string.byte(',')
+
+    local function visit(data, len, delim)
+        local startoffset = 0;
+        local strptr = ffi.cast("const char *", data)
+
+        while startoffset < len do
+            local charoffset = startoffset;
+            while charoffset < len and 
+                strptr[charoffset] ~= delim do
+                    charoffset = charoffset + 1;
+            end
+            
+            local len = charoffset - startoffset
+            coroutine.yield(ffi.string(strptr +startoffset, len))
+
+            startoffset = charoffset + 1;
+        end
+
+        return nil;
+    end
+
+    local co = coroutine.create(visit);
+
+    return function()
+        local status, value = coroutine.resume(co, data, len, delim)
+        if status then
+            return value
+        else
+            return nil
+        end
+    end
+end
+
+--[[
 
     local function closure(state, startoffset)
         local strptr = ffi.cast("const char *", state.data)
@@ -71,7 +106,7 @@ function exports.delimvalues(data, len, delim)
 
     return closure, {data = data, length=len, delim = delim}, 0
 end
-
+--]]
 
 --[[
     multi string iterator
