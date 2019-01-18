@@ -51,33 +51,50 @@ local function printModules(mHandle)
 end
 --]]
 
-local function  main( )
-
-    local nprocesses = 1024
-    local aProcesses = ffi.new("DWORD[?]", nprocesses); 
-    local cbNeeded = ffi.new("DWORD[1]"); 
+local function processids()
 
 
-    -- Get the list of process identifiers.
+    local function visit()
+        local nprocesses = 1024
+        local aProcesses = ffi.new("DWORD[?]", nprocesses); 
+        local cbNeeded = ffi.new("DWORD[1]"); 
 
-    local success = ffi.C.K32EnumProcesses( aProcesses, ffi.sizeof(aProcesses), cbNeeded ) ~= 0
-    
-    if not success then
-        print("K32EnumProcesses FAILED")
-        return false;
+        -- Get the list of process identifiers.
+
+        local success = ffi.C.K32EnumProcesses( aProcesses, ffi.sizeof(aProcesses), cbNeeded ) ~= 0
+
+        if not success then
+            --print("K32EnumProcesses FAILED")
+            return nil;
+        end
+
+        -- Calculate how many process identifiers were returned.
+        local cProcesses = cbNeeded[0] / ffi.sizeof("DWORD");
+
+        for i = 0, cProcesses-1 do
+            coroutine.yield( aProcesses[i] );
+        end
+
+        return nil;
     end
 
-    -- Calculate how many process identifiers were returned.
+    local co = coroutine.create(visit)
 
-    local cProcesses = cbNeeded[0] / ffi.sizeof("DWORD");
-
-    -- Print the names of the modules for each process.
-
-    for i = 0, cProcesses-1 do
-        PrintModules( aProcesses[i] );
+    return function()
+        local status, value = coroutine.resume(co)
+        if status then
+            return value
+        else
+            return nil
+        end
     end
+end
 
-    return true;
+
+local function main()
+    for procid in processids() do
+        PrintModules(procid)
+    end
 end
 
 main()
