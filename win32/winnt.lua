@@ -18424,101 +18424,103 @@ static const int KEY_ALL_ACCESS         = ((STANDARD_RIGHTS_ALL        |\
 // end_access
 ]]
 
---[=[
+ffi.cdef[[
 //
 // Open/Create Options
 //
 
-#define REG_OPTION_RESERVED         (0x00000000L)   // Parameter is reserved
+static const int REG_OPTION_RESERVED        = (0x00000000L);   // Parameter is reserved
 
-#define REG_OPTION_NON_VOLATILE     (0x00000000L)   // Key is preserved
+static const int REG_OPTION_NON_VOLATILE    = (0x00000000L);   // Key is preserved
                                                     // when system is rebooted
 
-#define REG_OPTION_VOLATILE         (0x00000001L)   // Key is not preserved
+static const int REG_OPTION_VOLATILE        = (0x00000001L);   // Key is not preserved
                                                     // when system is rebooted
 
-#define REG_OPTION_CREATE_LINK      (0x00000002L)   // Created key is a
+static const int REG_OPTION_CREATE_LINK     = (0x00000002L);   // Created key is a
                                                     // symbolic link
 
-#define REG_OPTION_BACKUP_RESTORE   (0x00000004L)   // open for backup or restore
+static const int REG_OPTION_BACKUP_RESTORE  = (0x00000004L);   // open for backup or restore
                                                     // special access rules
                                                     // privilege required
 
-#define REG_OPTION_OPEN_LINK        (0x00000008L)   // Open symbolic link
+static const int REG_OPTION_OPEN_LINK       = (0x00000008L);   // Open symbolic link
 
-#define REG_LEGAL_OPTION            \
+static const int REG_LEGAL_OPTION           = \
                 (REG_OPTION_RESERVED            |\
                  REG_OPTION_NON_VOLATILE        |\
                  REG_OPTION_VOLATILE            |\
                  REG_OPTION_CREATE_LINK         |\
                  REG_OPTION_BACKUP_RESTORE      |\
-                 REG_OPTION_OPEN_LINK)
+                 REG_OPTION_OPEN_LINK);
 
-#define REG_OPEN_LEGAL_OPTION       \
+static const int REG_OPEN_LEGAL_OPTION      = \
                 (REG_OPTION_RESERVED            |\
                  REG_OPTION_BACKUP_RESTORE      |\
-                 REG_OPTION_OPEN_LINK)
+                 REG_OPTION_OPEN_LINK);
 
 //
 // Key creation/open disposition
 //
 
-#define REG_CREATED_NEW_KEY         (0x00000001L)   // New Registry Key created
-#define REG_OPENED_EXISTING_KEY     (0x00000002L)   // Existing Key opened
+static const int REG_CREATED_NEW_KEY        = (0x00000001L);   // New Registry Key created
+static const int REG_OPENED_EXISTING_KEY    = (0x00000002L);   // Existing Key opened
+]]
 
+ffi.cdef[[
 //
 // hive format to be used by Reg(Nt)SaveKeyEx
 //
-#define REG_STANDARD_FORMAT     1
-#define REG_LATEST_FORMAT       2
-#define REG_NO_COMPRESSION      4
+static const int REG_STANDARD_FORMAT    = 1;
+static const int REG_LATEST_FORMAT      = 2;
+static const int REG_NO_COMPRESSION     = 4;
 
 //
 // Key restore & hive load flags
 //
 
-#define REG_WHOLE_HIVE_VOLATILE         (0x00000001L)   // Restore whole hive volatile
-#define REG_REFRESH_HIVE                (0x00000002L)   // Unwind changes to last flush
-#define REG_NO_LAZY_FLUSH               (0x00000004L)   // Never lazy flush this hive
-#define REG_FORCE_RESTORE               (0x00000008L)   // Force the restore process even when we have open handles on subkeys
-#define REG_APP_HIVE                    (0x00000010L)   // Loads the hive visible to the calling process
-#define REG_PROCESS_PRIVATE             (0x00000020L)   // Hive cannot be mounted by any other process while in use
-#define REG_START_JOURNAL               (0x00000040L)   // Starts Hive Journal
-#define REG_HIVE_EXACT_FILE_GROWTH      (0x00000080L)   // Grow hive file in exact 4k increments
-#define REG_HIVE_NO_RM                  (0x00000100L)   // No RM is started for this hive (no transactions)
-#define REG_HIVE_SINGLE_LOG             (0x00000200L)   // Legacy single logging is used for this hive
-#define REG_BOOT_HIVE                   (0x00000400L)   // This hive might be used by the OS loader
-#define REG_LOAD_HIVE_OPEN_HANDLE       (0x00000800L)   // Load the hive and return a handle to its root kcb
-#define REG_FLUSH_HIVE_FILE_GROWTH      (0x00001000L)   // Flush changes to primary hive file size as part of all flushes
-#define REG_OPEN_READ_ONLY              (0x00002000L)   // Open a hive's files in read-only mode
-#define REG_IMMUTABLE                   (0x00004000L)   // Load the hive, but don't allow any modification of it
-#define REG_APP_HIVE_OPEN_READ_ONLY     (REG_OPEN_READ_ONLY)   // Open an app hive's files in read-only mode (if the hive was not previously loaded)
+static const int REG_WHOLE_HIVE_VOLATILE       =  (0x00000001L);   // Restore whole hive volatile
+static const int REG_REFRESH_HIVE              =  (0x00000002L);   // Unwind changes to last flush
+static const int REG_NO_LAZY_FLUSH             =  (0x00000004L);   // Never lazy flush this hive
+static const int REG_FORCE_RESTORE             =  (0x00000008L);   // Force the restore process even when we have open handles on subkeys
+static const int REG_APP_HIVE                  =  (0x00000010L);   // Loads the hive visible to the calling process
+static const int REG_PROCESS_PRIVATE           =  (0x00000020L);   // Hive cannot be mounted by any other process while in use
+static const int REG_START_JOURNAL             =  (0x00000040L);   // Starts Hive Journal
+static const int REG_HIVE_EXACT_FILE_GROWTH    =  (0x00000080L);   // Grow hive file in exact 4k increments
+static const int REG_HIVE_NO_RM                =  (0x00000100L);   // No RM is started for this hive (no transactions)
+static const int REG_HIVE_SINGLE_LOG           =  (0x00000200L);   // Legacy single logging is used for this hive
+static const int REG_BOOT_HIVE                 =  (0x00000400L);   // This hive might be used by the OS loader
+static const int REG_LOAD_HIVE_OPEN_HANDLE     =  (0x00000800L);   // Load the hive and return a handle to its root kcb
+static const int REG_FLUSH_HIVE_FILE_GROWTH    =  (0x00001000L);   // Flush changes to primary hive file size as part of all flushes
+static const int REG_OPEN_READ_ONLY            =  (0x00002000L);   // Open a hive's files in read-only mode
+static const int REG_IMMUTABLE                 =  (0x00004000L);   // Load the hive, but don't allow any modification of it
+static const int REG_APP_HIVE_OPEN_READ_ONLY   =  (REG_OPEN_READ_ONLY);   // Open an app hive's files in read-only mode (if the hive was not previously loaded)
 
 //
 // Unload Flags
 //
-#define REG_FORCE_UNLOAD            1
+static const int REG_FORCE_UNLOAD           = 1;
 
 //
 // Notify filter values
 //
 
-#define REG_NOTIFY_CHANGE_NAME          (0x00000001L) // Create or delete (child)
-#define REG_NOTIFY_CHANGE_ATTRIBUTES    (0x00000002L)
-#define REG_NOTIFY_CHANGE_LAST_SET      (0x00000004L) // time stamp
-#define REG_NOTIFY_CHANGE_SECURITY      (0x00000008L)
-#define REG_NOTIFY_THREAD_AGNOSTIC      (0x10000000L) // Not associated with a calling thread, can only be used
+static const int REG_NOTIFY_CHANGE_NAME         = (0x00000001L); // Create or delete (child)
+static const int REG_NOTIFY_CHANGE_ATTRIBUTES   = (0x00000002L);
+static const int REG_NOTIFY_CHANGE_LAST_SET     = (0x00000004L); // time stamp
+static const int REG_NOTIFY_CHANGE_SECURITY     = (0x00000008L);
+static const int REG_NOTIFY_THREAD_AGNOSTIC     = (0x10000000L); // Not associated with a calling thread, can only be used
                                                       // for async user event based notification
 
-#define REG_LEGAL_CHANGE_FILTER                 \
+static const int REG_LEGAL_CHANGE_FILTER        =         \
                 (REG_NOTIFY_CHANGE_NAME          |\
                  REG_NOTIFY_CHANGE_ATTRIBUTES    |\
                  REG_NOTIFY_CHANGE_LAST_SET      |\
                  REG_NOTIFY_CHANGE_SECURITY      |\
-                 REG_NOTIFY_THREAD_AGNOSTIC)
+                 REG_NOTIFY_THREAD_AGNOSTIC);
 
 // end_wdm
---]=]
+]]
 
 ffi.cdef[[
 // Predefined Value Types.
@@ -18538,8 +18540,6 @@ static const int REG_FULL_RESOURCE_DESCRIPTOR = 9; // Resource list in the hardw
 static const int REG_RESOURCE_REQUIREMENTS_LIST = 10;
 static const int REG_QWORD                   = 11; // 64-bit number
 static const int REG_QWORD_LITTLE_ENDIAN     = 11; // 64-bit number (same as REG_QWORD)
-
-// end_wdm
 ]]
 
 --[==[
