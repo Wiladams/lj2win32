@@ -125,28 +125,35 @@ typedef struct tagCOLORSCHEME {
 } COLORSCHEME, *LPCOLORSCHEME;
 ]]
 
---[=[
-#define CCM_SETCOLORSCHEME      (CCM_FIRST + 2) // lParam is color scheme
-#define CCM_GETCOLORSCHEME      (CCM_FIRST + 3) // fills in COLORSCHEME pointed to by lParam
-#define CCM_GETDROPTARGET       (CCM_FIRST + 4)
-#define CCM_SETUNICODEFORMAT    (CCM_FIRST + 5)
-#define CCM_GETUNICODEFORMAT    (CCM_FIRST + 6)
+ffi.cdef[[
+static const int CCM_SETCOLORSCHEME     = (CCM_FIRST + 2); // lParam is color scheme
+static const int CCM_GETCOLORSCHEME     = (CCM_FIRST + 3); // fills in COLORSCHEME pointed to by lParam
+static const int CCM_GETDROPTARGET      = (CCM_FIRST + 4);
+static const int CCM_SETUNICODEFORMAT   = (CCM_FIRST + 5);
+static const int CCM_GETUNICODEFORMAT   = (CCM_FIRST + 6);
 
 
-#define COMCTL32_VERSION  6
+static const int COMCTL32_VERSION  = 6;
 
 
-#define CCM_SETVERSION          (CCM_FIRST + 0x7)
-#define CCM_GETVERSION          (CCM_FIRST + 0x8)
-#define CCM_SETNOTIFYWINDOW     (CCM_FIRST + 0x9) // wParam == hwndParent.
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-#define CCM_SETWINDOWTHEME      (CCM_FIRST + 0xb)
-#define CCM_DPISCALE            (CCM_FIRST + 0xc) // wParam == Awareness
-#endif
+static const int CCM_SETVERSION        =  (CCM_FIRST + 0x7);
+static const int CCM_GETVERSION        =  (CCM_FIRST + 0x8);
+static const int CCM_SETNOTIFYWINDOW   =  (CCM_FIRST + 0x9); // wParam == hwndParent.
+]]
 
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
+static const int CCM_SETWINDOWTHEME     = (CCM_FIRST + 0xb);
+static const int CCM_DPISCALE           = (CCM_FIRST + 0xc); // wParam == Awareness
+]]
+end
+
+ffi.cdef[[
 // for tooltips
-#define INFOTIPSIZE 1024
+static const int INFOTIPSIZE = 1024;
+]]
 
+--[=[
 //====== WM_NOTIFY Macros =====================================================
 
 #define HANDLE_WM_NOTIFY(hwnd, wParam, lParam, fn) \
@@ -252,83 +259,96 @@ typedef struct tagNMCUSTOMTEXT
 } NMCUSTOMTEXT, *LPNMCUSTOMTEXT;
 
 #endif           // _WIN32_IE >= 0x0600
+--]=]
+
+ffi.cdef[[
 //====== WM_NOTIFY codes (NMHDR.code values) ==================================
 
-#define NM_FIRST                (0U-  0U)       // generic to all controls
-#define NM_LAST                 (0U- 99U)
+static const int NM_FIRST              =  (0U-  0U);       // generic to all controls
+static const int NM_LAST               =  (0U- 99U);
 
-#define LVN_FIRST               (0U-100U)       // listview
-#define LVN_LAST                (0U-199U)
+static const int LVN_FIRST             =  (0U-100U);       // listview
+static const int LVN_LAST              =  (0U-199U);
 
-// Property sheet reserved      (0U-200U) -  (0U-299U) - see prsht.h
+// Property sheet reserved    =  (0U-200U) -  (0U-299U) - see prsht.h
 
-#define HDN_FIRST               (0U-300U)       // header
-#define HDN_LAST                (0U-399U)
+static const int HDN_FIRST             =  (0U-300U);       // header
+static const int HDN_LAST              =  (0U-399U);
 
-#define TVN_FIRST               (0U-400U)       // treeview
-#define TVN_LAST                (0U-499U)
+static const int TVN_FIRST             =  (0U-400U);       // treeview
+static const int TVN_LAST              =  (0U-499U);
 
-#define TTN_FIRST               (0U-520U)       // tooltips
-#define TTN_LAST                (0U-549U)
+static const int TTN_FIRST             =  (0U-520U);       // tooltips
+static const int TTN_LAST              =  (0U-549U);
 
-#define TCN_FIRST               (0U-550U)       // tab control
-#define TCN_LAST                (0U-580U)
+static const int TCN_FIRST             =  (0U-550U);       // tab control
+static const int TCN_LAST              =  (0U-580U);
 
-// Shell reserved               (0U-580U) -  (0U-589U)
+// Shell reserved             =  (0U-580U) -  (0U-589U)
 
-#define CDN_FIRST               (0U-601U)       // common dialog (new)
-#define CDN_LAST                (0U-699U)
+static const int CDN_FIRST             =  (0U-601U);       // common dialog (new)
+static const int CDN_LAST              =  (0U-699U);
 
-#define TBN_FIRST               (0U-700U)       // toolbar
-#define TBN_LAST                (0U-720U)
+static const int TBN_FIRST             =  (0U-700U);       // toolbar
+static const int TBN_LAST              =  (0U-720U);
 
-#define UDN_FIRST               (0U-721U)        // updown
-#define UDN_LAST                (0U-729U)
-#define DTN_FIRST               (0U-740U)       // datetimepick
-#define DTN_LAST                (0U-745U)       // DTN_FIRST - 5
+static const int UDN_FIRST             =  (0U-721U);        // updown
+static const int UDN_LAST              =  (0U-729U);
+static const int DTN_FIRST             =  (0U-740U);      // datetimepick
+static const int DTN_LAST              =  (0U-745U);       // DTN_FIRST - 5
 
-#define MCN_FIRST               (0U-746U)       // monthcal
-#define MCN_LAST                (0U-752U)       // MCN_FIRST - 6
+static const int MCN_FIRST             =  (0U-746U);       // monthcal
+static const int MCN_LAST              =  (0U-752U);       // MCN_FIRST - 6
 
-#define DTN_FIRST2              (0U-753U)       // datetimepick2
-#define DTN_LAST2               (0U-799U)
+static const int DTN_FIRST2            =  (0U-753U);       // datetimepick2
+static const int DTN_LAST2             =  (0U-799U);
 
-#define CBEN_FIRST              (0U-800U)       // combo box ex
-#define CBEN_LAST               (0U-830U)
+static const int CBEN_FIRST            =  (0U-800U);       // combo box ex
+static const int CBEN_LAST             =  (0U-830U);
 
-#define RBN_FIRST               (0U-831U)       // rebar
-#define RBN_LAST                (0U-859U)
+static const int RBN_FIRST             =  (0U-831U);       // rebar
+static const int RBN_LAST              =  (0U-859U);
 
-#define IPN_FIRST               (0U-860U)       // internet address
-#define IPN_LAST                (0U-879U)       // internet address
+static const int IPN_FIRST             =  (0U-860U);       // internet address
+static const int IPN_LAST              =  (0U-879U);       // internet address
 
-#define SBN_FIRST               (0U-880U)       // status bar
-#define SBN_LAST                (0U-899U)
+static const int SBN_FIRST             =  (0U-880U);       // status bar
+static const int SBN_LAST              =  (0U-899U);
 
-#define PGN_FIRST               (0U-900U)       // Pager Control
-#define PGN_LAST                (0U-950U)
+static const int PGN_FIRST             =  (0U-900U);       // Pager Control
+static const int PGN_LAST              =  (0U-950U);
+]]
 
-#ifndef WMN_FIRST
-#define WMN_FIRST               (0U-1000U)
-#define WMN_LAST                (0U-1200U)
-#endif
+--if not WMN_FIRST
+ffi.cdef[[
+static const int WMN_FIRST             =  (0U-1000U);
+static const int WMN_LAST              =  (0U-1200U);
+]]
+--end
 
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-#define BCN_FIRST               (0U-1250U)
-#define BCN_LAST                (0U-1350U)
-#endif
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
+static const int BCN_FIRST             =  (0U-1250U);
+static const int BCN_LAST              =  (0U-1350U);
+]]
+end
 
 
-#if (NTDDI_VERSION >= NTDDI_VISTA)
-#define TRBN_FIRST              (0U-1501U)       // trackbar
-#define TRBN_LAST               (0U-1519U)
-#endif
+if (NTDDI_VERSION >= NTDDI_VISTA) then
+ffi.cdef[[
+static const int TRBN_FIRST     =         (0U-1501U);       // trackbar
+static const int TRBN_LAST      =         (0U-1519U);
+]]
+end
 
-#define MSGF_COMMCTRL_BEGINDRAG     0x4200
-#define MSGF_COMMCTRL_SIZEHEADER    0x4201
-#define MSGF_COMMCTRL_DRAGSELECT    0x4202
-#define MSGF_COMMCTRL_TOOLBARCUST   0x4203
+ffi.cdef[[
+static const int MSGF_COMMCTRL_BEGINDRAG    = 0x4200;
+static const int MSGF_COMMCTRL_SIZEHEADER   = 0x4201;
+static const int MSGF_COMMCTRL_DRAGSELECT   = 0x4202;
+static const int MSGF_COMMCTRL_TOOLBARCUST  = 0x4203;
+]]
 
+--[=[
 //==================== CUSTOM DRAW ==========================================
 
 
@@ -547,7 +567,7 @@ typedef struct _IMAGELISTDRAWPARAMS
  BOOL        __stdcall ImageList_SetDragCursorImage(HIMAGELIST himlDrag, int iDrag, int dxHotspot, int dyHotspot);
 
  BOOL        __stdcall ImageList_DragShowNolock(BOOL fShow);
-_Success_(return != NULL)  HIMAGELIST  __stdcall ImageList_GetDragImage(_Out_opt_ POINT *ppt, _Out_opt_ POINT *pptHotspot);
+_Success_(return != NULL)  HIMAGELIST  __stdcall ImageList_GetDragImage( POINT *ppt,  POINT *pptHotspot);
 
 #define     ImageList_RemoveAll(himl) ImageList_Remove(himl, -1)
 #define     ImageList_ExtractIcon(hi, himl, i) ImageList_GetIcon(himl, i, 0)
@@ -579,7 +599,7 @@ typedef struct _IMAGEINFO
 } IMAGEINFO, *LPIMAGEINFO;
 #endif
 
- BOOL        __stdcall ImageList_GetIconSize(HIMAGELIST himl, _Out_opt_ int *cx, _Out_opt_ int *cy);
+ BOOL        __stdcall ImageList_GetIconSize(HIMAGELIST himl,  int *cx,  int *cy);
  BOOL        __stdcall ImageList_SetIconSize(HIMAGELIST himl, int cx, int cy);
  BOOL        __stdcall ImageList_GetImageInfo(HIMAGELIST himl, int i, IMAGEINFO *pImageInfo);
  HIMAGELIST  __stdcall ImageList_Merge(HIMAGELIST himl1, int i1, HIMAGELIST himl2, int i2, int dx, int dy);
@@ -1097,8 +1117,8 @@ typedef struct tagNMHDFILTERBTNCLICK
 } NMHDFILTERBTNCLICK, *LPNMHDFILTERBTNCLICK;
 
 #endif      // NOHEADER
-
-
+--]=]
+--[[
 //====== TOOLBAR CONTROL ======================================================
 
 #ifndef NOTOOLBAR
@@ -1116,98 +1136,128 @@ typedef struct tagNMHDFILTERBTNCLICK
 #else
 #define TOOLBARCLASSNAME        "ToolbarWindow"
 #endif
+--]]
 
-typedef struct _TBBUTTON {
-    int iBitmap;
-    int idCommand;
-    BYTE fsState;
-    BYTE fsStyle;
-#ifdef _WIN64
-    BYTE bReserved[6];          // padding for alignment
-#elif defined(_WIN32)
-    BYTE bReserved[2];          // padding for alignment
-#endif
-    DWORD_PTR dwData;
-    INT_PTR iString;
-} TBBUTTON, NEAR* PTBBUTTON, *LPTBBUTTON;
+if _WIN64 then
+ffi.cdef[[
+    typedef struct _TBBUTTON {
+        int iBitmap;
+        int idCommand;
+        BYTE fsState;
+        BYTE fsStyle;
+        BYTE bReserved[6];          // padding for alignment
+        DWORD_PTR dwData;
+        INT_PTR iString;
+    } TBBUTTON, * PTBBUTTON, *LPTBBUTTON;
+]]
+elseif _WIN32 then
+ffi.cdef[[
+    typedef struct _TBBUTTON {
+        int iBitmap;
+        int idCommand;
+        BYTE fsState;
+        BYTE fsStyle;
+        BYTE bReserved[2];          // padding for alignment
+        DWORD_PTR dwData;
+        INT_PTR iString;
+    } TBBUTTON, * PTBBUTTON, *LPTBBUTTON;
+]]
+end
+
+ffi.cdef[[
 typedef const TBBUTTON *LPCTBBUTTON;
+]]
 
-
+ffi.cdef[[
 typedef struct _COLORMAP {
     COLORREF from;
     COLORREF to;
 } COLORMAP, *LPCOLORMAP;
+]]
 
+ffi.cdef[[
  HWND __stdcall CreateToolbarEx(HWND hwnd, DWORD ws, UINT wID, int nBitmaps,
                         HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
                         int iNumButtons, int dxButton, int dyButton,
                         int dxBitmap, int dyBitmap, UINT uStructSize);
+]]
 
+ffi.cdef[[
  HBITMAP __stdcall CreateMappedBitmap(HINSTANCE hInstance, INT_PTR idBitmap,
-                                  UINT wFlags, _In_opt_ LPCOLORMAP lpColorMap,
+                                  UINT wFlags,  LPCOLORMAP lpColorMap,
                                   int iNumMaps);
+]]
 
-#define CMB_MASKED              0x02
-#define TBSTATE_CHECKED         0x01
-#define TBSTATE_PRESSED         0x02
-#define TBSTATE_ENABLED         0x04
-#define TBSTATE_HIDDEN          0x08
-#define TBSTATE_INDETERMINATE   0x10
-#define TBSTATE_WRAP            0x20
-#define TBSTATE_ELLIPSES        0x40
-#define TBSTATE_MARKED          0x80
+ffi.cdef[[
+static const int CMB_MASKED             = 0x02;
+static const int TBSTATE_CHECKED        = 0x01;
+static const int TBSTATE_PRESSED        = 0x02;
+static const int TBSTATE_ENABLED        = 0x04;
+static const int TBSTATE_HIDDEN         = 0x08;
+static const int TBSTATE_INDETERMINATE  = 0x10;
+static const int TBSTATE_WRAP           = 0x20;
+static const int TBSTATE_ELLIPSES       = 0x40;
+static const int TBSTATE_MARKED         = 0x80;
+]]
 
-// begin_r_commctrl
+-- begin_r_commctrl
+ffi.cdef[[
+static const int TBSTYLE_BUTTON        =  0x0000;  // obsolete; use BTNS_BUTTON instead
+static const int TBSTYLE_SEP           =  0x0001;  // obsolete; use BTNS_SEP instead
+static const int TBSTYLE_CHECK         =  0x0002;  // obsolete; use BTNS_CHECK instead
+static const int TBSTYLE_GROUP         =  0x0004;  // obsolete; use BTNS_GROUP instead
+static const int TBSTYLE_CHECKGROUP    =  (TBSTYLE_GROUP | TBSTYLE_CHECK);     // obsolete; use BTNS_CHECKGROUP instead
+static const int TBSTYLE_DROPDOWN      =  0x0008;  // obsolete; use BTNS_DROPDOWN instead
+static const int TBSTYLE_AUTOSIZE      =  0x0010;  // obsolete; use BTNS_AUTOSIZE instead
+static const int TBSTYLE_NOPREFIX      =  0x0020;  // obsolete; use BTNS_NOPREFIX instead
+]]
 
-#define TBSTYLE_BUTTON          0x0000  // obsolete; use BTNS_BUTTON instead
-#define TBSTYLE_SEP             0x0001  // obsolete; use BTNS_SEP instead
-#define TBSTYLE_CHECK           0x0002  // obsolete; use BTNS_CHECK instead
-#define TBSTYLE_GROUP           0x0004  // obsolete; use BTNS_GROUP instead
-#define TBSTYLE_CHECKGROUP      (TBSTYLE_GROUP | TBSTYLE_CHECK)     // obsolete; use BTNS_CHECKGROUP instead
-#define TBSTYLE_DROPDOWN        0x0008  // obsolete; use BTNS_DROPDOWN instead
-#define TBSTYLE_AUTOSIZE        0x0010  // obsolete; use BTNS_AUTOSIZE instead
-#define TBSTYLE_NOPREFIX        0x0020  // obsolete; use BTNS_NOPREFIX instead
+ffi.cdef[[
+static const int TBSTYLE_TOOLTIPS      =  0x0100;
+static const int TBSTYLE_WRAPABLE      =  0x0200;
+static const int TBSTYLE_ALTDRAG       =  0x0400;
+static const int TBSTYLE_FLAT          =  0x0800;
+static const int TBSTYLE_LIST          =  0x1000;
+static const int TBSTYLE_CUSTOMERASE   =  0x2000;
+static const int TBSTYLE_REGISTERDROP  =  0x4000;
+static const int TBSTYLE_TRANSPARENT   =  0x8000;
+]]
+-- end_r_commctrl
 
-#define TBSTYLE_TOOLTIPS        0x0100
-#define TBSTYLE_WRAPABLE        0x0200
-#define TBSTYLE_ALTDRAG         0x0400
-#define TBSTYLE_FLAT            0x0800
-#define TBSTYLE_LIST            0x1000
-#define TBSTYLE_CUSTOMERASE     0x2000
-#define TBSTYLE_REGISTERDROP    0x4000
-#define TBSTYLE_TRANSPARENT     0x8000
+ffi.cdef[[
+static const int TBSTYLE_EX_DRAWDDARROWS = 0x00000001;
+]]
 
-// end_r_commctrl
+-- begin_r_commctrl
+ffi.cdef[[
+static const int BTNS_BUTTON    = TBSTYLE_BUTTON;      // 0x0000
+static const int BTNS_SEP       = TBSTYLE_SEP;         // 0x0001
+static const int BTNS_CHECK     = TBSTYLE_CHECK;       // 0x0002
+static const int BTNS_GROUP     = TBSTYLE_GROUP;       // 0x0004
+static const int BTNS_CHECKGROUP =TBSTYLE_CHECKGROUP;  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
+static const int BTNS_DROPDOWN  = TBSTYLE_DROPDOWN;    // 0x0008
+static const int BTNS_AUTOSIZE  = TBSTYLE_AUTOSIZE;    // 0x0010; automatically calculate the cx of the button
+static const int BTNS_NOPREFIX  = TBSTYLE_NOPREFIX;    // 0x0020; this button should not have accel prefix
+static const int BTNS_SHOWTEXT  = 0x0040;              // ignored unless TBSTYLE_EX_MIXEDBUTTONS is set
+static const int BTNS_WHOLEDROPDOWN  = 0x0080;          // draw drop-down arrow, but without split arrow section
+]]
+-- end_r_commctrl
 
-#define TBSTYLE_EX_DRAWDDARROWS 0x00000001
+ffi.cdef[[
+static const int TBSTYLE_EX_MIXEDBUTTONS           =  0x00000008;
+static const int TBSTYLE_EX_HIDECLIPPEDBUTTONS     =  0x00000010;  // dont show partially obscured buttons
 
-// begin_r_commctrl
+static const int TBSTYLE_EX_MULTICOLUMN            =  0x00000002; // conflicts w/ TBSTYLE_WRAPABLE
+static const int TBSTYLE_EX_VERTICAL               =  0x00000004;
+]]
 
-#define BTNS_BUTTON     TBSTYLE_BUTTON      // 0x0000
-#define BTNS_SEP        TBSTYLE_SEP         // 0x0001
-#define BTNS_CHECK      TBSTYLE_CHECK       // 0x0002
-#define BTNS_GROUP      TBSTYLE_GROUP       // 0x0004
-#define BTNS_CHECKGROUP TBSTYLE_CHECKGROUP  // (TBSTYLE_GROUP | TBSTYLE_CHECK)
-#define BTNS_DROPDOWN   TBSTYLE_DROPDOWN    // 0x0008
-#define BTNS_AUTOSIZE   TBSTYLE_AUTOSIZE    // 0x0010; automatically calculate the cx of the button
-#define BTNS_NOPREFIX   TBSTYLE_NOPREFIX    // 0x0020; this button should not have accel prefix
-#define BTNS_SHOWTEXT   0x0040              // ignored unless TBSTYLE_EX_MIXEDBUTTONS is set
-#define BTNS_WHOLEDROPDOWN  0x0080          // draw drop-down arrow, but without split arrow section
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
+static const int TBSTYLE_EX_DOUBLEBUFFER  =  0x00000080; // Double Buffer the toolbar
+]]
+end
 
-// end_r_commctrl
-
-#define TBSTYLE_EX_MIXEDBUTTONS             0x00000008
-#define TBSTYLE_EX_HIDECLIPPEDBUTTONS       0x00000010  // don't show partially obscured buttons
-
-#define TBSTYLE_EX_MULTICOLUMN              0x00000002 // conflicts w/ TBSTYLE_WRAPABLE
-#define TBSTYLE_EX_VERTICAL                 0x00000004
-
-
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-#define TBSTYLE_EX_DOUBLEBUFFER             0x00000080 // Double Buffer the toolbar
-#endif
-
-
+--[=[
 // Custom Draw Structure
 typedef struct _NMTBCUSTOMDRAW {
     NMCUSTOMDRAW nmcd;
@@ -1447,7 +1497,7 @@ typedef struct {
     int             nButtons;
 } TBREPLACEBITMAP, *LPTBREPLACEBITMAP;
 
-#ifdef _WIN32
+if _WIN32 then
 
 #define TBBF_LARGE              0x0001
 
@@ -1489,6 +1539,7 @@ typedef struct {
     int cchText;
 } TBBUTTONINFOW, *LPTBBUTTONINFOW;
 
+--[[
 #ifdef UNICODE
 #define TBBUTTONINFO TBBUTTONINFOW
 #define LPTBBUTTONINFO LPTBBUTTONINFOW
@@ -1496,12 +1547,15 @@ typedef struct {
 #define TBBUTTONINFO TBBUTTONINFOA
 #define LPTBBUTTONINFO LPTBBUTTONINFOA
 #endif
+--]]
 
 // BUTTONINFO APIs do NOT support the string pool.
 #define TB_GETBUTTONINFOW        (WM_USER + 63)
 #define TB_SETBUTTONINFOW        (WM_USER + 64)
 #define TB_GETBUTTONINFOA        (WM_USER + 65)
 #define TB_SETBUTTONINFOA        (WM_USER + 66)
+
+--[[
 #ifdef UNICODE
 #define TB_GETBUTTONINFO        TB_GETBUTTONINFOW
 #define TB_SETBUTTONINFO        TB_SETBUTTONINFOW
@@ -1509,13 +1563,14 @@ typedef struct {
 #define TB_GETBUTTONINFO        TB_GETBUTTONINFOA
 #define TB_SETBUTTONINFO        TB_SETBUTTONINFOA
 #endif
-
+--]]
 
 #define TB_INSERTBUTTONW        (WM_USER + 67)
 #define TB_ADDBUTTONSW          (WM_USER + 68)
 
 #define TB_HITTEST              (WM_USER + 69)
 
+--[[
 // New post Win95/NT4 for InsertButton and AddButton.  if iString member
 // is a pointer to a string, it will be handled as a string like listview
 // (although LPSTR_TEXTCALLBACK is not supported).
@@ -1526,16 +1581,20 @@ typedef struct {
 #define TB_INSERTBUTTON         TB_INSERTBUTTONA
 #define TB_ADDBUTTONS           TB_ADDBUTTONSA
 #endif
+--]]
 
 #define TB_SETDRAWTEXTFLAGS     (WM_USER + 70)  // wParam == mask lParam == bit values
 
 #define TB_GETSTRINGW           (WM_USER + 91)
 #define TB_GETSTRINGA           (WM_USER + 92)
+
+--[[
 #ifdef UNICODE
 #define TB_GETSTRING            TB_GETSTRINGW
 #else
 #define TB_GETSTRING            TB_GETSTRINGA
 #endif
+--]]
 
 #define TB_SETBOUNDINGSIZE      (WM_USER + 93)
 #define TB_SETHOTITEM2          (WM_USER + 94)  // wParam == iHotItem,  lParam = dwFlags
@@ -1545,11 +1604,13 @@ typedef struct {
 #define TB_GETIDEALSIZE         (WM_USER + 99)  // wParam == fHeight, lParam = psize
 // before using WM_USER + 103, recycle old space above (WM_USER + 97)
 #define TB_TRANSLATEACCELERATOR     CCM_TRANSLATEACCELERATOR
+--]=]
 
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-#define TBMF_PAD                0x00000001
-#define TBMF_BARPAD             0x00000002
-#define TBMF_BUTTONSPACING      0x00000004
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
+static const int TBMF_PAD              =  0x00000001;
+static const int TBMF_BARPAD           =  0x00000002;
+static const int TBMF_BUTTONSPACING    =  0x00000004;
 
 typedef struct {
     UINT cbSize;
@@ -1563,33 +1624,41 @@ typedef struct {
     int cyButtonSpacing;
 } TBMETRICS, * LPTBMETRICS;
 
-#define TB_GETMETRICS           (WM_USER + 101)
-#define TB_SETMETRICS           (WM_USER + 102)
-#endif
+static const int TB_GETMETRICS          = (WM_USER + 101);
+static const int TB_SETMETRICS          = (WM_USER + 102);
+]]
+end
 
-#if (NTDDI_VERSION >= NTDDI_VISTA)
-#define TB_GETITEMDROPDOWNRECT  (WM_USER + 103)  // Rect of item's drop down button
-#define TB_SETPRESSEDIMAGELIST  (WM_USER + 104)
-#define TB_GETPRESSEDIMAGELIST  (WM_USER + 105)
-#endif // (NTDDI_VERSION >= NTDDI_VISTA)
+if (NTDDI_VERSION >= NTDDI_VISTA) then
+ffi.cdef[[
+static const int TB_GETITEMDROPDOWNRECT = (WM_USER + 103);  // Rect of item's drop down button
+static const int TB_SETPRESSEDIMAGELIST = (WM_USER + 104);
+static const int TB_GETPRESSEDIMAGELIST = (WM_USER + 105);
+]]
+end --// (NTDDI_VERSION >= NTDDI_VISTA)
 
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-#define TB_SETWINDOWTHEME       CCM_SETWINDOWTHEME
-#endif
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
+static const int TB_SETWINDOWTHEME      = CCM_SETWINDOWTHEME;
+]]
+end
 
-#define TBN_GETBUTTONINFOA      (TBN_FIRST-0)
-#define TBN_BEGINDRAG           (TBN_FIRST-1)
-#define TBN_ENDDRAG             (TBN_FIRST-2)
-#define TBN_BEGINADJUST         (TBN_FIRST-3)
-#define TBN_ENDADJUST           (TBN_FIRST-4)
-#define TBN_RESET               (TBN_FIRST-5)
-#define TBN_QUERYINSERT         (TBN_FIRST-6)
-#define TBN_QUERYDELETE         (TBN_FIRST-7)
-#define TBN_TOOLBARCHANGE       (TBN_FIRST-8)
-#define TBN_CUSTHELP            (TBN_FIRST-9)
-#define TBN_DROPDOWN            (TBN_FIRST - 10)
-#define TBN_GETOBJECT           (TBN_FIRST - 12)
+ffi.cdef[[
+static const int TBN_GETBUTTONINFOA    =  (TBN_FIRST-0);
+static const int TBN_BEGINDRAG         =  (TBN_FIRST-1);
+static const int TBN_ENDDRAG           =  (TBN_FIRST-2);
+static const int TBN_BEGINADJUST       =  (TBN_FIRST-3);
+static const int TBN_ENDADJUST         =  (TBN_FIRST-4);
+static const int TBN_RESET             =  (TBN_FIRST-5);
+static const int TBN_QUERYINSERT       =  (TBN_FIRST-6);
+static const int TBN_QUERYDELETE       =  (TBN_FIRST-7);
+static const int TBN_TOOLBARCHANGE     =  (TBN_FIRST-8);
+static const int TBN_CUSTHELP          =  (TBN_FIRST-9);
+static const int TBN_DROPDOWN          =  (TBN_FIRST - 10);
+static const int TBN_GETOBJECT         =  (TBN_FIRST - 12);
+]]
 
+ffi.cdef[[
 // Structure for TBN_HOTITEMCHANGE notification
 //
 typedef struct tagNMTBHOTITEM
@@ -1599,41 +1668,43 @@ typedef struct tagNMTBHOTITEM
     int     idNew;
     DWORD   dwFlags;           // HICF_*
 } NMTBHOTITEM, * LPNMTBHOTITEM;
+]]
 
+ffi.cdef[[
 // Hot item change flags
-#define HICF_OTHER          0x00000000
-#define HICF_MOUSE          0x00000001          // Triggered by mouse
-#define HICF_ARROWKEYS      0x00000002          // Triggered by arrow keys
-#define HICF_ACCELERATOR    0x00000004          // Triggered by accelerator
-#define HICF_DUPACCEL       0x00000008          // This accelerator is not unique
-#define HICF_ENTERING       0x00000010          // idOld is invalid
-#define HICF_LEAVING        0x00000020          // idNew is invalid
-#define HICF_RESELECT       0x00000040          // hot item reselected
-#define HICF_LMOUSE         0x00000080          // left mouse button selected
-#define HICF_TOGGLEDROPDOWN 0x00000100          // Toggle button's dropdown state
+static const int HICF_OTHER         = 0x00000000;
+static const int HICF_MOUSE         = 0x00000001;          // Triggered by mouse
+static const int HICF_ARROWKEYS     = 0x00000002;          // Triggered by arrow keys
+static const int HICF_ACCELERATOR   = 0x00000004;          // Triggered by accelerator
+static const int HICF_DUPACCEL      = 0x00000008;          // This accelerator is not unique
+static const int HICF_ENTERING      = 0x00000010;          // idOld is invalid
+static const int HICF_LEAVING       = 0x00000020;          // idNew is invalid
+static const int HICF_RESELECT      = 0x00000040;          // hot item reselected
+static const int HICF_LMOUSE        = 0x00000080;          // left mouse button selected
+static const int HICF_TOGGLEDROPDOWN= 0x00000100;          // Toggle button's dropdown state
 
 
-#define TBN_HOTITEMCHANGE       (TBN_FIRST - 13)
-#define TBN_DRAGOUT             (TBN_FIRST - 14) // this is sent when the user clicks down on a button then drags off the button
-#define TBN_DELETINGBUTTON      (TBN_FIRST - 15) // uses TBNOTIFY
-#define TBN_GETDISPINFOA        (TBN_FIRST - 16) // This is sent when the  toolbar needs  some display information
-#define TBN_GETDISPINFOW        (TBN_FIRST - 17) // This is sent when the  toolbar needs  some display information
-#define TBN_GETINFOTIPA         (TBN_FIRST - 18)
-#define TBN_GETINFOTIPW         (TBN_FIRST - 19)
-#define TBN_GETBUTTONINFOW      (TBN_FIRST - 20)
-#define TBN_RESTORE             (TBN_FIRST - 21)
-#define TBN_SAVE                (TBN_FIRST - 22)
-#define TBN_INITCUSTOMIZE       (TBN_FIRST - 23)
-#define    TBNRF_HIDEHELP       0x00000001
-#define    TBNRF_ENDCUSTOMIZE   0x00000002
-#define TBN_WRAPHOTITEM         (TBN_FIRST - 24)
-#define TBN_DUPACCELERATOR      (TBN_FIRST - 25)
-#define TBN_WRAPACCELERATOR     (TBN_FIRST - 26)
-#define TBN_DRAGOVER            (TBN_FIRST - 27)
-#define TBN_MAPACCELERATOR      (TBN_FIRST - 28)
+static const int TBN_HOTITEMCHANGE      = (TBN_FIRST - 13);
+static const int TBN_DRAGOUT            = (TBN_FIRST - 14); // this is sent when the user clicks down on a button then drags off the button
+static const int TBN_DELETINGBUTTON     = (TBN_FIRST - 15); // uses TBNOTIFY
+static const int TBN_GETDISPINFOA       = (TBN_FIRST - 16); // This is sent when the  toolbar needs  some display information
+static const int TBN_GETDISPINFOW       = (TBN_FIRST - 17); // This is sent when the  toolbar needs  some display information
+static const int TBN_GETINFOTIPA        = (TBN_FIRST - 18);
+static const int TBN_GETINFOTIPW        = (TBN_FIRST - 19);
+static const int TBN_GETBUTTONINFOW     = (TBN_FIRST - 20);
+static const int TBN_RESTORE            = (TBN_FIRST - 21);
+static const int TBN_SAVE               = (TBN_FIRST - 22);
+static const int TBN_INITCUSTOMIZE      = (TBN_FIRST - 23);
+static const int    TBNRF_HIDEHELP      = 0x00000001;
+static const int    TBNRF_ENDCUSTOMIZE  = 0x00000002;
+static const int TBN_WRAPHOTITEM        = (TBN_FIRST - 24);
+static const int TBN_DUPACCELERATOR     = (TBN_FIRST - 25);
+static const int TBN_WRAPACCELERATOR    = (TBN_FIRST - 26);
+static const int TBN_DRAGOVER           = (TBN_FIRST - 27);
+static const int TBN_MAPACCELERATOR     = (TBN_FIRST - 28);
+]]
 
-
-
+ffi.cdef[[
 typedef struct tagNMTBSAVE
 {
     NMHDR hdr;
@@ -1674,7 +1745,9 @@ typedef struct tagNMTBGETINFOTIPW
     int iItem;
     LPARAM lParam;
 } NMTBGETINFOTIPW, *LPNMTBGETINFOTIPW;
+]]
 
+--[[
 #ifdef UNICODE
 #define TBN_GETINFOTIP          TBN_GETINFOTIPW
 #define NMTBGETINFOTIP          NMTBGETINFOTIPW
@@ -1684,7 +1757,9 @@ typedef struct tagNMTBGETINFOTIPW
 #define NMTBGETINFOTIP          NMTBGETINFOTIPA
 #define LPNMTBGETINFOTIP        LPNMTBGETINFOTIPA
 #endif
+--]]
 
+--[=[
 #define TBNF_IMAGE              0x00000001
 #define TBNF_TEXT               0x00000002
 #define TBNF_DI_SETITEM         0x10000000
@@ -3690,7 +3765,7 @@ typedef struct tagLVCOLUMNW
 #define ListView_SetItemCountEx(hwndLV, cItems, dwFlags) \
   SNDMSG((hwndLV), LVM_SETITEMCOUNT, (WPARAM)(cItems), (LPARAM)(dwFlags))
 
-typedef int (CALLBACK *PFNLVCOMPARE)(LPARAM, LPARAM, LPARAM);
+typedef int (__stdcall *PFNLVCOMPARE)(LPARAM, LPARAM, LPARAM);
 
 
 #define LVM_SORTITEMS           (LVM_FIRST + 48)
@@ -4068,7 +4143,7 @@ typedef struct tagLVGROUPMETRICS
 #define ListView_EnableGroupView(hwnd, fEnable) \
     SNDMSG((hwnd), LVM_ENABLEGROUPVIEW, (WPARAM)(fEnable), 0)
 
-typedef int (CALLBACK *PFNLVGROUPCOMPARE)(int, int, void *);
+typedef int (__stdcall *PFNLVGROUPCOMPARE)(int, int, void *);
 
 #define LVM_SORTGROUPS         (LVM_FIRST + 158)
 #define ListView_SortGroups(hwnd, _pfnGroupCompate, _plv) \
@@ -5326,7 +5401,7 @@ typedef struct tagTVGETITEMPARTRECTINFO {
 #endif
 
 
-typedef int (CALLBACK *PFNTVCOMPARE)(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+typedef int (__stdcall *PFNTVCOMPARE)(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
 #define LPTV_SORTCB    LPTVSORTCB
 #define   TV_SORTCB      TVSORTCB
@@ -7540,7 +7615,7 @@ typedef struct NMSEARCHWEB
 #include <pshpack1.h>
 #endif
 
-typedef HRESULT (CALLBACK *PFTASKDIALOGCALLBACK)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData);
+typedef HRESULT (__stdcall *PFTASKDIALOGCALLBACK)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData);
 
 enum _TASKDIALOG_FLAGS
 {
@@ -7678,8 +7753,8 @@ typedef struct _TASKDIALOGCONFIG
 } TASKDIALOGCONFIG;
 
 
- HRESULT __stdcall TaskDialogIndirect(const TASKDIALOGCONFIG *pTaskConfig, _Out_opt_ int *pnButton, _Out_opt_ int *pnRadioButton, _Out_opt_ BOOL *pfVerificationFlagChecked);
- HRESULT __stdcall TaskDialog(_In_opt_ HWND hwndOwner, _In_opt_ HINSTANCE hInstance, _In_opt_ PCWSTR pszWindowTitle, _In_opt_ PCWSTR pszMainInstruction, _In_opt_ PCWSTR pszContent, TASKDIALOG_COMMON_BUTTON_FLAGS dwCommonButtons, _In_opt_ PCWSTR pszIcon, _Out_opt_ int *pnButton);
+ HRESULT __stdcall TaskDialogIndirect(const TASKDIALOGCONFIG *pTaskConfig,  int *pnButton,  int *pnRadioButton,  BOOL *pfVerificationFlagChecked);
+ HRESULT __stdcall TaskDialog(_In_opt_ HWND hwndOwner, _In_opt_ HINSTANCE hInstance, _In_opt_ PCWSTR pszWindowTitle, _In_opt_ PCWSTR pszMainInstruction, _In_opt_ PCWSTR pszContent, TASKDIALOG_COMMON_BUTTON_FLAGS dwCommonButtons, _In_opt_ PCWSTR pszIcon,  int *pnButton);
 
 #ifdef _WIN32
 #include <poppack.h>
@@ -7824,14 +7899,14 @@ ffi.cdef[[
 //
 // subclassing stuff
 //
-typedef LRESULT (CALLBACK *SUBCLASSPROC)(HWND hWnd, UINT uMsg, WPARAM wParam,
+typedef LRESULT (__stdcall *SUBCLASSPROC)(HWND hWnd, UINT uMsg, WPARAM wParam,
     LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
 
 BOOL __stdcall SetWindowSubclass(HWND hWnd, SUBCLASSPROC pfnSubclass, UINT_PTR uIdSubclass,
     DWORD_PTR dwRefData);
 BOOL __stdcall GetWindowSubclass(HWND hWnd, SUBCLASSPROC pfnSubclass, UINT_PTR uIdSubclass,
-    _Out_opt_ DWORD_PTR *pdwRefData);
+     DWORD_PTR *pdwRefData);
 BOOL __stdcall RemoveWindowSubclass(HWND hWnd, SUBCLASSPROC pfnSubclass,
     UINT_PTR uIdSubclass);
 
@@ -7862,7 +7937,5 @@ int __stdcall DrawShadowText(HDC hdc,
 ]]
 
 
+return ffi.load("Comctl32")
 
-exports.Lib = ffi.load("Comctl32")
-
-return exports

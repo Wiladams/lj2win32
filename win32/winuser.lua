@@ -19,7 +19,7 @@ require("win32.libloaderapi") -- LoadString%
 end
 
 --#ifndef NOUSER
---#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 ffi.cdef[[
 typedef HANDLE HDWP;
@@ -1067,12 +1067,12 @@ typedef struct tagHARDWAREHOOKSTRUCT {
 #if(WINVER >= 0x0400)
 #define KLF_REPLACELANG     0x00000010
 #define KLF_NOTELLSHELL     0x00000080
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #define KLF_SETFORPROCESS   0x00000100
 #if(_WIN32_WINNT >= 0x0500)
 #define KLF_SHIFTLOCK       0x00010000
 #define KLF_RESET           0x40000000
-#endif /* _WIN32_WINNT >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
 
 
 #if(WINVER >= 0x0500)
@@ -1082,7 +1082,7 @@ typedef struct tagHARDWAREHOOKSTRUCT {
 #define INPUTLANGCHANGE_SYSCHARSET 0x0001
 #define INPUTLANGCHANGE_FORWARD    0x0002
 #define INPUTLANGCHANGE_BACKWARD   0x0004
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 --]=]
 
 ffi.cdef[[
@@ -1151,9 +1151,9 @@ GetKeyboardLayoutNameW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameW
-#else
+else
 #define GetKeyboardLayoutName  GetKeyboardLayoutNameA
 #endif // !UNICODE
 --]]
@@ -1241,9 +1241,9 @@ CreateDesktopW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateDesktop  CreateDesktopW
-#else
+else
 #define CreateDesktop  CreateDesktopA
 #endif // !UNICODE
 --]]
@@ -1275,9 +1275,9 @@ CreateDesktopExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateDesktopEx  CreateDesktopExW
-#else
+else
 #define CreateDesktopEx  CreateDesktopExA
 #endif // !UNICODE
 --]]
@@ -1301,9 +1301,9 @@ OpenDesktopW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define OpenDesktop  OpenDesktopW
-#else
+else
 #define OpenDesktop  OpenDesktopA
 #endif // !UNICODE
 --]]
@@ -1332,9 +1332,9 @@ EnumDesktopsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumDesktops  EnumDesktopsW
-#else
+else
 #define EnumDesktops  EnumDesktopsA
 #endif // !UNICODE
 --]]
@@ -1416,9 +1416,9 @@ CreateWindowStationW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateWindowStation  CreateWindowStationW
-#else
+else
 #define CreateWindowStation  CreateWindowStationA
 #endif // !UNICODE
 --]]
@@ -1440,9 +1440,9 @@ OpenWindowStationW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define OpenWindowStation  OpenWindowStationW
-#else
+else
 #define OpenWindowStation  OpenWindowStationA
 #endif // !UNICODE
 --]]
@@ -1462,9 +1462,9 @@ EnumWindowStationsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumWindowStations  EnumWindowStationsW
-#else
+else
 #define EnumWindowStations  EnumWindowStationsA
 #endif // !UNICODE
 --]]
@@ -1539,9 +1539,9 @@ GetUserObjectInformationW(
     _Out_writes_bytes_opt_(nLength) PVOID pvInfo,
      DWORD nLength,
      LPDWORD lpnLengthNeeded);
-#ifdef UNICODE
+if UNICODE then
 #define GetUserObjectInformation  GetUserObjectInformationW
-#else
+else
 #define GetUserObjectInformation  GetUserObjectInformationA
 #endif // !UNICODE
 
@@ -1561,9 +1561,9 @@ SetUserObjectInformationW(
      int nIndex,
     _In_reads_bytes_(nLength) PVOID pvInfo,
      DWORD nLength);
-#ifdef UNICODE
+if UNICODE then
 #define SetUserObjectInformation  SetUserObjectInformationW
-#else
+else
 #define SetUserObjectInformation  SetUserObjectInformationA
 #endif // !UNICODE
 --]=]
@@ -1718,7 +1718,7 @@ typedef struct tagMSG {
 #undef GWL_HWNDPARENT
 #undef GWL_USERDATA
 
-#endif /* _WIN64 */
+end  -- _WIN64 */
 
 
 
@@ -1758,7 +1758,7 @@ typedef struct tagMSG {
 #undef GCL_WNDPROC
 #undef GCL_HICONSM
 
-#endif /* _WIN64 */
+end  -- _WIN64 */
 
 #define GCLP_MENUNAME       (-8)
 #define GCLP_HBRBACKGROUND  (-10)
@@ -2331,9 +2331,9 @@ RegisterWindowMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RegisterWindowMessage  RegisterWindowMessageW
-#else
+else
 #define RegisterWindowMessage  RegisterWindowMessageA
 #endif // !UNICODE
 --]]
@@ -2518,18 +2518,18 @@ static const int WS_EX_LAYERED           = 0x00080000;
 
 #if(WINVER >= 0x0602)
 #define WS_EX_NOREDIRECTIONBITMAP 0x00200000L
-#endif /* WINVER >= 0x0602 */
+end  -- WINVER >= 0x0602 */
 
 #if(WINVER >= 0x0500)
 #define WS_EX_LAYOUTRTL         0x00400000L // Right to left mirroring
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 
 #if(_WIN32_WINNT >= 0x0501)
 #define WS_EX_COMPOSITED        0x02000000L
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 #if(_WIN32_WINNT >= 0x0500)
 #define WS_EX_NOACTIVATE        0x08000000L
-#endif /* _WIN32_WINNT >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
 --]=]
 
 ffi.cdef[[
@@ -2742,16 +2742,16 @@ DrawAnimatedRects(
 #if(WINVER >= 0x0400)
 #define CF_HDROP            15
 #define CF_LOCALE           16
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #if(WINVER >= 0x0500)
 #define CF_DIBV5            17
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 
 #if(WINVER >= 0x0500)
 #define CF_MAX              18
 #elif(WINVER >= 0x0400)
 #define CF_MAX              17
-#else
+else
 #define CF_MAX              15
 #endif
 
@@ -2774,7 +2774,7 @@ DrawAnimatedRects(
 #define CF_GDIOBJLAST       0x03FF
 
 
-#endif /* !NOCLIPBOARD */
+end  -- !NOCLIPBOARD */
 --]=]
 
 ffi.cdef[[
@@ -2840,13 +2840,13 @@ typedef struct tagCREATESTRUCTW {
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef CREATESTRUCTW CREATESTRUCT;
 typedef LPCREATESTRUCTW LPCREATESTRUCT;
-#else
+else
 typedef CREATESTRUCTA CREATESTRUCT;
 typedef LPCREATESTRUCTA LPCREATESTRUCT;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -2894,7 +2894,7 @@ typedef struct tagSTYLESTRUCT
 #define ODT_BUTTON      4
 #if(WINVER >= 0x0400)
 #define ODT_STATIC      5
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 /*
  * Owner draw actions
@@ -2914,18 +2914,18 @@ typedef struct tagSTYLESTRUCT
 #if(WINVER >= 0x0400)
 #define ODS_DEFAULT         0x0020
 #define ODS_COMBOBOXEDIT    0x1000
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #if(WINVER >= 0x0500)
 #define ODS_HOTLIGHT        0x0040
 #define ODS_INACTIVE        0x0080
 #if(_WIN32_WINNT >= 0x0500)
 #define ODS_NOACCEL         0x0100
 #define ODS_NOFOCUSRECT     0x0200
-#endif /* _WIN32_WINNT >= 0x0500 */
-#endif /* WINVER >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 /*
  * MEASUREITEMSTRUCT for ownerdraw
@@ -3000,9 +3000,9 @@ GetMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetMessage  GetMessageW
-#else
+else
 #define GetMessage  GetMessageA
 #endif // !UNICODE
 --]]
@@ -3028,9 +3028,9 @@ DispatchMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DispatchMessage  DispatchMessageW
-#else
+else
 #define DispatchMessage  DispatchMessageA
 #endif // !UNICODE
 --]]
@@ -3062,9 +3062,9 @@ PeekMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define PeekMessage  PeekMessageW
-#else
+else
 #define PeekMessage  PeekMessageA
 #endif // !UNICODE
 --]]
@@ -3110,7 +3110,7 @@ UnregisterHotKey(
 #define MOD_WIN             0x0008
 #if(WINVER >= 0x0601)
 #define MOD_NOREPEAT        0x4000
-#endif /* WINVER >= 0x0601 */
+end  -- WINVER >= 0x0601 */
 
 
 #define IDHOT_SNAPWINDOW        (-1)    /* SHIFT-PRINTSCRN  */
@@ -3119,24 +3119,24 @@ UnregisterHotKey(
 #ifdef WIN_INTERNAL
     #ifndef LSTRING
     #define NOLSTRING
-    #endif /* LSTRING */
+    end  -- LSTRING */
     #ifndef LFILEIO
     #define NOLFILEIO
-    #endif /* LFILEIO */
-#endif /* WIN_INTERNAL */
+    end  -- LFILEIO */
+end  -- WIN_INTERNAL */
 
 #if(WINVER >= 0x0400)
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 #if(_WIN32_WINNT >= 0x0400)
 #define ENDSESSION_CLOSEAPP         0x00000001
-#endif /* _WIN32_WINNT >= 0x0400 */
+end  -- _WIN32_WINNT >= 0x0400 */
 #if(_WIN32_WINNT >= 0x0400)
 #define ENDSESSION_CRITICAL         0x40000000
-#endif /* _WIN32_WINNT >= 0x0400 */
+end  -- _WIN32_WINNT >= 0x0400 */
 #if(_WIN32_WINNT >= 0x0400)
 #define ENDSESSION_LOGOFF           0x80000000
-#endif /* _WIN32_WINNT >= 0x0400 */
+end  -- _WIN32_WINNT >= 0x0400 */
 
 #define EWX_LOGOFF                  0x00000000
 #define EWX_SHUTDOWN                0x00000001
@@ -3145,11 +3145,11 @@ UnregisterHotKey(
 #define EWX_POWEROFF                0x00000008
 #if(_WIN32_WINNT >= 0x0500)
 #define EWX_FORCEIFHUNG             0x00000010
-#endif /* _WIN32_WINNT >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
 #define EWX_QUICKRESOLVE            0x00000020
 #if(_WIN32_WINNT >= 0x0600)
 #define EWX_RESTARTAPPS             0x00000040
-#endif /* _WIN32_WINNT >= 0x0600 */
+end  -- _WIN32_WINNT >= 0x0600 */
 #define EWX_HYBRID_SHUTDOWN         0x00400000
 #define EWX_BOOTOPTIONS             0x01000000
 --]=]
@@ -3242,9 +3242,9 @@ SendMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SendMessage  SendMessageW
-#else
+else
 #define SendMessage  SendMessageA
 #endif // !UNICODE
 --]]
@@ -3261,9 +3261,9 @@ SendMessage(
     LPARAM lParam
     )
 {
-#ifdef UNICODE
+if UNICODE then
     return SendMessageW(
-#else
+else
     return SendMessageA(
 #endif
         hWnd,
@@ -3301,9 +3301,9 @@ SendMessageTimeoutW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SendMessageTimeout  SendMessageTimeoutW
-#else
+else
 #define SendMessageTimeout  SendMessageTimeoutA
 #endif // !UNICODE
 --]]
@@ -3327,9 +3327,9 @@ SendNotifyMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SendNotifyMessage  SendNotifyMessageW
-#else
+else
 #define SendNotifyMessage  SendNotifyMessageA
 #endif // !UNICODE
 --]]
@@ -3357,9 +3357,9 @@ SendMessageCallbackW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SendMessageCallback  SendMessageCallbackW
-#else
+else
 #define SendMessageCallback  SendMessageCallbackA
 #endif // !UNICODE
 --]]
@@ -3393,12 +3393,12 @@ BroadcastSystemMessageExW(
      WPARAM wParam,
      LPARAM lParam,
      PBSMINFO pbsmInfo);
-#ifdef UNICODE
+if UNICODE then
 #define BroadcastSystemMessageEx  BroadcastSystemMessageExW
-#else
+else
 #define BroadcastSystemMessageEx  BroadcastSystemMessageExA
 #endif // !UNICODE
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 --]=]
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -3407,7 +3407,7 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 #if(WINVER >= 0x0400)
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if defined(_WIN32_WINNT)
 
@@ -3428,9 +3428,9 @@ BroadcastSystemMessageW(
      UINT Msg,
      WPARAM wParam,
      LPARAM lParam);
-#ifdef UNICODE
+if UNICODE then
 #define BroadcastSystemMessage  BroadcastSystemMessageW
-#else
+else
 #define BroadcastSystemMessage  BroadcastSystemMessageA
 #endif // !UNICODE
 #elif defined(_WIN32_WINDOWS)
@@ -3447,7 +3447,7 @@ BroadcastSystemMessage(
 
 #endif
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 //Broadcast Special Message Recipient list
@@ -3469,19 +3469,19 @@ BroadcastSystemMessage(
 #if(_WIN32_WINNT >= 0x0500)
 #define BSF_ALLOWSFW            0x00000080
 #define BSF_SENDNOTIFYMESSAGE   0x00000100
-#endif /* _WIN32_WINNT >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
 #if(_WIN32_WINNT >= 0x0501)
 #define BSF_RETURNHDESK         0x00000200
 #define BSF_LUID                0x00000400
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #define BROADCAST_QUERY_DENY         0x424D5144  // Return this value to deny a query.
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 // RegisterDeviceNotification
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if(WINVER >= 0x0500)
 typedef  PVOID           HDEVNOTIFY;
@@ -3491,7 +3491,7 @@ typedef  HDEVNOTIFY     *PHDEVNOTIFY;
 #define DEVICE_NOTIFY_SERVICE_HANDLE         0x00000001
 #if(_WIN32_WINNT >= 0x0501)
 #define DEVICE_NOTIFY_ALL_INTERFACE_CLASSES  0x00000004
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 
 HDEVNOTIFY
@@ -3507,9 +3507,9 @@ RegisterDeviceNotificationW(
      HANDLE hRecipient,
      LPVOID NotificationFilter,
      DWORD Flags);
-#ifdef UNICODE
+if UNICODE then
 #define RegisterDeviceNotification  RegisterDeviceNotificationW
-#else
+else
 #define RegisterDeviceNotification  RegisterDeviceNotificationA
 #endif // !UNICODE
 
@@ -3584,9 +3584,9 @@ PostMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define PostMessage  PostMessageW
-#else
+else
 #define PostMessage  PostMessageA
 #endif // !UNICODE
 --]]
@@ -3610,9 +3610,9 @@ PostThreadMessageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define PostThreadMessage  PostThreadMessageW
-#else
+else
 #define PostThreadMessage  PostThreadMessageA
 #endif // !UNICODE
 --]]
@@ -3623,9 +3623,9 @@ PostThreadMessageW(
         PostThreadMessageA((DWORD)idThread, wMsg, wParam, lParam)
 #define PostAppMessageW(idThread, wMsg, wParam, lParam)\
         PostThreadMessageW((DWORD)idThread, wMsg, wParam, lParam)
-#ifdef UNICODE
+if UNICODE then
 #define PostAppMessage  PostAppMessageW
-#else
+else
 #define PostAppMessage  PostAppMessageA
 #endif // !UNICODE
 --]]
@@ -3687,9 +3687,9 @@ DefWindowProcW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DefWindowProc  DefWindowProcW
-#else
+else
 #define DefWindowProc  DefWindowProcA
 #endif // !UNICODE
 --]]
@@ -3723,9 +3723,9 @@ CallWindowProcW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CallWindowProc  CallWindowProcW
-#else
+else
 #define CallWindowProc  CallWindowProcA
 #endif // !UNICODE
 --]]
@@ -3775,9 +3775,9 @@ RegisterClassW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RegisterClass  RegisterClassW
-#else
+else
 #define RegisterClass  RegisterClassA
 #endif // !UNICODE
 --]]
@@ -3797,9 +3797,9 @@ UnregisterClassW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define UnregisterClass  UnregisterClassW
-#else
+else
 #define UnregisterClass  UnregisterClassA
 #endif // !UNICODE
 --]]
@@ -3822,9 +3822,9 @@ GetClassInfoW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetClassInfo  GetClassInfoW
-#else
+else
 #define GetClassInfo  GetClassInfoA
 #endif // !UNICODE
 --]]
@@ -3842,9 +3842,9 @@ RegisterClassExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RegisterClassEx  RegisterClassExW
-#else
+else
 #define RegisterClassEx  RegisterClassExA
 #endif // !UNICODE
 --]]
@@ -3867,9 +3867,9 @@ GetClassInfoExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetClassInfoEx  GetClassInfoExW
-#else
+else
 #define GetClassInfoEx  GetClassInfoExA
 #endif // !UNICODE
 --]]
@@ -3922,9 +3922,9 @@ CreateWindowExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateWindowEx  CreateWindowExW
-#else
+else
 #define CreateWindowEx  CreateWindowExA
 #endif // !UNICODE
 --]]
@@ -3939,9 +3939,9 @@ function exports.CreateWindowW(lpClassName, lpWindowName, dwStyle, x, y, nWidth,
 end
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateWindow  CreateWindowW
-#else
+else
 #define CreateWindow  CreateWindowA
 #endif // !UNICODE
 --]]
@@ -4191,15 +4191,15 @@ SetWindowDisplayAffinity(
      HWND hWnd,
      DWORD dwAffinity);
 
-#endif /* _WIN32_WINNT >= 0x0601 */
+end  -- _WIN32_WINNT >= 0x0601 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 #ifndef NODEFERWINDOWPOS
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 HDWP
@@ -4227,15 +4227,15 @@ __stdcall
 EndDeferWindowPos(
      HDWP hWinPosInfo);
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#endif /* !NODEFERWINDOWPOS */
+end  -- !NODEFERWINDOWPOS */
+--]=]
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 IsWindowVisible(
@@ -4251,7 +4251,7 @@ IsIconic(
 BOOL
 __stdcall
 AnyPopup(
-    VOID);
+    void);
 
 
 BOOL
@@ -4264,34 +4264,37 @@ BOOL
 __stdcall
 IsZoomed(
      HWND hWnd);
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-
-
+ffi.cdef[[
 /*
  * SetWindowPos Flags
  */
-#define SWP_NOSIZE          0x0001
-#define SWP_NOMOVE          0x0002
-#define SWP_NOZORDER        0x0004
-#define SWP_NOREDRAW        0x0008
-#define SWP_NOACTIVATE      0x0010
-#define SWP_FRAMECHANGED    0x0020  /* The frame changed: send WM_NCCALCSIZE */
-#define SWP_SHOWWINDOW      0x0040
-#define SWP_HIDEWINDOW      0x0080
-#define SWP_NOCOPYBITS      0x0100
-#define SWP_NOOWNERZORDER   0x0200  /* Don't do owner Z ordering */
-#define SWP_NOSENDCHANGING  0x0400  /* Don't send WM_WINDOWPOSCHANGING */
+static const int SWP_NOSIZE         = 0x0001;
+static const int SWP_NOMOVE         = 0x0002;
+static const int SWP_NOZORDER       = 0x0004;
+static const int SWP_NOREDRAW       = 0x0008;
+static const int SWP_NOACTIVATE     = 0x0010;
+static const int SWP_FRAMECHANGED   = 0x0020;  /* The frame changed: send WM_NCCALCSIZE */
+static const int SWP_SHOWWINDOW     = 0x0040;
+static const int SWP_HIDEWINDOW     = 0x0080;
+static const int SWP_NOCOPYBITS     = 0x0100;
+static const int SWP_NOOWNERZORDER  = 0x0200;  /* Don't do owner Z ordering */
+static const int SWP_NOSENDCHANGING = 0x0400;  /* Don't send WM_WINDOWPOSCHANGING */
 
-#define SWP_DRAWFRAME       SWP_FRAMECHANGED
-#define SWP_NOREPOSITION    SWP_NOOWNERZORDER
+static const int SWP_DRAWFRAME      = SWP_FRAMECHANGED;
+static const int SWP_NOREPOSITION   = SWP_NOOWNERZORDER;
+]]
 
-#if(WINVER >= 0x0400)
-#define SWP_DEFERERASE      0x2000
-#define SWP_ASYNCWINDOWPOS  0x4000
-#endif /* WINVER >= 0x0400 */
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int SWP_DEFERERASE     = 0x2000;
+static const int SWP_ASYNCWINDOWPOS = 0x4000;
+]]
+end --/* WINVER >= 0x0400 */
 
-
+--[=[
 #define HWND_TOP        ((HWND)0)
 #define HWND_BOTTOM     ((HWND)1)
 #define HWND_TOPMOST    ((HWND)-1)
@@ -4322,21 +4325,24 @@ typedef struct {
     short cy;
 } DLGTEMPLATE;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 typedef DLGTEMPLATE *LPDLGTEMPLATEA;
 typedef DLGTEMPLATE *LPDLGTEMPLATEW;
-#ifdef UNICODE
-typedef LPDLGTEMPLATEW LPDLGTEMPLATE;
-#else
-typedef LPDLGTEMPLATEA LPDLGTEMPLATE;
-#endif // UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+--[[
+if UNICODE then
+typedef LPDLGTEMPLATEW LPDLGTEMPLATE;
+else
+typedef LPDLGTEMPLATEA LPDLGTEMPLATE;
+end  -- UNICODE
+--]]
+
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 #pragma region Application Family or OneCore Family
@@ -4344,18 +4350,18 @@ typedef LPDLGTEMPLATEA LPDLGTEMPLATE;
 
 typedef const DLGTEMPLATE *LPCDLGTEMPLATEA;
 typedef const DLGTEMPLATE *LPCDLGTEMPLATEW;
-#ifdef UNICODE
+if UNICODE then
 typedef LPCDLGTEMPLATEW LPCDLGTEMPLATE;
-#else
+else
 typedef LPCDLGTEMPLATEA LPCDLGTEMPLATE;
-#endif // UNICODE
+end  -- UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-
-
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 /*
  * 32 bit Dialog item template.
@@ -4371,27 +4377,27 @@ typedef struct {
 } DLGITEMTEMPLATE;
 typedef DLGITEMTEMPLATE *PDLGITEMTEMPLATEA;
 typedef DLGITEMTEMPLATE *PDLGITEMTEMPLATEW;
-#ifdef UNICODE
+if UNICODE then
 typedef PDLGITEMTEMPLATEW PDLGITEMTEMPLATE;
-#else
+else
 typedef PDLGITEMTEMPLATEA PDLGITEMTEMPLATE;
-#endif // UNICODE
+end  -- UNICODE
 typedef DLGITEMTEMPLATE *LPDLGITEMTEMPLATEA;
 typedef DLGITEMTEMPLATE *LPDLGITEMTEMPLATEW;
-#ifdef UNICODE
+if UNICODE then
 typedef LPDLGITEMTEMPLATEW LPDLGITEMTEMPLATE;
-#else
+else
 typedef LPDLGITEMTEMPLATEA LPDLGITEMTEMPLATE;
-#endif // UNICODE
+end  -- UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
 #include <poppack.h> /* Resume normal packing */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 HWND
@@ -4411,9 +4417,9 @@ CreateDialogParamW(
      HWND hWndParent,
      DLGPROC lpDialogFunc,
      LPARAM dwInitParam);
-#ifdef UNICODE
+if UNICODE then
 #define CreateDialogParam  CreateDialogParamW
-#else
+else
 #define CreateDialogParam  CreateDialogParamA
 #endif // !UNICODE
 
@@ -4437,9 +4443,9 @@ CreateDialogIndirectParamW(
      LPARAM dwInitParam);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateDialogIndirectParam  CreateDialogIndirectParamW
-#else
+else
 #define CreateDialogIndirectParam  CreateDialogIndirectParamA
 #endif // !UNICODE
 --]]
@@ -4450,9 +4456,9 @@ CreateDialogParamA(hInstance, lpName, hWndParent, lpDialogFunc, 0L)
 CreateDialogParamW(hInstance, lpName, hWndParent, lpDialogFunc, 0L)
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateDialog  CreateDialogW
-#else
+else
 #define CreateDialog  CreateDialogA
 #endif // !UNICODE
 --]]
@@ -4463,9 +4469,9 @@ CreateDialogIndirectParamA(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 CreateDialogIndirectParamW(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateDialogIndirect  CreateDialogIndirectW
-#else
+else
 #define CreateDialogIndirect  CreateDialogIndirectA
 #endif // !UNICODE
 --]]
@@ -4489,9 +4495,9 @@ DialogBoxParamW(
      LPARAM dwInitParam);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DialogBoxParam  DialogBoxParamW
-#else
+else
 #define DialogBoxParam  DialogBoxParamA
 #endif // !UNICODE
 --]]
@@ -4515,9 +4521,9 @@ DialogBoxIndirectParamW(
      LPARAM dwInitParam);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DialogBoxIndirectParam  DialogBoxIndirectParamW
-#else
+else
 #define DialogBoxIndirectParam  DialogBoxIndirectParamA
 #endif // !UNICODE
 --]]
@@ -4528,9 +4534,9 @@ DialogBoxParamA(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 DialogBoxParamW(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DialogBox  DialogBoxW
-#else
+else
 #define DialogBox  DialogBoxA
 #endif // !UNICODE
 --]]
@@ -4541,9 +4547,9 @@ DialogBoxIndirectParamA(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 DialogBoxIndirectParamW(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0L)
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DialogBoxIndirect  DialogBoxIndirectW
-#else
+else
 #define DialogBoxIndirect  DialogBoxIndirectA
 #endif // !UNICODE
 --]]
@@ -4595,9 +4601,9 @@ SetDlgItemTextW(
      LPCWSTR lpString);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetDlgItemText  SetDlgItemTextW
-#else
+else
 #define SetDlgItemText  SetDlgItemTextA
 #endif // !UNICODE
 --]]
@@ -4622,9 +4628,9 @@ GetDlgItemTextW(
      int cchMax);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetDlgItemText  GetDlgItemTextW
-#else
+else
 #define GetDlgItemText  GetDlgItemTextA
 #endif // !UNICODE
 --]]
@@ -4672,9 +4678,9 @@ SendDlgItemMessageW(
      LPARAM lParam);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SendDlgItemMessage  SendDlgItemMessageW
-#else
+else
 #define SendDlgItemMessage  SendDlgItemMessageA
 #endif // !UNICODE
 --]]
@@ -4710,7 +4716,7 @@ GetDialogBaseUnits(VOID);
 #ifndef _MAC
 LRESULT
 __stdcall
-#else
+else
 LRESULT
 __stdcall
 #endif
@@ -4723,7 +4729,7 @@ DefDlgProcA(
 #ifndef _MAC
 LRESULT
 __stdcall
-#else
+else
 LRESULT
 __stdcall
 #endif
@@ -4734,9 +4740,9 @@ DefDlgProcW(
      LPARAM lParam);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DefDlgProc  DefDlgProcW
-#else
+else
 #define DefDlgProc  DefDlgProcA
 #endif // !UNICODE
 --]]
@@ -4748,11 +4754,11 @@ DefDlgProcW(
  */
 #ifndef _MAC
 #define DLGWINDOWEXTRA 30
-#else
+else
 #define DLGWINDOWEXTRA 48
 #endif
 
-#endif /* !NOCTLMGR */
+end  -- !NOCTLMGR */
 --]=]
 
 if not NOMSG then
@@ -4772,9 +4778,9 @@ CallMsgFilterW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CallMsgFilter  CallMsgFilterW
-#else
+else
 #define CallMsgFilter  CallMsgFilterA
 #endif // !UNICODE
 --]]
@@ -4849,9 +4855,9 @@ RegisterClipboardFormatW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RegisterClipboardFormat  RegisterClipboardFormatW
-#else
+else
 #define RegisterClipboardFormat  RegisterClipboardFormatA
 #endif // !UNICODE
 --]]
@@ -4883,9 +4889,9 @@ GetClipboardFormatNameW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetClipboardFormatName  GetClipboardFormatNameW
-#else
+else
 #define GetClipboardFormatName  GetClipboardFormatNameA
 #endif // !UNICODE
 --]]
@@ -4955,9 +4961,9 @@ CharToOemW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CharToOem  CharToOemW
-#else
+else
 #define CharToOem  CharToOemA
 #endif // !UNICODE
 --]]
@@ -4980,9 +4986,9 @@ OemToCharW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define OemToChar  OemToCharW
-#else
+else
 #define OemToChar  OemToCharA
 #endif // !UNICODE
 --]]
@@ -5004,9 +5010,9 @@ CharToOemBuffW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CharToOemBuff  CharToOemBuffW
-#else
+else
 #define CharToOemBuff  CharToOemBuffA
 #endif // !UNICODE
 --]]
@@ -5028,15 +5034,15 @@ OemToCharBuffW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define OemToCharBuff  OemToCharBuffW
-#else
+else
 #define OemToCharBuff  OemToCharBuffA
 #endif // !UNICODE
 -]]
 
 --[=[
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
@@ -5052,9 +5058,9 @@ LPWSTR
 __stdcall
 CharUpperW(
      LPWSTR lpsz);
-#ifdef UNICODE
+if UNICODE then
 #define CharUpper  CharUpperW
-#else
+else
 #define CharUpper  CharUpperA
 #endif // !UNICODE
 
@@ -5070,9 +5076,9 @@ __stdcall
 CharUpperBuffW(
     _Inout_updates_(cchLength) LPWSTR lpsz,
      DWORD cchLength);
-#ifdef UNICODE
+if UNICODE then
 #define CharUpperBuff  CharUpperBuffW
-#else
+else
 #define CharUpperBuff  CharUpperBuffA
 #endif // !UNICODE
 
@@ -5086,9 +5092,9 @@ LPWSTR
 __stdcall
 CharLowerW(
      LPWSTR lpsz);
-#ifdef UNICODE
+if UNICODE then
 #define CharLower  CharLowerW
-#else
+else
 #define CharLower  CharLowerA
 #endif // !UNICODE
 
@@ -5104,9 +5110,9 @@ __stdcall
 CharLowerBuffW(
     _Inout_updates_(cchLength) LPWSTR lpsz,
      DWORD cchLength);
-#ifdef UNICODE
+if UNICODE then
 #define CharLowerBuff  CharLowerBuffW
-#else
+else
 #define CharLowerBuff  CharLowerBuffA
 #endif // !UNICODE
 
@@ -5120,9 +5126,9 @@ LPWSTR
 __stdcall
 CharNextW(
      LPCWSTR lpsz);
-#ifdef UNICODE
+if UNICODE then
 #define CharNext  CharNextW
-#else
+else
 #define CharNext  CharNextA
 #endif // !UNICODE
 
@@ -5138,9 +5144,9 @@ __stdcall
 CharPrevW(
      LPCWSTR lpszStart,
      LPCWSTR lpszCurrent);
-#ifdef UNICODE
+if UNICODE then
 #define CharPrev  CharPrevW
-#else
+else
 #define CharPrev  CharPrevA
 #endif // !UNICODE
 
@@ -5195,9 +5201,9 @@ BOOL
 __stdcall
 IsCharAlphaW(
      WCHAR ch);
-#ifdef UNICODE
+if UNICODE then
 #define IsCharAlpha  IsCharAlphaW
-#else
+else
 #define IsCharAlpha  IsCharAlphaA
 #endif // !UNICODE
 
@@ -5211,9 +5217,9 @@ BOOL
 __stdcall
 IsCharAlphaNumericW(
      WCHAR ch);
-#ifdef UNICODE
+if UNICODE then
 #define IsCharAlphaNumeric  IsCharAlphaNumericW
-#else
+else
 #define IsCharAlphaNumeric  IsCharAlphaNumericA
 #endif // !UNICODE
 
@@ -5227,9 +5233,9 @@ BOOL
 __stdcall
 IsCharUpperW(
      WCHAR ch);
-#ifdef UNICODE
+if UNICODE then
 #define IsCharUpper  IsCharUpperW
-#else
+else
 #define IsCharUpper  IsCharUpperA
 #endif // !UNICODE
 
@@ -5243,19 +5249,19 @@ BOOL
 __stdcall
 IsCharLowerW(
      WCHAR ch);
-#ifdef UNICODE
+if UNICODE then
 #define IsCharLower  IsCharLowerW
-#else
+else
 #define IsCharLower  IsCharLowerA
 #endif // !UNICODE
 
 #endif  /* !NOLANGUAGE */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 --]=]
 
 ffi.cdef[[
@@ -5322,9 +5328,9 @@ GetKeyNameTextW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetKeyNameText  GetKeyNameTextW
-#else
+else
 #define GetKeyNameText  GetKeyNameTextA
 #endif // !UNICODE
 --]]
@@ -5386,9 +5392,9 @@ VkKeyScanW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define VkKeyScan  VkKeyScanW
-#else
+else
 #define VkKeyScan  VkKeyScanA
 #endif // !UNICODE
 --]]
@@ -5408,9 +5414,9 @@ VkKeyScanExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define VkKeyScanEx  VkKeyScanExW
-#else
+else
 #define VkKeyScanEx  VkKeyScanExA
 #endif // !UNICODE
 --]]
@@ -6121,9 +6127,9 @@ MapVirtualKeyW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define MapVirtualKey  MapVirtualKeyW
-#else
+else
 #define MapVirtualKey  MapVirtualKeyA
 #endif // !UNICODE
 --]]
@@ -6145,9 +6151,9 @@ MapVirtualKeyExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define MapVirtualKeyEx  MapVirtualKeyExW
-#else
+else
 #define MapVirtualKeyEx  MapVirtualKeyExA
 #endif // !UNICODE
 --]]
@@ -6234,13 +6240,13 @@ MsgWaitForMultipleObjectsEx(
 
 #if(_WIN32_WINNT >= 0x0501)
 #define QS_RAWINPUT         0x0400
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #if(_WIN32_WINNT >= 0x0602)
 #define QS_TOUCH            0x0800
 #define QS_POINTER          0x1000
 
-#endif /* _WIN32_WINNT >= 0x0602 */
+end  -- _WIN32_WINNT >= 0x0602 */
 
 
 #define QS_MOUSE           (QS_MOUSEMOVE     | \
@@ -6253,12 +6259,12 @@ MsgWaitForMultipleObjectsEx(
                             QS_TOUCH         | \
                             QS_POINTER)
 
-#else
+else
 #if (_WIN32_WINNT >= 0x0501)
 #define QS_INPUT           (QS_MOUSE         | \
                             QS_KEY           | \
                             QS_RAWINPUT)
-#else
+else
 #define QS_INPUT           (QS_MOUSE         | \
                             QS_KEY)
 #endif // (_WIN32_WINNT >= 0x0501)
@@ -6282,7 +6288,7 @@ MsgWaitForMultipleObjectsEx(
 #define USER_TIMER_MINIMUM  0x0000000A
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 --]=]
 
 ffi.cdef[[
@@ -6358,9 +6364,9 @@ LoadAcceleratorsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadAccelerators  LoadAcceleratorsW
-#else
+else
 #define LoadAccelerators  LoadAcceleratorsA
 #endif // !UNICODE
 --]]
@@ -6380,9 +6386,9 @@ CreateAcceleratorTableW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CreateAcceleratorTable  CreateAcceleratorTableW
-#else
+else
 #define CreateAcceleratorTable  CreateAcceleratorTableA
 #endif // !UNICODE
 --]]
@@ -6410,9 +6416,9 @@ CopyAcceleratorTableW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define CopyAcceleratorTable  CopyAcceleratorTableW
-#else
+else
 #define CopyAcceleratorTable  CopyAcceleratorTableA
 #endif // !UNICODE
 --]]
@@ -6435,9 +6441,9 @@ TranslateAcceleratorW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define TranslateAccelerator  TranslateAcceleratorW
-#else
+else
 #define TranslateAccelerator  TranslateAcceleratorA
 #endif // !UNICODE
 --]]
@@ -6560,7 +6566,7 @@ static const int SM_MAXIMUMTOUCHES      = 95;
 #define SM_CMETRICS             91
 #elif WINVER == 0x600
 #define SM_CMETRICS             93
-#else
+else
 #define SM_CMETRICS             97
 #endif
 --]]
@@ -6603,9 +6609,9 @@ LoadMenuW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadMenu  LoadMenuW
-#else
+else
 #define LoadMenu  LoadMenuA
 #endif // !UNICODE
 --]]
@@ -6623,9 +6629,9 @@ LoadMenuIndirectW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadMenuIndirect  LoadMenuIndirectW
-#else
+else
 #define LoadMenuIndirect  LoadMenuIndirectA
 #endif // !UNICODE
 --]]
@@ -6662,9 +6668,9 @@ ChangeMenuW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define ChangeMenu  ChangeMenuW
-#else
+else
 #define ChangeMenu  ChangeMenuA
 #endif // !UNICODE
 --]]
@@ -6698,9 +6704,9 @@ GetMenuStringW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetMenuString  GetMenuStringW
-#else
+else
 #define GetMenuString  GetMenuStringA
 #endif // !UNICODE
 --]]
@@ -6799,9 +6805,9 @@ InsertMenuW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define InsertMenu  InsertMenuW
-#else
+else
 #define InsertMenu  InsertMenuA
 #endif // !UNICODE
 --]]
@@ -6825,9 +6831,9 @@ AppendMenuW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define AppendMenu  AppendMenuW
-#else
+else
 #define AppendMenu  AppendMenuA
 #endif // !UNICODE
 --]]
@@ -6853,9 +6859,9 @@ ModifyMenuW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define ModifyMenu  ModifyMenuW
-#else
+else
 #define ModifyMenu  ModifyMenuA
 #endif // !UNICODE
 --]]
@@ -7085,13 +7091,13 @@ typedef struct tagMENUITEMINFOW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef MENUITEMINFOW MENUITEMINFO;
 typedef LPMENUITEMINFOW LPMENUITEMINFO;
-#else
+else
 typedef MENUITEMINFOA MENUITEMINFO;
 typedef LPMENUITEMINFOA LPMENUITEMINFO;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -7100,11 +7106,11 @@ typedef MENUITEMINFOW const *LPCMENUITEMINFOW;
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef LPCMENUITEMINFOW LPCMENUITEMINFO;
-#else
+else
 typedef LPCMENUITEMINFOA LPCMENUITEMINFO;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -7126,9 +7132,9 @@ InsertMenuItemW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define InsertMenuItem  InsertMenuItemW
-#else
+else
 #define InsertMenuItem  InsertMenuItemA
 #endif // !UNICODE
 --]]
@@ -7152,9 +7158,9 @@ GetMenuItemInfoW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetMenuItemInfo  GetMenuItemInfoW
-#else
+else
 #define GetMenuItemInfo  GetMenuItemInfoA
 #endif // !UNICODE
 --]]
@@ -7178,9 +7184,9 @@ SetMenuItemInfoW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetMenuItemInfo  SetMenuItemInfoW
-#else
+else
 #define SetMenuItemInfo  SetMenuItemInfoA
 #endif // !UNICODE
 --]]
@@ -7349,8 +7355,8 @@ DrawIcon(
 #if(_WIN32_WINNT >= 0x0500)
 #define DT_HIDEPREFIX               0x00100000
 #define DT_PREFIXONLY               0x00200000
-#endif /* _WIN32_WINNT >= 0x0500 */
-#endif /* WINVER >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 --]]
 
 ffi.cdef[[
@@ -7397,9 +7403,9 @@ DrawTextW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DrawText  DrawTextW
-#else
+else
 #define DrawText  DrawTextA
 #endif // !UNICODE
 --]]
@@ -7430,9 +7436,9 @@ DrawTextExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DrawTextEx  DrawTextExW
-#else
+else
 #define DrawTextEx  DrawTextExA
 #endif // !UNICODE
 --]]
@@ -7468,9 +7474,9 @@ GrayStringW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GrayString  GrayStringW
-#else
+else
 #define GrayString  GrayStringA
 #endif // !UNICODE
 --]]
@@ -7530,9 +7536,9 @@ DrawStateW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define DrawState  DrawStateW
-#else
+else
 #define DrawState  DrawStateA
 #endif // !UNICODE
 --]]
@@ -7565,9 +7571,9 @@ TabbedTextOutW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define TabbedTextOut  TabbedTextOutW
-#else
+else
 #define TabbedTextOut  TabbedTextOutA
 #endif // !UNICODE
 --]]
@@ -7593,9 +7599,9 @@ GetTabbedTextExtentW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetTabbedTextExtent  GetTabbedTextExtentW
-#else
+else
 #define GetTabbedTextExtent  GetTabbedTextExtentA
 #endif // !UNICODE
 --]]
@@ -7870,7 +7876,7 @@ ScrollWindowEx(
      LPRECT prcUpdate,
      UINT flags);
 ]]
---#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+--end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 ffi.cdef[[
 static const int SW_SCROLLCHILDREN =  0x0001;  /* Scroll children within *lprcScroll. */
@@ -7978,9 +7984,9 @@ SetPropW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetProp  SetPropW
-#else
+else
 #define SetProp  SetPropA
 #endif // !UNICODE
 --]]
@@ -8000,9 +8006,9 @@ GetPropW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetProp  GetPropW
-#else
+else
 #define GetProp  GetPropA
 #endif // !UNICODE
 --]]
@@ -8022,9 +8028,9 @@ RemovePropW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RemoveProp  RemovePropW
-#else
+else
 #define RemoveProp  RemovePropA
 #endif // !UNICODE
 --]]
@@ -8046,9 +8052,9 @@ EnumPropsExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumPropsEx  EnumPropsExW
-#else
+else
 #define EnumPropsEx  EnumPropsExA
 #endif // !UNICODE
 --]]
@@ -8068,9 +8074,9 @@ EnumPropsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumProps  EnumPropsW
-#else
+else
 #define EnumProps  EnumPropsA
 #endif // !UNICODE
 --]]
@@ -8090,9 +8096,9 @@ SetWindowTextW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowText  SetWindowTextW
-#else
+else
 #define SetWindowText  SetWindowTextA
 #endif // !UNICODE
 --]]
@@ -8115,9 +8121,9 @@ GetWindowTextW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowText  GetWindowTextW
-#else
+else
 #define GetWindowText  GetWindowTextA
 #endif // !UNICODE
 --]]
@@ -8135,9 +8141,9 @@ GetWindowTextLengthW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowTextLength  GetWindowTextLengthW
-#else
+else
 #define GetWindowTextLength  GetWindowTextLengthA
 #endif // !UNICODE
 --]]
@@ -8364,9 +8370,9 @@ MessageBoxW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define MessageBox  MessageBoxW
-#else
+else
 #define MessageBox  MessageBoxA
 #endif // !UNICODE
 --]]
@@ -8383,9 +8389,9 @@ MessageBox(
     UINT uType
     )
 {
-#ifdef UNICODE
+if UNICODE then
     return MessageBoxW(
-#else
+else
     return MessageBoxA(
 #endif
         hWnd,
@@ -8418,9 +8424,9 @@ MessageBoxExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define MessageBoxEx  MessageBoxExW
-#else
+else
 #define MessageBoxEx  MessageBoxExA
 #endif // !UNICODE
 --]]
@@ -8460,15 +8466,15 @@ typedef struct tagMSGBOXPARAMSW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef MSGBOXPARAMSW MSGBOXPARAMS;
 typedef PMSGBOXPARAMSW PMSGBOXPARAMS;
 typedef LPMSGBOXPARAMSW LPMSGBOXPARAMS;
-#else
+else
 typedef MSGBOXPARAMSA MSGBOXPARAMS;
 typedef PMSGBOXPARAMSA PMSGBOXPARAMS;
 typedef LPMSGBOXPARAMSA LPMSGBOXPARAMS;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -8484,9 +8490,9 @@ MessageBoxIndirectW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define MessageBoxIndirect  MessageBoxIndirectW
-#else
+else
 #define MessageBoxIndirect  MessageBoxIndirectA
 #endif // !UNICODE
 --]]
@@ -8952,9 +8958,9 @@ GetWindowLongW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowLong  GetWindowLongW
-#else
+else
 #define GetWindowLong  GetWindowLongA
 #endif // !UNICODE
 --]]
@@ -8976,9 +8982,9 @@ SetWindowLongW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowLong  SetWindowLongW
-#else
+else
 #define SetWindowLong  SetWindowLongA
 #endif // !UNICODE
 --]]
@@ -9000,9 +9006,9 @@ GetWindowLongPtrW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowLongPtr  GetWindowLongPtrW
-#else
+else
 #define GetWindowLongPtr  GetWindowLongPtrA
 #endif // !UNICODE
 --]]
@@ -9024,9 +9030,9 @@ SetWindowLongPtrW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowLongPtr  SetWindowLongPtrW
-#else
+else
 #define SetWindowLongPtr  SetWindowLongPtrA
 #endif // !UNICODE
 --]]
@@ -9037,9 +9043,9 @@ exports.GetWindowLongPtrA  = ffi.C.GetWindowLongA;
 exports.GetWindowLongPtrW  = ffi.C.GetWindowLongW;
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowLongPtr  GetWindowLongPtrW
-#else
+else
 #define GetWindowLongPtr  GetWindowLongPtrA
 #endif // !UNICODE
 --]]
@@ -9048,9 +9054,9 @@ exports.SetWindowLongPtrA  = ffi.C.SetWindowLongA;
 exports.SetWindowLongPtrW  = ffi.C.SetWindowLongW;
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowLongPtr  SetWindowLongPtrW
-#else
+else
 #define SetWindowLongPtr  SetWindowLongPtrA
 #endif // !UNICODE
 --]]
@@ -9086,9 +9092,9 @@ GetClassLongW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetClassLong  GetClassLongW
-#else
+else
 #define GetClassLong  GetClassLongA
 #endif // !UNICODE
 --]]
@@ -9110,9 +9116,9 @@ SetClassLongW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetClassLong  SetClassLongW
-#else
+else
 #define SetClassLong  SetClassLongA
 #endif // !UNICODE
 --]]
@@ -9134,9 +9140,9 @@ GetClassLongPtrW(
      int nIndex);
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetClassLongPtr  GetClassLongPtrW
-#else
+else
 #define GetClassLongPtr  GetClassLongPtrA
 #endif // !UNICODE
 --]]
@@ -9154,33 +9160,33 @@ SetClassLongPtrW(
      HWND hWnd,
      int nIndex,
      LONG_PTR dwNewLong);
-#ifdef UNICODE
+if UNICODE then
 #define SetClassLongPtr  SetClassLongPtrW
-#else
+else
 #define SetClassLongPtr  SetClassLongPtrA
 #endif // !UNICODE
 
-#else  /* _WIN64 */
+else  /* _WIN64 */
 
 #define GetClassLongPtrA    GetClassLongA
 #define GetClassLongPtrW    GetClassLongW
-#ifdef UNICODE
+if UNICODE then
 #define GetClassLongPtr  GetClassLongPtrW
-#else
+else
 #define GetClassLongPtr  GetClassLongPtrA
 #endif // !UNICODE
 
 #define SetClassLongPtrA    SetClassLongA
 #define SetClassLongPtrW    SetClassLongW
-#ifdef UNICODE
+if UNICODE then
 #define SetClassLongPtr  SetClassLongPtrW
-#else
+else
 #define SetClassLongPtr  SetClassLongPtrA
 #endif // !UNICODE
 
-#endif /* _WIN64 */
+end  -- _WIN64 */
 
-#endif /* !NOWINOFFSETS */
+end  -- !NOWINOFFSETS */
 --]=]
 
 ffi.cdef[[
@@ -9240,9 +9246,9 @@ FindWindowW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define FindWindow  FindWindowW
-#else
+else
 #define FindWindow  FindWindowA
 #endif // !UNICODE
 --]]
@@ -9267,9 +9273,9 @@ FindWindowExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define FindWindowEx  FindWindowExW
-#else
+else
 #define FindWindowEx  FindWindowExA
 #endif // !UNICODE
 --]]
@@ -9330,9 +9336,9 @@ GetClassNameW(
     _Out_writes_to_(nMaxCount, return) LPWSTR lpClassName,
      int nMaxCount
     );
-#ifdef UNICODE
+if UNICODE then
 #define GetClassName  GetClassNameW
-#else
+else
 #define GetClassName  GetClassNameA
 #endif // !UNICODE
 
@@ -9347,9 +9353,9 @@ GetClassName(
     int nMaxCount
     )
 {
-#ifdef UNICODE
+if UNICODE then
     return GetClassNameW(
-#else
+else
     return GetClassNameA(
 #endif
         hWnd,
@@ -9385,7 +9391,7 @@ __stdcall
 IsGUIThread(
      BOOL bConvert);
 
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 
 #define GetWindowTask(hWnd) \
@@ -9434,9 +9440,9 @@ SetWindowsHookW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowsHook  SetWindowsHookW
-#else
+else
 #define SetWindowsHook  SetWindowsHookA
 #endif // !UNICODE
 --]]
@@ -9468,9 +9474,9 @@ SetWindowsHookExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define SetWindowsHookEx  SetWindowsHookExW
-#else
+else
 #define SetWindowsHookEx  SetWindowsHookExA
 #endif // !UNICODE
 --]]
@@ -9498,13 +9504,13 @@ CallNextHookEx(
 #ifdef STRICT
 #define DefHookProc(nCode, wParam, lParam, phhk)\
         CallNextHookEx(*phhk, nCode, wParam, lParam)
-#else
+else
 #define DefHookProc(nCode, wParam, lParam, phhk)\
         CallNextHookEx((HHOOK)*phhk, nCode, wParam, lParam)
-#endif /* STRICT */
-#endif /* !NOWH */
+end  -- STRICT */
+end  -- !NOWH */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 --]=]
 
@@ -9654,9 +9660,9 @@ LoadBitmapW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadBitmap  LoadBitmapW
-#else
+else
 #define LoadBitmap  LoadBitmapA
 #endif // !UNICODE
 --]]
@@ -9695,9 +9701,9 @@ LoadCursorFromFileW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadCursorFromFile  LoadCursorFromFileW
-#else
+else
 #define LoadCursorFromFile  LoadCursorFromFileA
 #endif // !UNICODE
 --]]
@@ -9724,7 +9730,7 @@ DestroyCursor(
 --[[
 #ifndef _MAC
 #define CopyCursor(pcur) ((HCURSOR)CopyIcon((HICON)(pcur)))
-#else
+else
 
 HCURSOR
 __stdcall
@@ -9784,9 +9790,9 @@ LoadIconW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadIcon  LoadIconW
-#else
+else
 #define LoadIcon  LoadIconA
 #endif // !UNICODE
 --]]
@@ -9818,9 +9824,9 @@ PrivateExtractIconsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define PrivateExtractIcons  PrivateExtractIconsW
-#else
+else
 #define PrivateExtractIcons  PrivateExtractIconsA
 #endif // !UNICODE
 --]]
@@ -9947,9 +9953,9 @@ LoadImageW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadImage  LoadImageW
-#else
+else
 #define LoadImage  LoadImageA
 #endif // !UNICODE
 --]]
@@ -10029,13 +10035,13 @@ typedef struct _ICONINFOEXW {
 } ICONINFOEXW, *PICONINFOEXW;
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef ICONINFOEXW ICONINFOEX;
 typedef PICONINFOEXW PICONINFOEX;
-#else
+else
 typedef ICONINFOEXA ICONINFOEX;
 typedef PICONINFOEXA PICONINFOEX;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -10053,9 +10059,9 @@ GetIconInfoExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetIconInfoEx  GetIconInfoExW
-#else
+else
 #define GetIconInfoEx  GetIconInfoExA
 #endif // !UNICODE
 --]]
@@ -10125,10 +10131,10 @@ static const int RES_CURSOR = 2;
 #define OCR_NO              32648
 #if(WINVER >= 0x0500)
 #define OCR_HAND            32649
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 #if(WINVER >= 0x0400)
 #define OCR_APPSTARTING     32650
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 
 #define OIC_SAMPLE          32512
@@ -10141,14 +10147,14 @@ static const int RES_CURSOR = 2;
 #define OIC_WARNING         OIC_BANG
 #define OIC_ERROR           OIC_HAND
 #define OIC_INFORMATION     OIC_NOTE
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #if(WINVER >= 0x0600)
 #define OIC_SHIELD          32518
-#endif /* WINVER >= 0x0600 */
+end  -- WINVER >= 0x0600 */
 
 
 
-#endif /* OEMRESOURCE */
+end  -- OEMRESOURCE */
 
 #define ORD_LANGDRIVER    1     /* The ordinal number for the entry point of
                                 ** language drivers.
@@ -10169,7 +10175,7 @@ static const int IDI_ASTERISK       = 32516;
 static const int IDI_WINLOGO        = 32517;
 static const int IDI_SHIELD         = 32518;
 /*
-#else
+else
 #define IDI_APPLICATION     MAKEINTRESOURCE(32512)
 #define IDI_HAND            MAKEINTRESOURCE(32513)
 #define IDI_QUESTION        MAKEINTRESOURCE(32514)
@@ -10210,9 +10216,9 @@ LoadStringW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define LoadString  LoadStringW
-#else
+else
 #define LoadString  LoadStringA
 #endif // !UNICODE
 --]]
@@ -10485,7 +10491,7 @@ typedef enum {
 #define SS_PATHELLIPSIS     0x00008000L
 #define SS_WORDELLIPSIS     0x0000C000L
 #define SS_ELLIPSISMASK     0x0000C000L
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 
 
@@ -10502,9 +10508,9 @@ typedef enum {
 #define STN_DBLCLK          1
 #define STN_ENABLE          2
 #define STN_DISABLE         3
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #define STM_MSGMAX          0x0174
-#endif /* !NOWINMESSAGES */
+end  -- !NOWINMESSAGES */
 
 /*
  * Dialog window class
@@ -10524,14 +10530,14 @@ typedef enum {
 #undef DWL_DLGPROC
 #undef DWL_USER
 
-#endif /* _WIN64 */
+end  -- _WIN64 */
 
 #define DWLP_MSGRESULT  0
 #define DWLP_DLGPROC    DWLP_MSGRESULT + sizeof(LRESULT)
 #define DWLP_USER       DWLP_DLGPROC + sizeof(DLGPROC)
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 --]=]
 
 --[=[
@@ -10553,13 +10559,13 @@ __stdcall
 IsDialogMessageW(
      HWND hDlg,
      LPMSG lpMsg);
-#ifdef UNICODE
+if UNICODE then
 #define IsDialogMessage  IsDialogMessageW
-#else
+else
 #define IsDialogMessage  IsDialogMessageA
 #endif // !UNICODE
 
-#endif /* !NOMSG */
+end  -- !NOMSG */
 
 
 BOOL
@@ -10586,13 +10592,13 @@ DlgDirListW(
      int nIDListBox,
      int nIDStaticPath,
      UINT uFileType);
-#ifdef UNICODE
+if UNICODE then
 #define DlgDirList  DlgDirListW
-#else
+else
 #define DlgDirList  DlgDirListA
 #endif // !UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 /*
@@ -10610,7 +10616,7 @@ DlgDirListW(
 #define DDL_EXCLUSIVE       0x8000
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 BOOL
@@ -10628,9 +10634,9 @@ DlgDirSelectExW(
     _Out_writes_(chCount) LPWSTR lpString,
      int chCount,
      int idListBox);
-#ifdef UNICODE
+if UNICODE then
 #define DlgDirSelectEx  DlgDirSelectExW
-#else
+else
 #define DlgDirSelectEx  DlgDirSelectExA
 #endif // !UNICODE
 
@@ -10652,9 +10658,9 @@ DlgDirListComboBoxW(
      int nIDComboBox,
      int nIDStaticPath,
      UINT uFiletype);
-#ifdef UNICODE
+if UNICODE then
 #define DlgDirListComboBox  DlgDirListComboBoxW
-#else
+else
 #define DlgDirListComboBox  DlgDirListComboBoxA
 #endif // !UNICODE
 
@@ -10674,13 +10680,13 @@ DlgDirSelectComboBoxExW(
     _Out_writes_(cchOut) LPWSTR lpString,
      int cchOut,
      int idComboBox);
-#ifdef UNICODE
+if UNICODE then
 #define DlgDirSelectComboBoxEx  DlgDirSelectComboBoxExW
-#else
+else
 #define DlgDirSelectComboBoxEx  DlgDirSelectComboBoxExA
 #endif // !UNICODE
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
@@ -10707,7 +10713,7 @@ DlgDirSelectComboBoxExW(
 #define DS_CONTEXTHELP      0x2000L
 
 #define DS_SHELLFONT        (DS_SETFONT | DS_FIXEDSYS)
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 #if defined(_WIN32_WCE) && (_WIN32_WCE >= 0x0500)
 #define DS_USEPIXELS        0x8000L
@@ -10719,7 +10725,7 @@ DlgDirSelectComboBoxExW(
 
 #if(WINVER >= 0x0400)
 #define DM_REPOSITION       (WM_USER+2)
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 /*
  * Returned in HIWORD() of DM_GETDEFID result if msg is supported
  */
@@ -10815,7 +10821,7 @@ DlgDirSelectComboBoxExW(
 #if(WINVER >= 0x0400)
 #define LB_INITSTORAGE          0x01A8
 #define LB_ITEMFROMPOINT        0x01A9
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #if defined(_WIN32_WCE) && (_WIN32_WCE >= 0x0400)
 #define LB_MULTIPLEADDSTRING    0x01B1
 #endif
@@ -10823,7 +10829,7 @@ DlgDirSelectComboBoxExW(
 
 #if(_WIN32_WINNT >= 0x0501)
 #define LB_GETLISTBOXINFO       0x01B2
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #if(_WIN32_WINNT >= 0x0501)
 #define LB_MSGMAX               0x01B3
@@ -10831,11 +10837,11 @@ DlgDirSelectComboBoxExW(
 #define LB_MSGMAX               0x01B1
 #elif(WINVER >= 0x0400)
 #define LB_MSGMAX               0x01B0
-#else
+else
 #define LB_MSGMAX               0x01A8
 #endif
 
-#endif /* !NOWINMESSAGES */
+end  -- !NOWINMESSAGES */
 
 #ifndef NOWINSTYLES
 
@@ -10859,13 +10865,13 @@ DlgDirSelectComboBoxExW(
 #define LBS_NODATA            0x2000L
 #if(WINVER >= 0x0400)
 #define LBS_NOSEL             0x4000L
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 #define LBS_COMBOBOX          0x8000L
 
 #define LBS_STANDARD          (LBS_NOTIFY | LBS_SORT | WS_VSCROLL | WS_BORDER)
 
 
-#endif /* !NOWINSTYLES */
+end  -- !NOWINSTYLES */
 
 
 /*
@@ -10910,7 +10916,7 @@ DlgDirSelectComboBoxExW(
 #if(WINVER >= 0x0400)
 #define CBS_UPPERCASE         0x2000L
 #define CBS_LOWERCASE         0x4000L
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 #endif  /* !NOWINSTYLES */
 
@@ -10957,11 +10963,11 @@ DlgDirSelectComboBoxExW(
 #if defined(_WIN32_WCE) &&(_WIN32_WCE >= 0x0400)
 #define CB_MULTIPLEADDSTRING        0x0163
 #endif
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 #if(_WIN32_WINNT >= 0x0501)
 #define CB_GETCOMBOBOXINFO          0x0164
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #if(_WIN32_WINNT >= 0x0501)
 #define CB_MSGMAX                   0x0165
@@ -10969,13 +10975,13 @@ DlgDirSelectComboBoxExW(
 #define CB_MSGMAX                   0x0163
 #elif(WINVER >= 0x0400)
 #define CB_MSGMAX                   0x0162
-#else
+else
 #define CB_MSGMAX                   0x015B
 #endif
 #endif  /* !NOWINMESSAGES */
+--]=]
 
-
-
+--[[
 #ifndef NOWINSTYLES
 
 
@@ -10993,41 +10999,51 @@ DlgDirSelectComboBoxExW(
 #define SBS_SIZEBOX                 0x0008L
 #if(WINVER >= 0x0400)
 #define SBS_SIZEGRIP                0x0010L
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
 
-#endif /* !NOWINSTYLES */
-
-/*
- * Scroll bar messages
- */
-#ifndef NOWINMESSAGES
-#define SBM_SETPOS                  0x00E0 /*not in win3.1 */
-#define SBM_GETPOS                  0x00E1 /*not in win3.1 */
-#define SBM_SETRANGE                0x00E2 /*not in win3.1 */
-#define SBM_SETRANGEREDRAW          0x00E6 /*not in win3.1 */
-#define SBM_GETRANGE                0x00E3 /*not in win3.1 */
-#define SBM_ENABLE_ARROWS           0x00E4 /*not in win3.1 */
-#if(WINVER >= 0x0400)
-#define SBM_SETSCROLLINFO           0x00E9
-#define SBM_GETSCROLLINFO           0x00EA
-#endif /* WINVER >= 0x0400 */
-
-#if(_WIN32_WINNT >= 0x0501)
-#define SBM_GETSCROLLBARINFO        0x00EB
-#endif /* _WIN32_WINNT >= 0x0501 */
-
-#if(WINVER >= 0x0400)
-#define SIF_RANGE           0x0001
-#define SIF_PAGE            0x0002
-#define SIF_POS             0x0004
-#define SIF_DISABLENOSCROLL 0x0008
-#define SIF_TRACKPOS        0x0010
-#define SIF_ALL             (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS)
+end  -- !NOWINSTYLES */
+--]]
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+-- Scroll bar messages
 
+if not NOWINMESSAGES then
+ffi.cdef[[
+static const int SBM_SETPOS               =   0x00E0; /*not in win3.1 */
+static const int SBM_GETPOS               =   0x00E1; /*not in win3.1 */
+static const int SBM_SETRANGE             =   0x00E2; /*not in win3.1 */
+static const int SBM_SETRANGEREDRAW       =   0x00E6; /*not in win3.1 */
+static const int SBM_GETRANGE             =   0x00E3; /*not in win3.1 */
+static const int SBM_ENABLE_ARROWS        =   0x00E4; /*not in win3.1 */
+]]
+
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int SBM_SETSCROLLINFO          = 0x00E9;
+static const int SBM_GETSCROLLINFO          = 0x00EA;
+]]
+end --/* WINVER >= 0x0400 */
+
+if(_WIN32_WINNT >= 0x0501) then
+ffi.cdef[[
+    static const int SBM_GETSCROLLBARINFO   = 0x00EB;
+]]
+end --/* _WIN32_WINNT >= 0x0501 */
+
+
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int SIF_RANGE           = 0x0001;
+static const int SIF_PAGE            = 0x0002;
+static const int SIF_POS             = 0x0004;
+static const int SIF_DISABLENOSCROLL = 0x0008;
+static const int SIF_TRACKPOS        = 0x0010;
+static const int SIF_ALL             = (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS);
+]]
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+ffi.cdef[[
 typedef struct tagSCROLLINFO
 {
     UINT    cbSize;
@@ -11056,14 +11072,16 @@ GetScrollInfo(
      HWND hwnd,
      int nBar,
      LPSCROLLINFO lpsi);
+]]
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+
+end --/* WINVER >= 0x0400 */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-
-#endif /* WINVER >= 0x0400 */
-
-#endif /* !NOWINMESSAGES */
-#endif /* !NOCTLMGR */
+end --/* !NOWINMESSAGES */
+--[=[
+    end  -- !NOCTLMGR */
 
 #ifndef NOMDI
 
@@ -11080,10 +11098,10 @@ GetScrollInfo(
 #define MDITILE_SKIPDISABLED   0x0002 /*not in win3.1 */
 #if(_WIN32_WINNT >= 0x0500)
 #define MDITILE_ZORDER         0x0004
-#endif /* _WIN32_WINNT >= 0x0500 */
+end  -- _WIN32_WINNT >= 0x0500 */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 typedef struct tagMDICREATESTRUCTA {
     LPCSTR   szClass;
@@ -11107,13 +11125,13 @@ typedef struct tagMDICREATESTRUCTW {
     DWORD style;
     LPARAM lParam;        /* app-defined stuff */
 } MDICREATESTRUCTW, *LPMDICREATESTRUCTW;
-#ifdef UNICODE
+if UNICODE then
 typedef MDICREATESTRUCTW MDICREATESTRUCT;
 typedef LPMDICREATESTRUCTW LPMDICREATESTRUCT;
-#else
+else
 typedef MDICREATESTRUCTA MDICREATESTRUCT;
 typedef LPMDICREATESTRUCTA LPMDICREATESTRUCT;
-#endif // UNICODE
+end  -- UNICODE
 
 typedef struct tagCLIENTCREATESTRUCT {
     HANDLE hWindowMenu;
@@ -11138,9 +11156,9 @@ DefFrameProcW(
      UINT uMsg,
      WPARAM wParam,
      LPARAM lParam);
-#ifdef UNICODE
+if UNICODE then
 #define DefFrameProc  DefFrameProcW
-#else
+else
 #define DefFrameProc  DefFrameProcA
 #endif // !UNICODE
 
@@ -11148,7 +11166,7 @@ DefFrameProcW(
 #ifndef _MAC
 LRESULT
 __stdcall
-#else
+else
 LRESULT
 __stdcall
 #endif
@@ -11161,7 +11179,7 @@ DefMDIChildProcA(
 #ifndef _MAC
 LRESULT
 __stdcall
-#else
+else
 LRESULT
 __stdcall
 #endif
@@ -11170,9 +11188,9 @@ DefMDIChildProcW(
      UINT uMsg,
      WPARAM wParam,
      LPARAM lParam);
-#ifdef UNICODE
+if UNICODE then
 #define DefMDIChildProc  DefMDIChildProcW
-#else
+else
 #define DefMDIChildProc  DefMDIChildProcA
 #endif // !UNICODE
 
@@ -11185,7 +11203,7 @@ TranslateMDISysAccel(
      HWND hWndClient,
      LPMSG lpMsg);
 
-#endif /* !NOMSG */
+end  -- !NOMSG */
 
 
 UINT
@@ -11221,9 +11239,9 @@ CreateMDIWindowW(
      HWND hWndParent,
      HINSTANCE hInstance,
      LPARAM lParam);
-#ifdef UNICODE
+if UNICODE then
 #define CreateMDIWindow  CreateMDIWindowW
-#else
+else
 #define CreateMDIWindow  CreateMDIWindowA
 #endif // !UNICODE
 
@@ -11247,14 +11265,14 @@ __stdcall CascadeWindows(
      UINT cKids,
     _In_reads_opt_(cKids) const HWND * lpKids);
 
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#endif /* !NOMDI */
+end  -- !NOMDI */
 
-#endif /* !NOUSER */
+end  -- !NOUSER */
 --]=]
 
 ffi.cdef[[
@@ -11273,15 +11291,15 @@ typedef struct tagMULTIKEYHELPW {
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef MULTIKEYHELPW MULTIKEYHELP;
 typedef PMULTIKEYHELPW PMULTIKEYHELP;
 typedef LPMULTIKEYHELPW LPMULTIKEYHELP;
-#else
+else
 typedef MULTIKEYHELPA MULTIKEYHELP;
 typedef PMULTIKEYHELPA PMULTIKEYHELP;
 typedef LPMULTIKEYHELPA LPMULTIKEYHELP;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -11307,15 +11325,15 @@ typedef struct tagHELPWININFOW {
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef HELPWININFOW HELPWININFO;
 typedef PHELPWININFOW PHELPWININFO;
 typedef LPHELPWININFOW LPHELPWININFO;
-#else
+else
 typedef HELPWININFOA HELPWININFO;
 typedef PHELPWININFOA PHELPWININFO;
 typedef LPHELPWININFOA LPHELPWININFO;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 --[=[
@@ -11354,7 +11372,7 @@ typedef LPHELPWININFOA LPHELPWININFO;
 #define IDH_CANCEL                      28444
 #define IDH_HELP                        28445
 
-#endif /* WINVER >= 0x0400 */
+end  -- WINVER >= 0x0400 */
 --]=]
 
 
@@ -11377,9 +11395,9 @@ WinHelpW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define WinHelp  WinHelpW
-#else
+else
 #define WinHelp  WinHelpA
 #endif // !UNICODE
 --]]
@@ -11388,15 +11406,15 @@ WinHelpW(
 --[[
 #define GR_GDIOBJECTS       0       /* Count of GDI objects */
 #define GR_USEROBJECTS      1       /* Count of USER objects */
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 #if(WINVER >= 0x0601)
 #define GR_GDIOBJECTS_PEAK  2       /* Peak count of GDI objects */
 #define GR_USEROBJECTS_PEAK 4       /* Peak count of USER objects */
-#endif /* WINVER >= 0x0601 */
+end  -- WINVER >= 0x0601 */
 
 #if(WINVER >= 0x0601)
 #define GR_GLOBAL           ((HANDLE)-2)
-#endif /* WINVER >= 0x0601 */
+end  -- WINVER >= 0x0601 */
 --]]
 
 
@@ -11585,7 +11603,7 @@ GetGuiResources(
 #define MAX_TOUCH_PREDICTION_FILTER_TAPS 3
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 typedef struct tagTouchPredictionParameters
 {
@@ -11604,7 +11622,7 @@ typedef struct tagTouchPredictionParameters
 #define TOUCHPREDICTIONPARAMETERS_DEFAULT_RLS_LAMBDA_LEARNING_RATE 0.001f
 #define TOUCHPREDICTIONPARAMETERS_DEFAULT_RLS_EXPO_SMOOTH_ALPHA 0.99f
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 #define SPI_GETTOUCHPREDICTIONPARAMETERS 0x009C
@@ -11620,7 +11638,7 @@ typedef struct tagTouchPredictionParameters
 #define SPI_GETMENURECT   0x00A2
 #define SPI_SETMENURECT   0x00A3
 
-#endif /* WINVER >= 0x0602 */
+end  -- WINVER >= 0x0602 */
 
 
 #if(WINVER >= 0x0500)
@@ -11665,7 +11683,7 @@ typedef struct tagTouchPredictionParameters
 #define SPI_SETDROPSHADOW                   0x1025
 #define SPI_GETBLOCKSENDINPUTRESETS         0x1026
 #define SPI_SETBLOCKSENDINPUTRESETS         0x1027
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #define SPI_GETUIEFFECTS                    0x103E
 #define SPI_SETUIEFFECTS                    0x103F
@@ -11679,7 +11697,7 @@ typedef struct tagTouchPredictionParameters
 #define SPI_SETCLEARTYPE                    0x1049
 #define SPI_GETSPEECHRECOGNITION            0x104A
 #define SPI_SETSPEECHRECOGNITION            0x104B
-#endif /* _WIN32_WINNT >= 0x0600 */
+end  -- _WIN32_WINNT >= 0x0600 */
 
 #if(WINVER >= 0x0601)
 #define SPI_GETCARETBROWSING                0x104C
@@ -11688,7 +11706,7 @@ typedef struct tagTouchPredictionParameters
 #define SPI_SETTHREADLOCALINPUTSETTINGS     0x104F
 #define SPI_GETSYSTEMLANGUAGEBAR            0x1050
 #define SPI_SETSYSTEMLANGUAGEBAR            0x1051
-#endif /* WINVER >= 0x0601 */
+end  -- WINVER >= 0x0601 */
 
 #define SPI_GETFOREGROUNDLOCKTIMEOUT        0x2000
 #define SPI_SETFOREGROUNDLOCKTIMEOUT        0x2001
@@ -11723,14 +11741,14 @@ typedef struct tagTouchPredictionParameters
 /* constants for SPI_GETFONTSMOOTHINGORIENTATION and SPI_SETFONTSMOOTHINGORIENTATION: */
 #define FE_FONTSMOOTHINGORIENTATIONBGR   0x0000
 #define FE_FONTSMOOTHINGORIENTATIONRGB   0x0001
-#endif /* _WIN32_WINNT >= 0x0501 */
+end  -- _WIN32_WINNT >= 0x0501 */
 
 #if(_WIN32_WINNT >= 0x0600)
 #define SPI_GETMINIMUMHITRADIUS             0x2014
 #define SPI_SETMINIMUMHITRADIUS             0x2015
 #define SPI_GETMESSAGEDURATION              0x2016
 #define SPI_SETMESSAGEDURATION              0x2017
-#endif /* _WIN32_WINNT >= 0x0600 */
+end  -- _WIN32_WINNT >= 0x0600 */
 
 #if(WINVER >= 0x0602)
 #define SPI_GETCONTACTVISUALIZATION         0x2018
@@ -11750,7 +11768,7 @@ typedef struct tagTouchPredictionParameters
 #define GESTUREVISUALIZATION_PRESSANDTAP         0x0004
 #define GESTUREVISUALIZATION_PRESSANDHOLD        0x0008
 #define GESTUREVISUALIZATION_RIGHTTAP            0x0010
-#endif /* WINVER >= 0x0602 */
+end  -- WINVER >= 0x0602 */
 
 #if(WINVER >= 0x0602)
 #define SPI_GETMOUSEWHEELROUTING            0x201C
@@ -11760,8 +11778,8 @@ typedef struct tagTouchPredictionParameters
     #define MOUSEWHEEL_ROUTING_HYBRID                 1
 #if(WINVER >= 0x0603)
     #define MOUSEWHEEL_ROUTING_MOUSE_POS              2
-#endif /* WINVER >= 0x0603 */
-#endif /* WINVER >= 0x0602 */
+end  -- WINVER >= 0x0603 */
+end  -- WINVER >= 0x0602 */
 
 #if(WINVER >= 0x0604)
 #define SPI_GETPENVISUALIZATION                  0x201E
@@ -11781,9 +11799,9 @@ typedef struct tagTouchPredictionParameters
 #define PENARBITRATIONTYPE_FIS                   0x0002
 #define PENARBITRATIONTYPE_SPT                   0x0003
 #define PENARBITRATIONTYPE_MAX                   0x0004
-#endif /* WINVER >= 0x0604 */
+end  -- WINVER >= 0x0604 */
 
-#endif /* WINVER >= 0x0500 */
+end  -- WINVER >= 0x0500 */
 
 /*
  * Flags
@@ -11842,15 +11860,15 @@ typedef struct tagNONCLIENTMETRICSW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef NONCLIENTMETRICSW NONCLIENTMETRICS;
 typedef PNONCLIENTMETRICSW PNONCLIENTMETRICS;
 typedef LPNONCLIENTMETRICSW LPNONCLIENTMETRICS;
-#else
+else
 typedef NONCLIENTMETRICSA NONCLIENTMETRICS;
 typedef PNONCLIENTMETRICSA PNONCLIENTMETRICS;
 typedef LPNONCLIENTMETRICSA LPNONCLIENTMETRICS;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 
@@ -11902,18 +11920,18 @@ typedef struct tagICONMETRICSW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef ICONMETRICSW ICONMETRICS;
 typedef PICONMETRICSW PICONMETRICS;
 typedef LPICONMETRICSW LPICONMETRICS;
-#else
+else
 typedef ICONMETRICSA ICONMETRICS;
 typedef PICONMETRICSA PICONMETRICS;
 typedef LPICONMETRICSA LPICONMETRICS;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
---[=[
+ffi.cdef[[
 typedef struct tagANIMATIONINFO
 {
     UINT    cbSize;
@@ -11930,6 +11948,7 @@ typedef struct tagSERIALKEYSA
     UINT    iPortState;
     UINT    iActive;
 }   SERIALKEYSA, *LPSERIALKEYSA;
+
 typedef struct tagSERIALKEYSW
 {
     UINT    cbSize;
@@ -11943,19 +11962,20 @@ typedef struct tagSERIALKEYSW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef SERIALKEYSW SERIALKEYS;
 typedef LPSERIALKEYSW LPSERIALKEYS;
-#else
+else
 typedef SERIALKEYSA SERIALKEYS;
 typedef LPSERIALKEYSA LPSERIALKEYS;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
+ffi.cdef[[
 /* flags for SERIALKEYS dwFlags field */
-#define SERKF_SERIALKEYSON  0x00000001
-#define SERKF_AVAILABLE     0x00000002
-#define SERKF_INDICATOR     0x00000004
+static const int SERKF_SERIALKEYSON = 0x00000001;
+static const int SERKF_AVAILABLE    = 0x00000002;
+static const int SERKF_INDICATOR    = 0x00000004;
 
 
 typedef struct tagHIGHCONTRASTA
@@ -11964,21 +11984,26 @@ typedef struct tagHIGHCONTRASTA
     DWORD   dwFlags;
     LPSTR   lpszDefaultScheme;
 }   HIGHCONTRASTA, *LPHIGHCONTRASTA;
+
 typedef struct tagHIGHCONTRASTW
 {
     UINT    cbSize;
     DWORD   dwFlags;
     LPWSTR  lpszDefaultScheme;
 }   HIGHCONTRASTW, *LPHIGHCONTRASTW;
-#ifdef UNICODE
+]]
+
+--[[
+if UNICODE then
 typedef HIGHCONTRASTW HIGHCONTRAST;
 typedef LPHIGHCONTRASTW LPHIGHCONTRAST;
-#else
+else
 typedef HIGHCONTRASTA HIGHCONTRAST;
 typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
-#endif // UNICODE
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end  -- UNICODE
+--]]
+--[=[
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 /* flags for HIGHCONTRAST dwFlags field */
@@ -12002,24 +12027,26 @@ typedef LPHIGHCONTRASTA LPHIGHCONTRAST;
 #if(WINVER >= 0x0600)
 #define CDS_ENABLE_UNSAFE_MODES      0x00000100
 #define CDS_DISABLE_UNSAFE_MODES     0x00000200
-#endif /* WINVER >= 0x0600 */
+end  -- WINVER >= 0x0600 */
 #define CDS_RESET                    0x40000000
 #define CDS_RESET_EX                 0x20000000
 #define CDS_NORESET                  0x10000000
+--]=]
 
 require ("win32.tvout")
 
+ffi.cdef[[
 /* Return values for ChangeDisplaySettings */
-#define DISP_CHANGE_SUCCESSFUL       0
-#define DISP_CHANGE_RESTART          1
-#define DISP_CHANGE_FAILED          -1
-#define DISP_CHANGE_BADMODE         -2
-#define DISP_CHANGE_NOTUPDATED      -3
-#define DISP_CHANGE_BADFLAGS        -4
-#define DISP_CHANGE_BADPARAM        -5
+static const int DISP_CHANGE_SUCCESSFUL    =   0;
+static const int DISP_CHANGE_RESTART       =   1;
+static const int DISP_CHANGE_FAILED        =  -1;
+static const int DISP_CHANGE_BADMODE       =  -2;
+static const int DISP_CHANGE_NOTUPDATED    =  -3;
+static const int DISP_CHANGE_BADFLAGS      =  -4;
+static const int DISP_CHANGE_BADPARAM      =  -5;
 
-#define DISP_CHANGE_BADDUALVIEW     -6
---]=]
+static const int DISP_CHANGE_BADDUALVIEW   =  -6;
+]]
 
 
 
@@ -12038,9 +12065,9 @@ ChangeDisplaySettingsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define ChangeDisplaySettings  ChangeDisplaySettingsW
-#else
+else
 #define ChangeDisplaySettings  ChangeDisplaySettingsA
 #endif // !UNICODE
 --]]
@@ -12066,9 +12093,9 @@ ChangeDisplaySettingsExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define ChangeDisplaySettingsEx  ChangeDisplaySettingsExW
-#else
+else
 #define ChangeDisplaySettingsEx  ChangeDisplaySettingsExA
 #endif // !UNICODE
 --]]
@@ -12095,9 +12122,9 @@ EnumDisplaySettingsW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumDisplaySettings  EnumDisplaySettingsW
-#else
+else
 #define EnumDisplaySettings  EnumDisplaySettingsA
 #endif // !UNICODE
 --]]
@@ -12122,9 +12149,9 @@ EnumDisplaySettingsExW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumDisplaySettingsEx  EnumDisplaySettingsExW
-#else
+else
 #define EnumDisplaySettingsEx  EnumDisplaySettingsExA
 #endif // !UNICODE
 --]]
@@ -12154,9 +12181,9 @@ EnumDisplayDevicesW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define EnumDisplayDevices  EnumDisplayDevicesW
-#else
+else
 #define EnumDisplayDevices  EnumDisplayDevicesA
 #endif // !UNICODE
 --]]
@@ -12423,13 +12450,13 @@ typedef struct tagSOUNDSENTRYW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef SOUNDSENTRYW SOUNDSENTRY;
 typedef LPSOUNDSENTRYW LPSOUNDSENTRY;
-#else
+else
 typedef SOUNDSENTRYA SOUNDSENTRY;
 typedef LPSOUNDSENTRYA LPSOUNDSENTRY;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 ffi.cdef[[
@@ -12581,13 +12608,13 @@ typedef struct tagMONITORINFOEXW
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 typedef MONITORINFOEXW MONITORINFOEX;
 typedef LPMONITORINFOEXW LPMONITORINFOEX;
-#else
+else
 typedef MONITORINFOEXA MONITORINFOEX;
 typedef LPMONITORINFOEXA LPMONITORINFOEX;
-#endif // UNICODE
+end  -- UNICODE
 --]]
 
 
@@ -12606,9 +12633,9 @@ GetMonitorInfoW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetMonitorInfo  GetMonitorInfoW
-#else
+else
 #define GetMonitorInfo  GetMonitorInfoA
 #endif // !UNICODE
 --]]
@@ -13006,9 +13033,9 @@ GetWindowModuleFileNameW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetWindowModuleFileName  GetWindowModuleFileNameW
-#else
+else
 #define GetWindowModuleFileName  GetWindowModuleFileNameA
 #endif // !UNICODE
 --]]
@@ -13239,9 +13266,9 @@ RealGetWindowClassW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define RealGetWindowClass  RealGetWindowClassW
-#else
+else
 #define RealGetWindowClass  RealGetWindowClassA
 #endif // !UNICODE
 --]]
@@ -13284,9 +13311,9 @@ GetAltTabInfoW(
 ]]
 
 --[[
-#ifdef UNICODE
+if UNICODE then
 #define GetAltTabInfo  GetAltTabInfoW
-#else
+else
 #define GetAltTabInfo  GetAltTabInfoA
 #endif // !UNICODE
 --]]
@@ -13481,7 +13508,7 @@ typedef struct tagRAWINPUT {
 --[=[
 #ifdef _WIN64
 #define RAWINPUT_ALIGN(x)   (((x) + sizeof(QWORD) - 1) & ~(sizeof(QWORD) - 1))
-#else   // _WIN64
+else   // _WIN64
 #define RAWINPUT_ALIGN(x)   (((x) + sizeof(DWORD) - 1) & ~(sizeof(DWORD) - 1))
 #endif  // _WIN64
 

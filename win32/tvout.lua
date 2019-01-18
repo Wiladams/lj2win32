@@ -2,7 +2,7 @@
 local ffi = require("ffi")
 
 if not GUID_DEFINED then
-require ("guiddef")
+require ("win32.guiddef")
 end
 
 
