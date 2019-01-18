@@ -3,28 +3,30 @@ local ffi = require("ffi")
 
 
 
-#ifndef _SETUPAPI_VER
-#if defined(_WIN32_WINNT) && (!defined(_WIN32_WINDOWS) || (_WIN32_WINNT < _WIN32_WINDOWS))
-#define _SETUPAPI_VER _WIN32_WINNT  // SetupAPI version follows Windows NT version
-#elif defined(_WIN32_WINDOWS)
-#if _WIN32_WINDOWS >= 0x0490
-#define _SETUPAPI_VER _WIN32_WINNT_WIN2K        // WinME uses same version of SetupAPI as Win2k
-#elif _WIN32_WINDOWS >= 0x0410
-#define _SETUPAPI_VER 0x0410        // Indicates version of SetupAPI shipped with Win98
-#else
-#define _SETUPAPI_VER _WIN32_WINNT_NT4        // Earliest SetupAPI version
-#endif // _WIN32_WINDOWS
-#else // _WIN32_WINNT/_WIN32_WINDOWS
-#define _SETUPAPI_VER _WIN32_WINNT_WINXP
-#endif // _WIN32_WINNT/_WIN32_WINDOWS
-#endif // !_SETUPAPI_VER
+if not _SETUPAPI_VER then
+    if _WIN32_WINNT and not _WIN32_WINDOWS or (_WIN32_WINNT < _WIN32_WINDOWS) then
+        _SETUPAPI_VER = _WIN32_WINNT  --// SetupAPI version follows Windows NT version
+    elseif _WIN32_WINDOWS then
+        if _WIN32_WINDOWS >= 0x0490 then
+            _SETUPAPI_VER = _WIN32_WINNT_WIN2K        --// WinME uses same version of SetupAPI as Win2k
+        elseif _WIN32_WINDOWS >= 0x0410 then
+            _SETUPAPI_VER = 0x0410        --// Indicates version of SetupAPI shipped with Win98
+        else
+            _SETUPAPI_VER = _WIN32_WINNT_NT4        -- Earliest SetupAPI version
+        end -- _WIN32_WINDOWS
+    else -- _WIN32_WINNT/_WIN32_WINDOWS
+        _SETUPAPI_VER = _WIN32_WINNT_WINXP;
+    end --// _WIN32_WINNT/_WIN32_WINDOWS
+end --// !_SETUPAPI_VER
 
-#ifndef __LPGUID_DEFINED__
-#define __LPGUID_DEFINED__
+if not __LPGUID_DEFINED__ then
+__LPGUID_DEFINED__ = true
+ffi.cdef[[
 typedef GUID *LPGUID;
-#endif
+]]
+end
 
-
+--[=[
 require ("win32.spapidef")
 
 #include <commctrl.h>
@@ -36,9 +38,6 @@ require ("win32.spapidef")
 #include <pshpack1.h>   // Assume byte packing throughout (32-bit processor)
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //
 // Define maximum string length constants
@@ -215,7 +214,7 @@ typedef PSP_ALTPLATFORM_INFO_V2 PSP_ALTPLATFORM_INFO;
 
 //
 // Define structure that is filled in by SetupQueryInfOriginalFileInformation
-// to indicate the INF's original name and the original name of the (potentially
+// to indicate the INFs original name and the original name of the (potentially
 // platform-specific) catalog file specified by that INF.
 //
 typedef struct _SP_ORIGINAL_FILE_INFO_A {
@@ -290,10 +289,10 @@ typedef PSP_ORIGINAL_FILE_INFO_A PSP_ORIGINAL_FILE_INFO;
 // The following DIRIDs are for commonly-used shell "special folders".  The
 // complete list of such folders is contained in shlobj.h.  In that headerfile,
 // each folder is assigned a CSIDL_* value.  The DIRID values below are created
-// by taking the CSIDL value in shlobj.h and OR'ing it with 0x4000.  Thus, if
+// by taking the CSIDL value in shlobj.h and ORing it with 0x4000.  Thus, if
 // an INF needs to reference other special folders not defined below, it may
 // generate one using the above mechanism, and setupapi will automatically deal
-// with it and use the corresponding shell's path where appropriate.  (Remember
+// with it and use the corresponding shells path where appropriate.  (Remember
 // that DIRIDs must be specified in decimal, not hex, in an INF when used for
 // string substitution.)
 //
@@ -897,7 +896,7 @@ typedef PSP_DEVINSTALL_PARAMS_A PSP_DEVINSTALL_PARAMS;
 #define DI_SHOWCOMPAT               0x00000002L     // show compatibility list
 #define DI_SHOWCLASS                0x00000004L     // show class list
 #define DI_SHOWALL                  0x00000007L     // both class & compat list shown
-#define DI_NOVCP                    0x00000008L     // don't create a new copy queue--use
+#define DI_NOVCP                    0x00000008L     // dont create a new copy queue--use
                                                     // caller-supplied FileQueue
 #define DI_DIDCOMPAT                0x00000010L     // Searched for compatible devices
 #define DI_DIDCLASS                 0x00000020L     // Searched for class devices
@@ -1066,7 +1065,7 @@ typedef struct _SP_ENABLECLASS_PARAMS {
 
 
 //
-// Values indicating a change in a device's state
+// Values indicating a change in a devices state
 //
 #define DICS_ENABLE      0x00000001
 #define DICS_DISABLE     0x00000002
@@ -1905,27 +1904,27 @@ typedef PSP_BACKUP_QUEUE_PARAMS_V2 PSP_BACKUP_QUEUE_PARAMS;
 
 #endif // _SPAPI_ERRORS
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfInformationA(
-    _In_ LPCVOID InfSpec,
-    _In_ DWORD SearchControl,
+     LPCVOID InfSpec,
+     DWORD SearchControl,
     _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PSP_INF_INFORMATION ReturnBuffer, 
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfInformationW(
-    _In_ LPCVOID InfSpec,
-    _In_ DWORD SearchControl,
+     LPCVOID InfSpec,
+     DWORD SearchControl,
     _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PSP_INF_INFORMATION ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -1947,23 +1946,23 @@ SetupGetInfInformationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfFileInformationA(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize 
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfFileInformationW(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -1976,21 +1975,21 @@ SetupQueryInfFileInformationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfOriginalFileInformationA(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_ PSP_ORIGINAL_FILE_INFO_A OriginalFileInfo
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfOriginalFileInformationW(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_ PSP_ORIGINAL_FILE_INFO_W OriginalFileInfo
     );
 
@@ -2003,25 +2002,25 @@ SetupQueryInfOriginalFileInformationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfVersionInformationA(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
-    _In_opt_ PCSTR Key,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
+     PCSTR Key,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryInfVersionInformationW(
-    _In_ PSP_INF_INFORMATION InfInformation,
-    _In_ UINT InfIndex,
-    _In_opt_ PCWSTR Key,
+     PSP_INF_INFORMATION InfInformation,
+     UINT InfIndex,
+     PCWSTR Key,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2036,25 +2035,25 @@ SetupQueryInfVersionInformationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfDriverStoreLocationA(
-    _In_ PCSTR FileName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
-    _In_opt_ PCSTR LocaleName,
+     PCSTR FileName,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PCSTR LocaleName,
     _Out_writes_(ReturnBufferSize) PSTR ReturnBuffer, 
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfDriverStoreLocationW(
-    _In_ PCWSTR FileName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,    
-    _In_opt_ PCWSTR LocaleName,
+     PCWSTR FileName,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,    
+     PCWSTR LocaleName,
     _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2066,21 +2065,21 @@ SetupGetInfDriverStoreLocationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfPublishedNameA(
-    _In_ PCSTR DriverStoreLocation,
+     PCSTR DriverStoreLocation,
     _Out_writes_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfPublishedNameW(
-    _In_ PCWSTR DriverStoreLocation,
+     PCWSTR DriverStoreLocation,
     _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2095,23 +2094,23 @@ SetupGetInfPublishedNameW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfFileListA(
-    _In_opt_ PCSTR DirectoryPath,
-    _In_ DWORD InfStyle,
+     PCSTR DirectoryPath,
+     DWORD InfStyle,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer, 
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetInfFileListW(
-    _In_opt_ PCWSTR DirectoryPath,
-    _In_ DWORD InfStyle,
+     PCWSTR DirectoryPath,
+     DWORD InfStyle,
     _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2124,21 +2123,21 @@ SetupGetInfFileListW(
 
 
 HINF
-WINAPI
+__stdcall
 SetupOpenInfFileW(
-    _In_ PCWSTR FileName,
-    _In_opt_ PCWSTR InfClass,
-    _In_ DWORD InfStyle,
+     PCWSTR FileName,
+     PCWSTR InfClass,
+     DWORD InfStyle,
     _Out_opt_ PUINT ErrorLine
     );
 
 
 HINF
-WINAPI
+__stdcall
 SetupOpenInfFileA(
-    _In_ PCSTR FileName,
-    _In_opt_ PCSTR InfClass,
-    _In_ DWORD InfStyle,
+     PCSTR FileName,
+     PCSTR InfClass,
+     DWORD InfStyle,
     _Out_opt_ PUINT ErrorLine
     );
 
@@ -2151,7 +2150,7 @@ SetupOpenInfFileA(
 
 
 HINF
-WINAPI
+__stdcall
 SetupOpenMasterInf(
     VOID
     );
@@ -2159,19 +2158,19 @@ SetupOpenMasterInf(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupOpenAppendInfFileW(
-    _In_opt_ PCWSTR FileName,
-    _In_ HINF InfHandle,
+     PCWSTR FileName,
+     HINF InfHandle,
     _Out_opt_ PUINT ErrorLine
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupOpenAppendInfFileA(
-    _In_opt_ PCSTR FileName,
-    _In_ HINF InfHandle,
+     PCSTR FileName,
+     HINF InfHandle,
     _Out_opt_ PUINT ErrorLine
     );
 
@@ -2184,29 +2183,29 @@ SetupOpenAppendInfFileA(
 
 
 VOID
-WINAPI
+__stdcall
 SetupCloseInfFile(
-    _In_ HINF InfHandle
+     HINF InfHandle
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFindFirstLineA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR Section,
-    _In_opt_ PCSTR Key,
+     HINF InfHandle,
+     PCSTR Section,
+     PCSTR Key,
     _Out_ PINFCONTEXT Context
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFindFirstLineW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR Section,
-    _In_opt_ PCWSTR Key,
+     HINF InfHandle,
+     PCWSTR Section,
+     PCWSTR Key,
     _Out_ PINFCONTEXT Context
     );
 
@@ -2219,28 +2218,28 @@ SetupFindFirstLineW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFindNextLine(
-    _In_ PINFCONTEXT ContextIn,
+     PINFCONTEXT ContextIn,
     _Out_ PINFCONTEXT ContextOut
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFindNextMatchLineA(
-    _In_ PINFCONTEXT ContextIn,
-    _In_opt_ PCSTR Key,
+     PINFCONTEXT ContextIn,
+     PCSTR Key,
     _Out_ PINFCONTEXT ContextOut
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFindNextMatchLineW(
-    _In_ PINFCONTEXT ContextIn,
-    _In_opt_ PCWSTR Key,
+     PINFCONTEXT ContextIn,
+     PCWSTR Key,
     _Out_ PINFCONTEXT ContextOut
     );
 
@@ -2253,21 +2252,21 @@ SetupFindNextMatchLineW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetLineByIndexA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR Section,
-    _In_ DWORD Index,
+     HINF InfHandle,
+     PCSTR Section,
+     DWORD Index,
     _Out_ PINFCONTEXT Context
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetLineByIndexW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR Section,
-    _In_ DWORD Index,
+     HINF InfHandle,
+     PCWSTR Section,
+     DWORD Index,
     _Out_ PINFCONTEXT Context
     );
 
@@ -2280,18 +2279,18 @@ SetupGetLineByIndexW(
 
 
 LONG
-WINAPI
+__stdcall
 SetupGetLineCountA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR Section
+     HINF InfHandle,
+     PCSTR Section
     );
 
 
 LONG
-WINAPI
+__stdcall
 SetupGetLineCountW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR Section
+     HINF InfHandle,
+     PCWSTR Section
     );
 
 #ifdef UNICODE
@@ -2303,27 +2302,27 @@ SetupGetLineCountW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetLineTextA(
-    _In_opt_ PINFCONTEXT Context,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCSTR Section,
-    _In_opt_ PCSTR Key,
+     PINFCONTEXT Context,
+     HINF InfHandle,
+     PCSTR Section,
+     PCSTR Key,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetLineTextW(
-    _In_opt_ PINFCONTEXT Context,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCWSTR Section,
-    _In_opt_ PCWSTR Key,
+     PINFCONTEXT Context,
+     HINF InfHandle,
+     PCWSTR Section,
+     PCWSTR Key,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2336,31 +2335,31 @@ SetupGetLineTextW(
 
 
 DWORD
-WINAPI
+__stdcall
 SetupGetFieldCount(
-    _In_ PINFCONTEXT Context
+     PINFCONTEXT Context
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetStringFieldA(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetStringFieldW(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2373,33 +2372,33 @@ SetupGetStringFieldW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetIntField(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_ PINT IntegerValue
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetMultiSzFieldA(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ LPDWORD RequiredSize 
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetMultiSzFieldW(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ LPDWORD RequiredSize 
     );
 
@@ -2409,15 +2408,15 @@ SetupGetMultiSzFieldW(
 #define SetupGetMultiSzField SetupGetMultiSzFieldA
 #endif
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupGetBinaryField(
-    _In_ PINFCONTEXT Context,
-    _In_ DWORD FieldIndex,
+     PINFCONTEXT Context,
+     DWORD FieldIndex,
     _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PBYTE ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ LPDWORD RequiredSize 
     );
 
@@ -2431,9 +2430,9 @@ SetupGetBinaryField(
 //
 
 DWORD
-WINAPI
+__stdcall
 SetupGetFileCompressionInfoA(
-    _In_ PCSTR SourceFileName,
+     PCSTR SourceFileName,
     _Out_ PSTR *ActualSourceFileName,
     _Out_ PDWORD SourceFileSize,
     _Out_ PDWORD TargetFileSize,
@@ -2442,9 +2441,9 @@ SetupGetFileCompressionInfoA(
 
 
 DWORD
-WINAPI
+__stdcall
 SetupGetFileCompressionInfoW(
-    _In_ PCWSTR SourceFileName,
+     PCWSTR SourceFileName,
     _Out_ PWSTR *ActualSourceFileName,
     _Out_ PDWORD SourceFileSize,
     _Out_ PDWORD TargetFileSize,
@@ -2468,11 +2467,11 @@ SetupGetFileCompressionInfoW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetFileCompressionInfoExA(
-    _In_ PCSTR SourceFileName,
+     PCSTR SourceFileName,
     _In_reads_opt_(ActualSourceFileNameBufferLen) PSTR ActualSourceFileNameBuffer,
-    _In_ DWORD ActualSourceFileNameBufferLen,
+     DWORD ActualSourceFileNameBufferLen,
     _Out_opt_ PDWORD RequiredBufferLen, 
     _Out_ PDWORD SourceFileSize,
     _Out_ PDWORD TargetFileSize,
@@ -2481,11 +2480,11 @@ SetupGetFileCompressionInfoExA(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetFileCompressionInfoExW(
-    _In_ PCWSTR SourceFileName,
+     PCWSTR SourceFileName,
     _In_reads_opt_(ActualSourceFileNameBufferLen) PWSTR ActualSourceFileNameBuffer,
-    _In_ DWORD ActualSourceFileNameBufferLen,
+     DWORD ActualSourceFileNameBufferLen,
     _Out_opt_ PDWORD RequiredBufferLen,
     _Out_ PDWORD SourceFileSize,
     _Out_ PDWORD TargetFileSize,
@@ -2511,20 +2510,20 @@ SetupGetFileCompressionInfoExW(
 
 
 DWORD
-WINAPI
+__stdcall
 SetupDecompressOrCopyFileA(
-    _In_ PCSTR SourceFileName,
-    _In_ PCSTR TargetFileName,
-    _In_opt_ PUINT CompressionType
+     PCSTR SourceFileName,
+     PCSTR TargetFileName,
+     PUINT CompressionType
     );
 
 
 DWORD
-WINAPI
+__stdcall
 SetupDecompressOrCopyFileW(
-    _In_ PCWSTR SourceFileName,
-    _In_ PCWSTR TargetFileName,
-    _In_opt_ PUINT CompressionType
+     PCWSTR SourceFileName,
+     PCWSTR TargetFileName,
+     PUINT CompressionType
     );
 
 #ifdef UNICODE
@@ -2536,27 +2535,27 @@ SetupDecompressOrCopyFileW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceFileLocationA(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCSTR FileName,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCSTR FileName,
     _Out_ PUINT SourceId,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceFileLocationW(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCWSTR FileName,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCWSTR FileName,
     _Out_ PUINT SourceId,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2569,26 +2568,26 @@ SetupGetSourceFileLocationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceFileSizeA(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCSTR FileName,
-    _In_opt_ PCSTR Section,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCSTR FileName,
+     PCSTR Section,
     _Out_ PDWORD FileSize,
-    _In_ UINT RoundingFactor
+     UINT RoundingFactor
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceFileSizeW(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCWSTR FileName,
-    _In_opt_ PCWSTR Section,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCWSTR FileName,
+     PCWSTR Section,
     _Out_ PDWORD FileSize,
-    _In_ UINT RoundingFactor
+     UINT RoundingFactor
     );
 
 #ifdef UNICODE
@@ -2600,25 +2599,25 @@ SetupGetSourceFileSizeW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetTargetPathA(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCSTR Section,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCSTR Section,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetTargetPathW(
-    _In_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCWSTR Section,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCWSTR Section,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -2644,20 +2643,20 @@ SetupGetTargetPathW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetSourceListA(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _In_reads_(SourceCount) PCSTR *SourceList,
-    _In_ UINT SourceCount
+     UINT SourceCount
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetSourceListW(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _In_reads_(SourceCount) PCWSTR *SourceList,
-    _In_ UINT SourceCount
+     UINT SourceCount
     );
 
 #ifdef UNICODE
@@ -2669,7 +2668,7 @@ SetupSetSourceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCancelTemporarySourceList(
     VOID
     );
@@ -2677,18 +2676,18 @@ SetupCancelTemporarySourceList(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddToSourceListA(
-    _In_ DWORD Flags,
-    _In_ PCSTR Source
+     DWORD Flags,
+     PCSTR Source
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddToSourceListW(
-    _In_ DWORD Flags,
-    _In_ PCWSTR Source
+     DWORD Flags,
+     PCWSTR Source
     );
 
 #ifdef UNICODE
@@ -2700,18 +2699,18 @@ SetupAddToSourceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFromSourceListA(
-    _In_ DWORD Flags,
-    _In_ PCSTR Source
+     DWORD Flags,
+     PCSTR Source
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFromSourceListW(
-    _In_ DWORD Flags,
-    _In_ PCWSTR Source
+     DWORD Flags,
+     PCWSTR Source
     );
 
 #ifdef UNICODE
@@ -2723,18 +2722,18 @@ SetupRemoveFromSourceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQuerySourceListA(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _Outptr_result_buffer_(*Count) PCSTR **List,
     _Out_ PUINT Count
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQuerySourceListW(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _Outptr_result_buffer_(*Count) PCWSTR **List,
     _Out_ PUINT Count
     );
@@ -2748,18 +2747,18 @@ SetupQuerySourceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFreeSourceListA(
-    _Inout_ _At_(*List, _Pre_readable_size_(Count) _Post_null_) PCSTR **List,
-    _In_ UINT Count
+     _At_(*List, _Pre_readable_size_(Count) _Post_null_) PCSTR **List,
+     UINT Count
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupFreeSourceListW(
-    _Inout_ _At_(*List, _Pre_readable_size_(Count) _Post_null_) PCWSTR **List,
-    _In_ UINT Count
+     _At_(*List, _Pre_readable_size_(Count) _Post_null_) PCWSTR **List,
+     UINT Count
     );
 
 #ifdef UNICODE
@@ -2771,33 +2770,33 @@ SetupFreeSourceListW(
 
 
 UINT
-WINAPI
+__stdcall
 SetupPromptForDiskA(
-    _In_ HWND hwndParent,
-    _In_opt_ PCSTR DialogTitle,
-    _In_opt_ PCSTR DiskName,
-    _In_opt_ PCSTR PathToSource,
-    _In_ PCSTR FileSought,
-    _In_opt_ PCSTR TagFile,
-    _In_ DWORD DiskPromptStyle,
+     HWND hwndParent,
+     PCSTR DialogTitle,
+     PCSTR DiskName,
+     PCSTR PathToSource,
+     PCSTR FileSought,
+     PCSTR TagFile,
+     DWORD DiskPromptStyle,
     _Out_writes_opt_(PathBufferSize) PSTR PathBuffer,
-    _In_ DWORD PathBufferSize,
+     DWORD PathBufferSize,
     _Out_opt_ PDWORD PathRequiredSize
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupPromptForDiskW(
-    _In_ HWND hwndParent,
-    _In_opt_ PCWSTR DialogTitle,
-    _In_opt_ PCWSTR DiskName,
-    _In_opt_ PCWSTR PathToSource,
-    _In_ PCWSTR FileSought,
-    _In_opt_ PCWSTR TagFile,
-    _In_ DWORD DiskPromptStyle,
+     HWND hwndParent,
+     PCWSTR DialogTitle,
+     PCWSTR DiskName,
+     PCWSTR PathToSource,
+     PCWSTR FileSought,
+     PCWSTR TagFile,
+     DWORD DiskPromptStyle,
     _Out_writes_opt_(PathBufferSize) PWSTR PathBuffer,
-    _In_ DWORD PathBufferSize,
+     DWORD PathBufferSize,
     _Out_opt_ PDWORD PathRequiredSize
     );
 
@@ -2810,35 +2809,35 @@ SetupPromptForDiskW(
 
 
 UINT
-WINAPI
+__stdcall
 SetupCopyErrorA(
-    _In_ HWND hwndParent,
-    _In_opt_ PCSTR DialogTitle,
-    _In_opt_ PCSTR DiskName,
-    _In_ PCSTR PathToSource,
-    _In_ PCSTR SourceFile,
-    _In_opt_ PCSTR TargetPathFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style,
+     HWND hwndParent,
+     PCSTR DialogTitle,
+     PCSTR DiskName,
+     PCSTR PathToSource,
+     PCSTR SourceFile,
+     PCSTR TargetPathFile,
+     UINT Win32ErrorCode,
+     DWORD Style,
     _Out_writes_opt_(PathBufferSize) PSTR PathBuffer,
-    _In_ DWORD PathBufferSize,
+     DWORD PathBufferSize,
     _Out_opt_ PDWORD PathRequiredSize
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupCopyErrorW(
-    _In_ HWND hwndParent,
-    _In_opt_ PCWSTR DialogTitle,
-    _In_opt_ PCWSTR DiskName,
-    _In_ PCWSTR PathToSource,
-    _In_ PCWSTR SourceFile,
-    _In_opt_ PCWSTR TargetPathFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style,
+     HWND hwndParent,
+     PCWSTR DialogTitle,
+     PCWSTR DiskName,
+     PCWSTR PathToSource,
+     PCWSTR SourceFile,
+     PCWSTR TargetPathFile,
+     UINT Win32ErrorCode,
+     DWORD Style,
     _Out_writes_opt_(PathBufferSize) PWSTR PathBuffer,
-    _In_ DWORD PathBufferSize,
+     DWORD PathBufferSize,
     _Out_opt_ PDWORD PathRequiredSize
     );
 
@@ -2851,26 +2850,26 @@ SetupCopyErrorW(
 
 
 UINT
-WINAPI
+__stdcall
 SetupRenameErrorA(
-    _In_ HWND hwndParent,
-    _In_opt_ PCSTR DialogTitle,
-    _In_ PCSTR SourceFile,
-    _In_ PCSTR TargetFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCSTR DialogTitle,
+     PCSTR SourceFile,
+     PCSTR TargetFile,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupRenameErrorW(
-    _In_ HWND hwndParent,
-    _In_opt_ PCWSTR DialogTitle,
-    _In_ PCWSTR SourceFile,
-    _In_ PCWSTR TargetFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCWSTR DialogTitle,
+     PCWSTR SourceFile,
+     PCWSTR TargetFile,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 #ifdef UNICODE
@@ -2882,24 +2881,24 @@ SetupRenameErrorW(
 
 
 UINT
-WINAPI
+__stdcall
 SetupDeleteErrorA(
-    _In_ HWND hwndParent,
-    _In_opt_ PCSTR DialogTitle,
-    _In_ PCSTR File,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCSTR DialogTitle,
+     PCSTR File,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupDeleteErrorW(
-    _In_ HWND hwndParent,
-    _In_opt_ PCWSTR DialogTitle,
-    _In_ PCWSTR File,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCWSTR DialogTitle,
+     PCWSTR File,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 #ifdef UNICODE
@@ -2910,26 +2909,26 @@ SetupDeleteErrorW(
 
 
 UINT
-WINAPI
+__stdcall
 SetupBackupErrorA(
-    _In_ HWND hwndParent,
-    _In_opt_ PCSTR DialogTitle,
-    _In_ PCSTR SourceFile,
-    _In_opt_ PCSTR TargetFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCSTR DialogTitle,
+     PCSTR SourceFile,
+     PCSTR TargetFile,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupBackupErrorW(
-    _In_ HWND hwndParent,
-    _In_opt_ PCWSTR DialogTitle,
-    _In_ PCWSTR SourceFile,
-    _In_opt_ PCWSTR TargetFile,
-    _In_ UINT Win32ErrorCode,
-    _In_ DWORD Style
+     HWND hwndParent,
+     PCWSTR DialogTitle,
+     PCWSTR SourceFile,
+     PCWSTR TargetFile,
+     UINT Win32ErrorCode,
+     DWORD Style
     );
 
 #ifdef UNICODE
@@ -2973,20 +2972,20 @@ SetupBackupErrorW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetDirectoryIdA(
-    _In_ HINF InfHandle,
-    _In_ DWORD Id, 
-    _In_opt_ PCSTR Directory 
+     HINF InfHandle,
+     DWORD Id, 
+     PCSTR Directory 
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetDirectoryIdW(
-    _In_ HINF InfHandle,
-    _In_ DWORD Id, 
-    _In_opt_ PCWSTR Directory 
+     HINF InfHandle,
+     DWORD Id, 
+     PCWSTR Directory 
     );
 
 #ifdef UNICODE
@@ -2998,24 +2997,24 @@ SetupSetDirectoryIdW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetDirectoryIdExA(
-    _In_ HINF InfHandle,
-    _In_ DWORD Id, 
-    _In_opt_ PCSTR Directory, 
-    _In_ DWORD Flags,
+     HINF InfHandle,
+     DWORD Id, 
+     PCSTR Directory, 
+     DWORD Flags,
     _Reserved_ DWORD Reserved1,
     _Reserved_ PVOID Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetDirectoryIdExW(
-    _In_ HINF InfHandle,
-    _In_ DWORD Id, 
-    _In_opt_ PCWSTR Directory,
-    _In_ DWORD Flags,
+     HINF InfHandle,
+     DWORD Id, 
+     PCWSTR Directory,
+     DWORD Flags,
     _Reserved_ DWORD Reserved1,
     _Reserved_ PVOID Reserved2
     );
@@ -3034,25 +3033,25 @@ SetupSetDirectoryIdExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceInfoA(
-    _In_ HINF InfHandle,
-    _In_ UINT SourceId,
-    _In_ UINT InfoDesired,
+     HINF InfHandle,
+     UINT SourceId,
+     UINT InfoDesired,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetSourceInfoW(
-    _In_ HINF InfHandle,
-    _In_ UINT SourceId,
-    _In_ UINT InfoDesired,
+     HINF InfHandle,
+     UINT SourceId,
+     UINT InfoDesired,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -3085,30 +3084,30 @@ SetupGetSourceInfoW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFileA(
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCSTR SourceFile,
-    _In_opt_ PCSTR SourcePathRoot,
-    _In_opt_ PCSTR DestinationName,
-    _In_ DWORD CopyStyle,
-    _In_opt_ PSP_FILE_CALLBACK_A CopyMsgHandler,
-    _In_opt_ PVOID Context
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCSTR SourceFile,
+     PCSTR SourcePathRoot,
+     PCSTR DestinationName,
+     DWORD CopyStyle,
+     PSP_FILE_CALLBACK_A CopyMsgHandler,
+     PVOID Context
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFileW(
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCWSTR SourceFile,
-    _In_opt_ PCWSTR SourcePathRoot,
-    _In_opt_ PCWSTR DestinationName,
-    _In_ DWORD CopyStyle,
-    _In_opt_ PSP_FILE_CALLBACK_W CopyMsgHandler,
-    _In_opt_ PVOID Context
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCWSTR SourceFile,
+     PCWSTR SourcePathRoot,
+     PCWSTR DestinationName,
+     DWORD CopyStyle,
+     PSP_FILE_CALLBACK_W CopyMsgHandler,
+     PVOID Context
     );
 
 #ifdef UNICODE
@@ -3119,31 +3118,31 @@ SetupInstallFileW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFileExA(
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCSTR SourceFile,
-    _In_opt_ PCSTR SourcePathRoot,
-    _In_opt_ PCSTR DestinationName,
-    _In_ DWORD CopyStyle,
-    _In_opt_ PSP_FILE_CALLBACK_A CopyMsgHandler,
-    _In_opt_ PVOID Context,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCSTR SourceFile,
+     PCSTR SourcePathRoot,
+     PCSTR DestinationName,
+     DWORD CopyStyle,
+     PSP_FILE_CALLBACK_A CopyMsgHandler,
+     PVOID Context,
     _Out_ PBOOL FileWasInUse
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFileExW(
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PINFCONTEXT InfContext,
-    _In_opt_ PCWSTR SourceFile,
-    _In_opt_ PCWSTR SourcePathRoot,
-    _In_opt_ PCWSTR DestinationName,
-    _In_ DWORD CopyStyle,
-    _In_opt_ PSP_FILE_CALLBACK_W CopyMsgHandler,
-    _In_opt_ PVOID Context,
+     HINF InfHandle,
+     PINFCONTEXT InfContext,
+     PCWSTR SourceFile,
+     PCWSTR SourcePathRoot,
+     PCWSTR DestinationName,
+     DWORD CopyStyle,
+     PSP_FILE_CALLBACK_W CopyMsgHandler,
+     PVOID Context,
     _Out_ PBOOL FileWasInUse
     );
 
@@ -3223,34 +3222,34 @@ SetupInstallFileExW(
 
 
 HSPFILEQ
-WINAPI
+__stdcall
 SetupOpenFileQueue(
     VOID
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCloseFileQueue(
-    _In_ HSPFILEQ QueueHandle
+     HSPFILEQ QueueHandle
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetFileQueueAlternatePlatformA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
-    _In_opt_ PCSTR AlternateDefaultCatalogFile
+     HSPFILEQ QueueHandle,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PCSTR AlternateDefaultCatalogFile
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetFileQueueAlternatePlatformW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
-    _In_opt_ PCWSTR AlternateDefaultCatalogFile
+     HSPFILEQ QueueHandle,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PCWSTR AlternateDefaultCatalogFile
     );
 
 #ifdef UNICODE
@@ -3262,16 +3261,16 @@ SetupSetFileQueueAlternatePlatformW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetPlatformPathOverrideA(
-    _In_opt_ PCSTR Override
+     PCSTR Override
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetPlatformPathOverrideW(
-    _In_opt_ PCWSTR Override
+     PCWSTR Override
     );
 
 #ifdef UNICODE
@@ -3283,32 +3282,32 @@ SetupSetPlatformPathOverrideW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopyA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PCSTR SourceRootPath, 
-    _In_opt_ PCSTR SourcePath, 
-    _In_ PCSTR SourceFilename,
-    _In_opt_ PCSTR SourceDescription, 
-    _In_opt_ PCSTR SourceTagfile, 
-    _In_ PCSTR TargetDirectory,
-    _In_opt_ PCSTR TargetFilename, 
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     PCSTR SourceRootPath, 
+     PCSTR SourcePath, 
+     PCSTR SourceFilename,
+     PCSTR SourceDescription, 
+     PCSTR SourceTagfile, 
+     PCSTR TargetDirectory,
+     PCSTR TargetFilename, 
+     DWORD CopyStyle
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopyW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PCWSTR SourceRootPath, 
-    _In_opt_ PCWSTR SourcePath, 
-    _In_ PCWSTR SourceFilename,
-    _In_opt_ PCWSTR SourceDescription, 
-    _In_opt_ PCWSTR SourceTagfile, 
-    _In_ PCWSTR TargetDirectory,
-    _In_opt_ PCWSTR TargetFilename, 
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     PCWSTR SourceRootPath, 
+     PCWSTR SourcePath, 
+     PCWSTR SourceFilename,
+     PCWSTR SourceDescription, 
+     PCWSTR SourceTagfile, 
+     PCWSTR TargetDirectory,
+     PCWSTR TargetFilename, 
+     DWORD CopyStyle
     );
 
 #ifdef UNICODE
@@ -3320,16 +3319,16 @@ SetupQueueCopyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopyIndirectA(
-    _In_ PSP_FILE_COPY_PARAMS_A CopyParams
+     PSP_FILE_COPY_PARAMS_A CopyParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopyIndirectW(
-    _In_ PSP_FILE_COPY_PARAMS_W CopyParams
+     PSP_FILE_COPY_PARAMS_W CopyParams
     );
 
 #ifdef UNICODE
@@ -3341,26 +3340,26 @@ SetupQueueCopyIndirectW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDefaultCopyA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ PCSTR SourceRootPath,
-    _In_ PCSTR SourceFilename,
-    _In_opt_ PCSTR TargetFilename,
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     PCSTR SourceRootPath,
+     PCSTR SourceFilename,
+     PCSTR TargetFilename,
+     DWORD CopyStyle
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDefaultCopyW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ PCWSTR SourceRootPath,
-    _In_ PCWSTR SourceFilename,
-    _In_opt_ PCWSTR TargetFilename,
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     PCWSTR SourceRootPath,
+     PCWSTR SourceFilename,
+     PCWSTR TargetFilename,
+     DWORD CopyStyle
     );
 
 #ifdef UNICODE
@@ -3372,26 +3371,26 @@ SetupQueueDefaultCopyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopySectionA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PCSTR SourceRootPath,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCSTR Section,
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     PCSTR SourceRootPath,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCSTR Section,
+     DWORD CopyStyle
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueCopySectionW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_opt_ PCWSTR SourceRootPath,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCWSTR Section,
-    _In_ DWORD CopyStyle
+     HSPFILEQ QueueHandle,
+     PCWSTR SourceRootPath,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCWSTR Section,
+     DWORD CopyStyle
     );
 
 #ifdef UNICODE
@@ -3403,20 +3402,20 @@ SetupQueueCopySectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDeleteA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCSTR PathPart1,
-    _In_opt_ PCSTR PathPart2
+     HSPFILEQ QueueHandle,
+     PCSTR PathPart1,
+     PCSTR PathPart2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDeleteW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCWSTR PathPart1,
-    _In_opt_ PCWSTR PathPart2
+     HSPFILEQ QueueHandle,
+     PCWSTR PathPart1,
+     PCWSTR PathPart2
     );
 
 #ifdef UNICODE
@@ -3428,22 +3427,22 @@ SetupQueueDeleteW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDeleteSectionA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCSTR Section
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCSTR Section
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueDeleteSectionW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCWSTR Section
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCWSTR Section
     );
 
 #ifdef UNICODE
@@ -3455,24 +3454,24 @@ SetupQueueDeleteSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueRenameA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCSTR SourcePath,
-    _In_opt_ PCSTR SourceFilename,
-    _In_opt_ PCSTR TargetPath,
-    _In_ PCSTR TargetFilename
+     HSPFILEQ QueueHandle,
+     PCSTR SourcePath,
+     PCSTR SourceFilename,
+     PCSTR TargetPath,
+     PCSTR TargetFilename
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueRenameW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCWSTR SourcePath,
-    _In_opt_ PCWSTR SourceFilename, 
-    _In_opt_ PCWSTR TargetPath,
-    _In_ PCWSTR TargetFilename
+     HSPFILEQ QueueHandle,
+     PCWSTR SourcePath,
+     PCWSTR SourceFilename, 
+     PCWSTR TargetPath,
+     PCWSTR TargetFilename
     );
 
 #ifdef UNICODE
@@ -3484,22 +3483,22 @@ SetupQueueRenameW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueRenameSectionA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCSTR Section
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCSTR Section
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueueRenameSectionW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCWSTR Section
+     HSPFILEQ QueueHandle,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCWSTR Section
     );
 
 #ifdef UNICODE
@@ -3511,22 +3510,22 @@ SetupQueueRenameSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCommitFileQueueA(
-    _In_opt_ HWND Owner,
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PSP_FILE_CALLBACK_A MsgHandler,
-    _In_ PVOID Context
+     HWND Owner,
+     HSPFILEQ QueueHandle,
+     PSP_FILE_CALLBACK_A MsgHandler,
+     PVOID Context
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCommitFileQueueW(
-    _In_opt_ HWND Owner,
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PSP_FILE_CALLBACK_W MsgHandler,
-    _In_ PVOID Context
+     HWND Owner,
+     HSPFILEQ QueueHandle,
+     PSP_FILE_CALLBACK_W MsgHandler,
+     PVOID Context
     );
 
 #ifdef UNICODE
@@ -3538,25 +3537,25 @@ SetupCommitFileQueueW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupScanFileQueueA(
-    _In_ HSPFILEQ FileQueue,
-    _In_ DWORD Flags,
-    _In_opt_ HWND Window,
-    _In_opt_ PSP_FILE_CALLBACK_A CallbackRoutine,
-    _In_opt_ PVOID CallbackContext,
+     HSPFILEQ FileQueue,
+     DWORD Flags,
+     HWND Window,
+     PSP_FILE_CALLBACK_A CallbackRoutine,
+     PVOID CallbackContext,
     _Out_ PDWORD Result
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupScanFileQueueW(
-    _In_ HSPFILEQ FileQueue,
-    _In_ DWORD Flags,
-    _In_opt_ HWND Window,
-    _In_opt_ PSP_FILE_CALLBACK_W CallbackRoutine,
-    _In_opt_ PVOID CallbackContext,
+     HSPFILEQ FileQueue,
+     DWORD Flags,
+     HWND Window,
+     PSP_FILE_CALLBACK_W CallbackRoutine,
+     PVOID CallbackContext,
     _Out_ PDWORD Result
     );
 
@@ -3602,28 +3601,28 @@ SetupScanFileQueueW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetFileQueueCount(
-    _In_ HSPFILEQ FileQueue,
-    _In_ UINT SubQueueFileOp,
+     HSPFILEQ FileQueue,
+     UINT SubQueueFileOp,
     _Out_ PUINT NumOperations
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetFileQueueFlags(
-    _In_ HSPFILEQ FileQueue,
+     HSPFILEQ FileQueue,
     _Out_ PDWORD Flags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetFileQueueFlags(
-    _In_ HSPFILEQ FileQueue,
-    _In_ DWORD FlagMask,
-    _In_ DWORD Flags
+     HSPFILEQ FileQueue,
+     DWORD FlagMask,
+     DWORD Flags
     );
 
 //
@@ -3666,28 +3665,28 @@ SetupSetFileQueueFlags(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCopyOEMInfA(
-    _In_ PCSTR SourceInfFileName,
-    _In_opt_ PCSTR OEMSourceMediaLocation,
-    _In_ DWORD OEMSourceMediaType,
-    _In_ DWORD CopyStyle,
+     PCSTR SourceInfFileName,
+     PCSTR OEMSourceMediaLocation,
+     DWORD OEMSourceMediaType,
+     DWORD CopyStyle,
     _Out_writes_opt_(DestinationInfFileNameSize) PSTR DestinationInfFileName,
-    _In_ DWORD DestinationInfFileNameSize,
+     DWORD DestinationInfFileNameSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PSTR *DestinationInfFileNameComponent
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupCopyOEMInfW(
-    _In_ PCWSTR SourceInfFileName,
-    _In_opt_ PCWSTR OEMSourceMediaLocation,
-    _In_ DWORD OEMSourceMediaType,
-    _In_ DWORD CopyStyle,
+     PCWSTR SourceInfFileName,
+     PCWSTR OEMSourceMediaLocation,
+     DWORD OEMSourceMediaType,
+     DWORD CopyStyle,
     _Out_writes_opt_(DestinationInfFileNameSize) PWSTR DestinationInfFileName,
-    _In_ DWORD DestinationInfFileNameSize,
+     DWORD DestinationInfFileNameSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PWSTR  *DestinationInfFileNameComponent
     );
@@ -3717,19 +3716,19 @@ SetupCopyOEMInfW(
 #if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 BOOL
-WINAPI
+__stdcall
 SetupUninstallOEMInfA(
-    _In_ PCSTR InfFileName,
-    _In_ DWORD Flags,
+     PCSTR InfFileName,
+     DWORD Flags,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupUninstallOEMInfW(
-    _In_ PCWSTR InfFileName,
-    _In_ DWORD Flags,
+     PCWSTR InfFileName,
+     DWORD Flags,
     _Reserved_ PVOID Reserved
     );
 
@@ -3742,10 +3741,10 @@ SetupUninstallOEMInfW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupUninstallNewlyCopiedInfs(
-    _In_ HSPFILEQ FileQueue,
-    _In_ DWORD Flags,
+     HSPFILEQ FileQueue,
+     DWORD Flags,
     _Reserved_ PVOID Reserved
     );
 
@@ -3757,20 +3756,20 @@ SetupUninstallNewlyCopiedInfs(
 //
 
 HDSKSPC
-WINAPI
+__stdcall
 SetupCreateDiskSpaceListA(
     _Reserved_ PVOID Reserved1,
     _Reserved_ DWORD Reserved2,
-    _In_ UINT Flags
+     UINT Flags
     );
 
 
 HDSKSPC
-WINAPI
+__stdcall
 SetupCreateDiskSpaceListW(
     _Reserved_ PVOID Reserved1,
     _Reserved_ DWORD Reserved2,
-    _In_ UINT Flags
+     UINT Flags
     );
 
 #ifdef UNICODE
@@ -3788,22 +3787,22 @@ SetupCreateDiskSpaceListW(
 
 
 HDSKSPC
-WINAPI
+__stdcall
 SetupDuplicateDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
+     HDSKSPC DiskSpace,
     _Reserved_ PVOID Reserved1,
     _Reserved_ DWORD Reserved2,
-    _In_ UINT Flags
+     UINT Flags
     );
 
 
 HDSKSPC
-WINAPI
+__stdcall
 SetupDuplicateDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
+     HDSKSPC DiskSpace,
     _Reserved_ PVOID Reserved1,
     _Reserved_ DWORD Reserved2,
-    _In_ UINT Flags
+     UINT Flags
     );
 
 #ifdef UNICODE
@@ -3815,29 +3814,29 @@ SetupDuplicateDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDestroyDiskSpaceList(
-    _Inout_ HDSKSPC DiskSpace
+     HDSKSPC DiskSpace
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryDrivesInDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
+     HDSKSPC DiskSpace,
     _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryDrivesInDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
+     HDSKSPC DiskSpace,
     _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -3850,10 +3849,10 @@ SetupQueryDrivesInDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQuerySpaceRequiredOnDriveA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCSTR DriveSpec,
+     HDSKSPC DiskSpace,
+     PCSTR DriveSpec,
     _Out_ LONGLONG *SpaceRequired,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
@@ -3861,10 +3860,10 @@ SetupQuerySpaceRequiredOnDriveA(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQuerySpaceRequiredOnDriveW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCWSTR DriveSpec,
+     HDSKSPC DiskSpace,
+     PCWSTR DriveSpec,
     _Out_ LONGLONG *SpaceRequired,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
@@ -3879,22 +3878,22 @@ SetupQuerySpaceRequiredOnDriveW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAdjustDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ LPCSTR DriveRoot,
-    _In_ LONGLONG Amount,
+     HDSKSPC DiskSpace,
+     LPCSTR DriveRoot,
+     LONGLONG Amount,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAdjustDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ LPCWSTR DriveRoot,
-    _In_ LONGLONG Amount,
+     HDSKSPC DiskSpace,
+     LPCWSTR DriveRoot,
+     LONGLONG Amount,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -3908,24 +3907,24 @@ SetupAdjustDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddToDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCSTR TargetFilespec,
-    _In_ LONGLONG FileSize,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     PCSTR TargetFilespec,
+     LONGLONG FileSize,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddToDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCWSTR TargetFilespec,
-    _In_ LONGLONG FileSize,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     PCWSTR TargetFilespec,
+     LONGLONG FileSize,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -3939,26 +3938,26 @@ SetupAddToDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddSectionToDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCSTR SectionName,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCSTR SectionName,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddSectionToDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCWSTR SectionName,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -3972,24 +3971,24 @@ SetupAddSectionToDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddInstallSectionToDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ PCSTR SectionName,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     PCSTR SectionName,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupAddInstallSectionToDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ PCWSTR SectionName,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     PCWSTR SectionName,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -4003,22 +4002,22 @@ SetupAddInstallSectionToDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFromDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCSTR TargetFilespec,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     PCSTR TargetFilespec,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFromDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ PCWSTR TargetFilespec,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     PCWSTR TargetFilespec,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -4032,26 +4031,26 @@ SetupRemoveFromDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveSectionFromDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCSTR SectionName,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCSTR SectionName,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveSectionFromDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF ListInfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ UINT Operation,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF ListInfHandle,
+     PCWSTR SectionName,
+     UINT Operation,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -4065,24 +4064,24 @@ SetupRemoveSectionFromDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveInstallSectionFromDiskSpaceListA(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ PCSTR SectionName,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     PCSTR SectionName,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveInstallSectionFromDiskSpaceListW(
-    _In_ HDSKSPC DiskSpace,
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ PCWSTR SectionName,
+     HDSKSPC DiskSpace,
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     PCWSTR SectionName,
     _Reserved_ PVOID Reserved1,
     _Reserved_ UINT Reserved2
     );
@@ -4100,22 +4099,22 @@ SetupRemoveInstallSectionFromDiskSpaceListW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupIterateCabinetA(
-    _In_ PCSTR CabinetFile,
+     PCSTR CabinetFile,
     _Reserved_ DWORD Reserved,
-    _In_ PSP_FILE_CALLBACK_A MsgHandler,
-    _In_ PVOID Context
+     PSP_FILE_CALLBACK_A MsgHandler,
+     PVOID Context
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupIterateCabinetW(
-    _In_ PCWSTR CabinetFile,
+     PCWSTR CabinetFile,
     _Reserved_ DWORD Reserved,
-    _In_ PSP_FILE_CALLBACK_W MsgHandler,
-    _In_ PVOID Context
+     PSP_FILE_CALLBACK_W MsgHandler,
+     PVOID Context
     );
 
 #ifdef UNICODE
@@ -4127,11 +4126,11 @@ SetupIterateCabinetW(
 
 
 INT
-WINAPI
+__stdcall
 SetupPromptReboot(
-    _In_opt_ HSPFILEQ FileQueue,
-    _In_opt_ HWND Owner,
-    _In_ BOOL ScanOnly
+     HSPFILEQ FileQueue,
+     HWND Owner,
+     BOOL ScanOnly
     );
 
 //
@@ -4144,47 +4143,47 @@ SetupPromptReboot(
 
 
 PVOID
-WINAPI
+__stdcall
 SetupInitDefaultQueueCallback(
-    _In_opt_ HWND OwnerWindow
+     HWND OwnerWindow
     );
 
 
 PVOID
-WINAPI
+__stdcall
 SetupInitDefaultQueueCallbackEx(
-    _In_opt_ HWND OwnerWindow,
-    _In_opt_ HWND AlternateProgressWindow,
-    _In_ UINT ProgressMessage,
+     HWND OwnerWindow,
+     HWND AlternateProgressWindow,
+     UINT ProgressMessage,
     _Reserved_ DWORD Reserved1,
     _Reserved_ PVOID Reserved2
     );
 
 
 VOID
-WINAPI
+__stdcall
 SetupTermDefaultQueueCallback(
-    _In_ PVOID Context
+     PVOID Context
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupDefaultQueueCallbackA(
-    _In_ PVOID Context,
-    _In_ UINT Notification,
-    _In_ UINT_PTR Param1,
-    _In_ UINT_PTR Param2
+     PVOID Context,
+     UINT Notification,
+     UINT_PTR Param1,
+     UINT_PTR Param2
     );
 
 
 UINT
-WINAPI
+__stdcall
 SetupDefaultQueueCallbackW(
-    _In_ PVOID Context,
-    _In_ UINT Notification,
-    _In_ UINT_PTR Param1,
-    _In_ UINT_PTR Param2
+     PVOID Context,
+     UINT Notification,
+     UINT_PTR Param1,
+     UINT_PTR Param2
     );
 
 #ifdef UNICODE
@@ -4356,36 +4355,36 @@ SetupDefaultQueueCallbackW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFromInfSectionA(
-    _In_opt_ HWND Owner,
-    _In_ HINF InfHandle,
-    _In_ PCSTR SectionName,
-    _In_ UINT Flags,
-    _In_opt_ HKEY RelativeKeyRoot,
-    _In_opt_ PCSTR SourceRootPath,
-    _In_ UINT CopyFlags,
-    _In_opt_ PSP_FILE_CALLBACK_A MsgHandler,
-    _In_opt_ PVOID Context,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     HWND Owner,
+     HINF InfHandle,
+     PCSTR SectionName,
+     UINT Flags,
+     HKEY RelativeKeyRoot,
+     PCSTR SourceRootPath,
+     UINT CopyFlags,
+     PSP_FILE_CALLBACK_A MsgHandler,
+     PVOID Context,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFromInfSectionW(
-    _In_opt_ HWND Owner,
-    _In_ HINF InfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ UINT Flags,
-    _In_opt_ HKEY RelativeKeyRoot,
-    _In_opt_ PCWSTR SourceRootPath,
-    _In_ UINT CopyFlags,
-    _In_opt_ PSP_FILE_CALLBACK_W MsgHandler,
-    _In_opt_ PVOID Context,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     HWND Owner,
+     HINF InfHandle,
+     PCWSTR SectionName,
+     UINT Flags,
+     HKEY RelativeKeyRoot,
+     PCWSTR SourceRootPath,
+     UINT CopyFlags,
+     PSP_FILE_CALLBACK_W MsgHandler,
+     PVOID Context,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 #ifdef UNICODE
@@ -4446,26 +4445,26 @@ SetupInstallFromInfSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFilesFromInfSectionA(
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ HSPFILEQ FileQueue,
-    _In_ PCSTR SectionName,
-    _In_opt_ PCSTR SourceRootPath,
-    _In_ UINT CopyFlags
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     HSPFILEQ FileQueue,
+     PCSTR SectionName,
+     PCSTR SourceRootPath,
+     UINT CopyFlags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallFilesFromInfSectionW(
-    _In_ HINF InfHandle,
-    _In_opt_ HINF LayoutInfHandle,
-    _In_ HSPFILEQ FileQueue,
-    _In_ PCWSTR SectionName,
-    _In_opt_ PCWSTR SourceRootPath,
-    _In_ UINT CopyFlags
+     HINF InfHandle,
+     HINF LayoutInfHandle,
+     HSPFILEQ FileQueue,
+     PCWSTR SectionName,
+     PCWSTR SourceRootPath,
+     UINT CopyFlags
     );
 
 #ifdef UNICODE
@@ -4568,20 +4567,20 @@ SetupInstallFilesFromInfSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallServicesFromInfSectionA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR SectionName,
-    _In_ DWORD Flags
+     HINF InfHandle,
+     PCSTR SectionName,
+     DWORD Flags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallServicesFromInfSectionW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ DWORD Flags
+     HINF InfHandle,
+     PCWSTR SectionName,
+     DWORD Flags
     );
 
 #ifdef UNICODE
@@ -4593,26 +4592,26 @@ SetupInstallServicesFromInfSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallServicesFromInfSectionExA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR SectionName,
-    _In_ DWORD Flags,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HINF InfHandle,
+     PCSTR SectionName,
+     DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Reserved_ PVOID Reserved1,
     _Reserved_ PVOID Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupInstallServicesFromInfSectionExW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ DWORD Flags,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HINF InfHandle,
+     PCWSTR SectionName,
+     DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Reserved_ PVOID Reserved1,
     _Reserved_ PVOID Reserved2
     );
@@ -4634,21 +4633,21 @@ SetupInstallServicesFromInfSectionExW(
 // InstallHinfSection(NULL,NULL,CmdLineBuffer,0);
 //
 VOID
-WINAPI
+__stdcall
 InstallHinfSectionA(
-    _In_ HWND Window,
-    _In_ HINSTANCE ModuleHandle,
-    _In_ PCSTR CommandLine,
-    _In_ INT ShowCommand
+     HWND Window,
+     HINSTANCE ModuleHandle,
+     PCSTR CommandLine,
+     INT ShowCommand
     );
 
 VOID
-WINAPI
+__stdcall
 InstallHinfSectionW(
-    _In_ HWND Window,
-    _In_ HINSTANCE ModuleHandle,
-    _In_ PCWSTR CommandLine,
-    _In_ INT ShowCommand
+     HWND Window,
+     HINSTANCE ModuleHandle,
+     PCWSTR CommandLine,
+     INT ShowCommand
     );
 
 #ifdef UNICODE
@@ -4668,18 +4667,18 @@ typedef PVOID HSPFILELOG;
 
 
 HSPFILELOG
-WINAPI
+__stdcall
 SetupInitializeFileLogA(
-    _In_opt_ PCSTR LogFileName,
-    _In_ DWORD Flags
+     PCSTR LogFileName,
+     DWORD Flags
     );
 
 
 HSPFILELOG
-WINAPI
+__stdcall
 SetupInitializeFileLogW(
-    _In_opt_ PCWSTR LogFileName,
-    _In_ DWORD Flags
+     PCWSTR LogFileName,
+     DWORD Flags
     );
 
 #ifdef UNICODE
@@ -4698,40 +4697,40 @@ SetupInitializeFileLogW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupTerminateFileLog(
-    _In_ HSPFILELOG FileLogHandle
+     HSPFILELOG FileLogHandle
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupLogFileA(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCSTR LogSectionName,
-    _In_ PCSTR SourceFilename,
-    _In_ PCSTR TargetFilename,
-    _In_ DWORD Checksum,
-    _In_opt_ PCSTR DiskTagfile,
-    _In_opt_ PCSTR DiskDescription,
-    _In_opt_ PCSTR OtherInfo,
-    _In_ DWORD Flags
+     HSPFILELOG FileLogHandle,
+     PCSTR LogSectionName,
+     PCSTR SourceFilename,
+     PCSTR TargetFilename,
+     DWORD Checksum,
+     PCSTR DiskTagfile,
+     PCSTR DiskDescription,
+     PCSTR OtherInfo,
+     DWORD Flags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupLogFileW(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCWSTR LogSectionName,
-    _In_ PCWSTR SourceFilename,
-    _In_ PCWSTR TargetFilename,
-    _In_ DWORD Checksum,
-    _In_opt_ PCWSTR DiskTagfile,
-    _In_opt_ PCWSTR DiskDescription,
-    _In_opt_ PCWSTR OtherInfo,
-    _In_ DWORD Flags
+     HSPFILELOG FileLogHandle,
+     PCWSTR LogSectionName,
+     PCWSTR SourceFilename,
+     PCWSTR TargetFilename,
+     DWORD Checksum,
+     PCWSTR DiskTagfile,
+     PCWSTR DiskDescription,
+     PCWSTR OtherInfo,
+     DWORD Flags
     );
 
 #ifdef UNICODE
@@ -4748,20 +4747,20 @@ SetupLogFileW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFileLogEntryA(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCSTR LogSectionName,
-    _In_opt_ PCSTR TargetFilename
+     HSPFILELOG FileLogHandle,
+     PCSTR LogSectionName,
+     PCSTR TargetFilename
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupRemoveFileLogEntryW(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCWSTR LogSectionName,
-    _In_opt_ PCWSTR TargetFilename
+     HSPFILELOG FileLogHandle,
+     PCWSTR LogSectionName,
+     PCWSTR TargetFilename
     );
 
 #ifdef UNICODE
@@ -4785,27 +4784,27 @@ typedef enum {
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryFileLogA(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCSTR LogSectionName,
-    _In_ PCSTR TargetFilename,
-    _In_ SetupFileLogInfo DesiredInfo,
+     HSPFILELOG FileLogHandle,
+     PCSTR LogSectionName,
+     PCSTR TargetFilename,
+     SetupFileLogInfo DesiredInfo,
     _Out_writes_opt_(ReturnBufferSize) PSTR DataOut,
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupQueryFileLogW(
-    _In_ HSPFILELOG FileLogHandle,
-    _In_opt_ PCWSTR LogSectionName, 
-    _In_ PCWSTR TargetFilename,
-    _In_ SetupFileLogInfo DesiredInfo,
+     HSPFILELOG FileLogHandle,
+     PCWSTR LogSectionName, 
+     PCWSTR TargetFilename,
+     SetupFileLogInfo DesiredInfo,
     _Out_writes_opt_(ReturnBufferSize) PWSTR DataOut, 
-    _In_ DWORD ReturnBufferSize,
+     DWORD ReturnBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -4827,25 +4826,25 @@ SetupQueryFileLogW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupOpenLog (
-    _In_ BOOL Erase
+     BOOL Erase
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupLogErrorA (
-    _In_ LPCSTR MessageString,
-    _In_ LogSeverity Severity
+     LPCSTR MessageString,
+     LogSeverity Severity
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupLogErrorW (
-    _In_ LPCWSTR MessageString,
-    _In_ LogSeverity Severity
+     LPCWSTR MessageString,
+     LogSeverity Severity
     );
 
 #ifdef UNICODE
@@ -4856,7 +4855,7 @@ SetupLogErrorW (
 
 
 VOID
-WINAPI
+__stdcall
 SetupCloseLog (
     VOID
     );
@@ -4870,72 +4869,72 @@ SetupCloseLog (
 
 
 SP_LOG_TOKEN
-WINAPI
+__stdcall
 SetupGetThreadLogToken(
     VOID
     );
 
 
 VOID
-WINAPI
+__stdcall
 SetupSetThreadLogToken(
-    _In_ SP_LOG_TOKEN LogToken
+     SP_LOG_TOKEN LogToken
     );
 
 
 VOID
-WINAPI
+__stdcall
 SetupWriteTextLog(
-    _In_ SP_LOG_TOKEN LogToken,
-    _In_ DWORD Category,
-    _In_ DWORD Flags,
-    _In_ PCSTR MessageStr,
+     SP_LOG_TOKEN LogToken,
+     DWORD Category,
+     DWORD Flags,
+     PCSTR MessageStr,
     ...
     );
     
 
 VOID
-WINAPI
+__stdcall
 SetupWriteTextLogError(
-    _In_ SP_LOG_TOKEN LogToken,
-    _In_ DWORD Category,
-    _In_ DWORD LogFlags,
-    _In_ DWORD Error,
-    _In_ PCSTR MessageStr,
+     SP_LOG_TOKEN LogToken,
+     DWORD Category,
+     DWORD LogFlags,
+     DWORD Error,
+     PCSTR MessageStr,
     ...
     );
     
 
 VOID
-WINAPI
+__stdcall
 SetupWriteTextLogInfLine(
-    _In_ SP_LOG_TOKEN LogToken,
-    _In_ DWORD Flags,
-    _In_ HINF InfHandle,
-    _In_ PINFCONTEXT Context
+     SP_LOG_TOKEN LogToken,
+     DWORD Flags,
+     HINF InfHandle,
+     PINFCONTEXT Context
     );
 
 #endif // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
 //
-// Backup Information API's
+// Backup Information APIs
 //
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetBackupInformationA(
-    _In_ HSPFILEQ QueueHandle,
-    _Inout_ PSP_BACKUP_QUEUE_PARAMS_A BackupParams
+     HSPFILEQ QueueHandle,
+     PSP_BACKUP_QUEUE_PARAMS_A BackupParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetBackupInformationW(
-    _In_ HSPFILEQ QueueHandle,
-    _Inout_ PSP_BACKUP_QUEUE_PARAMS_W BackupParams
+     HSPFILEQ QueueHandle,
+     PSP_BACKUP_QUEUE_PARAMS_W BackupParams
     );
 
 #ifdef UNICODE
@@ -4948,20 +4947,20 @@ SetupGetBackupInformationW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupPrepareQueueForRestoreA(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCSTR BackupPath,
-    _In_ DWORD RestoreFlags
+     HSPFILEQ QueueHandle,
+     PCSTR BackupPath,
+     DWORD RestoreFlags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupPrepareQueueForRestoreW(
-    _In_ HSPFILEQ QueueHandle,
-    _In_ PCWSTR BackupPath,
-    _In_ DWORD RestoreFlags
+     HSPFILEQ QueueHandle,
+     PCWSTR BackupPath,
+     DWORD RestoreFlags
     );
 
 #ifdef UNICODE
@@ -4981,14 +4980,14 @@ SetupPrepareQueueForRestoreW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupSetNonInteractiveMode(
-    _In_ BOOL NonInteractiveFlag
+     BOOL NonInteractiveFlag
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupGetNonInteractiveMode(
     VOID
     );
@@ -5002,32 +5001,32 @@ SetupGetNonInteractiveMode(
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiCreateDeviceInfoList(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ HWND hwndParent
+     CONST GUID *ClassGuid,
+     HWND hwndParent
     );
 
 
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiCreateDeviceInfoListExA(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ HWND hwndParent,
-    _In_opt_ PCSTR MachineName,
+     CONST GUID *ClassGuid,
+     HWND hwndParent,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiCreateDeviceInfoListExW(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ HWND hwndParent, 
-    _In_opt_ PCWSTR MachineName, 
+     CONST GUID *ClassGuid,
+     HWND hwndParent, 
+     PCWSTR MachineName, 
     _Reserved_ PVOID Reserved
     );
 
@@ -5040,25 +5039,25 @@ SetupDiCreateDeviceInfoListExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInfoListClass(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Out_ LPGUID ClassGuid
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInfoListDetailA(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Out_ PSP_DEVINFO_LIST_DETAIL_DATA_A DeviceInfoSetDetailData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInfoListDetailW(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Out_ PSP_DEVINFO_LIST_DETAIL_DATA_W DeviceInfoSetDetailData
     );
 
@@ -5077,27 +5076,27 @@ SetupDiGetDeviceInfoListDetailW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCreateDeviceInfoA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCSTR DeviceName,
-    _In_ CONST GUID *ClassGuid,
-    _In_opt_ PCSTR DeviceDescription,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD CreationFlags,
+     HDEVINFO DeviceInfoSet,
+     PCSTR DeviceName,
+     CONST GUID *ClassGuid,
+     PCSTR DeviceDescription,
+     HWND hwndParent,
+     DWORD CreationFlags,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCreateDeviceInfoW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCWSTR DeviceName,
-    _In_ CONST GUID *ClassGuid,
-    _In_opt_ PCWSTR DeviceDescription,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD CreationFlags,
+     HDEVINFO DeviceInfoSet,
+     PCWSTR DeviceName,
+     CONST GUID *ClassGuid,
+     PCWSTR DeviceDescription,
+     HWND hwndParent,
+     DWORD CreationFlags,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
@@ -5116,23 +5115,23 @@ SetupDiCreateDeviceInfoW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiOpenDeviceInfoA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCSTR DeviceInstanceId,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD OpenFlags,
+     HDEVINFO DeviceInfoSet,
+     PCSTR DeviceInstanceId,
+     HWND hwndParent,
+     DWORD OpenFlags,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiOpenDeviceInfoW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCWSTR DeviceInstanceId,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD OpenFlags,
+     HDEVINFO DeviceInfoSet,
+     PCWSTR DeviceInstanceId,
+     HWND hwndParent,
+     DWORD OpenFlags,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
@@ -5145,23 +5144,23 @@ SetupDiOpenDeviceInfoW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInstanceIdA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_writes_opt_(DeviceInstanceIdSize) PSTR DeviceInstanceId,
-    _In_ DWORD DeviceInstanceIdSize,
+     DWORD DeviceInstanceIdSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInstanceIdW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_writes_opt_(DeviceInstanceIdSize) PWSTR DeviceInstanceId,
-    _In_ DWORD DeviceInstanceIdSize,
+     DWORD DeviceInstanceIdSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -5174,39 +5173,39 @@ SetupDiGetDeviceInstanceIdW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDeleteDeviceInfo(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiEnumDeviceInfo(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ DWORD MemberIndex,
+     HDEVINFO DeviceInfoSet,
+     DWORD MemberIndex,
     _Out_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDestroyDeviceInfoList(
-    _In_ HDEVINFO DeviceInfoSet
+     HDEVINFO DeviceInfoSet
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiEnumDeviceInterfaces(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ CONST GUID *InterfaceClassGuid,
-    _In_ DWORD MemberIndex,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     CONST GUID *InterfaceClassGuid,
+     DWORD MemberIndex,
     _Out_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
@@ -5218,25 +5217,25 @@ SetupDiEnumDeviceInterfaces(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCreateDeviceInterfaceA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ CONST GUID *InterfaceClassGuid,
-    _In_opt_ PCSTR ReferenceString,
-    _In_ DWORD CreationFlags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     CONST GUID *InterfaceClassGuid,
+     PCSTR ReferenceString,
+     DWORD CreationFlags,
     _Out_opt_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCreateDeviceInterfaceW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ CONST GUID *InterfaceClassGuid,
-    _In_opt_ PCWSTR ReferenceString,
-    _In_ DWORD CreationFlags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     CONST GUID *InterfaceClassGuid,
+     PCWSTR ReferenceString,
+     DWORD CreationFlags,
     _Out_opt_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData 
     );
 
@@ -5265,21 +5264,21 @@ SetupDiCreateDeviceInterfaceW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiOpenDeviceInterfaceA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCSTR DevicePath,
-    _In_ DWORD OpenFlags,
+     HDEVINFO DeviceInfoSet,
+     PCSTR DevicePath,
+     DWORD OpenFlags,
     _Out_opt_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiOpenDeviceInterfaceW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PCWSTR DevicePath,
-    _In_ DWORD OpenFlags,
+     HDEVINFO DeviceInfoSet,
+     PCWSTR DevicePath,
+     DWORD OpenFlags,
     _Out_opt_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
@@ -5303,11 +5302,11 @@ SetupDiOpenDeviceInterfaceW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInterfaceAlias(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _In_ CONST GUID *AliasInterfaceClassGuid,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     CONST GUID *AliasInterfaceClassGuid,
     _Out_ PSP_DEVICE_INTERFACE_DATA AliasDeviceInterfaceData
     );
 
@@ -5319,10 +5318,10 @@ SetupDiGetDeviceInterfaceAlias(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDeleteDeviceInterfaceData(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
 //
@@ -5333,10 +5332,10 @@ SetupDiDeleteDeviceInterfaceData(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiRemoveDeviceInterface(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
 //
@@ -5344,30 +5343,30 @@ SetupDiRemoveDeviceInterface(
 //
 #define SetupDiRemoveInterfaceDevice SetupDiRemoveDeviceInterface
 
-_Success_(return != FALSE)
+
 _At_((LPSTR)DeviceInterfaceDetailData->DevicePath, _Post_z_)
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInterfaceDetailA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Inout_updates_bytes_to_opt_(DeviceInterfaceDetailDataSize, *RequiredSize) PSP_DEVICE_INTERFACE_DETAIL_DATA_A DeviceInterfaceDetailData, 
-    _In_ DWORD DeviceInterfaceDetailDataSize,
+     DWORD DeviceInterfaceDetailDataSize,
     _Out_opt_ _Out_range_(>=, sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_A)) PDWORD RequiredSize,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
-_Success_(return != FALSE)
+
 _At_((LPWSTR)DeviceInterfaceDetailData->DevicePath, _Post_z_)
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInterfaceDetailW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Out_writes_bytes_to_opt_(DeviceInterfaceDetailDataSize, *RequiredSize) PSP_DEVICE_INTERFACE_DETAIL_DATA_W DeviceInterfaceDetailData,
-    _In_ DWORD DeviceInterfaceDetailDataSize,
+     DWORD DeviceInterfaceDetailDataSize,
     _Out_opt_ _Out_range_(>=, sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W)) PDWORD RequiredSize,
     _Out_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
@@ -5395,10 +5394,10 @@ SetupDiGetDeviceInterfaceDetailW(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallDeviceInterfaces(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 //
@@ -5411,11 +5410,11 @@ SetupDiInstallDeviceInterfaces(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceInterfaceDefault(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _In_ DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     DWORD Flags,
     _Reserved_ PVOID Reserved
     );
 
@@ -5433,13 +5432,13 @@ SetupDiSetDeviceInterfaceDefault(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiRegisterDeviceInfo(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Flags,
-    _In_opt_ PSP_DETSIG_CMPPROC CompareProc,
-    _In_opt_ PVOID CompareContext,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Flags,
+     PSP_DETSIG_CMPPROC CompareProc,
+     PVOID CompareContext,
     _Out_opt_ PSP_DEVINFO_DATA DupDeviceInfoData
     );
 
@@ -5455,41 +5454,41 @@ SetupDiRegisterDeviceInfo(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiBuildDriverInfoList(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD DriverType
+     DWORD DriverType
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCancelDriverInfoSearch(
-    _In_ HDEVINFO DeviceInfoSet
+     HDEVINFO DeviceInfoSet
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiEnumDriverInfoA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD DriverType,
-    _In_ DWORD MemberIndex,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD DriverType,
+     DWORD MemberIndex,
     _Out_ PSP_DRVINFO_DATA_A DriverInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiEnumDriverInfoW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD DriverType,
-    _In_ DWORD MemberIndex,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD DriverType,
+     DWORD MemberIndex,
     _Out_ PSP_DRVINFO_DATA_W DriverInfoData
     );
 
@@ -5502,19 +5501,19 @@ SetupDiEnumDriverInfoW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetSelectedDriverA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_ PSP_DRVINFO_DATA_A DriverInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetSelectedDriverW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_ PSP_DRVINFO_DATA_W DriverInfoData
     );
 
@@ -5527,18 +5526,18 @@ SetupDiGetSelectedDriverW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetSelectedDriverA(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
     _Inout_opt_ PSP_DRVINFO_DATA_A DriverInfoData
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetSelectedDriverW(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
     _Inout_opt_ PSP_DRVINFO_DATA_W DriverInfoData
     );
@@ -5551,25 +5550,25 @@ SetupDiSetSelectedDriverW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDriverInfoDetailA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_A DriverInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_A DriverInfoData,
     _Inout_updates_bytes_opt_(DriverInfoDetailDataSize) PSP_DRVINFO_DETAIL_DATA_A DriverInfoDetailData, 
-    _In_ DWORD DriverInfoDetailDataSize,
+     DWORD DriverInfoDetailDataSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDriverInfoDetailW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_W DriverInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_W DriverInfoData,
     _Inout_updates_bytes_opt_(DriverInfoDetailDataSize) PSP_DRVINFO_DETAIL_DATA_W DriverInfoDetailData,
-    _In_ DWORD DriverInfoDetailDataSize,
+     DWORD DriverInfoDetailDataSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -5582,11 +5581,11 @@ SetupDiGetDriverInfoDetailW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDestroyDriverInfoList(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD DriverType
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD DriverType
     );
 
 
@@ -5609,23 +5608,23 @@ SetupDiDestroyDriverInfoList(
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiGetClassDevsA(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ PCSTR Enumerator,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD Flags
+     CONST GUID *ClassGuid,
+     PCSTR Enumerator,
+     HWND hwndParent,
+     DWORD Flags
     );
 
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiGetClassDevsW(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ PCWSTR Enumerator,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD Flags
+     CONST GUID *ClassGuid,
+     PCWSTR Enumerator,
+     HWND hwndParent,
+     DWORD Flags
     );
 
 #ifdef UNICODE
@@ -5638,28 +5637,28 @@ SetupDiGetClassDevsW(
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiGetClassDevsExA(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ PCSTR Enumerator,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD Flags,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PCSTR MachineName,
+     CONST GUID *ClassGuid,
+     PCSTR Enumerator,
+     HWND hwndParent,
+     DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 _Check_return_
 
 HDEVINFO
-WINAPI
+__stdcall
 SetupDiGetClassDevsExW(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_opt_ PCWSTR Enumerator,
-    _In_opt_ HWND hwndParent,
-    _In_ DWORD Flags,
-    _In_opt_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PCWSTR MachineName,
+     CONST GUID *ClassGuid,
+     PCWSTR Enumerator,
+     HWND hwndParent,
+     DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -5672,23 +5671,23 @@ SetupDiGetClassDevsExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetINFClassA(
-    _In_ PCSTR InfName,
+     PCSTR InfName,
     _Out_ LPGUID ClassGuid,
     _Out_writes_(ClassNameSize) PSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetINFClassW(
-    _In_ PCWSTR InfName,
+     PCWSTR InfName,
     _Out_ LPGUID ClassGuid,
     _Out_writes_(ClassNameSize) PWSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -5706,40 +5705,40 @@ SetupDiGetINFClassW(
 #define DIBCI_NOINSTALLCLASS   0x00000001
 #define DIBCI_NODISPLAYCLASS   0x00000002
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiBuildClassInfoList(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiBuildClassInfoListExA(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiBuildClassInfoListExW(
-    _In_ DWORD Flags,
+     DWORD Flags,
     _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -5752,21 +5751,21 @@ SetupDiBuildClassInfoListExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDescriptionA(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassDescriptionSize) PSTR ClassDescription,
-    _In_ DWORD ClassDescriptionSize,
+     DWORD ClassDescriptionSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDescriptionW(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassDescriptionSize) PWSTR ClassDescription,
-    _In_ DWORD ClassDescriptionSize,
+     DWORD ClassDescriptionSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -5779,25 +5778,25 @@ SetupDiGetClassDescriptionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDescriptionExA(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassDescriptionSize) PSTR ClassDescription,
-    _In_ DWORD ClassDescriptionSize,
+     DWORD ClassDescriptionSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDescriptionExW(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassDescriptionSize) PWSTR ClassDescription,
-    _In_ DWORD ClassDescriptionSize,
+     DWORD ClassDescriptionSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -5810,11 +5809,11 @@ SetupDiGetClassDescriptionExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiCallClassInstaller(
-    _In_ DI_FUNCTION InstallFunction,
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     DI_FUNCTION InstallFunction,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -5823,9 +5822,9 @@ SetupDiCallClassInstaller(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSelectDevice(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
@@ -5835,9 +5834,9 @@ SetupDiSelectDevice(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSelectBestCompatDrv(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
@@ -5847,10 +5846,10 @@ SetupDiSelectBestCompatDrv(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallDevice(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -5859,10 +5858,10 @@ SetupDiInstallDevice(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallDriverFiles(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -5871,10 +5870,10 @@ SetupDiInstallDriverFiles(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiRegisterCoDeviceInstallers(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -5883,10 +5882,10 @@ SetupDiRegisterCoDeviceInstallers(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiRemoveDevice(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -5895,20 +5894,20 @@ SetupDiRemoveDevice(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiUnremoveDevice(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiRestartDevices(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 #endif // _SETUPAPI_VER >= _WIN32_WINNT_WS03
@@ -5918,31 +5917,31 @@ SetupDiRestartDevices(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupDiChangeState(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallClassA(
-    _In_opt_ HWND hwndParent,
-    _In_ PCSTR InfFileName,
-    _In_ DWORD Flags,
-    _In_opt_ HSPFILEQ FileQueue
+     HWND hwndParent,
+     PCSTR InfFileName,
+     DWORD Flags,
+     HSPFILEQ FileQueue
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallClassW(
-    _In_opt_ HWND hwndParent,
-    _In_ PCWSTR InfFileName,
-    _In_ DWORD Flags,
-    _In_opt_ HSPFILEQ FileQueue
+     HWND hwndParent,
+     PCWSTR InfFileName,
+     DWORD Flags,
+     HSPFILEQ FileQueue
     );
 
 #ifdef UNICODE
@@ -5954,26 +5953,26 @@ SetupDiInstallClassW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallClassExA(
-    _In_opt_ HWND hwndParent,
-    _In_opt_ PCSTR InfFileName,
-    _In_ DWORD Flags,
-    _In_opt_ HSPFILEQ FileQueue,
-    _In_opt_ CONST GUID *InterfaceClassGuid,
+     HWND hwndParent,
+     PCSTR InfFileName,
+     DWORD Flags,
+     HSPFILEQ FileQueue,
+     CONST GUID *InterfaceClassGuid,
     _Reserved_ PVOID Reserved1,
     _Reserved_ PVOID Reserved2
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiInstallClassExW(
-    _In_opt_ HWND hwndParent,
-    _In_opt_ PCWSTR InfFileName,
-    _In_ DWORD Flags,
-    _In_opt_ HSPFILEQ FileQueue,
-    _In_opt_ CONST GUID *InterfaceClassGuid,
+     HWND hwndParent,
+     PCWSTR InfFileName,
+     DWORD Flags,
+     HSPFILEQ FileQueue,
+     CONST GUID *InterfaceClassGuid,
     _Reserved_ PVOID Reserved1,
     _Reserved_ PVOID Reserved2
     );
@@ -5988,10 +5987,10 @@ SetupDiInstallClassExW(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiOpenClassRegKey(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_ REGSAM samDesired
+     CONST GUID *ClassGuid,
+     REGSAM samDesired
     );
 
 
@@ -6004,24 +6003,24 @@ SetupDiOpenClassRegKey(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiOpenClassRegKeyExA(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_ REGSAM samDesired,
-    _In_ DWORD Flags,
-    _In_opt_ PCSTR MachineName,
+     CONST GUID *ClassGuid,
+     REGSAM samDesired,
+     DWORD Flags,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiOpenClassRegKeyExW(
-    _In_opt_ CONST GUID *ClassGuid,
-    _In_ REGSAM samDesired,
-    _In_ DWORD Flags,
-    _In_opt_ PCWSTR MachineName,
+     CONST GUID *ClassGuid,
+     REGSAM samDesired,
+     DWORD Flags,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -6035,27 +6034,27 @@ SetupDiOpenClassRegKeyExW(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiCreateDeviceInterfaceRegKeyA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Reserved_ DWORD Reserved,
-    _In_ REGSAM samDesired,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCSTR InfSectionName
+     REGSAM samDesired,
+     HINF InfHandle,
+     PCSTR InfSectionName
     );
 
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiCreateDeviceInterfaceRegKeyW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Reserved_ DWORD Reserved,
-    _In_ REGSAM samDesired,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCWSTR InfSectionName
+     REGSAM samDesired,
+     HINF InfHandle,
+     PCWSTR InfSectionName
     );
 
 #ifdef UNICODE
@@ -6079,12 +6078,12 @@ SetupDiCreateDeviceInterfaceRegKeyW(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiOpenDeviceInterfaceRegKey(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Reserved_ DWORD Reserved,
-    _In_ REGSAM samDesired
+     REGSAM samDesired
     );
 
 //
@@ -6095,10 +6094,10 @@ SetupDiOpenDeviceInterfaceRegKey(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDeleteDeviceInterfaceRegKey(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Reserved_ DWORD Reserved
     );
 
@@ -6119,29 +6118,29 @@ SetupDiDeleteDeviceInterfaceRegKey(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiCreateDevRegKeyA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Scope,
-    _In_ DWORD HwProfile,
-    _In_ DWORD KeyType,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCSTR InfSectionName
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Scope,
+     DWORD HwProfile,
+     DWORD KeyType,
+     HINF InfHandle,
+     PCSTR InfSectionName
     );
 
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiCreateDevRegKeyW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Scope,
-    _In_ DWORD HwProfile,
-    _In_ DWORD KeyType,
-    _In_opt_ HINF InfHandle,
-    _In_opt_ PCWSTR InfSectionName
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Scope,
+     DWORD HwProfile,
+     DWORD KeyType,
+     HINF InfHandle,
+     PCWSTR InfSectionName
     );
 
 #ifdef UNICODE
@@ -6154,62 +6153,62 @@ SetupDiCreateDevRegKeyW(
 _Check_return_
 
 HKEY
-WINAPI
+__stdcall
 SetupDiOpenDevRegKey(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Scope,
-    _In_ DWORD HwProfile,
-    _In_ DWORD KeyType,
-    _In_ REGSAM samDesired
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Scope,
+     DWORD HwProfile,
+     DWORD KeyType,
+     REGSAM samDesired
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDeleteDevRegKey(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Scope,
-    _In_ DWORD HwProfile,
-    _In_ DWORD KeyType
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Scope,
+     DWORD HwProfile,
+     DWORD KeyType
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileList(
     _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
-    _In_ DWORD HwProfileListSize,
+     DWORD HwProfileListSize,
     _Out_ PDWORD RequiredSize,
     _Out_opt_ PDWORD CurrentlyActiveIndex
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileListExA(
     _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
-    _In_ DWORD HwProfileListSize,
+     DWORD HwProfileListSize,
     _Out_ PDWORD RequiredSize,
     _Out_opt_ PDWORD CurrentlyActiveIndex,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileListExW(
     _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
-    _In_ DWORD HwProfileListSize,
+     DWORD HwProfileListSize,
     _Out_ PDWORD RequiredSize,
     _Out_opt_ PDWORD CurrentlyActiveIndex,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -6223,32 +6222,32 @@ SetupDiGetHwProfileListExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDevicePropertyKeys(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVINFO_DATA DeviceInfoData,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVINFO_DATA DeviceInfoData,
     _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
-    _In_         DWORD            PropertyKeyCount,
+             DWORD            PropertyKeyCount,
     _Out_opt_    PDWORD           RequiredPropertyKeyCount,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
-_Success_(return != FALSE)
+
 _When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDevicePropertyW(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVINFO_DATA DeviceInfoData,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVINFO_DATA DeviceInfoData,
+       CONST DEVPROPKEY      *PropertyKey,
     _Out_        DEVPROPTYPE     *PropertyType,
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
+             DWORD            PropertyBufferSize,
     _Out_opt_    PDWORD           RequiredSize,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
 #ifdef UNICODE
@@ -6257,15 +6256,15 @@ SetupDiGetDevicePropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDevicePropertyW(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVINFO_DATA DeviceInfoData,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
-    _In_         DEVPROPTYPE      PropertyType,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVINFO_DATA DeviceInfoData,
+       CONST DEVPROPKEY      *PropertyKey,
+             DEVPROPTYPE      PropertyType,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
-    _In_         DWORD            Flags
+             DWORD            PropertyBufferSize,
+             DWORD            Flags
     );
 
 #ifdef UNICODE
@@ -6274,32 +6273,32 @@ SetupDiSetDevicePropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInterfacePropertyKeys(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
     _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
-    _In_         DWORD            PropertyKeyCount,
+             DWORD            PropertyKeyCount,
     _Out_opt_    PDWORD           RequiredPropertyKeyCount,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
-_Success_(return != FALSE)
+
 _When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInterfacePropertyW(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+       CONST DEVPROPKEY      *PropertyKey,
     _Out_        DEVPROPTYPE     *PropertyType,
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
+             DWORD            PropertyBufferSize,
     _Out_opt_    PDWORD           RequiredSize,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
 #ifdef UNICODE
@@ -6308,15 +6307,15 @@ SetupDiGetDeviceInterfacePropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceInterfacePropertyW(
-    _In_         HDEVINFO         DeviceInfoSet,
-    _In_         PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
-    _In_         DEVPROPTYPE      PropertyType,
+             HDEVINFO         DeviceInfoSet,
+             PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+       CONST DEVPROPKEY      *PropertyKey,
+             DEVPROPTYPE      PropertyType,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
-    _In_         DWORD            Flags
+             DWORD            PropertyBufferSize,
+             DWORD            Flags
     );
 
 #ifdef UNICODE
@@ -6332,25 +6331,25 @@ SetupDiSetDeviceInterfacePropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassPropertyKeys(
-    _In_   CONST GUID            *ClassGuid,
+       CONST GUID            *ClassGuid,
     _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
-    _In_         DWORD            PropertyKeyCount,
+             DWORD            PropertyKeyCount,
     _Out_opt_    PDWORD           RequiredPropertyKeyCount,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassPropertyKeysExW(
-    _In_   CONST GUID            *ClassGuid,
+       CONST GUID            *ClassGuid,
     _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
-    _In_         DWORD            PropertyKeyCount,
+             DWORD            PropertyKeyCount,
     _Out_opt_    PDWORD           RequiredPropertyKeyCount,
-    _In_         DWORD            Flags,
-    _In_opt_     PCWSTR           MachineName,
+             DWORD            Flags,
+         PCWSTR           MachineName,
     _Reserved_   PVOID            Reserved
     );
 
@@ -6358,43 +6357,43 @@ SetupDiGetClassPropertyKeysExW(
 #define SetupDiGetClassPropertyKeysEx SetupDiGetClassPropertyKeysExW
 #endif
 
-_Success_(return != FALSE)
+
 _When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassPropertyW(
-    _In_   CONST GUID            *ClassGuid,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
+       CONST GUID            *ClassGuid,
+       CONST DEVPROPKEY      *PropertyKey,
     _Out_        DEVPROPTYPE     *PropertyType,
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
+             DWORD            PropertyBufferSize,
     _Out_opt_    PDWORD           RequiredSize,
-    _In_         DWORD            Flags
+             DWORD            Flags
     );
 
 #ifdef UNICODE
 #define SetupDiGetClassProperty SetupDiGetClassPropertyW
 #endif
 
-_Success_(return != FALSE)
+
 _When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 _When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassPropertyExW(
-    _In_   CONST GUID            *ClassGuid,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
+       CONST GUID            *ClassGuid,
+       CONST DEVPROPKEY      *PropertyKey,
     _Out_        DEVPROPTYPE     *PropertyType,
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
+             DWORD            PropertyBufferSize,
     _Out_opt_    PDWORD           RequiredSize,
-    _In_         DWORD            Flags,
-    _In_opt_     PCWSTR           MachineName,
+             DWORD            Flags,
+         PCWSTR           MachineName,
     _Reserved_   PVOID            Reserved
     );
 
@@ -6404,14 +6403,14 @@ SetupDiGetClassPropertyExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassPropertyW(
-    _In_   CONST GUID            *ClassGuid,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
-    _In_         DEVPROPTYPE      PropertyType,
+       CONST GUID            *ClassGuid,
+       CONST DEVPROPKEY      *PropertyKey,
+             DEVPROPTYPE      PropertyType,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
-    _In_         DWORD            Flags
+             DWORD            PropertyBufferSize,
+             DWORD            Flags
     );
 
 #ifdef UNICODE
@@ -6420,15 +6419,15 @@ SetupDiSetClassPropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassPropertyExW(
-    _In_   CONST GUID            *ClassGuid,
-    _In_   CONST DEVPROPKEY      *PropertyKey,
-    _In_         DEVPROPTYPE      PropertyType,
+       CONST GUID            *ClassGuid,
+       CONST DEVPROPKEY      *PropertyKey,
+             DEVPROPTYPE      PropertyType,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
-    _In_         DWORD            PropertyBufferSize,
-    _In_         DWORD            Flags,
-    _In_opt_     PCWSTR           MachineName,
+             DWORD            PropertyBufferSize,
+             DWORD            Flags,
+         PCWSTR           MachineName,
     _Reserved_   PVOID            Reserved
     );
 
@@ -6508,35 +6507,35 @@ SetupDiSetClassPropertyExW(
 #define SPCRP_CHARACTERISTICS             (0x0000001B)  // Device Characteristics (R/W)
 #define SPCRP_MAXIMUM_PROPERTY            (0x0000001C)  // Upper bound on ordinals
 
-_Success_(return != FALSE)
+
 _When_((*PropertyRegDataType == REG_SZ), _At_((PSTR) PropertyBuffer, _Post_valid_))
 _When_((*PropertyRegDataType == REG_MULTI_SZ), _At_((PZZSTR) PropertyBuffer, _Post_valid_))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceRegistryPropertyA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Property,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Property,
     _Out_opt_ PDWORD PropertyRegDataType, 
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize 
     );
 
-_Success_(return != FALSE)
+
 _When_((*PropertyRegDataType == REG_SZ), _At_((PWSTR) PropertyBuffer, _Post_valid_))
 _When_((*PropertyRegDataType == REG_MULTI_SZ), _At_((PZZWSTR) PropertyBuffer, _Post_valid_))
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceRegistryPropertyW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Property,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Property,
     _Out_opt_ PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -6548,33 +6547,33 @@ SetupDiGetDeviceRegistryPropertyW(
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassRegistryPropertyA(
-    _In_ CONST GUID *ClassGuid,
-    _In_ DWORD Property,
+     CONST GUID *ClassGuid,
+     DWORD Property,
     _Out_opt_ PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassRegistryPropertyW(
-    _In_ CONST GUID *ClassGuid,
-    _In_ DWORD Property,
+     CONST GUID *ClassGuid,
+     DWORD Property,
     _Out_opt_ PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName, 
+     PCWSTR MachineName, 
     _Reserved_ PVOID Reserved
     );
 
@@ -6588,24 +6587,24 @@ SetupDiGetClassRegistryPropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceRegistryPropertyA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Property,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Property,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
-    _In_ DWORD PropertyBufferSize
+     DWORD PropertyBufferSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceRegistryPropertyW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _Inout_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ DWORD Property,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     DWORD Property,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
-    _In_ DWORD PropertyBufferSize
+     DWORD PropertyBufferSize
     );
 
 #ifdef UNICODE
@@ -6618,25 +6617,25 @@ SetupDiSetDeviceRegistryPropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassRegistryPropertyA(
-    _In_ CONST GUID *ClassGuid,
-    _In_ DWORD Property,
+     CONST GUID *ClassGuid,
+     DWORD Property,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer, 
-    _In_ DWORD PropertyBufferSize,
-    _In_opt_ PCSTR MachineName,
+     DWORD PropertyBufferSize,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassRegistryPropertyW(
-    _In_ CONST GUID *ClassGuid,
-    _In_ DWORD Property,
+     CONST GUID *ClassGuid,
+     DWORD Property,
     _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
-    _In_opt_ PCWSTR MachineName,
+     DWORD PropertyBufferSize,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -6650,19 +6649,19 @@ SetupDiSetClassRegistryPropertyW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_ PSP_DEVINSTALL_PARAMS_A DeviceInstallParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDeviceInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_ PSP_DEVINSTALL_PARAMS_W DeviceInstallParams
     );
 
@@ -6672,27 +6671,27 @@ SetupDiGetDeviceInstallParamsW(
 #define SetupDiGetDeviceInstallParams SetupDiGetDeviceInstallParamsA
 #endif
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData, 
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData, 
     _Out_writes_bytes_to_opt_(ClassInstallParamsSize, *RequiredSize) PSP_CLASSINSTALL_HEADER ClassInstallParams,
-    _In_ DWORD ClassInstallParamsSize,
+     DWORD ClassInstallParamsSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _Out_writes_bytes_to_opt_(ClassInstallParamsSize, *RequiredSize) PSP_CLASSINSTALL_HEADER ClassInstallParams,
-    _In_ DWORD ClassInstallParamsSize,
+     DWORD ClassInstallParamsSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -6705,20 +6704,20 @@ SetupDiGetClassInstallParamsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DEVINSTALL_PARAMS_A DeviceInstallParams
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DEVINSTALL_PARAMS_A DeviceInstallParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDeviceInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DEVINSTALL_PARAMS_W DeviceInstallParams
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DEVINSTALL_PARAMS_W DeviceInstallParams
     );
 
 #ifdef UNICODE
@@ -6730,22 +6729,22 @@ SetupDiSetDeviceInstallParamsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _In_reads_bytes_opt_(ClassInstallParamsSize) PSP_CLASSINSTALL_HEADER ClassInstallParams,
-    _In_ DWORD ClassInstallParamsSize
+     DWORD ClassInstallParamsSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetClassInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
     _In_reads_bytes_opt_(ClassInstallParamsSize) PSP_CLASSINSTALL_HEADER ClassInstallParams,
-    _In_ DWORD ClassInstallParamsSize
+     DWORD ClassInstallParamsSize
     );
 
 #ifdef UNICODE
@@ -6757,21 +6756,21 @@ SetupDiSetClassInstallParamsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDriverInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_A DriverInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_A DriverInfoData,
     _Out_ PSP_DRVINSTALL_PARAMS DriverInstallParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetDriverInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_W DriverInfoData,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_W DriverInfoData,
     _Out_ PSP_DRVINSTALL_PARAMS DriverInstallParams
     );
 
@@ -6784,22 +6783,22 @@ SetupDiGetDriverInstallParamsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDriverInstallParamsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_A DriverInfoData,
-    _In_ PSP_DRVINSTALL_PARAMS DriverInstallParams
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_A DriverInfoData,
+     PSP_DRVINSTALL_PARAMS DriverInstallParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetDriverInstallParamsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_DRVINFO_DATA_W DriverInfoData,
-    _In_ PSP_DRVINSTALL_PARAMS DriverInstallParams
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_W DriverInfoData,
+     PSP_DRVINSTALL_PARAMS DriverInstallParams
     );
 
 #ifdef UNICODE
@@ -6811,9 +6810,9 @@ SetupDiSetDriverInstallParamsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiLoadClassIcon(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_opt_ HICON *LargeIcon,
     _Out_opt_ PINT MiniIconIndex 
     );
@@ -6822,13 +6821,13 @@ SetupDiLoadClassIcon(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiLoadDeviceIcon(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ UINT cxIcon,
-    _In_ UINT cyIcon,
-    _In_ DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     UINT cxIcon,
+     UINT cyIcon,
+     DWORD Flags,
     _Out_ HICON *hIcon
     );
 
@@ -6844,27 +6843,27 @@ SetupDiLoadDeviceIcon(
 
 
 INT
-WINAPI
+__stdcall
 SetupDiDrawMiniIcon(
-    _In_ HDC hdc,
-    _In_ RECT rc,
-    _In_ INT MiniIconIndex,
-    _In_ DWORD Flags
+     HDC hdc,
+     RECT rc,
+     INT MiniIconIndex,
+     DWORD Flags
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassBitmapIndex(
-    _In_opt_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_ PINT MiniIconIndex
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassImageList(
     _Out_ PSP_CLASSIMAGELIST_DATA ClassImageListData
     );
@@ -6872,19 +6871,19 @@ SetupDiGetClassImageList(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassImageListExA(
     _Out_ PSP_CLASSIMAGELIST_DATA ClassImageListData,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassImageListExW(
     _Out_ PSP_CLASSIMAGELIST_DATA ClassImageListData,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -6897,19 +6896,19 @@ SetupDiGetClassImageListExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassImageIndex(
-    _In_ PSP_CLASSIMAGELIST_DATA ClassImageListData,
-    _In_ CONST GUID *ClassGuid,
+     PSP_CLASSIMAGELIST_DATA ClassImageListData,
+     CONST GUID *ClassGuid,
     _Out_ PINT ImageIndex
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiDestroyClassImageList(
-    _In_ PSP_CLASSIMAGELIST_DATA ClassImageListData
+     PSP_CLASSIMAGELIST_DATA ClassImageListData
     );
 
 
@@ -6928,26 +6927,26 @@ SetupDiDestroyClassImageList(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDevPropertySheetsA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ LPPROPSHEETHEADERA PropertySheetHeader,
-    _In_ DWORD PropertySheetHeaderPageListSize,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     LPPROPSHEETHEADERA PropertySheetHeader,
+     DWORD PropertySheetHeaderPageListSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_ DWORD PropertySheetType
+     DWORD PropertySheetType
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetClassDevPropertySheetsW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ LPPROPSHEETHEADERW PropertySheetHeader,
-    _In_ DWORD PropertySheetHeaderPageListSize,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     LPPROPSHEETHEADERW PropertySheetHeader,
+     DWORD PropertySheetHeaderPageListSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_ DWORD PropertySheetType
+     DWORD PropertySheetType
     );
 
 #ifdef UNICODE
@@ -6976,40 +6975,40 @@ SetupDiGetClassDevPropertySheetsW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiAskForOEMDisk(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSelectOEMDrv(
-    _In_opt_ HWND hwndParent,
-    _In_ HDEVINFO DeviceInfoSet,
+     HWND hwndParent,
+     HDEVINFO DeviceInfoSet,
     _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassNameFromGuidA(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassNameSize) PSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassNameFromGuidW(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassNameSize) PWSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -7022,25 +7021,25 @@ SetupDiClassNameFromGuidW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassNameFromGuidExA(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassNameSize) PSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassNameFromGuidExW(
-    _In_ CONST GUID *ClassGuid,
+     CONST GUID *ClassGuid,
     _Out_writes_(ClassNameSize) PWSTR ClassName,
-    _In_ DWORD ClassNameSize,
+     DWORD ClassNameSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -7050,25 +7049,25 @@ SetupDiClassNameFromGuidExW(
 #define SetupDiClassNameFromGuidEx SetupDiClassNameFromGuidExA
 #endif
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassGuidsFromNameA(
-    _In_ PCSTR ClassName,
+     PCSTR ClassName,
     _Out_writes_to_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassGuidsFromNameW(
-    _In_ PCWSTR ClassName,
+     PCWSTR ClassName,
     _Out_writes_to_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize
     );
 
@@ -7079,29 +7078,29 @@ SetupDiClassGuidsFromNameW(
 #endif
 
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassGuidsFromNameExA(
-    _In_ PCSTR ClassName,
+     PCSTR ClassName,
     _Out_writes_to_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiClassGuidsFromNameExW(
-    _In_ PCWSTR ClassName,
+     PCWSTR ClassName,
     _Out_writes_to_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
-    _In_ DWORD ClassGuidListSize,
+     DWORD ClassGuidListSize,
     _Out_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -7114,21 +7113,21 @@ SetupDiClassGuidsFromNameExW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileFriendlyNameA(
-    _In_ DWORD HwProfile,
+     DWORD HwProfile,
     _Out_writes_(FriendlyNameSize) PSTR FriendlyName,
-    _In_ DWORD FriendlyNameSize,
+     DWORD FriendlyNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileFriendlyNameW(
-    _In_ DWORD HwProfile,
+     DWORD HwProfile,
     _Out_writes_(FriendlyNameSize) PWSTR FriendlyName,
-    _In_ DWORD FriendlyNameSize,
+     DWORD FriendlyNameSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -7141,25 +7140,25 @@ SetupDiGetHwProfileFriendlyNameW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileFriendlyNameExA(
-    _In_ DWORD HwProfile,
+     DWORD HwProfile,
     _Out_writes_(FriendlyNameSize) PSTR FriendlyName,
-    _In_ DWORD FriendlyNameSize,
+     DWORD FriendlyNameSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCSTR MachineName,
+     PCSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetHwProfileFriendlyNameExW(
-    _In_ DWORD HwProfile,
+     DWORD HwProfile,
     _Out_writes_(FriendlyNameSize) PWSTR FriendlyName,
-    _In_ DWORD FriendlyNameSize,
+     DWORD FriendlyNameSize,
     _Out_opt_ PDWORD RequiredSize,
-    _In_opt_ PCWSTR MachineName,
+     PCWSTR MachineName,
     _Reserved_ PVOID Reserved
     );
 
@@ -7182,31 +7181,31 @@ SetupDiGetHwProfileFriendlyNameExW(
 
 
 HPROPSHEETPAGE
-WINAPI
+__stdcall
 SetupDiGetWizardPage(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PSP_INSTALLWIZARD_DATA InstallWizardData,
-    _In_ DWORD PageType,
-    _In_ DWORD Flags
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_INSTALLWIZARD_DATA InstallWizardData,
+     DWORD PageType,
+     DWORD Flags
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetSelectedDevice(
-    _In_ HDEVINFO DeviceInfoSet,
+     HDEVINFO DeviceInfoSet,
     _Out_ PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiSetSelectedDevice(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -7214,24 +7213,24 @@ SetupDiSetSelectedDevice(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualModelsSectionA(
-    _In_ PINFCONTEXT Context,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PINFCONTEXT Context,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_writes_opt_(InfSectionWithExtSize) PSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Reserved_ PVOID Reserved
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualModelsSectionW(
-    _In_ PINFCONTEXT Context,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     PINFCONTEXT Context,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_writes_opt_(InfSectionWithExtSize) PWSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Reserved_ PVOID Reserved
     );
@@ -7247,24 +7246,24 @@ SetupDiGetActualModelsSectionW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualSectionToInstallA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR InfSectionName,
+     HINF InfHandle,
+     PCSTR InfSectionName,
     _Out_writes_opt_(InfSectionWithExtSize) PSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PSTR *Extension
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualSectionToInstallW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR InfSectionName,
+     HINF InfHandle,
+     PCWSTR InfSectionName,
     _Out_writes_opt_(InfSectionWithExtSize) PWSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PWSTR *Extension
     );
@@ -7280,13 +7279,13 @@ SetupDiGetActualSectionToInstallW(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualSectionToInstallExA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR InfSectionName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     HINF InfHandle,
+     PCSTR InfSectionName,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_writes_opt_(InfSectionWithExtSize) PSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PSTR *Extension,
     _Reserved_ PVOID Reserved
@@ -7294,13 +7293,13 @@ SetupDiGetActualSectionToInstallExA(
 
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetActualSectionToInstallExW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR InfSectionName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
+     HINF InfHandle,
+     PCWSTR InfSectionName,
+     PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
     _Out_writes_opt_(InfSectionWithExtSize) PWSTR InfSectionWithExt,
-    _In_ DWORD InfSectionWithExtSize,
+     DWORD InfSectionWithExtSize,
     _Out_opt_ PDWORD RequiredSize,
     _Out_opt_ PWSTR *Extension,
     _Reserved_ PVOID Reserved
@@ -7322,23 +7321,23 @@ SetupDiGetActualSectionToInstallExW(
 //
 
 BOOL
-WINAPI
+__stdcall
 SetupEnumInfSectionsA (
-    _In_ HINF InfHandle,
-    _In_ UINT Index,
+     HINF InfHandle,
+     UINT Index,
     _Out_writes_opt_(Size) PSTR Buffer, 
-    _In_ UINT Size,
+     UINT Size,
     _Out_opt_ UINT *SizeNeeded
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupEnumInfSectionsW (
-    _In_ HINF InfHandle,
-    _In_ UINT Index,
+     HINF InfHandle,
+     UINT Index,
     _Out_writes_opt_(Size) PWSTR Buffer, 
-    _In_ UINT Size,
+     UINT Size,
     _Out_opt_ UINT *SizeNeeded
     );
 
@@ -7439,66 +7438,69 @@ typedef PSP_INF_SIGNER_INFO_V2 PSP_INF_SIGNER_INFO;
 #endif  // use current version of signer info structure
 
 
-
+ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 SetupVerifyInfFileA(
-    _In_ PCSTR InfName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AltPlatformInfo,
-    _Inout_ PSP_INF_SIGNER_INFO_A InfSignerInfo
+     PCSTR InfName,
+     PSP_ALTPLATFORM_INFO AltPlatformInfo,
+     PSP_INF_SIGNER_INFO_A InfSignerInfo
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupVerifyInfFileW(
-    _In_ PCWSTR InfName,
-    _In_opt_ PSP_ALTPLATFORM_INFO AltPlatformInfo,
-    _Inout_ PSP_INF_SIGNER_INFO_W InfSignerInfo
+     PCWSTR InfName,
+     PSP_ALTPLATFORM_INFO AltPlatformInfo,
+     PSP_INF_SIGNER_INFO_W InfSignerInfo
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define SetupVerifyInfFile SetupVerifyInfFileW
 #else
 #define SetupVerifyInfFile SetupVerifyInfFileA
 #endif
+--]]
 
-#endif // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end --// _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 //
 // Flags for use by SetupDiGetCustomDeviceProperty
 //
 #define DICUSTOMDEVPROP_MERGE_MULTISZ    0x00000001
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetCustomDevicePropertyA(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PCSTR CustomPropertyName,
-    _In_ DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PCSTR CustomPropertyName,
+     DWORD Flags,
     _Out_opt_ PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
-_Success_(return != FALSE)
+
 
 BOOL
-WINAPI
+__stdcall
 SetupDiGetCustomDevicePropertyW(
-    _In_ HDEVINFO DeviceInfoSet,
-    _In_ PSP_DEVINFO_DATA DeviceInfoData,
-    _In_ PCWSTR CustomPropertyName,
-    _In_ DWORD Flags,
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PCWSTR CustomPropertyName,
+     DWORD Flags,
     _Out_opt_ PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
-    _In_ DWORD PropertyBufferSize,
+     DWORD PropertyBufferSize,
     _Out_opt_ PDWORD RequiredSize
     );
 
@@ -7511,7 +7513,7 @@ SetupDiGetCustomDevicePropertyW(
 #endif // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WS03
+if _SETUPAPI_VER >= _WIN32_WINNT_WS03 then
 
 //
 // To configure WMI security for downlevel platforms where the [DDInstall.WMI]
@@ -7524,47 +7526,45 @@ SetupDiGetCustomDevicePropertyW(
 //
 #define SCWMI_CLOBBER_SECURITY  0x00000001
 
-
+ffi.cdef[[
 BOOL
-WINAPI
+__stdcall
 SetupConfigureWmiFromInfSectionA(
-    _In_ HINF InfHandle,
-    _In_ PCSTR SectionName,
-    _In_ DWORD Flags
+     HINF InfHandle,
+     PCSTR SectionName,
+     DWORD Flags
     );
 
 
 BOOL
-WINAPI
+__stdcall
 SetupConfigureWmiFromInfSectionW(
-    _In_ HINF InfHandle,
-    _In_ PCWSTR SectionName,
-    _In_ DWORD Flags
+     HINF InfHandle,
+     PCWSTR SectionName,
+     DWORD Flags
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define SetupConfigureWmiFromInfSection SetupConfigureWmiFromInfSectionW
 #else
 #define SetupConfigureWmiFromInfSection SetupConfigureWmiFromInfSectionA
 #endif
+--]]
+
+end --// _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 
-#endif // _SETUPAPI_VER >= _WIN32_WINNT_WS03
+--#include <poppack.h>
 
 
-
-#ifdef __cplusplus
-}
-#endif
-
-#include <poppack.h>
-
-#if defined (_MSC_VER) && (_MSC_VER >= 1200)
-#pragma warning(pop)
-#endif
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #endif // _INC_SETUPAPI
+--]=]
+
+return ffi.load("setupapi")

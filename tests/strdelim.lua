@@ -45,6 +45,75 @@ function exports.multinullpairs(multinull)
     return res
 end
 
+-- an iterator over a delimited string.
+-- returns one value at a time
+function exports.delimvalues(data, len, delim)
+    len = len or #data
+    delim = delim or string.byte(',')
+
+    local function closure(state, startoffset)
+        local strptr = ffi.cast("const char *", state.data)
+
+        if startoffset >= state.length then
+            return nil;
+        end
+        
+        local charoffset = startoffset 
+
+        while charoffset < state.length and 
+            strptr[charoffset] ~= state.delim do
+            charoffset = charoffset + 1;
+        end
+        local len = charoffset - startoffset
+
+        return charoffset+1, ffi.string(strptr+startoffset, len)
+    end
+
+    return closure, {data = data, length=len, delim = delim}, 0
+end
+
+
+--[[
+    multi string iterator
+    In this case, a set of parameters are passed in.
+    The type of the elements of the data array are specified as part of 
+    the parameters, or 'char' is assumed.
+
+    If the length of the string is 0, then a nil is returned.  This is not
+        correct, as the length should determine when to terminate.
+]]
+local function mstriter(params)
+    params = params or {}
+ 
+    params.separator = params.separator or 0
+    params.datalength = params.datalength or #params.data
+    params.basetype = params.basetype or ffi.typeof("char")
+    params.basetypeptr = ffi.typeof("const $ *", params.basetype)
+    params.maxlen = params.maxlen or params.datalength-1;
+ 
+    local function closure(param, idx)
+        if not params.data then
+            return nil;
+        end
+ 
+        local len = 0;
+         
+        while ffi.cast(param.basetypeptr, param.data)[idx + len] ~= param.separator and (len < param.maxlen) do
+            len = len +1;
+        end
+ 
+        -- BUGBUG, len alone should not determine termination
+        -- empty strings should be valid
+        if len == 0 then
+            return nil;
+        end
+ 
+        return (idx + len+1), ffi.string(ffi.cast(param.basetypeptr, param.data)+idx, len*ffi.sizeof(param.basetype));
+    end
+ 
+    return closure, params, 0;
+end
+
 -- an iterator over the multi null string.
 -- returns one string at a time
 function exports.multinullstrings(multinull)
