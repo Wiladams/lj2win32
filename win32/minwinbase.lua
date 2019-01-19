@@ -372,15 +372,13 @@ typedef struct _DEBUG_EVENT {
 } DEBUG_EVENT, *LPDEBUG_EVENT;
 ]]
 
---[[
+ffi.cdef[[
 //
 // Context definitions
 //
 
-#if !defined(MIDL_PASS)
 typedef PCONTEXT LPCONTEXT;
-#endif // !defined(MIDL_PASS)
---]]
+]]
 
 --[==[
 ffi.cdef[[

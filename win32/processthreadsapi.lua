@@ -260,11 +260,14 @@ ResumeThread(
     );
 ]]
 
---[[
-#ifndef TLS_OUT_OF_INDEXES
-#define TLS_OUT_OF_INDEXES ((DWORD)0xFFFFFFFF)
-#endif
 
+--#ifndef TLS_OUT_OF_INDEXES
+ffi.cdef[[
+static const int TLS_OUT_OF_INDEXES = ((DWORD)0xFFFFFFFF);
+]]
+--#endif
+
+ffi.cdef[[
 DWORD
 __stdcall
 TlsAlloc(
@@ -295,9 +298,9 @@ __stdcall
 TlsFree(
      DWORD dwTlsIndex
     );
+]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 CreateProcessA(
@@ -328,20 +331,19 @@ CreateProcessW(
      LPSTARTUPINFOW lpStartupInfo,
      LPPROCESS_INFORMATION lpProcessInformation
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define CreateProcess  CreateProcessW
 #else
 #define CreateProcess  CreateProcessA
 #endif // !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetProcessShutdownParameters(
@@ -364,12 +366,15 @@ __stdcall
 GetStartupInfoW(
      LPSTARTUPINFOW lpStartupInfo
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define GetStartupInfo  GetStartupInfoW
 #endif
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 CreateProcessAsUserW(
@@ -385,66 +390,42 @@ CreateProcessAsUserW(
      LPSTARTUPINFOW lpStartupInfo,
      LPPROCESS_INFORMATION lpProcessInformation
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define CreateProcessAsUser  CreateProcessAsUserW
 #endif
+--]]
 
-//
-// TODO: neerajsi-2013/12/08 - this should be moved to official documentation.
-//
-// These are shorthand ways of referring to the thread token, the process token,
-// or the "effective token" (the thread token if it exists, otherwise the
-// process token), respectively. These handles only have TOKEN_QUERY and
-// TOKEN_QUERY_SOURCE access in Windows 8 (use TOKEN_ACCESS_PSEUDO_HANDLE to
-// determine the granted access on the target version of Windows). These handles
-// do not need to be closed.
-//
 
-#if !defined(MIDL_PASS)
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-
-FORCEINLINE
-HANDLE
-GetCurrentProcessToken (
-    VOID
-    )
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN8) then
+--[[
+local function GetCurrentProcessToken (void)
 {
     return (HANDLE)(LONG_PTR) -4;
 }
 
-FORCEINLINE
-HANDLE
-GetCurrentThreadToken (
-    VOID
-    )
+local function GetCurrentThreadToken (void)
 {
     return (HANDLE)(LONG_PTR) -5;
 }
 
-FORCEINLINE
-HANDLE
-GetCurrentThreadEffectiveToken (
-    VOID
-    )
-{
-    return (HANDLE)(LONG_PTR) -6;
-}
+local function GetCurrentThreadEffectiveToken (void)
+    return ffi.cast("HANDLE", ffi.cast("LONG_PTR", -6));
+end
+--]]
+end --// (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-#endif // !defined(MIDL_PASS)
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+
+
+ffi.cdef[[
 BOOL
-APIENTRY
 SetThreadToken(
      PHANDLE Thread,
      HANDLE Token
@@ -457,7 +438,7 @@ __stdcall
 OpenProcessToken(
      HANDLE ProcessHandle,
      DWORD DesiredAccess,
-    _Outptr_ PHANDLE TokenHandle
+     PHANDLE TokenHandle
     );
 
 
@@ -468,7 +449,7 @@ OpenThreadToken(
      HANDLE ThreadHandle,
      DWORD DesiredAccess,
      BOOL OpenAsSelf,
-    _Outptr_ PHANDLE TokenHandle
+     PHANDLE TokenHandle
     );
 
 
@@ -487,19 +468,19 @@ __stdcall
 GetPriorityClass(
      HANDLE hProcess
     );
+]]
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetThreadStackGuarantee(
-    _Inout_ PULONG StackSizeInBytes
+     PULONG StackSizeInBytes
     );
 
 
@@ -513,88 +494,82 @@ ProcessIdToSessionId(
 
 
 typedef struct _PROC_THREAD_ATTRIBUTE_LIST *PPROC_THREAD_ATTRIBUTE_LIST, *LPPROC_THREAD_ATTRIBUTE_LIST;
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-#if (_WIN32_WINNT >= 0x0501)
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+
+if (_WIN32_WINNT >= 0x0501) then
+
+ffi.cdef[[
 DWORD
 __stdcall
 GetProcessId(
      HANDLE Process
     );
+]]
 
+end --// _WIN32_WINNT >= 0x0501
 
-#endif // _WIN32_WINNT >= 0x0501
+if (_WIN32_WINNT >= 0x0502) then
 
-#if (_WIN32_WINNT >= 0x0502)
-
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetThreadId(
      HANDLE Thread
     );
+]]
 
+end --// _WIN32_WINNT >= 0x0502
 
-#endif // _WIN32_WINNT >= 0x0502
+if (_WIN32_WINNT >= 0x0600) then
 
-#if (_WIN32_WINNT >= 0x0600)
-
-
+ffi.cdef[[
 VOID
 __stdcall
-FlushProcessWriteBuffers(
-    VOID
-    );
+FlushProcessWriteBuffers(void);
+]]
+
+end --// _WIN32_WINNT >= 0x0600
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
-#endif // _WIN32_WINNT >= 0x0600
+if (_WIN32_WINNT >= 0x0600) then
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-#if (_WIN32_WINNT >= 0x0600)
-
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 DWORD
 __stdcall
 GetProcessIdOfThread(
      HANDLE Thread
     );
 
-
-
-
 BOOL
 __stdcall
 InitializeProcThreadAttributeList(
-    _Out_writes_bytes_to_opt_(*lpSize,*lpSize) LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
+     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
      DWORD dwAttributeCount,
      DWORD dwFlags,
-    _When_(lpAttributeList == nullptr,) _When_(lpAttributeList != nullptr,_Inout_) PSIZE_T lpSize
+     PSIZE_T lpSize
     );
-
-
 
 VOID
 __stdcall
 DeleteProcThreadAttributeList(
-    _Inout_ LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
+     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
     );
+]]
 
+ffi.cdef[[
+static const int PROCESS_AFFINITY_ENABLE_AUTO_UPDATE = 0x00000001UL;
+]]
 
-#define PROCESS_AFFINITY_ENABLE_AUTO_UPDATE 0x00000001UL
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetProcessAffinityUpdateMode(
@@ -610,34 +585,36 @@ QueryProcessAffinityUpdateMode(
      HANDLE hProcess,
      LPDWORD lpdwFlags
     );
+]]
 
+ffi.cdef[[
+static const int PROC_THREAD_ATTRIBUTE_REPLACE_VALUE   =  0x00000001;
+]]
 
-#define PROC_THREAD_ATTRIBUTE_REPLACE_VALUE     0x00000001
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 UpdateProcThreadAttribute(
-    _Inout_ LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
+     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
      DWORD dwFlags,
      DWORD_PTR Attribute,
-    _In_reads_bytes_opt_(cbSize) PVOID lpValue,
+     PVOID lpValue,
      SIZE_T cbSize,
-    _Out_writes_bytes_opt_(cbSize) PVOID lpPreviousValue,
+     PVOID lpPreviousValue,
      PSIZE_T lpReturnSize
     );
+]]
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#endif // (_WIN32_WINNT >= 0x0600)
-
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+end --// (_WIN32_WINNT >= 0x0600)
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
+
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateRemoteThreadEx(
@@ -650,96 +627,88 @@ CreateRemoteThreadEx(
      LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
      LPDWORD lpThreadId
     );
+]]
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#if !defined(MIDL_PASS)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+if (_WIN32_WINNT >= 0x0602) then
 
-#if (_WIN32_WINNT >= 0x0602)
-
-
-VOID
+ffi.cdef[[
+void
 __stdcall
 GetCurrentThreadStackLimits(
      PULONG_PTR LowLimit,
      PULONG_PTR HighLimit
     );
+]]
 
+end
 
-#endif
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetThreadContext(
      HANDLE hThread,
-    _Inout_ LPCONTEXT lpContext
+     LPCONTEXT lpContext
     );
+]]
 
+if (_WIN32_WINNT >= 0x0602) then
 
-#if (_WIN32_WINNT >= 0x0602)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetProcessMitigationPolicy(
      HANDLE hProcess,
      PROCESS_MITIGATION_POLICY MitigationPolicy,
-    _Out_writes_bytes_(dwLength) PVOID lpBuffer,
+     PVOID lpBuffer,
      SIZE_T dwLength
     );
+]]
 
+end
 
-#endif
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+--]==]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetThreadContext(
      HANDLE hThread,
-     CONST CONTEXT* lpContext
+     const CONTEXT* lpContext
     );
+]]
 
+if (_WIN32_WINNT >= 0x0602) then
 
-#if (_WIN32_WINNT >= 0x0602)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetProcessMitigationPolicy(
      PROCESS_MITIGATION_POLICY MitigationPolicy,
-    _In_reads_bytes_(dwLength) PVOID lpBuffer,
+     PVOID lpBuffer,
      SIZE_T dwLength
     );
+]]
+
+end
+
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#endif// defined(MIDL_PASS)
-
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 FlushInstructionCache(
      HANDLE hProcess,
-    _In_reads_bytes_opt_(dwSize) LPCVOID lpBaseAddress,
+     LPCVOID lpBaseAddress,
      SIZE_T dwSize
     );
 
@@ -756,6 +725,7 @@ GetThreadTimes(
     );
 ]]
 
+
 ffi.cdef[[
 HANDLE
 __stdcall
@@ -765,15 +735,11 @@ OpenProcess(
      DWORD dwProcessId
     );
 
-
-
 BOOL
 __stdcall
 IsProcessorFeaturePresent(
      DWORD ProcessorFeature
     );
-
-
 
 BOOL
 __stdcall
@@ -876,20 +842,21 @@ typedef enum _THREAD_INFORMATION_CLASS {
 } THREAD_INFORMATION_CLASS;
 ]]
 
---[[
 
 
+ffi.cdef[[
 typedef struct _MEMORY_PRIORITY_INFORMATION {
     ULONG MemoryPriority;
 } MEMORY_PRIORITY_INFORMATION, *PMEMORY_PRIORITY_INFORMATION;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetThreadInformation(
      HANDLE hThread,
      THREAD_INFORMATION_CLASS ThreadInformationClass,
-    _Out_writes_bytes_(ThreadInformationSize) LPVOID ThreadInformation,
+     LPVOID ThreadInformation,
      DWORD ThreadInformationSize
     );
 
@@ -900,23 +867,25 @@ __stdcall
 SetThreadInformation(
      HANDLE hThread,
      THREAD_INFORMATION_CLASS ThreadInformationClass,
-    _In_reads_bytes_(ThreadInformationSize) LPVOID ThreadInformation,
+     LPVOID ThreadInformation,
      DWORD ThreadInformationSize
     );
+]]
 
+ffi.cdef[[
+static const int THREAD_POWER_THROTTLING_CURRENT_VERSION = 1;
+static const int THREAD_POWER_THROTTLING_EXECUTION_SPEED = 0x1;
 
-#define THREAD_POWER_THROTTLING_CURRENT_VERSION 1
+static const int THREAD_POWER_THROTTLING_VALID_FLAGS = (THREAD_POWER_THROTTLING_EXECUTION_SPEED);
+]]
 
-#define THREAD_POWER_THROTTLING_EXECUTION_SPEED 0x1
-
-#define THREAD_POWER_THROTTLING_VALID_FLAGS (THREAD_POWER_THROTTLING_EXECUTION_SPEED)
-
+ffi.cdef[[
 typedef struct _THREAD_POWER_THROTTLING_STATE {
     ULONG Version;
     ULONG ControlMask;
     ULONG StateMask;
 } THREAD_POWER_THROTTLING_STATE;
---]]
+]]
 
 ffi.cdef[[
 BOOL

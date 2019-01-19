@@ -10816,6 +10816,9 @@ typedef enum _HARDWARE_COUNTER_TYPE {
     PMCCounter,
     MaxHardwareCounterType
 } HARDWARE_COUNTER_TYPE, *PHARDWARE_COUNTER_TYPE;
+--]==]
+
+ffi.cdef[[
 typedef enum _PROCESS_MITIGATION_POLICY {
     ProcessDEPPolicy,
     ProcessASLRPolicy,
@@ -10830,7 +10833,9 @@ typedef enum _PROCESS_MITIGATION_POLICY {
     ProcessImageLoadPolicy,
     MaxProcessMitigationPolicy
 } PROCESS_MITIGATION_POLICY, *PPROCESS_MITIGATION_POLICY;
+]]
 
+--[==[
 //
 // N.B.  High entropy mode is read only and can only be set at creation time
 //       and not via the ProcessMitigationPolicy APIs.
@@ -11660,41 +11665,45 @@ typedef struct _SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION {
 #define PROCESSOR_ARCHITECTURE_ARM32_ON_WIN64   13
 
 #define PROCESSOR_ARCHITECTURE_UNKNOWN 0xFFFF
+--]==]
 
-#define PF_FLOATING_POINT_PRECISION_ERRATA       0   
-#define PF_FLOATING_POINT_EMULATED               1   
-#define PF_COMPARE_EXCHANGE_DOUBLE               2   
-#define PF_MMX_INSTRUCTIONS_AVAILABLE            3   
-#define PF_PPC_MOVEMEM_64BIT_OK                  4   
-#define PF_ALPHA_BYTE_INSTRUCTIONS               5   
-#define PF_XMMI_INSTRUCTIONS_AVAILABLE           6   
-#define PF_3DNOW_INSTRUCTIONS_AVAILABLE          7   
-#define PF_RDTSC_INSTRUCTION_AVAILABLE           8   
-#define PF_PAE_ENABLED                           9   
-#define PF_XMMI64_INSTRUCTIONS_AVAILABLE        10   
-#define PF_SSE_DAZ_MODE_AVAILABLE               11   
-#define PF_NX_ENABLED                           12   
-#define PF_SSE3_INSTRUCTIONS_AVAILABLE          13   
-#define PF_COMPARE_EXCHANGE128                  14   
-#define PF_COMPARE64_EXCHANGE128                15   
-#define PF_CHANNELS_ENABLED                     16   
-#define PF_XSAVE_ENABLED                        17   
-#define PF_ARM_VFP_32_REGISTERS_AVAILABLE       18   
-#define PF_ARM_NEON_INSTRUCTIONS_AVAILABLE      19   
-#define PF_SECOND_LEVEL_ADDRESS_TRANSLATION     20   
-#define PF_VIRT_FIRMWARE_ENABLED                21   
-#define PF_RDWRFSGSBASE_AVAILABLE               22   
-#define PF_FASTFAIL_AVAILABLE                   23   
-#define PF_ARM_DIVIDE_INSTRUCTION_AVAILABLE     24   
-#define PF_ARM_64BIT_LOADSTORE_ATOMIC           25   
-#define PF_ARM_EXTERNAL_CACHE_AVAILABLE         26   
-#define PF_ARM_FMAC_INSTRUCTIONS_AVAILABLE      27   
-#define PF_RDRAND_INSTRUCTION_AVAILABLE         28   
-#define PF_ARM_V8_INSTRUCTIONS_AVAILABLE        29   
-#define PF_ARM_V8_CRYPTO_INSTRUCTIONS_AVAILABLE 30   
-#define PF_ARM_V8_CRC32_INSTRUCTIONS_AVAILABLE  31   
-#define PF_RDTSCP_INSTRUCTION_AVAILABLE         32   
+ffi.cdef[[
+static const int PF_FLOATING_POINT_PRECISION_ERRATA      = 0;   
+static const int PF_FLOATING_POINT_EMULATED              = 1;   
+static const int PF_COMPARE_EXCHANGE_DOUBLE              = 2;   
+static const int PF_MMX_INSTRUCTIONS_AVAILABLE           = 3;   
+static const int PF_PPC_MOVEMEM_64BIT_OK                 = 4;   
+static const int PF_ALPHA_BYTE_INSTRUCTIONS              = 5;   
+static const int PF_XMMI_INSTRUCTIONS_AVAILABLE          = 6;   
+static const int PF_3DNOW_INSTRUCTIONS_AVAILABLE         = 7;   
+static const int PF_RDTSC_INSTRUCTION_AVAILABLE          = 8;   
+static const int PF_PAE_ENABLED                          = 9;   
+static const int PF_XMMI64_INSTRUCTIONS_AVAILABLE       = 10;   
+static const int PF_SSE_DAZ_MODE_AVAILABLE              = 11;   
+static const int PF_NX_ENABLED                          = 12;   
+static const int PF_SSE3_INSTRUCTIONS_AVAILABLE         = 13;   
+static const int PF_COMPARE_EXCHANGE128                 = 14;   
+static const int PF_COMPARE64_EXCHANGE128               = 15;   
+static const int PF_CHANNELS_ENABLED                    = 16;   
+static const int PF_XSAVE_ENABLED                       = 17;   
+static const int PF_ARM_VFP_32_REGISTERS_AVAILABLE      = 18;   
+static const int PF_ARM_NEON_INSTRUCTIONS_AVAILABLE     = 19;   
+static const int PF_SECOND_LEVEL_ADDRESS_TRANSLATION    = 20;   
+static const int PF_VIRT_FIRMWARE_ENABLED               = 21;   
+static const int PF_RDWRFSGSBASE_AVAILABLE              = 22;   
+static const int PF_FASTFAIL_AVAILABLE                  = 23;   
+static const int PF_ARM_DIVIDE_INSTRUCTION_AVAILABLE    = 24;   
+static const int PF_ARM_64BIT_LOADSTORE_ATOMIC          = 25;   
+static const int PF_ARM_EXTERNAL_CACHE_AVAILABLE        = 26;   
+static const int PF_ARM_FMAC_INSTRUCTIONS_AVAILABLE     = 27;   
+static const int PF_RDRAND_INSTRUCTION_AVAILABLE        = 28;   
+static const int PF_ARM_V8_INSTRUCTIONS_AVAILABLE       = 29;   
+static const int PF_ARM_V8_CRYPTO_INSTRUCTIONS_AVAILABLE =30;   
+static const int PF_ARM_V8_CRC32_INSTRUCTIONS_AVAILABLE  =31;   
+static const int PF_RDTSCP_INSTRUCTION_AVAILABLE         =32;   
+]]
 
+--[==[
 //
 // Known extended CPU state feature BITs
 //
