@@ -212,7 +212,9 @@ function line(...)
 	return true;
 end
 
-
+function angleArc(x,y,r,startAt, endAt)
+	surface.DC:AngleArc(x,y,r,startAt, endAt);
+end
 
 function triangle(x1, y1, x2, y2, x3, y3)
 	local pts = ffi.new("POINT[3]", {{x1,y1},{x2,y2},{x3,y3}})

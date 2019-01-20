@@ -235,6 +235,10 @@ function DeviceContext.Text(self, txt, x, y)
 end
 
 -- Bitmap drawing
+function DeviceContext.AngleArc(  self,  x,  y,  r,  StartAngle,  SweepAngle)
+	return C.AngleArc(self.Handle,  x,  y,  r,  StartAngle,  SweepAngle)
+end
+
 function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, dwRop)
 	nXSrc = nXSrc or 0
 	nYSrc = nYSrc or 0

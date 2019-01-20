@@ -28,9 +28,11 @@ end
 
 
 require ("win32.spapidef")
---[=[
-#include <commctrl.h>
-#include <devpropdef.h>
+
+require("win32.commctrl")
+
+require("win32.devpropdef")
+
 
 if _WIN64 then
 --#include <pshpack8.h>   // Assume 8-byte (64-bit) packing throughout
@@ -38,41 +40,38 @@ else
 --#include <pshpack1.h>   // Assume byte packing throughout (32-bit processor)
 end
 
+
 ffi.cdef[[
 //
 // Define maximum string length constants
 //
-#define LINE_LEN                    256 // Windows 9x-compatible maximum for
+static const int LINE_LEN                 =   256; // Windows 9x-compatible maximum for
                                         // displayable strings coming from a
                                         // device INF.
-#define MAX_INF_STRING_LENGTH      4096 // Actual maximum size of an INF string
+static const int MAX_INF_STRING_LENGTH    =  4096; // Actual maximum size of an INF string
                                         // (including string substitutions).
-#define MAX_INF_SECTION_NAME_LENGTH 255 // For Windows 9x compatibility, INF
+static const int MAX_INF_SECTION_NAME_LENGTH = 255; // For Windows 9x compatibility, INF
                                         // section names should be constrained
                                         // to 32 characters.
 
-#define MAX_TITLE_LEN                60
-#define MAX_INSTRUCTION_LEN         256
-#define MAX_LABEL_LEN                30
-#define MAX_SERVICE_NAME_LEN        256
-#define MAX_SUBTITLE_LEN            256
+static const int MAX_TITLE_LEN             =   60;
+static const int MAX_INSTRUCTION_LEN       =  256;
+static const int MAX_LABEL_LEN             =   30;
+static const int MAX_SERVICE_NAME_LEN      =  256;
+static const int MAX_SUBTITLE_LEN          =  256;
+]]
 
+ffi.cdef[[
 //
 // Define maximum length of a machine name in the format expected by ConfigMgr32
 // CM_Connect_Machine (i.e., "\\\\MachineName\0").
 //
-#define SP_MAX_MACHINENAME_LENGTH   (MAX_PATH + 3)
+static const int SP_MAX_MACHINENAME_LENGTH   = (MAX_PATH + 3);
 ]]
 
-//
-// Define type for reference to loaded inf file
-//
+ffi.cdef[[
 typedef PVOID HINF;
 
-//
-// Inf context structure. Applications must not interpret or
-// overwrite values in these structures.
-//
 typedef struct _INFCONTEXT {
     PVOID Inf;
     PVOID CurrentInf;
@@ -80,88 +79,42 @@ typedef struct _INFCONTEXT {
     UINT Line;
 } INFCONTEXT, *PINFCONTEXT;
 
-//
-// Inf file information structure.
-//
+
 typedef struct _SP_INF_INFORMATION {
     DWORD InfStyle;
     DWORD InfCount;
     BYTE VersionData[ANYSIZE_ARRAY];
 } SP_INF_INFORMATION, *PSP_INF_INFORMATION;
 
-//
-// Define structure for passing alternate platform info into
-// SetupSetFileQueueAlternatePlatform and SetupQueryInfOriginalFileInformation.
-//
+
 typedef struct _SP_ALTPLATFORM_INFO_V3 {
     DWORD cbSize;
-    //
-    // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
-    //
+
     DWORD Platform;
-    //
-    // major and minor version numbers to use
-    //
+
     DWORD MajorVersion;
     DWORD MinorVersion;
-    //
-    // processor architecture to use (PROCESSOR_ARCHITECTURE_INTEL,
-    // PROCESSOR_ARCHITECTURE_AMD64, PROCESSOR_ARCHITECTURE_IA64,
-    // or PROCESSOR_ARCHITECTURE_ARM).
-    //
+
     WORD  ProcessorArchitecture;
 
     union {
         WORD  Reserved; // for compatibility with V1 structure
         WORD  Flags;    // indicates validity of non V1 fields
-    } DUMMYUNIONNAME;
+    } ;
 
-    //
-    // specify SP_ALTPLATFORM_FLAGS_VERSION_RANGE in Flags
-    // to use FirstValidatedMajorVersion and FirstValidatedMinorVersion
-    //
-    // Major and minor versions of the oldest previous OS for which this
-    // package's digital signature may be considered valid.  For example, say
-    // the alternate platform is VER_PLATFORM_WIN32_NT, version 5.1.  However,
-    // it is wished that driver packages signed with a 5.0 osattr also be
-    // considered valid.  In this case, you'd have a  MajorVersion/MinorVersion
-    // of 5.1, and a FirstValidatedMajorVersion/FirstValidatedMinorVersion of
-    // 5.0.  To validate packages signed for any previous OS release, specify
-    // 0 for these fields.  To only validate against the target alternate
-    // platform, specify the same values as those in the MajorVersion and
-    // MinorVersion fields.
-    //
+
     DWORD FirstValidatedMajorVersion;
     DWORD FirstValidatedMinorVersion;
 
-    //
-    // specify non-zero value (e.g. VER_NT_WORKSTATION) in ProductType to use
-    // field, and/or specify SP_ALTPLATFORM_FLAGS_SUITE_MASK in Flags to use
-    // SuiteMask field, which may be zero.
-    //
-    // Product type and suite mask of alternate platform.  Used to select
-    // matching decorated install sections within driver packages that target
-    // specific product variants of the OS.  For example, for only Server
-    // products with the Enterprise or Small Business suite classification,
-    // use ProductType VER_NT_SERVER with SuiteMask VER_SUITE_ENTERPRISE and
-    // VER_SUITE_SMALLBUSINESS.
-    //
     BYTE ProductType;
     WORD SuiteMask;
 
-    //
-    // Build number of alternate platform.  Used to select matching
-    // decorated install sections within driver packages that target a
-    // minimal build number with the specified OS
-    // MajorVersion/MinorVersion. If no specific minimal build number
-    // targeting is required, a value of zero should be specified. Note that
-    // this capability is only supported on certain builds of 10.0 and
-    // later.
-    //
     DWORD BuildNumber;
 
 } SP_ALTPLATFORM_INFO_V3, *PSP_ALTPLATFORM_INFO_V3;
+]]
 
+ffi.cdef[[
 typedef struct _SP_ALTPLATFORM_INFO_V2 {
     DWORD cbSize;
     DWORD Platform;
@@ -171,7 +124,7 @@ typedef struct _SP_ALTPLATFORM_INFO_V2 {
     union {
         WORD  Reserved;
         WORD  Flags;
-    } DUMMYUNIONNAME;
+    } ;
     DWORD FirstValidatedMajorVersion;
     DWORD FirstValidatedMinorVersion;
 } SP_ALTPLATFORM_INFO_V2, *PSP_ALTPLATFORM_INFO_V2;
@@ -184,35 +137,44 @@ typedef struct _SP_ALTPLATFORM_INFO_V1 {
     WORD  ProcessorArchitecture;
     WORD  Reserved; // must be zero.
 } SP_ALTPLATFORM_INFO_V1, *PSP_ALTPLATFORM_INFO_V1;
+]]
 
-#if USE_SP_ALTPLATFORM_INFO_V1 || (_SETUPAPI_VER < _WIN32_WINNT_WINXP)
+
+if USE_SP_ALTPLATFORM_INFO_V1 or (_SETUPAPI_VER < _WIN32_WINNT_WINXP) then
+ffi.cdef[[
 // use version 1 altplatform info data structure
 typedef SP_ALTPLATFORM_INFO_V1 SP_ALTPLATFORM_INFO;
 typedef PSP_ALTPLATFORM_INFO_V1 PSP_ALTPLATFORM_INFO;
-
-#elif USE_SP_ALTPLATFORM_INFO_V3 && (NTDDI_VERSION >= NTDDI_WIN10_RS1)
+]]
+elseif USE_SP_ALTPLATFORM_INFO_V3 and (NTDDI_VERSION >= NTDDI_WIN10_RS1) then
+ffi.cdef[[
 // use version 3 altplatform info data structure
 typedef SP_ALTPLATFORM_INFO_V3 SP_ALTPLATFORM_INFO;
 typedef PSP_ALTPLATFORM_INFO_V3 PSP_ALTPLATFORM_INFO;
-
-#else
+]]
+else
+ffi.cdef[[
 // use version 2 altplatform info data structure
 typedef SP_ALTPLATFORM_INFO_V2 SP_ALTPLATFORM_INFO;
 typedef PSP_ALTPLATFORM_INFO_V2 PSP_ALTPLATFORM_INFO;
-
-#endif  // use default version of altplatform info data structure
-
-//
-// SP_ALTPLATFORM_INFO.Flags values
-//
-#if _WIN32_WINNT >= _WIN32_WINNT_WINXP
-#define SP_ALTPLATFORM_FLAGS_VERSION_RANGE (0x0001)     // FirstValidatedMajor/MinorVersion
-#endif
-#if NTDDI_VERSION >= NTDDI_WIN10_RS1
-#define SP_ALTPLATFORM_FLAGS_SUITE_MASK    (0x0002)     // SuiteMask
-#endif
+]]
+end  --// use default version of altplatform info data structure
 
 
+
+if _WIN32_WINNT >= _WIN32_WINNT_WINXP then
+ffi.cdef[[
+static const int SP_ALTPLATFORM_FLAGS_VERSION_RANGE = (0x0001);     // FirstValidatedMajor/MinorVersion
+]]
+end
+
+if NTDDI_VERSION >= NTDDI_WIN10_RS1 then
+ffi.cdef[[
+static const int SP_ALTPLATFORM_FLAGS_SUITE_MASK   = (0x0002);     // SuiteMask
+]]
+end
+
+ffi.cdef[[
 //
 // Define structure that is filled in by SetupQueryInfOriginalFileInformation
 // to indicate the INFs original name and the original name of the (potentially
@@ -229,7 +191,9 @@ typedef struct _SP_ORIGINAL_FILE_INFO_W {
     WCHAR  OriginalInfName[MAX_PATH];
     WCHAR  OriginalCatalogName[MAX_PATH];
 } SP_ORIGINAL_FILE_INFO_W, *PSP_ORIGINAL_FILE_INFO_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_ORIGINAL_FILE_INFO_W SP_ORIGINAL_FILE_INFO;
 typedef PSP_ORIGINAL_FILE_INFO_W PSP_ORIGINAL_FILE_INFO;
@@ -237,210 +201,210 @@ typedef PSP_ORIGINAL_FILE_INFO_W PSP_ORIGINAL_FILE_INFO;
 typedef SP_ORIGINAL_FILE_INFO_A SP_ORIGINAL_FILE_INFO;
 typedef PSP_ORIGINAL_FILE_INFO_A PSP_ORIGINAL_FILE_INFO;
 #endif
+--]]
 
-//
-// SP_INF_INFORMATION.InfStyle values
-//
-#define INF_STYLE_NONE           0x00000000       // unrecognized or non-existent
-#define INF_STYLE_OLDNT          0x00000001       // winnt 3.x
-#define INF_STYLE_WIN4           0x00000002       // Win95
+ffi.cdef[[
+static const int INF_STYLE_NONE         =  0x00000000;       // unrecognized or non-existent
+static const int INF_STYLE_OLDNT        =  0x00000001;       // winnt 3.x
+static const int INF_STYLE_WIN4         =  0x00000002;       // Win95
+]]
 
-//
-// Additional InfStyle flags that may be specified when calling SetupOpenInfFile.
-//
-//
-#define INF_STYLE_CACHE_ENABLE   0x00000010 // always cache INF, even outside of %windir%\Inf
-#define INF_STYLE_CACHE_DISABLE  0x00000020 // delete cached INF information
-#if _SETUPAPI_VER >= _WIN32_WINNT_WS03
-#define INF_STYLE_CACHE_IGNORE   0x00000040 // ignore any cached INF information
-#endif
+ffi.cdef[[
 
+static const int INF_STYLE_CACHE_ENABLE  = 0x00000010; // always cache INF, even outside of %windir%\Inf
+static const int INF_STYLE_CACHE_DISABLE = 0x00000020; // delete cached INF information
+]]
 
+if _SETUPAPI_VER >= _WIN32_WINNT_WS03 then
+ffi.cdef[[
+static const int INF_STYLE_CACHE_IGNORE  = 0x00000040; // ignore any cached INF information
+]]
+end
+
+ffi.cdef[[
 //
 // Target directory specs.
 //
-#define DIRID_ABSOLUTE          -1              // real 32-bit -1
-#define DIRID_ABSOLUTE_16BIT     0xffff         // 16-bit -1 for compat w/setupx
-#define DIRID_NULL               0
-#define DIRID_SRCPATH            1
-#define DIRID_WINDOWS           10
-#define DIRID_SYSTEM            11              // system32
-#define DIRID_DRIVERS           12
-#define DIRID_IOSUBSYS          DIRID_DRIVERS
-#define DIRID_DRIVER_STORE      13
-#define DIRID_INF               17
-#define DIRID_HELP              18
-#define DIRID_FONTS             20
-#define DIRID_VIEWERS           21
-#define DIRID_COLOR             23
-#define DIRID_APPS              24
-#define DIRID_SHARED            25
-#define DIRID_BOOT              30
+static const int DIRID_ABSOLUTE        =  -1;              // real 32-bit -1
+static const int DIRID_ABSOLUTE_16BIT  =   0xffff;         // 16-bit -1 for compat w/setupx
+static const int DIRID_NULL            =   0;
+static const int DIRID_SRCPATH         =   1;
+static const int DIRID_WINDOWS         =  10;
+static const int DIRID_SYSTEM          =  11;             // system32
+static const int DIRID_DRIVERS         =  12;
+static const int DIRID_IOSUBSYS        =  DIRID_DRIVERS;
+static const int DIRID_DRIVER_STORE    =  13;
+static const int DIRID_INF             =  17;
+static const int DIRID_HELP            =  18;
+static const int DIRID_FONTS           =  20;
+static const int DIRID_VIEWERS         =  21;
+static const int DIRID_COLOR           =  23;
+static const int DIRID_APPS            =  24;
+static const int DIRID_SHARED          =  25;
+static const int DIRID_BOOT            =  30;
 
-#define DIRID_SYSTEM16          50
-#define DIRID_SPOOL             51
-#define DIRID_SPOOLDRIVERS      52
-#define DIRID_USERPROFILE       53
-#define DIRID_LOADER            54
-#define DIRID_PRINTPROCESSOR    55
+static const int DIRID_SYSTEM16        =  50;
+static const int DIRID_SPOOL           =  51;
+static const int DIRID_SPOOLDRIVERS    =  52;
+static const int DIRID_USERPROFILE     =  53;
+static const int DIRID_LOADER          =  54;
+static const int DIRID_PRINTPROCESSOR  =  55;
 
-#define DIRID_DEFAULT           DIRID_SYSTEM
+static const int DIRID_DEFAULT         =  DIRID_SYSTEM;
+]]
 
-//
-// The following DIRIDs are for commonly-used shell "special folders".  The
-// complete list of such folders is contained in shlobj.h.  In that headerfile,
-// each folder is assigned a CSIDL_* value.  The DIRID values below are created
-// by taking the CSIDL value in shlobj.h and ORing it with 0x4000.  Thus, if
-// an INF needs to reference other special folders not defined below, it may
-// generate one using the above mechanism, and setupapi will automatically deal
-// with it and use the corresponding shells path where appropriate.  (Remember
-// that DIRIDs must be specified in decimal, not hex, in an INF when used for
-// string substitution.)
-//
-#define DIRID_COMMON_STARTMENU        16406  // All Users\Start Menu
-#define DIRID_COMMON_PROGRAMS         16407  // All Users\Start Menu\Programs
-#define DIRID_COMMON_STARTUP          16408  // All Users\Start Menu\Programs\Startup
-#define DIRID_COMMON_DESKTOPDIRECTORY 16409  // All Users\Desktop
-#define DIRID_COMMON_FAVORITES        16415  // All Users\Favorites
-#define DIRID_COMMON_APPDATA          16419  // All Users\Application Data
+ffi.cdef[[
+static const int DIRID_COMMON_STARTMENU       = 16406;  // All Users\Start Menu
+static const int DIRID_COMMON_PROGRAMS        = 16407;  // All Users\Start Menu\Programs
+static const int DIRID_COMMON_STARTUP         = 16408;  // All Users\Start Menu\Programs\Startup
+static const int DIRID_COMMON_DESKTOPDIRECTORY= 16409;  // All Users\Desktop
+static const int DIRID_COMMON_FAVORITES       = 16415;  // All Users\Favorites
+static const int DIRID_COMMON_APPDATA         = 16419;  // All Users\Application Data
 
-#define DIRID_PROGRAM_FILES           16422  // Program Files
-#define DIRID_SYSTEM_X86              16425  // system32 for WOW
-#define DIRID_PROGRAM_FILES_X86       16426  // Program Files for WOW
-#define DIRID_PROGRAM_FILES_COMMON    16427  // Program Files\Common
-#define DIRID_PROGRAM_FILES_COMMONX86 16428  // x86 Program Files\Common for WOW
+static const int DIRID_PROGRAM_FILES          = 16422;  // Program Files
+static const int DIRID_SYSTEM_X86             = 16425;  // system32 for WOW
+static const int DIRID_PROGRAM_FILES_X86      = 16426;  // Program Files for WOW
+static const int DIRID_PROGRAM_FILES_COMMON   = 16427;  // Program Files\Common
+static const int DIRID_PROGRAM_FILES_COMMONX86= 16428;  // x86 Program Files\Common for WOW
 
-#define DIRID_COMMON_TEMPLATES        16429  // All Users\Templates
-#define DIRID_COMMON_DOCUMENTS        16430  // All Users\Documents
+static const int DIRID_COMMON_TEMPLATES       = 16429;  // All Users\Templates
+static const int DIRID_COMMON_DOCUMENTS       = 16430;  // All Users\Documents
 
 
 //
 // First user-definable dirid. See SetupSetDirectoryId().
 //
-#define DIRID_USER              0x8000
+static const int DIRID_USER             = 0x8000;
+]]
 
-
+ffi.cdef[[
 //
 // Setup callback notification routine type
 //
-typedef UINT (CALLBACK* PSP_FILE_CALLBACK_A)(
-    IN PVOID Context,
-    IN UINT Notification,
-    IN UINT_PTR Param1,
-    IN UINT_PTR Param2
+typedef UINT (__stdcall* PSP_FILE_CALLBACK_A)(
+     PVOID Context,
+     UINT Notification,
+     UINT_PTR Param1,
+     UINT_PTR Param2
     );
 
-typedef UINT (CALLBACK* PSP_FILE_CALLBACK_W)(
-    IN PVOID Context,
-    IN UINT Notification,
-    IN UINT_PTR Param1,
-    IN UINT_PTR Param2
+typedef UINT (__stdcall* PSP_FILE_CALLBACK_W)(
+     PVOID Context,
+     UINT Notification,
+     UINT_PTR Param1,
+     UINT_PTR Param2
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define PSP_FILE_CALLBACK PSP_FILE_CALLBACK_W
 #else
 #define PSP_FILE_CALLBACK PSP_FILE_CALLBACK_A
 #endif
+--]]
 
 
+ffi.cdef[[
 //
 // Operation/queue start/end notification. These are ordinal values.
 //
-#define SPFILENOTIFY_STARTQUEUE         0x00000001
-#define SPFILENOTIFY_ENDQUEUE           0x00000002
-#define SPFILENOTIFY_STARTSUBQUEUE      0x00000003
-#define SPFILENOTIFY_ENDSUBQUEUE        0x00000004
-#define SPFILENOTIFY_STARTDELETE        0x00000005
-#define SPFILENOTIFY_ENDDELETE          0x00000006
-#define SPFILENOTIFY_DELETEERROR        0x00000007
-#define SPFILENOTIFY_STARTRENAME        0x00000008
-#define SPFILENOTIFY_ENDRENAME          0x00000009
-#define SPFILENOTIFY_RENAMEERROR        0x0000000a
-#define SPFILENOTIFY_STARTCOPY          0x0000000b
-#define SPFILENOTIFY_ENDCOPY            0x0000000c
-#define SPFILENOTIFY_COPYERROR          0x0000000d
-#define SPFILENOTIFY_NEEDMEDIA          0x0000000e
-#define SPFILENOTIFY_QUEUESCAN          0x0000000f
+static const int SPFILENOTIFY_STARTQUEUE         = 0x00000001;
+static const int SPFILENOTIFY_ENDQUEUE           = 0x00000002;
+static const int SPFILENOTIFY_STARTSUBQUEUE      = 0x00000003;
+static const int SPFILENOTIFY_ENDSUBQUEUE        = 0x00000004;
+static const int SPFILENOTIFY_STARTDELETE        = 0x00000005;
+static const int SPFILENOTIFY_ENDDELETE          = 0x00000006;
+static const int SPFILENOTIFY_DELETEERROR        = 0x00000007;
+static const int SPFILENOTIFY_STARTRENAME        = 0x00000008;
+static const int SPFILENOTIFY_ENDRENAME          = 0x00000009;
+static const int SPFILENOTIFY_RENAMEERROR        = 0x0000000a;
+static const int SPFILENOTIFY_STARTCOPY          = 0x0000000b;
+static const int SPFILENOTIFY_ENDCOPY            = 0x0000000c;
+static const int SPFILENOTIFY_COPYERROR          = 0x0000000d;
+static const int SPFILENOTIFY_NEEDMEDIA          = 0x0000000e;
+static const int SPFILENOTIFY_QUEUESCAN          = 0x0000000f;
 //
 // These are used with SetupIterateCabinet().
 //
-#define SPFILENOTIFY_CABINETINFO        0x00000010
-#define SPFILENOTIFY_FILEINCABINET      0x00000011
-#define SPFILENOTIFY_NEEDNEWCABINET     0x00000012
-#define SPFILENOTIFY_FILEEXTRACTED      0x00000013
-#define SPFILENOTIFY_FILEOPDELAYED      0x00000014
+static const int SPFILENOTIFY_CABINETINFO        = 0x00000010;
+static const int SPFILENOTIFY_FILEINCABINET      = 0x00000011;
+static const int SPFILENOTIFY_NEEDNEWCABINET     = 0x00000012;
+static const int SPFILENOTIFY_FILEEXTRACTED      = 0x00000013;
+static const int SPFILENOTIFY_FILEOPDELAYED      = 0x00000014;
 //
 // These are used for backup operations
 //
-#define SPFILENOTIFY_STARTBACKUP        0x00000015
-#define SPFILENOTIFY_BACKUPERROR        0x00000016
-#define SPFILENOTIFY_ENDBACKUP          0x00000017
+static const int SPFILENOTIFY_STARTBACKUP        = 0x00000015;
+static const int SPFILENOTIFY_BACKUPERROR        = 0x00000016;
+static const int SPFILENOTIFY_ENDBACKUP          = 0x00000017;
 //
 // Extended notification for SetupScanFileQueue(Flags=SPQ_SCAN_USE_CALLBACKEX)
 //
-#define SPFILENOTIFY_QUEUESCAN_EX       0x00000018
+static const int SPFILENOTIFY_QUEUESCAN_EX       = 0x00000018;
 
-#define SPFILENOTIFY_STARTREGISTRATION  0x00000019
-#define SPFILENOTIFY_ENDREGISTRATION    0x00000020
+static const int SPFILENOTIFY_STARTREGISTRATION  = 0x00000019;
+static const int SPFILENOTIFY_ENDREGISTRATION    = 0x00000020;
+]]
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-//
-// Extended notification for SetupScanFileQueue(Flags=SPQ_SCAN_USE_CALLBACK_SIGNERINFO)
-//
-#define SPFILENOTIFY_QUEUESCAN_SIGNERINFO 0x00000040
+if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
+ffi.cdef[[
+static const int SPFILENOTIFY_QUEUESCAN_SIGNERINFO = 0x00000040;
+]]
+end
 
-#endif
-
+ffi.cdef[[
 //
 // Copy notification. These are bit flags that may be combined.
 //
-#define SPFILENOTIFY_LANGMISMATCH       0x00010000
-#define SPFILENOTIFY_TARGETEXISTS       0x00020000
-#define SPFILENOTIFY_TARGETNEWER        0x00040000
+static const int SPFILENOTIFY_LANGMISMATCH      = 0x00010000;
+static const int SPFILENOTIFY_TARGETEXISTS      = 0x00020000;
+static const int SPFILENOTIFY_TARGETNEWER       = 0x00040000;
 
 //
 // File operation codes and callback outcomes.
 //
-#define FILEOP_COPY                     0
-#define FILEOP_RENAME                   1
-#define FILEOP_DELETE                   2
-#define FILEOP_BACKUP                   3
+static const int FILEOP_COPY                    = 0;
+static const int FILEOP_RENAME                  = 1;
+static const int FILEOP_DELETE                  = 2;
+static const int FILEOP_BACKUP                  = 3;
 
-#define FILEOP_ABORT                    0
-#define FILEOP_DOIT                     1
-#define FILEOP_SKIP                     2
-#define FILEOP_RETRY                    FILEOP_DOIT
-#define FILEOP_NEWPATH                  4
+static const int FILEOP_ABORT                   = 0;
+static const int FILEOP_DOIT                    = 1;
+static const int FILEOP_SKIP                    = 2;
+static const int FILEOP_RETRY                   = FILEOP_DOIT;
+static const int FILEOP_NEWPATH                 = 4;
 
 //
 // Flags in inf copy sections
 //
-#define COPYFLG_WARN_IF_SKIP            0x00000001  // warn if user tries to skip file
-#define COPYFLG_NOSKIP                  0x00000002  // disallow skipping this file
-#define COPYFLG_NOVERSIONCHECK          0x00000004  // ignore versions and overwrite target
-#define COPYFLG_FORCE_FILE_IN_USE       0x00000008  // force file-in-use behavior
-#define COPYFLG_NO_OVERWRITE            0x00000010  // do not copy if file exists on target
-#define COPYFLG_NO_VERSION_DIALOG       0x00000020  // do not copy if target is newer
-#define COPYFLG_OVERWRITE_OLDER_ONLY    0x00000040  // leave target alone if version same as source
-#define COPYFLG_PROTECTED_WINDOWS_DRIVER_FILE 0x00000100    // a Windows driver file to be 
+static const int COPYFLG_WARN_IF_SKIP           = 0x00000001;  // warn if user tries to skip file
+static const int COPYFLG_NOSKIP                 = 0x00000002;  // disallow skipping this file
+static const int COPYFLG_NOVERSIONCHECK         = 0x00000004;  // ignore versions and overwrite target
+static const int COPYFLG_FORCE_FILE_IN_USE      = 0x00000008;  // force file-in-use behavior
+static const int COPYFLG_NO_OVERWRITE           = 0x00000010;  // do not copy if file exists on target
+static const int COPYFLG_NO_VERSION_DIALOG      = 0x00000020;  // do not copy if target is newer
+static const int COPYFLG_OVERWRITE_OLDER_ONLY   = 0x00000040;  // leave target alone if version same as source
+static const int COPYFLG_PROTECTED_WINDOWS_DRIVER_FILE = 0x00000100;    // a Windows driver file to be 
                             // protected as other Windows system files
 
-#define COPYFLG_REPLACEONLY             0x00000400  // copy only if file exists on target
-#define COPYFLG_NODECOMP                0x00000800  // don't attempt to decompress file; copy as-is
-#define COPYFLG_REPLACE_BOOT_FILE       0x00001000  // file must be present upon reboot (i.e., it's
+static const int COPYFLG_REPLACEONLY           =  0x00000400;  // copy only if file exists on target
+static const int COPYFLG_NODECOMP              =  0x00000800;  // don't attempt to decompress file; copy as-is
+static const int COPYFLG_REPLACE_BOOT_FILE     =  0x00001000;  // file must be present upon reboot (i.e., it's
                                                     // needed by the loader); this flag implies a reboot
-#define COPYFLG_NOPRUNE                 0x00002000  // never prune this file
-#define COPYFLG_IN_USE_TRY_RENAME       0x00004000  // If file in use, try to rename the target first
+static const int COPYFLG_NOPRUNE               =  0x00002000;  // never prune this file
+static const int COPYFLG_IN_USE_TRY_RENAME     =  0x00004000;  // If file in use, try to rename the target first
 
 //
 // Flags in inf delete sections
 // New flags go in high word
 //
-#define DELFLG_IN_USE                   0x00000001  // queue in-use file for delete
-#define DELFLG_IN_USE1                  0x00010000  // high-word version of DELFLG_IN_USE
+static const int DELFLG_IN_USE                  = 0x00000001;  // queue in-use file for delete
+static const int DELFLG_IN_USE1                 = 0x00010000;  // high-word version of DELFLG_IN_USE
+]]
 
+ffi.cdef[[
 //
 // Source and file paths. Used when notifying queue callback
 // of SPFILENOTIFY_STARTxxx, SPFILENOTIFY_ENDxxx, and SPFILENOTIFY_xxxERROR.
@@ -458,7 +422,9 @@ typedef struct _FILEPATHS_W {
     UINT   Win32Error;
     DWORD  Flags;   // such as SP_COPY_NOSKIP for copy errors
 } FILEPATHS_W, *PFILEPATHS_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef FILEPATHS_W FILEPATHS;
 typedef PFILEPATHS_W PFILEPATHS;
@@ -466,9 +432,11 @@ typedef PFILEPATHS_W PFILEPATHS;
 typedef FILEPATHS_A FILEPATHS;
 typedef PFILEPATHS_A PFILEPATHS;
 #endif
+--]]
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
+if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
+ffi.cdef[[
 typedef struct _FILEPATHS_SIGNERINFO_A {
     PCSTR  Target;
     PCSTR  Source;  // not used for delete operations
@@ -488,7 +456,9 @@ typedef struct _FILEPATHS_SIGNERINFO_W {
     PCWSTR Version;
     PCWSTR CatalogFile;
 } FILEPATHS_SIGNERINFO_W, *PFILEPATHS_SIGNERINFO_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef FILEPATHS_SIGNERINFO_W FILEPATHS_SIGNERINFO;
 typedef PFILEPATHS_SIGNERINFO_W PFILEPATHS_SIGNERINFO;
@@ -496,9 +466,10 @@ typedef PFILEPATHS_SIGNERINFO_W PFILEPATHS_SIGNERINFO;
 typedef FILEPATHS_SIGNERINFO_A FILEPATHS_SIGNERINFO;
 typedef PFILEPATHS_SIGNERINFO_A PFILEPATHS_SIGNERINFO;
 #endif
+--]]
+end --// _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-#endif // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
-
+ffi.cdef[[
 //
 // Structure used with SPFILENOTIFY_NEEDMEDIA
 //
@@ -527,7 +498,9 @@ typedef struct _SOURCE_MEDIA_W {
     PCWSTR SourceFile;
     DWORD  Flags;           // subset of SP_COPY_xxx
 } SOURCE_MEDIA_W, *PSOURCE_MEDIA_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SOURCE_MEDIA_W SOURCE_MEDIA;
 typedef PSOURCE_MEDIA_W PSOURCE_MEDIA;
@@ -535,7 +508,9 @@ typedef PSOURCE_MEDIA_W PSOURCE_MEDIA;
 typedef SOURCE_MEDIA_A SOURCE_MEDIA;
 typedef PSOURCE_MEDIA_A PSOURCE_MEDIA;
 #endif
+--]]
 
+ffi.cdef[[
 //
 // Structure used with SPFILENOTIFY_CABINETINFO and
 // SPFILENOTIFY_NEEDNEWCABINET
@@ -555,7 +530,9 @@ typedef struct _CABINET_INFO_W {
     USHORT SetId;
     USHORT CabinetNumber;
 } CABINET_INFO_W, *PCABINET_INFO_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef CABINET_INFO_W CABINET_INFO;
 typedef PCABINET_INFO_W PCABINET_INFO;
@@ -563,7 +540,9 @@ typedef PCABINET_INFO_W PCABINET_INFO;
 typedef CABINET_INFO_A CABINET_INFO;
 typedef PCABINET_INFO_A PCABINET_INFO;
 #endif
+--]]
 
+ffi.cdef[[
 //
 // Structure used with SPFILENOTIFY_FILEINCABINET
 //
@@ -586,7 +565,9 @@ typedef struct _FILE_IN_CABINET_INFO_W {
     WORD   DosAttribs;
     WCHAR  FullTargetName[MAX_PATH];
 } FILE_IN_CABINET_INFO_W, *PFILE_IN_CABINET_INFO_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef FILE_IN_CABINET_INFO_W FILE_IN_CABINET_INFO;
 typedef PFILE_IN_CABINET_INFO_W PFILE_IN_CABINET_INFO;
@@ -594,7 +575,9 @@ typedef PFILE_IN_CABINET_INFO_W PFILE_IN_CABINET_INFO;
 typedef FILE_IN_CABINET_INFO_A FILE_IN_CABINET_INFO;
 typedef PFILE_IN_CABINET_INFO_A PFILE_IN_CABINET_INFO;
 #endif
+--]]
 
+ffi.cdef[[
 //
 // Structure used for SPFILENOTIFY_***REGISTRATION
 // callback
@@ -613,7 +596,9 @@ typedef struct _SP_REGISTER_CONTROL_STATUSW {
     DWORD    Win32Error;
     DWORD    FailureCode;
 } SP_REGISTER_CONTROL_STATUSW, *PSP_REGISTER_CONTROL_STATUSW;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_REGISTER_CONTROL_STATUSW SP_REGISTER_CONTROL_STATUS;
 typedef PSP_REGISTER_CONTROL_STATUSW PSP_REGISTER_CONTROL_STATUS;
@@ -621,20 +606,19 @@ typedef PSP_REGISTER_CONTROL_STATUSW PSP_REGISTER_CONTROL_STATUS;
 typedef SP_REGISTER_CONTROL_STATUSA SP_REGISTER_CONTROL_STATUS;
 typedef PSP_REGISTER_CONTROL_STATUSA PSP_REGISTER_CONTROL_STATUS;
 #endif
+--]]
 
+ffi.cdef[[
+static const int SPREG_SUCCESS  = 0x00000000;
+static const int SPREG_LOADLIBRARY  = 0x00000001;
+static const int SPREG_GETPROCADDR  = 0x00000002;
+static const int SPREG_REGSVR       = 0x00000003;
+static const int SPREG_DLLINSTALL   = 0x00000004;
+static const int SPREG_TIMEOUT  = 0x00000005;
+static const int SPREG_UNKNOWN  = 0xFFFFFFFF;
+]]
 
-//
-// valid values for SP_REGISTER_CONTROL_STATUS.FailureCode field
-//
-
-#define SPREG_SUCCESS   0x00000000
-#define SPREG_LOADLIBRARY   0x00000001
-#define SPREG_GETPROCADDR   0x00000002
-#define SPREG_REGSVR        0x00000003
-#define SPREG_DLLINSTALL    0x00000004
-#define SPREG_TIMEOUT   0x00000005
-#define SPREG_UNKNOWN   0xFFFFFFFF
-
+ffi.cdef[[
 //
 // Define type for setup file queue
 //
@@ -672,7 +656,9 @@ typedef struct _SP_FILE_COPY_PARAMS_W {
     HINF     LayoutInf;          OPTIONAL
     PCWSTR   SecurityDescriptor; OPTIONAL
 } SP_FILE_COPY_PARAMS_W, *PSP_FILE_COPY_PARAMS_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_FILE_COPY_PARAMS_W SP_FILE_COPY_PARAMS;
 typedef PSP_FILE_COPY_PARAMS_W PSP_FILE_COPY_PARAMS;
@@ -680,8 +666,9 @@ typedef PSP_FILE_COPY_PARAMS_W PSP_FILE_COPY_PARAMS;
 typedef SP_FILE_COPY_PARAMS_A SP_FILE_COPY_PARAMS;
 typedef PSP_FILE_COPY_PARAMS_A PSP_FILE_COPY_PARAMS;
 #endif
+--]]
 
-
+ffi.cdef[[
 //
 // Define type for setup disk space list
 //
@@ -714,14 +701,19 @@ typedef struct _SP_DEVICE_INTERFACE_DATA {
     DWORD Flags;
     ULONG_PTR Reserved;
 } SP_DEVICE_INTERFACE_DATA, *PSP_DEVICE_INTERFACE_DATA;
+]]
 
+
+ffi.cdef[[
 //
 // Flags for SP_DEVICE_INTERFACE_DATA.Flags field.
 //
-#define SPINT_ACTIVE  0x00000001
-#define SPINT_DEFAULT 0x00000002
-#define SPINT_REMOVED 0x00000004
+static const int SPINT_ACTIVE  = 0x00000001;
+static const int SPINT_DEFAULT = 0x00000002;
+static const int SPINT_REMOVED = 0x00000004;
+]]
 
+--[[
 //
 // Backward compatibility--do not use.
 //
@@ -730,8 +722,9 @@ typedef PSP_DEVICE_INTERFACE_DATA PSP_INTERFACE_DEVICE_DATA;
 #define SPID_ACTIVE               SPINT_ACTIVE
 #define SPID_DEFAULT              SPINT_DEFAULT
 #define SPID_REMOVED              SPINT_REMOVED
+--]]
 
-
+ffi.cdef[[
 typedef struct _SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     DWORD  cbSize;
     CHAR   DevicePath[ANYSIZE_ARRAY];
@@ -741,7 +734,9 @@ typedef struct _SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     DWORD  cbSize;
     WCHAR  DevicePath[ANYSIZE_ARRAY];
 } SP_DEVICE_INTERFACE_DETAIL_DATA_W, *PSP_DEVICE_INTERFACE_DETAIL_DATA_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_DEVICE_INTERFACE_DETAIL_DATA_W SP_DEVICE_INTERFACE_DETAIL_DATA;
 typedef PSP_DEVICE_INTERFACE_DETAIL_DATA_W PSP_DEVICE_INTERFACE_DETAIL_DATA;
@@ -749,7 +744,9 @@ typedef PSP_DEVICE_INTERFACE_DETAIL_DATA_W PSP_DEVICE_INTERFACE_DETAIL_DATA;
 typedef SP_DEVICE_INTERFACE_DETAIL_DATA_A SP_DEVICE_INTERFACE_DETAIL_DATA;
 typedef PSP_DEVICE_INTERFACE_DETAIL_DATA_A PSP_DEVICE_INTERFACE_DETAIL_DATA;
 #endif
+--]]
 
+--[[
 //
 // Backward compatibility--do not use.
 //
@@ -764,8 +761,9 @@ typedef PSP_INTERFACE_DEVICE_DETAIL_DATA_W PSP_INTERFACE_DEVICE_DETAIL_DATA;
 typedef SP_INTERFACE_DEVICE_DETAIL_DATA_A SP_INTERFACE_DEVICE_DETAIL_DATA;
 typedef PSP_INTERFACE_DEVICE_DETAIL_DATA_A PSP_INTERFACE_DEVICE_DETAIL_DATA;
 #endif
+--]]
 
-
+ffi.cdef[[
 //
 // Structure for detailed information on a device information set (used for
 // SetupDiGetDeviceInfoListDetail which supercedes the functionality of
@@ -784,7 +782,9 @@ typedef struct _SP_DEVINFO_LIST_DETAIL_DATA_W {
     HANDLE RemoteMachineHandle;
     WCHAR  RemoteMachineName[SP_MAX_MACHINENAME_LENGTH];
 } SP_DEVINFO_LIST_DETAIL_DATA_W, *PSP_DEVINFO_LIST_DETAIL_DATA_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_DEVINFO_LIST_DETAIL_DATA_W SP_DEVINFO_LIST_DETAIL_DATA;
 typedef PSP_DEVINFO_LIST_DETAIL_DATA_W PSP_DEVINFO_LIST_DETAIL_DATA;
@@ -792,59 +792,62 @@ typedef PSP_DEVINFO_LIST_DETAIL_DATA_W PSP_DEVINFO_LIST_DETAIL_DATA;
 typedef SP_DEVINFO_LIST_DETAIL_DATA_A SP_DEVINFO_LIST_DETAIL_DATA;
 typedef PSP_DEVINFO_LIST_DETAIL_DATA_A PSP_DEVINFO_LIST_DETAIL_DATA;
 #endif
+--]]
 
+ffi.cdef[[
 //
 // Class installer function codes
 //
-#define DIF_SELECTDEVICE                    0x00000001
-#define DIF_INSTALLDEVICE                   0x00000002
-#define DIF_ASSIGNRESOURCES                 0x00000003
-#define DIF_PROPERTIES                      0x00000004
-#define DIF_REMOVE                          0x00000005
-#define DIF_FIRSTTIMESETUP                  0x00000006
-#define DIF_FOUNDDEVICE                     0x00000007
-#define DIF_SELECTCLASSDRIVERS              0x00000008
-#define DIF_VALIDATECLASSDRIVERS            0x00000009
-#define DIF_INSTALLCLASSDRIVERS             0x0000000A
-#define DIF_CALCDISKSPACE                   0x0000000B
-#define DIF_DESTROYPRIVATEDATA              0x0000000C
-#define DIF_VALIDATEDRIVER                  0x0000000D
-#define DIF_DETECT                          0x0000000F
-#define DIF_INSTALLWIZARD                   0x00000010
-#define DIF_DESTROYWIZARDDATA               0x00000011
-#define DIF_PROPERTYCHANGE                  0x00000012
-#define DIF_ENABLECLASS                     0x00000013
-#define DIF_DETECTVERIFY                    0x00000014
-#define DIF_INSTALLDEVICEFILES              0x00000015
-#define DIF_UNREMOVE                        0x00000016
-#define DIF_SELECTBESTCOMPATDRV             0x00000017
-#define DIF_ALLOW_INSTALL                   0x00000018
-#define DIF_REGISTERDEVICE                  0x00000019
-#define DIF_NEWDEVICEWIZARD_PRESELECT       0x0000001A
-#define DIF_NEWDEVICEWIZARD_SELECT          0x0000001B
-#define DIF_NEWDEVICEWIZARD_PREANALYZE      0x0000001C
-#define DIF_NEWDEVICEWIZARD_POSTANALYZE     0x0000001D
-#define DIF_NEWDEVICEWIZARD_FINISHINSTALL   0x0000001E
-#define DIF_UNUSED1                         0x0000001F
-#define DIF_INSTALLINTERFACES               0x00000020
-#define DIF_DETECTCANCEL                    0x00000021
-#define DIF_REGISTER_COINSTALLERS           0x00000022
-#define DIF_ADDPROPERTYPAGE_ADVANCED        0x00000023
-#define DIF_ADDPROPERTYPAGE_BASIC           0x00000024
-#define DIF_RESERVED1                       0x00000025
-#define DIF_TROUBLESHOOTER                  0x00000026
-#define DIF_POWERMESSAGEWAKE                0x00000027
-#define DIF_ADDREMOTEPROPERTYPAGE_ADVANCED  0x00000028
-#define DIF_UPDATEDRIVER_UI                 0x00000029
-#define DIF_FINISHINSTALL_ACTION            0x0000002A
-#define DIF_RESERVED2                       0x00000030
+static const int DIF_SELECTDEVICE                    = 0x00000001;
+static const int DIF_INSTALLDEVICE                   = 0x00000002;
+static const int DIF_ASSIGNRESOURCES                 = 0x00000003;
+static const int DIF_PROPERTIES                      = 0x00000004;
+static const int DIF_REMOVE                          = 0x00000005;
+static const int DIF_FIRSTTIMESETUP                  = 0x00000006;
+static const int DIF_FOUNDDEVICE                     = 0x00000007;
+static const int DIF_SELECTCLASSDRIVERS              = 0x00000008;
+static const int DIF_VALIDATECLASSDRIVERS            = 0x00000009;
+static const int DIF_INSTALLCLASSDRIVERS             = 0x0000000A;
+static const int DIF_CALCDISKSPACE                   = 0x0000000B;
+static const int DIF_DESTROYPRIVATEDATA              = 0x0000000C;
+static const int DIF_VALIDATEDRIVER                  = 0x0000000D;
+static const int DIF_DETECT                          = 0x0000000F;
+static const int DIF_INSTALLWIZARD                   = 0x00000010;
+static const int DIF_DESTROYWIZARDDATA               = 0x00000011;
+static const int DIF_PROPERTYCHANGE                  = 0x00000012;
+static const int DIF_ENABLECLASS                     = 0x00000013;
+static const int DIF_DETECTVERIFY                    = 0x00000014;
+static const int DIF_INSTALLDEVICEFILES              = 0x00000015;
+static const int DIF_UNREMOVE                        = 0x00000016;
+static const int DIF_SELECTBESTCOMPATDRV             = 0x00000017;
+static const int DIF_ALLOW_INSTALL                   = 0x00000018;
+static const int DIF_REGISTERDEVICE                  = 0x00000019;
+static const int DIF_NEWDEVICEWIZARD_PRESELECT       = 0x0000001A;
+static const int DIF_NEWDEVICEWIZARD_SELECT          = 0x0000001B;
+static const int DIF_NEWDEVICEWIZARD_PREANALYZE      = 0x0000001C;
+static const int DIF_NEWDEVICEWIZARD_POSTANALYZE     = 0x0000001D;
+static const int DIF_NEWDEVICEWIZARD_FINISHINSTALL   = 0x0000001E;
+static const int DIF_UNUSED1                         = 0x0000001F;
+static const int DIF_INSTALLINTERFACES               = 0x00000020;
+static const int DIF_DETECTCANCEL                    = 0x00000021;
+static const int DIF_REGISTER_COINSTALLERS           = 0x00000022;
+static const int DIF_ADDPROPERTYPAGE_ADVANCED        = 0x00000023;
+static const int DIF_ADDPROPERTYPAGE_BASIC           = 0x00000024;
+static const int DIF_RESERVED1                       = 0x00000025;
+static const int DIF_TROUBLESHOOTER                  = 0x00000026;
+static const int DIF_POWERMESSAGEWAKE                = 0x00000027;
+static const int DIF_ADDREMOTEPROPERTYPAGE_ADVANCED  = 0x00000028;
+static const int DIF_UPDATEDRIVER_UI                 = 0x00000029;
+static const int DIF_FINISHINSTALL_ACTION            = 0x0000002A;
+static const int DIF_RESERVED2                       = 0x00000030;
 
 //
 // Obsoleted DIF codes (do not use)
 //
-#define DIF_MOVEDEVICE                      0x0000000E
+static const int DIF_MOVEDEVICE                      = 0x0000000E;
+]]
 
-
+ffi.cdef[[
 typedef UINT        DI_FUNCTION;    // Function type for device installer
 
 
@@ -878,7 +881,9 @@ typedef struct _SP_DEVINSTALL_PARAMS_W {
     DWORD             Reserved;
     WCHAR             DriverPath[MAX_PATH];
 } SP_DEVINSTALL_PARAMS_W, *PSP_DEVINSTALL_PARAMS_W;
+]]
 
+--[[
 #ifdef UNICODE
 typedef SP_DEVINSTALL_PARAMS_W SP_DEVINSTALL_PARAMS;
 typedef PSP_DEVINSTALL_PARAMS_W PSP_DEVINSTALL_PARAMS;
@@ -886,8 +891,9 @@ typedef PSP_DEVINSTALL_PARAMS_W PSP_DEVINSTALL_PARAMS;
 typedef SP_DEVINSTALL_PARAMS_A SP_DEVINSTALL_PARAMS;
 typedef PSP_DEVINSTALL_PARAMS_A PSP_DEVINSTALL_PARAMS;
 #endif
+--]]
 
-
+--[=[
 //
 // SP_DEVINSTALL_PARAMS.Flags values
 //
@@ -1033,7 +1039,9 @@ typedef PSP_DEVINSTALL_PARAMS_A PSP_DEVINSTALL_PARAMS;
 #define DI_FLAGSEX_SEARCH_PUBLISHED_INFS    0x80000000L  // Tell SetupDiBuildDriverInfoList to do a "published INF" search
 
 #endif // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+--]=]
 
+--[=[
 //
 // Class installation parameters header.  This must be the first field of any
 // class install parameter structure.  The InstallFunction field must be set to
@@ -1148,9 +1156,9 @@ typedef PSP_SELECTDEVICE_PARAMS_A PSP_SELECTDEVICE_PARAMS;
 //
 // Callback routine for giving progress notification during detection
 //
-typedef BOOL (CALLBACK* PDETECT_PROGRESS_NOTIFY)(
-     IN PVOID ProgressNotifyParam,
-     IN DWORD DetectComplete
+typedef BOOL (__stdcall* PDETECT_PROGRESS_NOTIFY)(
+      PVOID ProgressNotifyParam,
+      DWORD DetectComplete
      );
 
 // where:
@@ -1184,7 +1192,7 @@ typedef struct _SP_DETECTDEVICE_PARAMS {
 // Define maximum number of dynamic wizard pages that can be added to
 // hardware install wizard.
 //
-#define MAX_INSTALLWIZARD_DYNAPAGES             20
+#define MAX_INSTALLWIZARD_DYNAPAGES            = 20;
 
 typedef struct _SP_INSTALLWIZARD_DATA {
     SP_CLASSINSTALL_HEADER ClassInstallHeader;
@@ -1663,11 +1671,11 @@ typedef struct _SP_DRVINSTALL_PARAMS {
 //
 // Setup callback routine for comparing detection signatures
 //
-typedef DWORD (CALLBACK* PSP_DETSIG_CMPPROC)(
-    IN HDEVINFO         DeviceInfoSet,
-    IN PSP_DEVINFO_DATA NewDeviceData,
-    IN PSP_DEVINFO_DATA ExistingDeviceData,
-    IN PVOID            CompareContext      OPTIONAL
+typedef DWORD (__stdcall* PSP_DETSIG_CMPPROC)(
+     HDEVINFO         DeviceInfoSet,
+     PSP_DEVINFO_DATA NewDeviceData,
+     PSP_DEVINFO_DATA ExistingDeviceData,
+     PVOID            CompareContext      OPTIONAL
     );
 
 
@@ -4589,7 +4597,7 @@ SetupInstallServicesFromInfSectionW(
 #else
 #define SetupInstallServicesFromInfSection SetupInstallServicesFromInfSectionA
 #endif
-
+--]]
 
 
 BOOL
@@ -4622,7 +4630,7 @@ SetupInstallServicesFromInfSectionExW(
 #else
 #define SetupInstallServicesFromInfSectionEx SetupInstallServicesFromInfSectionExA
 #endif
-
+--]]
 
 
 //
@@ -4656,7 +4664,7 @@ InstallHinfSectionW(
 #else
 #define InstallHinfSection InstallHinfSectionA
 #endif
-
+--]]
 
 
 
@@ -4687,6 +4695,7 @@ SetupInitializeFileLogW(
 #else
 #define SetupInitializeFileLog SetupInitializeFileLogA
 #endif
+--]]
 
 //
 // Flags for SetupInitializeFileLog
@@ -4739,7 +4748,7 @@ SetupLogFileW(
 #else
 #define SetupLogFile SetupLogFileA
 #endif
-
+--]]
 //
 // Flags for SetupLogFile
 //
@@ -4769,7 +4778,7 @@ SetupRemoveFileLogEntryW(
 #else
 #define SetupRemoveFileLogEntry SetupRemoveFileLogEntryA
 #endif
-
+--]]
 
 //
 // Items retrievable from SetupQueryFileLog()
@@ -4814,6 +4823,7 @@ SetupQueryFileLogW(
 #else
 #define SetupQueryFileLog SetupQueryFileLogA
 #endif
+--]]
 
 //
 // Text logging APIs
@@ -4853,7 +4863,7 @@ SetupLogErrorW (
 #else
 #define SetupLogError SetupLogErrorA
 #endif
-
+--]]
 
 VOID
 __stdcall
@@ -4943,7 +4953,7 @@ SetupGetBackupInformationW(
 #else
 #define SetupGetBackupInformation SetupGetBackupInformationA
 #endif
-
+--]]
 #if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
@@ -4969,7 +4979,7 @@ SetupPrepareQueueForRestoreW(
 #else
 #define SetupPrepareQueueForRestore SetupPrepareQueueForRestoreA
 #endif
-
+--]]
 #endif // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WINXP
@@ -5036,7 +5046,7 @@ SetupDiCreateDeviceInfoListExW(
 #else
 #define SetupDiCreateDeviceInfoListEx SetupDiCreateDeviceInfoListExA
 #endif
-
+--]]
 
 
 BOOL
@@ -5067,7 +5077,7 @@ SetupDiGetDeviceInfoListDetailW(
 #else
 #define SetupDiGetDeviceInfoListDetail SetupDiGetDeviceInfoListDetailA
 #endif
-
+--]]
 
 //
 // Flags for SetupDiCreateDeviceInfo
@@ -5106,7 +5116,7 @@ SetupDiCreateDeviceInfoW(
 #else
 #define SetupDiCreateDeviceInfo SetupDiCreateDeviceInfoA
 #endif
-
+--]]
 
 //
 // Flags for SetupDiOpenDeviceInfo
@@ -5141,7 +5151,7 @@ SetupDiOpenDeviceInfoW(
 #else
 #define SetupDiOpenDeviceInfo SetupDiOpenDeviceInfoA
 #endif
-
+--]]
 
 
 BOOL
@@ -5170,7 +5180,7 @@ SetupDiGetDeviceInstanceIdW(
 #else
 #define SetupDiGetDeviceInstanceId SetupDiGetDeviceInstanceIdA
 #endif
-
+--]]
 
 
 BOOL
@@ -5245,7 +5255,7 @@ SetupDiCreateDeviceInterfaceW(
 #else
 #define SetupDiCreateDeviceInterface SetupDiCreateDeviceInterfaceA
 #endif
-
+--]]
 //
 // Backward compatibility--do not use.
 //
@@ -5288,7 +5298,7 @@ SetupDiOpenDeviceInterfaceW(
 #else
 #define SetupDiOpenDeviceInterface SetupDiOpenDeviceInterfaceA
 #endif
-
+--]]
 //
 // Backward compatibility--do not use
 //
@@ -5299,7 +5309,7 @@ SetupDiOpenDeviceInterfaceW(
 #else
 #define SetupDiOpenInterfaceDevice SetupDiOpenDeviceInterfaceA
 #endif
-
+--]]
 
 
 BOOL
@@ -5345,8 +5355,6 @@ SetupDiRemoveDeviceInterface(
 #define SetupDiRemoveInterfaceDevice SetupDiRemoveDeviceInterface
 
 
-_At_((LPSTR)DeviceInterfaceDetailData->DevicePath, _Post_z_)
-
 BOOL
 __stdcall
 SetupDiGetDeviceInterfaceDetailA(
@@ -5359,7 +5367,6 @@ SetupDiGetDeviceInterfaceDetailA(
     );
 
 
-_At_((LPWSTR)DeviceInterfaceDetailData->DevicePath, _Post_z_)
 
 BOOL
 __stdcall
@@ -5377,7 +5384,7 @@ SetupDiGetDeviceInterfaceDetailW(
 #else
 #define SetupDiGetDeviceInterfaceDetail SetupDiGetDeviceInterfaceDetailA
 #endif
-
+--]]
 //
 // Backward compatibility--do not use.
 //
@@ -5388,7 +5395,7 @@ SetupDiGetDeviceInterfaceDetailW(
 #else
 #define SetupDiGetInterfaceDeviceDetail SetupDiGetDeviceInterfaceDetailA
 #endif
-
+--]]
 
 //
 // Default install handler for DIF_INSTALLINTERFACES.
@@ -5498,7 +5505,7 @@ SetupDiEnumDriverInfoW(
 #else
 #define SetupDiEnumDriverInfo SetupDiEnumDriverInfoA
 #endif
-
+--]]
 
 
 BOOL
@@ -5523,7 +5530,7 @@ SetupDiGetSelectedDriverW(
 #else
 #define SetupDiGetSelectedDriver SetupDiGetSelectedDriverA
 #endif
-
+--]]
 
 
 BOOL
@@ -5548,7 +5555,7 @@ SetupDiSetSelectedDriverW(
 #else
 #define SetupDiSetSelectedDriver SetupDiSetSelectedDriverA
 #endif
-
+--]]
 
 BOOL
 __stdcall
@@ -5578,7 +5585,7 @@ SetupDiGetDriverInfoDetailW(
 #else
 #define SetupDiGetDriverInfoDetail SetupDiGetDriverInfoDetailA
 #endif
-
+--]]
 
 
 BOOL
@@ -5633,9 +5640,8 @@ SetupDiGetClassDevsW(
 #else
 #define SetupDiGetClassDevs SetupDiGetClassDevsA
 #endif
+--]]
 
-
-_Check_return_
 
 HDEVINFO
 __stdcall
@@ -5649,7 +5655,7 @@ SetupDiGetClassDevsExA(
     _Reserved_ PVOID Reserved
     );
 
-_Check_return_
+
 
 HDEVINFO
 __stdcall
@@ -5668,7 +5674,7 @@ SetupDiGetClassDevsExW(
 #else
 #define SetupDiGetClassDevsEx SetupDiGetClassDevsExA
 #endif
-
+--]]
 
 
 BOOL

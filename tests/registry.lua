@@ -18,6 +18,10 @@ setmetatable(RegistryKey, {
     end
 })
 local RegistryKey_mt = {
+    __call = function(self)
+        return self:subkeys();
+    end;
+
     __index = function(tbl, key)
         if RegistryKey[key] then return RegistryKey[key] end
     
@@ -213,6 +217,8 @@ function RegistryKey.values(self)
         local res = {
             name = ffi.string(lpValueName, lpcchValueName[0]);
             kind = lpType[0];
+            data = lpData;
+            datalen = lpcbData[0];
         }
 
         local len = lpcbData[0]

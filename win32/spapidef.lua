@@ -75,9 +75,11 @@ static const int TXTLOG_TAB_1            = 0x00080000;
 static const int TXTLOG_FLUSH_FILE       = 0x00100000;
 ]]
 
+--[[
 local function TXTLOG_LEVEL(flags) 
-    return (flags & = 0xf)
+    return band(flags, 0xf)
 end
+--]]
 
 ffi.cdef[[
 //

@@ -71,8 +71,9 @@ printKey = function (akey, name, level)
     end
 
     -- print subkeys
-    for subkeyname in akey:subkeys() do
-        --printTab(level+1, subkeyname)
+    --for subkeyname in akey:subkeys() do
+    for subkeyname in akey() do
+            --printTab(level+1, subkeyname)
         local subkey = akey:subkey(subkeyname)
         if subkey then
             printKey(subkey, subkeyname, level+1)
