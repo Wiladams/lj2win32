@@ -149,25 +149,39 @@ end --/* WINVER >= 0x0400 */
 #define VTA_CENTER   =TA_CENTER;
 #define VTA_BOTTOM   =TA_RIGHT;
 #define VTA_TOP      =TA_LEFT;
+--]=]
 
-#define ETO_OPAQUE                 =  0x0002;
-#define ETO_CLIPPED                =  0x0004;
-#if(WINVER >= 0x0400)
-#define ETO_GLYPH_INDEX            =  0x0010;
-#define ETO_RTLREADING             =  0x0080;
-#define ETO_NUMERICSLOCAL          =  0x0400;
-#define ETO_NUMERICSLATIN          =  0x0800;
-#define ETO_IGNORELANGUAGE         =  0x1000;
-#endif /* WINVER >= 0x0400 */
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#define ETO_PDY                    =  0x2000;
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-#if (_WIN32_WINNT >= _WIN32_WINNT_LONGHORN)
-#define ETO_REVERSE_INDEX_MAP      =  0x10000;
-#endif
+ffi.cdef[[
+static const int  ETO_OPAQUE                 =  0x0002;
+static const int  ETO_CLIPPED                =  0x0004;
+]]
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int ETO_GLYPH_INDEX            =  0x0010;
+static const int ETO_RTLREADING             =  0x0080;
+static const int ETO_NUMERICSLOCAL          =  0x0400;
+static const int ETO_NUMERICSLATIN          =  0x0800;
+static const int ETO_IGNORELANGUAGE         =  0x1000;
+]]
+end --/* WINVER >= 0x0400 */
 
-#define ASPECT_FILTERING           =  0x0001;
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K) then
+ffi.cdef[[
+static const int ETO_PDY                    =  0x2000;
+]]
+end --// (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
 
+if (_WIN32_WINNT >= _WIN32_WINNT_LONGHORN) then
+ffi.cdef[[
+static const int ETO_REVERSE_INDEX_MAP      =  0x10000;
+]]
+end
+
+ffi.cdef[[
+static const int ASPECT_FILTERING           =  0x0001;
+]]
+
+--[=[
 /* Bounds Accumulation APIs */
 
 #define DCB_RESET      = 0x0001;
@@ -4604,7 +4618,10 @@ GradientFill(
 
 
 
- BOOL  __stdcall GdiAlphaBlend( HDC hdcDest,  int xoriginDest,  int yoriginDest,  int wDest,  int hDest,  HDC hdcSrc,  int xoriginSrc,  int yoriginSrc,  int wSrc,  int hSrc,  BLENDFUNCTION ftn);
+ BOOL  __stdcall GdiAlphaBlend( HDC hdcDest,  
+    int xoriginDest,  int yoriginDest,  int wDest,  int hDest,  
+    HDC hdcSrc,  int xoriginSrc,  int yoriginSrc,  int wSrc,  int hSrc,  
+    BLENDFUNCTION ftn);
 
  BOOL  __stdcall GdiTransparentBlt( HDC hdcDest, int xoriginDest,  int yoriginDest,  int wDest,  int hDest,  HDC hdcSrc,
                                             int xoriginSrc,  int yoriginSrc,  int wSrc,  int hSrc,  UINT crTransparent);

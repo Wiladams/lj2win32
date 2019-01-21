@@ -144,7 +144,7 @@ AngleMode = RADIANS;
 ColorMode = RGB;
 RectMode = CORNER;
 EllipseMode = CENTER;
-
+ShapeMode = POLYGON;
 
 FrameRate = 20;
 LoopActive = true;
@@ -248,6 +248,41 @@ end
 
 function rectMode(newMode)
     RectMode = newMode;
+end
+
+--[[
+	Scene
+--]]
+function addactor(actor)
+	if not actor then return end
+
+	if actor.Update then
+		table.insert(Processing.Actors, actor)
+	end
+
+	if actor.Render then
+		addgraphic(actor)
+	end
+
+	addinteractor(actor)
+end
+
+function addgraphic(agraphic)
+	if not agraphic then return end
+
+	table.insert(Processing.Graphics, agraphic)
+end
+
+function addinteractor(interactor)
+	if not interactor then return end
+
+	if interactor.MouseActivity then
+		table.insert(Processing.MouseInteractors, interactor)
+	end
+
+	if interactor.KeyboardActivity then
+		table.insert(Processing.KeyboardInteractors, interactor)
+	end
 end
 
 -- timing

@@ -176,6 +176,7 @@ end
 -- Drawing routines
 function DeviceContext.MoveTo(self, x, y)
 	local result = C.MoveToEx(self.Handle, x, y, nil);
+
 	return result
 end
 
@@ -191,27 +192,128 @@ function DeviceContext.SetPixelV(self, x, y, cref)
 	return C.SetPixelV(self.Handle, X, Y, cref);
 end
 
+function DeviceContext.FloodFill(self, x, y, cref, kind)
+	local success = C.FloodFill(self.Handle, x, y, cref)
+
+	return success
+end
+
+function DeviceContext.ExtFloodFill(self, x, y, cref, kind)
+	local success = C.ExtFloodFill(self.Handle, x, y, cref, kind)
+
+	return success
+end
+
 function DeviceContext.LineTo(self, xend, yend)
-	local result = C.LineTo(self.Handle, xend, yend);
-	return result
+	local success = C.LineTo(self.Handle, xend, yend)~= 0;
+	
+	return success
+end
+
+function DeviceContext.Arc(self, x1,y1,x2,y2,x3,y3,x4,y4)
+
+	local success = C.Arc(self.Handle,
+		x1,y1,
+		x2,y2,
+		x3,y3,
+		x4,y4) ~= 0;
+
+	return success
+end
+
+function DeviceContext.ArcTo(self, left, top, right, bottom, xr1, yr1, xr2, yr2)
+
+	local success = C.Arc(self.Handle,
+		left, top, right, bottom, 
+		xr1, yr1, xr2, yr2) ~= 0;
+
+	return success
+end
+
+function DeviceContext.AngleArc(  self,  x,  y,  r,  StartAngle,  SweepAngle)
+	return C.AngleArc(self.Handle,  x,  y,  r,  StartAngle,  SweepAngle)
+end
+
+function DeviceContext.Chord(self, x1, y1, x2, y2, x3, y3, x4, y4)
+	local success = C.Chord(self.Handle,
+		x1,y1,
+		x2,y2,
+		x3,y3,
+		x4,y4) ~= 0;
+
+	return success
+end
+
+function DeviceContext.Pie(self, left, top, right, bottom, xr1, yr1, xr2, yr2)
+	local success = C.Pie(self.Handle,
+		left,top,right,bottom,
+		xr1,yr1,xr2,yr2) ~= 0;
+
+	return success
 end
 
 function DeviceContext.Ellipse(self, nLeftRect, nTopRect, nRightRect, nBottomRect)
-	return C.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect);
+	local success = C.Ellipse(self.Handle,nLeftRect,nTopRect,nRightRect,nBottomRect) ~= 0;
+	
+	return success;
+end
+
+-- Drawing Polys
+function DeviceContext.Polyline(self, apt, cpt)
+	-- if it's a table, create an array of POINTs
+	-- if it's already points, pass it through
+	local success = C.Polyline( self.Handle,  apt,  cpt) ~= 0;
+
+	return success
+end
+
+function DeviceContext.PolylineTo(self, apt, cpt)
+	local success = C.PolylineTo( self.Handle,  apt,  cpt) ~= 0;
+
+	return success
+end
+
+function DeviceContext.PolyPolyline(self, apt, cpt)
+	local success = C.PolyPolyline( self.Handle,  apt,  cpt) ~= 0;
+
+	return success
+end
+
+function DeviceContext.PolyBezier(self, apt, cpt)
+	local success = C.PolyBezier( self.Handle,  apt,  cpt) ~= 0;
+
+	return success
+end
+
+function DeviceContext.PolyBezierTo(self, apt, cpt)
+	local success = C.PolyBezierTo( self.Handle,  apt,  cpt) ~= 0;
+
+	return success
 end
 
 function DeviceContext.Polygon(self, lpPoints, nCount)
-	local res = C.Polygon(self.Handle,lpPoints, nCount);
+	local success = C.Polygon(self.Handle,lpPoints, nCount) ~= 0;
 
-	return true;
+	return success;
 end
 
+function DeviceContext.PolyPolygon(self, lpPoints, nCount, asz)
+	local success = C.PolyPolygon(self.Handle,lpPoints, nCount, asz) ~= 0;
+
+	return success;
+end
+
+-- Drawing Rectangles
 function DeviceContext.Rectangle(self, left, top, right, bottom)
-	return C.Rectangle(self.Handle, left, top, right, bottom);
+	local success = C.Rectangle(self.Handle, left, top, right, bottom) ~= 0;
+
+	return success
 end
 
 function DeviceContext.RoundRect(self, left, top, right, bottom, width, height)
-	return C.RoundRect(self.Handle, left, top, right, bottom, width, height);
+	local success = C.RoundRect(self.Handle, left, top, right, bottom, width, height) ~= 0;
+
+	return success
 end
 
 -- Text Drawing
@@ -227,6 +329,12 @@ function DeviceContext.SetTextColor(self, cref)
 	return C.SetTextColor(self.Handle, cref);
 end
 
+function DeviceContext.ExtTextOut(self, x, y, options, lprect, lpString, c, lpDx)
+	local success = C.ExtTextOutA(self.Handle, x, y, options, lprect, lpString, c, lpDx);
+
+	return success
+end
+
 function DeviceContext.Text(self, txt, x, y)
 	x = x or 0
 	y = y or 0
@@ -235,9 +343,7 @@ function DeviceContext.Text(self, txt, x, y)
 end
 
 -- Bitmap drawing
-function DeviceContext.AngleArc(  self,  x,  y,  r,  StartAngle,  SweepAngle)
-	return C.AngleArc(self.Handle,  x,  y,  r,  StartAngle,  SweepAngle)
-end
+
 
 function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, dwRop)
 	nXSrc = nXSrc or 0
@@ -250,16 +356,16 @@ end
 
 
 function DeviceContext.StretchDIBits(self, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, lpBitsInfo, iUsage, dwRop)
-			XDest = XDest or 0
-			YDest = YDest or 0
-			iUsage = iUsage or 0
-			dwRop = dwRop or ffi.C.SRCCOPY;
+	XDest = XDest or 0
+	YDest = YDest or 0
+	iUsage = iUsage or 0
+	dwRop = dwRop or ffi.C.SRCCOPY;
 
-			return C.StretchDIBits(hdc,XDest,YDest,nDestWidth,nDestHeight,XSrc,YSrc,nSrcWidth,nSrcHeight,lpBits,lpBitsInfo,iUsage,dwRop);
+	return C.StretchDIBits(hdc,XDest,YDest,nDestWidth,nDestHeight,XSrc,YSrc,nSrcWidth,nSrcHeight,lpBits,lpBitsInfo,iUsage,dwRop);
 end
 
 function DeviceContext.GetDIBits(self, hbmp, uStartScan, cScanLines, lpvBits, lpbi, uUsage)
-			return C.GetDIBits(self.Handle,hbmp,uStartScan,cScanLines,lpvBits,lpbi,uUsage);
+	return C.GetDIBits(self.Handle,hbmp,uStartScan,cScanLines,lpvBits,lpbi,uUsage);
 end
 
 function DeviceContext.StretchBlt(self, img, XDest, YDest,DestWidth,DestHeight)
@@ -288,36 +394,57 @@ end
 	Path handling
 	Within a Begin/EndPath, you can use the following drawing commands
 
-AngleArc 
-Arc 
-ArcTo 
-Chord 
-CloseFigure 
+--AngleArc 
+--Arc 
+--ArcTo 
+--Chord 
+--CloseFigure 
 --Ellipse 
 ExtTextOut 
 --LineTo 
 --MoveToEx 
-Pie 
-PolyBezier 
-PolyBezierTo 
+--Pie 
+--PolyBezier 
+--PolyBezierTo 
 PolyDraw 
 --Polygon 
-Polyline 
-PolylineTo 
-PolyPolygon 
-PolyPolyline 
+--Polyline 
+--PolylineTo 
+--PolyPolygon 
+--PolyPolyline 
 --Rectangle 
 --RoundRect 
 --TextOut 
 ]]
 function DeviceContext.BeginPath(self)
-	return C.BeginPath(self.Handle);
+	local success = C.BeginPath(self.Handle)~=0;
+	return success;
 end
 
 function DeviceContext.EndPath(self)
-	return C.EndPath(self.Handle)
+	local success = C.EndPath(self.Handle)~= 0;
+	return success;
 end
 
+function DeviceContext.CloseFigure(self)
+	local success = C.CloseFigure(self.Handle) ~= 0
+	return success
+end
+
+function DeviceContext.FillPath(self)
+	local success = C.FillPath(self.Handle) ~= 0;
+	return success;
+end
+
+function DeviceContext.StrokePath(self)
+	local success = C.StrokePath(self.Handle) ~= 0;
+	return success;
+end
+
+function DeviceContext.StrokeAndFillPath(self)
+	local success = C.StrokeAndFillPath(self.Handle);
+	return success;
+end
 
 
 return DeviceContext;

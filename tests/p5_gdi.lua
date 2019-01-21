@@ -182,6 +182,7 @@ end
 
 
 function point(x,y,z)
+	--print("point(), x,y,z: ", x, y, z, StrokeColor.cref)
 	surface.DC:SetPixel(x, y, StrokeColor.cref)
 	
 	return true;
@@ -223,8 +224,14 @@ end
 
 function polygon(pts)
 	local npts = #pts
-	local apts = ffi.new("POINT[?]", npts)
-	surface.DC:Polygon(apts, npts)
+	local apts = ffi.new("POINT[?]", npts,pts)
+	local res = surface.DC:Polygon(apts, npts)
+end
+
+function polyline(pts)
+	local npts = #pts
+	local apts = ffi.new("POINT[?]", npts,pts)
+	local res = surface.DC:Polyline(apts, npts)
 end
 
 function quad(x1, y1, x2, y2, x3, y3, x4, y4)
@@ -307,14 +314,14 @@ end
 --	Curves
 --]====================================]
 
-
-
 function bezier(x1, y1,  x2, y2,  x3, y3,  x4, y4)
+--[[
 	Processing.Renderer:DrawBezier(
 		{x1, y1, 0},
 		{x2, y2, 0},
 		{x3, y3, 0},
 		{x4, y4, 0})
+--]]
 end
 
 function bezierDetail(...)
@@ -325,11 +332,13 @@ end
 
 -- Catmull - Rom curve
 function curve(x1, y1,  x2, y2,  x3, y3,  x4, y4)
-	Processing.Renderer:DrawCurve(
+--[[
+		Processing.Renderer:DrawCurve(
 		{x1, y1, 0},
 		{x2, y2, 0},
 		{x3, y3, 0},
 		{x4, y4, 0})
+--]]
 end
 
 function curveDetail(...)
@@ -347,11 +356,11 @@ end
 
 -- ATTRIBUTES
 function smooth()
-	Processing.Renderer:SetAntiAlias(true)
+	--Processing.Renderer:SetAntiAlias(true)
 end
 
 function noSmooth()
-	Processing.Renderer:SetAntiAlias(false)
+	--Processing.Renderer:SetAntiAlias(false)
 end
 
 function pointSize(ptSize)
@@ -359,11 +368,11 @@ function pointSize(ptSize)
 end
 
 function strokeCap(cap)
-	Processing.Renderer:SetLineCap(cap);
+	
 end
 
 function strokeJoin(join)
-	Processing.Renderer:SetLineJoin(join)
+	
 end
 
 function strokeWeight(weight)
@@ -372,52 +381,88 @@ function strokeWeight(weight)
 	-- this specified weight
 end
 
+--[[
 function size(awidth, aheight, MODE)
 	Processing.SetCanvasSize(awidth, aheight, MODE)
 end
+--]]
 
 -- VERTEX
-function beginShape(...)
-	local sMode = POLYGON
-	if arg.n == 0 then
-		Processing.VertexMode = gl.POLYGON
-	elseif arg[1] == POINTS then
-		Processing.ShapeMode = gl.POINTS
-	elseif arg[1] == LINES then
-		Processing.ShapeMode = gl.LINES
+function beginShape(sMode)
+	ShapeMode = sMode or POLYGON
+	
+	-- Start a new array of vertices
+	ShapeVertices = {}
+
+end
+
+function endShape(endKind)
+	endKind = endKind or STROKE 
+	local npts = #ShapeVertices
+	local apts = ffi.new("POINT[?]", npts,ShapeVertices)
+
+	if ShapeMode == POLYGON then
+
+		if endKind == CLOSE then
+			surface.DC:BeginPath();
+			local res = surface.DC:Polygon(apts, npts)
+			surface.DC:EndPath();
+			local success = surface.DC:StrokeAndFillPath();
+		elseif endKind == STROKE then
+			surface.DC:BeginPath();
+			local res = surface.DC:Polyline(apts, npts)
+			surface.DC:EndPath();
+			local success = surface.DC:FillPath();
+
+			surface.DC:BeginPath();
+			local res = surface.DC:Polyline(apts, npts)
+			surface.DC:EndPath();
+			local success = surface.DC:StrokePath();
+		end
+	elseif ShapeMode == POINTS then
+		for i, pt in ipairs(ShapeVertices) do
+			point(pt[1], pt[2])
+		end
+	elseif ShapeMode == LINES then
+		-- walk the array of points two at a time
+		for i=0, npts-2, 2 do
+			print("endshape: ", apts[i].x, apts[i].y, apts[i+1].x, apts[i+1].y)
+			surface.DC:MoveTo(apts[i].x, apts[i].y)
+			surface.DC:LineTo(apts[i+1].x, apts[i+1].y)
+		end
+	elseif ShapeMode == TRIANGLES then
+		-- draw triangles
 	end
-end
 
-function bezierVertex()
-end
-
-function curveVertex()
-end
-
-function endShape()
-end
-
-function texture()
-end
-
-function textureMode()
+	ShapeVertices = nil;
 end
 
 function vertex(...)
+	local nargs = select('#',...)
+
+	if not ShapeVertices or nargs < 2 then
+		return false;
+	end
+	
+	table.insert(ShapeVertices, {select(1,...),select(2,...)})
+
+	return true;
+
+--[[
 	local x = nil
 	local y = nil
 	local z = nil
 	local u = nil
 	local v = nil
 
-	if (arg.n == 2) then
-		x = arg[1]
-		y = arg[2]
+	if (nargs == 2) then
+		x = select(1,...)
+		y = select(2,...)
 		z = 0
-	elseif arg.n == 3 then
-		x = arg[1]
-		y = arg[2]
-		z = arg[3]
+	elseif (nargs == 3) then
+		x = select(1,...)
+		y = select(2,...)
+		z = select(3,...)
 	elseif arg.n == 4 then
 		x = arg[1]
 		y = arg[2]
@@ -439,11 +484,24 @@ function vertex(...)
 	if x and y and z then
 		gl.vertex(x,y,z)
 	end
+--]]
 
 end
 
 
+function bezierVertex()
+end
 
+function curveVertex()
+end
+
+
+
+function texture()
+end
+
+function textureMode()
+end
 
 
 
@@ -455,7 +513,6 @@ end
 function popMatrix()
 	
 end
-
 
 function pushMatrix()
 	
@@ -499,42 +556,6 @@ end
 function shearY()
 end
 
-
-
---[[
-	Scene
---]]
-function addactor(actor)
-	if not actor then return end
-
-	if actor.Update then
-		table.insert(Processing.Actors, actor)
-	end
-
-	if actor.Render then
-		addgraphic(actor)
-	end
-
-	addinteractor(actor)
-end
-
-function addgraphic(agraphic)
-	if not agraphic then return end
-
-	table.insert(Processing.Graphics, agraphic)
-end
-
-function addinteractor(interactor)
-	if not interactor then return end
-
-	if interactor.MouseActivity then
-		table.insert(Processing.MouseInteractors, interactor)
-	end
-
-	if interactor.KeyboardActivity then
-		table.insert(Processing.KeyboardInteractors, interactor)
-	end
-end
 
 
 --[==============================[
