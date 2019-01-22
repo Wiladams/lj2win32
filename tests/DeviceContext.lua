@@ -171,9 +171,9 @@ function DeviceContext.SetDCPenColor(self, color)
 	return C.SetDCPenColor(self.Handle, color)
 end
 
-
-
--- Drawing routines
+--[[
+	Moving cursor
+]]
 function DeviceContext.MoveTo(self, x, y)
 	local result = C.MoveToEx(self.Handle, x, y, nil);
 
@@ -184,6 +184,8 @@ function DeviceContext.MoveToEx(self, x, y, lpPoint)
 	return C.MoveToEx(self.Handle, X, Y, lpPoint);
 end
 
+
+-- Drawing routines
 function DeviceContext.SetPixel(self, x, y, cref)
 	return C.SetPixel(self.Handle, x, y, cref);
 end
@@ -192,17 +194,7 @@ function DeviceContext.SetPixelV(self, x, y, cref)
 	return C.SetPixelV(self.Handle, X, Y, cref);
 end
 
-function DeviceContext.FloodFill(self, x, y, cref, kind)
-	local success = C.FloodFill(self.Handle, x, y, cref)
 
-	return success
-end
-
-function DeviceContext.ExtFloodFill(self, x, y, cref, kind)
-	local success = C.ExtFloodFill(self.Handle, x, y, cref, kind)
-
-	return success
-end
 
 function DeviceContext.LineTo(self, xend, yend)
 	local success = C.LineTo(self.Handle, xend, yend)~= 0;
@@ -258,6 +250,19 @@ function DeviceContext.Ellipse(self, nLeftRect, nTopRect, nRightRect, nBottomRec
 	return success;
 end
 
+-- Drawing Rectangles
+function DeviceContext.Rectangle(self, left, top, right, bottom)
+	local success = C.Rectangle(self.Handle, left, top, right, bottom) ~= 0;
+
+	return success
+end
+
+function DeviceContext.RoundRect(self, left, top, right, bottom, width, height)
+	local success = C.RoundRect(self.Handle, left, top, right, bottom, width, height) ~= 0;
+
+	return success
+end
+
 -- Drawing Polys
 function DeviceContext.Polyline(self, apt, cpt)
 	-- if it's a table, create an array of POINTs
@@ -303,18 +308,26 @@ function DeviceContext.PolyPolygon(self, lpPoints, nCount, asz)
 	return success;
 end
 
--- Drawing Rectangles
-function DeviceContext.Rectangle(self, left, top, right, bottom)
-	local success = C.Rectangle(self.Handle, left, top, right, bottom) ~= 0;
+function DeviceContext.PolyDraw(self, apt, aj, cpt)
+	local success = C.PolyDraw(self.Handle, apt, aj, cpt);
 
 	return success
 end
 
-function DeviceContext.RoundRect(self, left, top, right, bottom, width, height)
-	local success = C.RoundRect(self.Handle, left, top, right, bottom, width, height) ~= 0;
+-- Filling
+function DeviceContext.FloodFill(self, x, y, cref, kind)
+	local success = C.FloodFill(self.Handle, x, y, cref)
 
 	return success
 end
+
+function DeviceContext.ExtFloodFill(self, x, y, cref, kind)
+	local success = C.ExtFloodFill(self.Handle, x, y, cref, kind)
+
+	return success
+end
+
+
 
 -- Text Drawing
 function DeviceContext.SetBkColor(self, cref)
@@ -343,8 +356,6 @@ function DeviceContext.Text(self, txt, x, y)
 end
 
 -- Bitmap drawing
-
-
 function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXSrc, nYSrc, dwRop)
 	nXSrc = nXSrc or 0
 	nYSrc = nYSrc or 0
@@ -352,8 +363,6 @@ function DeviceContext.BitBlt(self, nXDest, nYDest, nWidth, nHeight, hdcSrc, nXS
 	
 	return C.BitBlt(self.Handle,nXDest,nYDest,nWidth,nHeight,hdcSrc,nXSrc,nYSrc,dwRop);
 end
-
-
 
 function DeviceContext.StretchDIBits(self, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, lpBitsInfo, iUsage, dwRop)
 	XDest = XDest or 0
@@ -400,13 +409,13 @@ end
 --Chord 
 --CloseFigure 
 --Ellipse 
-ExtTextOut 
+--ExtTextOut 
 --LineTo 
 --MoveToEx 
 --Pie 
 --PolyBezier 
 --PolyBezierTo 
-PolyDraw 
+--PolyDraw 
 --Polygon 
 --Polyline 
 --PolylineTo 

@@ -52,32 +52,37 @@ static const int WHITENESS         =  (DWORD)0x00FF0062; /* dest = WHITE        
 ]]
 
 --[[
-#if(WINVER >= 0x0500)
+if(WINVER >= 0x0500) then
 
 #define NOMIRRORBITMAP               (DWORD)0x80000000 /* Do not Mirror the bitmap in this call */
 #define CAPTUREBLT                   (DWORD)0x40000000 /* Include layered windows */
-#endif /* WINVER >= 0x0500 */
+end --/* WINVER >= 0x0500 */
 
 
 /* Quaternary raster codes */
 #define MAKEROP4(fore,back) (DWORD)((((back) << 8) & 0xFF000000) | (fore))
 
-#endif /* NORASTEROPS */
-
-#define GDI_ERROR (0xFFFFFFFFL)
-#if (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
-#define HGDI_ERROR (LongToHandle(0xFFFFFFFFL))
-#else
-#define HGDI_ERROR ((HANDLE)-1)
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
-
-/* Region Flags */
-#define ERROR               0
-#define NULLREGION          1
-#define SIMPLEREGION        2
-#define COMPLEXREGION       3
-#define RGN_ERROR ERROR
+end --/* NORASTEROPS */
 --]]
+
+ffi.cdef[[
+static const int GDI_ERROR = (0xFFFFFFFFL);
+]]
+
+if (_WIN32_WINNT >= _WIN32_WINNT_WINXP) then
+--static const int HGDI_ERROR (LongToHandle(0xFFFFFFFFL))
+else
+--static const int HGDI_ERROR ((HANDLE)-1)
+end --// (_WIN32_WINNT >= _WIN32_WINNT_WINXP)
+
+ffi.cdef[[
+/* Region Flags */
+//static const int ERROR             =  0;
+static const int NULLREGION        =  1;
+static const int SIMPLEREGION      =  2;
+static const int COMPLEXREGION     =  3;
+//static const int RGN_ERROR ERROR
+]]
 
 ffi.cdef[[
 /* CombineRgn() Styles */
@@ -110,51 +115,63 @@ static const int STRETCH_HALFTONE    = HALFTONE;
 ]]
 end --/* WINVER >= 0x0400 */
 
---[=[
+ffi.cdef[[
 /* PolyFill() Modes */
-#define ALTERNATE                    1;
-#define WINDING                      2;
-#define POLYFILL_LAST                2;
+static const int ALTERNATE                   = 1;
+static const int WINDING                     = 2;
+static const int POLYFILL_LAST               = 2;
+]]
 
-/* Layout Orientation Options */
-#if(WINVER >= 0x0500)
-#define LAYOUT_RTL                         0x00000001; // Right to left
-#define LAYOUT_BTT                         0x00000002; // Bottom to top
-#define LAYOUT_VBH                         0x00000004; // Vertical before horizontal
-#define LAYOUT_ORIENTATIONMASK             (LAYOUT_RTL | LAYOUT_BTT | LAYOUT_VBH);
-#define LAYOUT_BITMAPORIENTATIONPRESERVED  0x00000008;
-#endif /* WINVER >= 0x0500 */
+--/* Layout Orientation Options */
+if(WINVER >= 0x0500) then
+ffi.cdef[[
+static const int LAYOUT_RTL                        = 0x00000001; // Right to left
+static const int LAYOUT_BTT                        = 0x00000002; // Bottom to top
+static const int LAYOUT_VBH                        = 0x00000004; // Vertical before horizontal
+static const int LAYOUT_ORIENTATIONMASK            = (LAYOUT_RTL | LAYOUT_BTT | LAYOUT_VBH);
+static const int LAYOUT_BITMAPORIENTATIONPRESERVED = 0x00000008;
+]]
+end --/* WINVER >= 0x0500 */
 
+ffi.cdef[[
 /* Text Alignment Options */
-#define TA_NOUPDATECP                0;
-#define TA_UPDATECP                  1;
+static const int TA_NOUPDATECP             =   0;
+static const int TA_UPDATECP               =   1;
 
-#define TA_LEFT                      0;
-#define TA_RIGHT                     2;
-#define TA_CENTER                    6;
+static const int TA_LEFT                   =   0;
+static const int TA_RIGHT                  =   2;
+static const int TA_CENTER                 =   6;
 
-#define TA_TOP                       0;
-#define TA_BOTTOM                    8;
-#define TA_BASELINE                  24;
-#if (WINVER >= 0x0400)
-#define TA_RTLREADING                256;
-#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
-#else
-#define TA_MASK       (TA_BASELINE+TA_CENTER+TA_UPDATECP);
-#endif
+static const int TA_TOP                    =   0;
+static const int TA_BOTTOM                 =   8;
+static const int TA_BASELINE               =   24;
+]]
 
-#define VTA_BASELINE =TA_BASELINE;
-#define VTA_LEFT     =TA_BOTTOM;
-#define VTA_RIGHT    =TA_TOP;
-#define VTA_CENTER   =TA_CENTER;
-#define VTA_BOTTOM   =TA_RIGHT;
-#define VTA_TOP      =TA_LEFT;
---]=]
+if (WINVER >= 0x0400) then
+ffi.cdef[[
+static const int TA_RTLREADING             =   256;
+static const int TA_MASK      = (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
+]]
+else
+ffi.cdef[[
+static const int TA_MASK      = (TA_BASELINE+TA_CENTER+TA_UPDATECP);
+]]
+end
+
+ffi.cdef[[
+static const int VTA_BASELINE = TA_BASELINE;
+static const int VTA_LEFT     = TA_BOTTOM;
+static const int VTA_RIGHT    = TA_TOP;
+static const int VTA_CENTER   = TA_CENTER;
+static const int VTA_BOTTOM   = TA_RIGHT;
+static const int VTA_TOP      = TA_LEFT;
+]]
 
 ffi.cdef[[
 static const int  ETO_OPAQUE                 =  0x0002;
 static const int  ETO_CLIPPED                =  0x0004;
 ]]
+
 if(WINVER >= 0x0400) then
 ffi.cdef[[
 static const int ETO_GLYPH_INDEX            =  0x0010;
