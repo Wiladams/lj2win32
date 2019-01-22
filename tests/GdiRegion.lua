@@ -4,6 +4,7 @@ local C = ffi.C
 require("win32.sdkddkver")
 require("win32.wingdi")
 
+local GdiRegion = {}
 
 ffi.cdef[[
 typedef struct RegionHandle_t {
@@ -33,7 +34,7 @@ local RegionHandle_mt = {
         return RegionHandle(dstRegion)
     end;
 
-    __sub = function(lhs, rsh)
+    __sub = function(lhs, rhs)
         -- create new region
         local dstRegion = C.CreateRectRgn(0,0,0,0)
 
@@ -43,32 +44,11 @@ local RegionHandle_mt = {
 }
 ffi.metatype("RegionHandle", RegionHandle_mt)
 
+
+
 --[[
-setmetatable(GdiRegion, {
-    __call = function(self, ...)
-        return self:new(...)
-    end
-})
-local GdiRegion_mt = {
-    __index = GdiRegion;
-}
-
-function GdiRegion.init(self, rawhandle)
-    local obj = {
-        Handle = ffi.new("RegionHandle")
-    }
-    setmetatable(obj, GdiRegion_mt)
-
-    return obj
-end
-
-function GdiRegion.new(self, rawhandle)
-    return self:init(rawhandle)
-end
---]]
-
-local GdiRegion = {}
-
+    Factory functions
+]]
 function GdiRegion.CreatePolygonRgn(self, pptl, cPoint, iMode)
     local rgn = C.CreatePolygonRgn(pptl, cPoint, iMode)
     if rgn == nil then
@@ -121,6 +101,69 @@ function GdiRegion.ExtCreateRegion(self, lpx, nCount, lpData)
     end
 
     return RegionHandle(rgn)
+end
+
+-- bounding box can be returned, or set
+-- when no parameters are specified, the current bounding box is returned
+function GdiRegion.bounds(self,...)
+    if select('#',...) == 0 then
+        local lprc = ffi.new("RECT")
+        local res = C.GetRgnBox(self.Handle, lprc)
+
+        return lprc, res
+    end
+
+    return false
+end
+
+--[[
+    enumerate rectangles within the region
+]]
+function GdiRegion.rects(self)
+    
+    function visitor()
+        local nBytes = 0;
+        local lpRgnData = nil;
+
+
+        local nBytes = C.GetRegionData(self.Handle, nBytes, lpRgnData)
+        if nBytes == 0 then 
+            return false;
+        end
+
+        lpRgnData = ffi.new("uint8_t[?]", nBytes)
+        local rgnData = ffi.cast("RGNDATA *", lpRgnData)
+        local res = C.GetRegionData(self.Handle, nBytes, rgnData)
+
+        if res == 0 then 
+            return false;
+        end
+
+    --print("  dwSize: ", rgnData.rdh.dwSize)
+    --print("   iType: ", rgnData.rdh.iType)
+    --print("  nCount: ", rgnData.rdh.nCount)
+    --print("nRgnSize: ", rgnData.rdh.nRgnSize)
+    --print(" rcBound: ", rgnData.rdh.rcBound.left, rgnData.rdh.rcBound.top, rgnData.rdh.rcBound.right, rgnData.rdh.rcBound.bottom)
+
+        local rectArray = ffi.cast("RECT *", rgnData.Buffer)
+
+        for i=0,rgnData.rdh.nCount-1 do 
+            coroutine.yield({left = rectArray[i].left, top = rectArray[i].top, right = rectArray[i].right, bottom = rectArray[i].bottom})
+        end
+    end
+
+    local co = coroutine.create(visitor)
+
+    return function ()
+        local status, value = coroutine.resume(co)
+        --print(status, value)
+        if not status then
+            return nil;
+        end
+
+        return value;
+    end
+
 end
 
 

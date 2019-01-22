@@ -309,25 +309,44 @@ function DeviceContext.PolyPolygon(self, lpPoints, nCount, asz)
 end
 
 function DeviceContext.PolyDraw(self, apt, aj, cpt)
-	local success = C.PolyDraw(self.Handle, apt, aj, cpt);
+	local success = C.PolyDraw(self.Handle, apt, aj, cpt) ~= 0;
 
 	return success
 end
 
 -- Filling
 function DeviceContext.FloodFill(self, x, y, cref, kind)
-	local success = C.FloodFill(self.Handle, x, y, cref)
+	local success = C.FloodFill(self.Handle, x, y, cref) ~= 0
 
 	return success
 end
 
 function DeviceContext.ExtFloodFill(self, x, y, cref, kind)
-	local success = C.ExtFloodFill(self.Handle, x, y, cref, kind)
+	local success = C.ExtFloodFill(self.Handle, x, y, cref, kind) ~= 0
 
 	return success
 end
 
+--[[
+	Region specifics
+]]
+function DeviceContext.FillRgn(self, rgn, brush)
+	local success = C.FillRgn(self.Handle, rgn, brush) ~= 0
 
+	return success
+end
+
+function DeviceContext.FrameRgn(self, rgn, brush, w, h)
+	local success = C.FrameRgn(self.Handle, rgn, brush, w, h) ~= 0
+
+	return success
+end
+
+function DeviceContext.PaintRgn(self, rgn)
+	local success = C.PaintRgn(self.Handle, rgn) ~= 0
+
+	return success
+end
 
 -- Text Drawing
 function DeviceContext.SetBkColor(self, cref)
