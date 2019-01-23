@@ -1426,12 +1426,9 @@ AbortSystemShutdownW(
 end // !UNICODE
 --]]
 
---[[
-//
-// defines for InitiateSystemShutdownEx reason codes
-//
+require("win32.reason")             
 
-#include <reason.h>             // get the public reasons
+--[[
 //
 // Then for Historical reasons support some old symbols, internal only
 

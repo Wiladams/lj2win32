@@ -1,23 +1,15 @@
--- core_shutdown_l1_1_0.lua
--- api-ms-win-core-shutdown-l1-1-0.dll	
+local ffi = require("ffi")
 
-local ffi = require("ffi");
+require ("win32.winapifamily")
 
-require ("win32.wtypes")
 
+if not SENTINEL_Reason then
+SENTINEL_Reason = true
+
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 ffi.cdef[[
-//
-// MAX Shutdown TimeOut == 10 Years in seconds
-//
-static const int MAX_SHUTDOWN_TIMEOUT = (10*365*24*60*60);
-]]
-
-
-ffi.cdef[[
-//
-// defines for InitiateSystemShutdownEx reason codes
-//
-
 // Reason flags
 
 // Flags used by the various UIs.
@@ -25,6 +17,7 @@ static const int SHTDN_REASON_FLAG_COMMENT_REQUIRED          = 0x01000000;
 static const int SHTDN_REASON_FLAG_DIRTY_PROBLEM_ID_REQUIRED = 0x02000000;
 static const int SHTDN_REASON_FLAG_CLEAN_UI                  = 0x04000000;
 static const int SHTDN_REASON_FLAG_DIRTY_UI                  = 0x08000000;
+static const int SHTDN_REASON_FLAG_MOBILE_UI_RESERVED        = 0x10000000;
 
 // Flags that end up in the event log code.
 static const int SHTDN_REASON_FLAG_USER_DEFINED          = 0x40000000;
@@ -74,36 +67,40 @@ static const int SHTDN_REASON_MINOR_TERMSRV              = 0x00000020;
 static const int SHTDN_REASON_MINOR_DC_PROMOTION         = 0x00000021;
 static const int SHTDN_REASON_MINOR_DC_DEMOTION          = 0x00000022;
 
-static const int SHTDN_REASON_UNKNOWN                    =SHTDN_REASON_MINOR_NONE;
-static const int SHTDN_REASON_LEGACY_API                 =(SHTDN_REASON_MAJOR_LEGACY_API | SHTDN_REASON_FLAG_PLANNED);
+static const int SHTDN_REASON_UNKNOWN                 =   SHTDN_REASON_MINOR_NONE;
+static const int SHTDN_REASON_LEGACY_API              =   (SHTDN_REASON_MAJOR_LEGACY_API | SHTDN_REASON_FLAG_PLANNED);
 
 // This mask cuts out UI flags.
 static const int SHTDN_REASON_VALID_BIT_MASK             = 0xc0ffffff;
+]]
 
+ffi.cdef[[
 // Convenience flags.
-static const int PCLEANUI               = (SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_FLAG_CLEAN_UI);
-static const int UCLEANUI               = (SHTDN_REASON_FLAG_CLEAN_UI);
-static const int PDIRTYUI               = (SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_FLAG_DIRTY_UI);
-static const int UDIRTYUI               = (SHTDN_REASON_FLAG_DIRTY_UI);
+static const int PCLEANUI              =  (SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_FLAG_CLEAN_UI);
+static const int UCLEANUI              =  (SHTDN_REASON_FLAG_CLEAN_UI);
+static const int PDIRTYUI              =  (SHTDN_REASON_FLAG_PLANNED | SHTDN_REASON_FLAG_DIRTY_UI);
+static const int UDIRTYUI              =  (SHTDN_REASON_FLAG_DIRTY_UI);
+]]
 
+ffi.cdef[[
 /*
  * Maximum character lengths for reason name, description, problem id, and
  * comment respectively.
  */
-static const int MAX_REASON_NAME_LEN  =64;
-static const int MAX_REASON_DESC_LEN  =256;
-static const int MAX_REASON_BUGID_LEN =32;
-static const int MAX_REASON_COMMENT_LEN = 512;
-static const int SHUTDOWN_TYPE_LEN =32;
+static const int MAX_REASON_NAME_LEN  = 64;
+static const int MAX_REASON_DESC_LEN  = 256;
+static const int MAX_REASON_BUGID_LEN = 32;
+static const int MAX_REASON_COMMENT_LEN  = 512;
+static const int SHUTDOWN_TYPE_LEN = 32;
 
 /*
  *	S.E.T. policy value
  *
  */
-static const int POLICY_SHOWREASONUI_NEVER				=0;
-static const int POLICY_SHOWREASONUI_ALWAYS				=1;
-static const int POLICY_SHOWREASONUI_WORKSTATIONONLY	=2;
-static const int POLICY_SHOWREASONUI_SERVERONLY			=3;
+static const int POLICY_SHOWREASONUI_NEVER			=	0;
+static const int POLICY_SHOWREASONUI_ALWAYS			=	1;
+static const int POLICY_SHOWREASONUI_WORKSTATIONONLY	=	2;
+static const int POLICY_SHOWREASONUI_SERVERONLY		=	3;
 
 
 /*
@@ -116,120 +113,9 @@ static const int SNAPSHOT_POLICY_UNPLANNED       = 2;
 /*
  * Maximue user defined reasons
  */
-static const int MAX_NUM_REASONS =256;
+static const int MAX_NUM_REASONS = 256;
 ]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-
-
-ffi.cdef[[
-BOOL
-AbortSystemShutdownW(LPWSTR lpMachineName);
-
-BOOL
-InitiateSystemShutdownExW(
-    LPWSTR lpMachineName,
-    LPWSTR lpMessage,
-    DWORD dwTimeout,
-    BOOL bForceAppsClosed,
-    BOOL bRebootAfterShutdown,
-    DWORD dwReason);
-]]
-
-local Lib = ffi.load("advapi32");
-
-return {
-    Lib = Lib,
-    
-	AbortSystemShutdownW = Lib.AbortSystemShutdownW,
-	InitiateSystemShutdownExW = Lib.InitiateSystemShutdownExW,
-}
-
-
---[=[
-ffi.cdef[[
-//
-// Remoteable System Shutdown APIs
-//
-
-BOOL
-InitiateSystemShutdownA(
-    LPSTR lpMachineName,
-    LPSTR lpMessage,
-    DWORD dwTimeout,
-    BOOL bForceAppsClosed,
-    BOOL bRebootAfterShutdown
-    );
-
-BOOL
-InitiateSystemShutdownW(
-    LPWSTR lpMachineName,
-    LPWSTR lpMessage,
-    DWORD dwTimeout,
-    BOOL bForceAppsClosed,
-    BOOL bRebootAfterShutdown
-    );
-]]
-
-
-
-ffi.cdef[[
-
-BOOL
-AbortSystemShutdownA(
-    LPSTR lpMachineName
-    );
-]]
-
-ffi.cdef[[
-
-BOOL
-InitiateSystemShutdownExA(
-    LPSTR lpMachineName,
-    LPSTR lpMessage,
-    DWORD dwTimeout,
-    BOOL bForceAppsClosed,
-    BOOL bRebootAfterShutdown,
-    DWORD dwReason
-    );
-]]
-
-ffi.cdef[[
-//
-// Shutdown flags
-// for InitiateShutdownW
-
-static const int SHUTDOWN_FORCE_OTHERS           =0x00000001;
-static const int SHUTDOWN_FORCE_SELF             =0x00000002;
-static const int SHUTDOWN_RESTART                =0x00000004;
-static const int SHUTDOWN_POWEROFF               =0x00000008;
-static const int SHUTDOWN_NOREBOOT               =0x00000010;
-static const int SHUTDOWN_GRACE_OVERRIDE         =0x00000020;
-static const int SHUTDOWN_INSTALL_UPDATES        =0x00000040;
-static const int SHUTDOWN_RESTARTAPPS            =0x00000080;
-static const int SHUTDOWN_SKIP_SVC_PRESHUTDOWN   =0x00000100;
-static const int SHUTDOWN_HYBRID				 =0x00000200;
-]]
-
-ffi.cdef[[
-
-DWORD
-InitiateShutdownA(
-    LPSTR lpMachineName,
-    LPSTR lpMessage,
-         DWORD dwGracePeriod,
-         DWORD dwShutdownFlags,
-         DWORD dwReason
-    );
-
-DWORD
-InitiateShutdownW(
-    LPWSTR lpMachineName,
-    LPWSTR lpMessage,
-         DWORD dwGracePeriod,
-         DWORD dwShutdownFlags,
-         DWORD dwReason
-    );
-]]
-
---]=]
+end --// !defined SENTINEL_Reason

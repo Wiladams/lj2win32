@@ -33,7 +33,7 @@ function drawRegionRects(rgn)
         rect(arect.left, arect.top, arect.right, arect.bottom)
         end
         cnt = cnt + 1;
-        print(cnt)
+        --print(cnt)
     end
 end
 

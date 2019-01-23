@@ -1,3 +1,15 @@
+--[[]
+The GDI Graphics system has a concept of regions, which can be
+used for clipping, and shaping things such as windows.
+
+this file represents a fairly simple representation of regions
+which makes creating and manipulating them easier.
+
+Of particular note is the rects() function, which is an 
+    iterator over the rectangles that make up a region.
+    The iterator will return a table representing the 
+    rectangle each time through the iteration.
+--]]
 local ffi = require("ffi")
 local C = ffi.C
 
