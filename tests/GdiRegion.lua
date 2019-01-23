@@ -26,12 +26,24 @@ local RegionHandle_mt = {
         return res ~= 0
     end;
 
-    __add = function(lhs, rsh)
-        -- create new region
-        local dstRegion = C.CreateRectRgn(0,0,0,0)
+    __add = function(lhs, ...)
+        local nargs = select('#',...)
+        if type(select(1,...)) == 'cdata' then
+            -- create new region
+            local dstRegion = C.CreateRectRgn(0,0,0,0)
 
-        local res = C.CombineRgn(dstRegion, lhs.Handle, rhs.Handle, C.RGN_OR)
-        return RegionHandle(dstRegion)
+            local res = C.CombineRgn(dstRegion, lhs.Handle, rhs.Handle, C.RGN_OR)
+            return RegionHandle(dstRegion)
+        end
+
+        -- offset current region by numeric values
+        if type(select(1,...)) == 'table' then
+            local tbl = select(1,...)
+            local res = C.OffsetRgn(lhs.Handle, tbl[1], tbl[2])
+
+        end
+        
+        return self;
     end;
 
     __sub = function(lhs, rhs)
@@ -50,6 +62,7 @@ ffi.metatype("RegionHandle", RegionHandle_mt)
     Factory functions
 ]]
 function GdiRegion.CreatePolygonRgn(self, pptl, cPoint, iMode)
+    iMode = iMode or C.WINDING
     local rgn = C.CreatePolygonRgn(pptl, cPoint, iMode)
     if rgn == nil then
         return nil;
@@ -117,7 +130,7 @@ function GdiRegion.bounds(self,...)
 end
 
 --[[
-    enumerate rectangles within the region
+    iterate over the rectangles that makeup the region
 ]]
 function GdiRegion.rects(self)
     
@@ -140,7 +153,7 @@ function GdiRegion.rects(self)
         end
 
     --print("  dwSize: ", rgnData.rdh.dwSize)
-    --print("   iType: ", rgnData.rdh.iType)
+    --print("   iType: ", rgnData.rdh.iType) -- == RDH_RECTANGLES
     --print("  nCount: ", rgnData.rdh.nCount)
     --print("nRgnSize: ", rgnData.rdh.nRgnSize)
     --print(" rcBound: ", rgnData.rdh.rcBound.left, rgnData.rdh.rcBound.top, rgnData.rdh.rcBound.right, rgnData.rdh.rcBound.bottom)
@@ -150,6 +163,7 @@ function GdiRegion.rects(self)
         for i=0,rgnData.rdh.nCount-1 do 
             coroutine.yield({left = rectArray[i].left, top = rectArray[i].top, right = rectArray[i].right, bottom = rectArray[i].bottom})
         end
+
     end
 
     local co = coroutine.create(visitor)
