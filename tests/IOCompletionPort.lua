@@ -1,8 +1,8 @@
 
 local ffi = require("ffi")
 
-local core_io = require("win32.core.io_l1_1_1");
-local errorhandling = require("win32.core.errhandlingapi");
+local core_io = require("win32.ioapiset");
+local errorhandling = require("win32.errhandlingapi");
 local WinBase = require("win32.winbase");
 
 ffi.cdef[[

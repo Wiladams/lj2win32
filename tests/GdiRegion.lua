@@ -43,7 +43,7 @@ local RegionHandle_mt = {
         if type(select(1,...)) == 'cdata' then
             -- create new region
             local dstRegion = C.CreateRectRgn(0,0,0,0)
-
+            local rhs = select(1,...)
             local res = C.CombineRgn(dstRegion, lhs.Handle, rhs.Handle, C.RGN_OR)
             return RegionHandle(dstRegion)
         end

@@ -1,6 +1,4 @@
 
-
-
 local ffi = require ("ffi")
 local C = ffi.C
 local bit = require ("bit")

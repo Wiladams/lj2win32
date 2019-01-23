@@ -1,6 +1,9 @@
 
 
 local ffi = require("ffi")
+local bit = require("bit")
+local band, bor = bit.band, bit.bor
+local lshift, rshift = bit.lshift, bit.rshift
 
 --#include <specstrings.h>
 require("win32.winapifamily")
@@ -200,7 +203,7 @@ typedef LONG_PTR            LRESULT;
 
 if not MAKEWORD then
 function MAKEWORD(low,high)
-    return   ffi.cast("WORD", bor(ffi.cast("BYTE",band(low,0xff)) , lshift(ffi.cast("WORD",ffi.cast("BYTE",high)) , 8)))
+    return   ffi.cast("WORD", bor(band(low,0xff) , lshift(high, 8)))
 end
 end
 

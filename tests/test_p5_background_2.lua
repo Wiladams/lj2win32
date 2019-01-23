@@ -24,7 +24,7 @@ function draw()
 end
 
 function mouseReleased()
-    print("mouseReleased")
+    --print("mouseReleased")
     r = random(0,255)
     g = random(0,255)
     b = random(0,255)

@@ -1,4 +1,4 @@
---test_scheduler.lua
+--test_predicate_when.lua
 package.path = package.path..";../?.lua"
 
 
@@ -19,13 +19,12 @@ local function counter(name, nCount)
 end
 
 
-
 local function countingFinished()
 	return idx >= maxidx;
 end
 
 local function main()
-	local t1 = spawn(counter, "counter", maxidx)
+	local t1 = spawn(counter, "counter", 100)
 
 	when(countingFinished, halt)
 end

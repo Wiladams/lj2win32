@@ -7,4 +7,4 @@ function setup()
 end
 
 
-go({width=1024, height=768, title="test_menu"});
+go({width=320, height=240, title="test_menu"});

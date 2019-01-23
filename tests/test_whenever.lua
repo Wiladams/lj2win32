@@ -1,3 +1,5 @@
+package.path = "../?.lua;"..package.path;
+
 local sched = require("scheduler")
 
 local function onBigSignal(params)
@@ -5,7 +7,7 @@ local function onBigSignal(params)
 end
 
 
-whenever("count", onBigSignal)
+onSignal("count", onBigSignal)
 
 local function main()
     signalAll("count", 1);

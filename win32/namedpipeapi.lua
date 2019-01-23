@@ -1,4 +1,6 @@
 
+local ffi = require("ffi")
+
 if not _NAMEDPIPE_H_ then
 _NAMEDPIPE_H_ = true
 
@@ -135,7 +137,6 @@ end --// WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 ffi.cdef[[
-
 BOOL
 __stdcall
 GetNamedPipeInfo(
@@ -146,8 +147,6 @@ GetNamedPipeInfo(
      LPDWORD lpMaxInstances
     );
 
-
-
 BOOL
 __stdcall
 GetNamedPipeHandleStateW(
@@ -156,7 +155,7 @@ GetNamedPipeHandleStateW(
      LPDWORD lpCurInstances,
      LPDWORD lpMaxCollectionCount,
      LPDWORD lpCollectDataTimeout,
-    _Out_writes_opt_(nMaxUserNameSize) LPWSTR lpUserName,
+     LPWSTR lpUserName,
      DWORD nMaxUserNameSize
     );
 ]]
@@ -170,10 +169,8 @@ GetNamedPipeHandleStateW(
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
-
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 ffi.cdef[[
-
 BOOL
 __stdcall
 CallNamedPipeW(
@@ -197,4 +194,3 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 
 end --// _NAMEDPIPE_H_
-

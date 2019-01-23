@@ -6,7 +6,7 @@ local lshift, rshift = bit.lshift, bit.rshift
 
 local byte = string.byte
 
-local utils = require("utils")
+local utils = require("win32.utils")
 local makeStatic = utils.makeStatic
 
 --[[

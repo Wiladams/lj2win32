@@ -1,8 +1,10 @@
 
 local ffi = require("ffi");
+local C = ffi.C 
 
 local errorhandling = require("win32.errhandlingapi");
-local core_process = require("experimental.apiset.processthreads_l1_1_1");
+local core_process = require("win32.processthreadsapi");
+local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
 
 ffi.cdef[[
@@ -72,7 +74,7 @@ function Desktop.open(self, name, dwFlags, fInherit, dwAccess)
 end
 
 function Desktop.openThreadDesktop(self, threadid)
-	threadid = threadid or core_process.GetCurrentThreadId();
+	threadid = threadid or C.GetCurrentThreadId();
 
 	local rawhandle = ffi.C.GetThreadDesktop(threadid);
 

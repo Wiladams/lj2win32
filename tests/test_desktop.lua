@@ -1,5 +1,7 @@
 package.path = "../?.lua;"..package.path;
 
+require("win32.sdkddkver")
+
 local Desktop = require("desktopclass")
 
 -- Get the names of the current desktops

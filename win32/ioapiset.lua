@@ -1,8 +1,6 @@
 --[[
  ioapiset.h -- ApiSet Contract for api-ms-win-core-io-l1
 --]]
-
-
 local ffi = require ("ffi")
 
 require("win32.minwindef")
@@ -10,8 +8,6 @@ require("win32.minwinbase")
 
 
 ffi.cdef[[
-
-
 HANDLE
 __stdcall
 CreateIoCompletionPort(
@@ -20,8 +16,6 @@ CreateIoCompletionPort(
     ULONG_PTR CompletionKey,
     DWORD NumberOfConcurrentThreads
     );
-
-
 
 BOOL
 __stdcall
@@ -32,7 +26,6 @@ GetQueuedCompletionStatus(
     LPOVERLAPPED* lpOverlapped,
     DWORD dwMilliseconds
     );
-
 
 BOOL
 __stdcall
@@ -45,7 +38,6 @@ GetQueuedCompletionStatusEx(
     BOOL fAlertable
     );
 
-
 BOOL
 __stdcall
 PostQueuedCompletionStatus(
@@ -54,7 +46,6 @@ PostQueuedCompletionStatus(
     ULONG_PTR dwCompletionKey,
     LPOVERLAPPED lpOverlapped
     );
-
 
 BOOL
 __stdcall
@@ -69,7 +60,6 @@ DeviceIoControl(
      LPOVERLAPPED lpOverlapped
     );
 
-
 BOOL
 __stdcall
 GetOverlappedResult(
@@ -79,7 +69,6 @@ GetOverlappedResult(
     BOOL bWait
     );
 
-
 BOOL
 __stdcall
 CancelIoEx(
@@ -87,13 +76,11 @@ CancelIoEx(
     LPOVERLAPPED lpOverlapped
     );
 
-
 BOOL
 __stdcall
 CancelIo(
     HANDLE hFile
     );
-
 
 BOOL
 __stdcall
@@ -105,11 +92,9 @@ GetOverlappedResultEx(
     BOOL bAlertable
     );
 
-
 BOOL
 __stdcall
 CancelSynchronousIo(
     HANDLE hThread
     );
-
 ]]
