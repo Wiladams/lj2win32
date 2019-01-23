@@ -1,7 +1,7 @@
 
 local ffi = require("ffi")
 
-local exports = {}
+--local exports = {}
 
 --[[
 //
@@ -431,9 +431,11 @@ static const int NONZEROLHND        = (LMEM_MOVEABLE);
 static const int NONZEROLPTR        = (LMEM_FIXED);
 ]]
 
+--[[
 function exports.LocalDiscard( h )   
     ffi.C.LocalReAlloc( (h), 0, ffi.C.LMEM_MOVEABLE )
 end
+--]]
 
 ffi.cdef[[
 /* Flags returned by LocalFlags (in addition to LMEM_DISCARDABLE) */

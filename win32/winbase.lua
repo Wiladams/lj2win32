@@ -1,22 +1,17 @@
 local ffi = require("ffi")
 
 
-
-
 require("win32.minwinbase")
 
-
 -- APISET contracts
-
-
 require("win32.processenv")
-require("win32.fileapi")            -- NYI
---require("win32.debugapi")           -- dbghelp
+require("win32.fileapi")
+require("win32.debugapi")           -- dbghelp
 require("win32.utilapiset")
 require("win32.handleapi")
 require("win32.errhandlingapi")
 --require("win32.fibersapi")          -- NYI
---require("win32.namedpipeapi")       -- NYI
+require("win32.namedpipeapi")
 require("win32.profileapi")
 require("win32.heapapi")
 require("win32.ioapiset")
@@ -52,13 +47,7 @@ require("win32.realtimeapiset")
 #define LockSegment(w)                  GlobalFix((HANDLE)(w))
 #define UnlockSegment(w)                GlobalUnfix((HANDLE)(w))
 
-
-
-
 #define GetCurrentTime()                GetTickCount()
-
-
-
 
 #define Yield()
 --]=]
@@ -106,136 +95,109 @@ static const int FILE_FLAG_OPEN_NO_RECALL      =  0x00100000;
 static const int FILE_FLAG_FIRST_PIPE_INSTANCE =  0x00080000;
 ]]
 
---[=[
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
-//
-//  These are flags supported only through CreateFile2 (W8 and beyond)
-//
-//  Due to the multiplexing of file creation flags, file attribute flags and
-//  security QoS flags into a single DWORD (dwFlagsAndAttributes) parameter for
-//  CreateFile, there is no way to add any more flags to CreateFile. Additional
-//  flags for the create operation must be added to CreateFile2 only
-//
-
-#define FILE_FLAG_OPEN_REQUIRING_OPLOCK 0x00040000
-
-#endif
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN8) then
+ffi.cdef[[
+static const int FILE_FLAG_OPEN_REQUIRING_OPLOCK = 0x00040000;
+]]
+end
 
 
+if (_WIN32_WINNT >= 0x0400) then
+ffi.cdef[[
+static const int PROGRESS_CONTINUE  = 0;
+static const int PROGRESS_CANCEL    = 1;
+static const int PROGRESS_STOP      = 2;
+static const int PROGRESS_QUIET     = 3;
 
-#if(_WIN32_WINNT >= 0x0400)
-//
-// Define possible return codes from the CopyFileEx callback routine
-//
+static const int CALLBACK_CHUNK_FINISHED        = 0x00000000;
+static const int CALLBACK_STREAM_SWITCH         = 0x00000001;
 
-#define PROGRESS_CONTINUE  = 0;
-#define PROGRESS_CANCEL    = 1;
-#define PROGRESS_STOP      = 2;
-#define PROGRESS_QUIET     = 3;
-
-//
-// Define CopyFileEx callback routine state change values
-//
-
-#define CALLBACK_CHUNK_FINISHED        = 0x00000000;
-#define CALLBACK_STREAM_SWITCH         = 0x00000001;
-
-//
-// Define CopyFileEx option flags
-//
-
-#define COPY_FILE_FAIL_IF_EXISTS               = 0x00000001;
-#define COPY_FILE_RESTARTABLE                  = 0x00000002;
-#define COPY_FILE_OPEN_SOURCE_FOR_WRITE        = 0x00000004;
-#define COPY_FILE_ALLOW_DECRYPTED_DESTINATION  = 0x00000008;
-
-//
-//  Gap for private copyfile flags
-//
-
-#if (_WIN32_WINNT >= 0x0600)
-#define COPY_FILE_COPY_SYMLINK               = 0x00000800;
-#define COPY_FILE_NO_BUFFERING               = 0x00001000;
-#endif
+static const int COPY_FILE_FAIL_IF_EXISTS               = 0x00000001;
+static const int COPY_FILE_RESTARTABLE                  = 0x00000002;
+static const int COPY_FILE_OPEN_SOURCE_FOR_WRITE        = 0x00000004;
+static const int COPY_FILE_ALLOW_DECRYPTED_DESTINATION  = 0x00000008;
+]]
 
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-
-//
-//  CopyFile2 flags
-//
-
-#define COPY_FILE_REQUEST_SECURITY_PRIVILEGES        0x00002000
-#define COPY_FILE_RESUME_FROM_PAUSE                  0x00004000
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
+static const int COPY_FILE_COPY_SYMLINK               = 0x00000800;
+static const int COPY_FILE_NO_BUFFERING               = 0x00001000;
+]]
+end
 
 
-#define COPY_FILE_NO_OFFLOAD                         0x00040000
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN8) then
+ffi.cdef[[
+static const int COPY_FILE_REQUEST_SECURITY_PRIVILEGES      =  0x00002000;
+static const int COPY_FILE_RESUME_FROM_PAUSE                =  0x00004000;
 
-#endif
+static const int COPY_FILE_NO_OFFLOAD                       =  0x00040000;
+]]
+end
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN10) then
+ffi.cdef[[
+static const int COPY_FILE_IGNORE_EDP_BLOCK                =   0x00400000;
+static const int COPY_FILE_IGNORE_SOURCE_ENCRYPTION        =   0x00800000;
+]]
+end
 
-#define COPY_FILE_IGNORE_EDP_BLOCK                   0x00400000
-#define COPY_FILE_IGNORE_SOURCE_ENCRYPTION           0x00800000
+end --/* _WIN32_WINNT >= 0x0400 */
 
-#endif
+if (_WIN32_WINNT >= 0x0500) then
+ffi.cdef[[
+static const int REPLACEFILE_WRITE_THROUGH       = 0x00000001;
+static const int REPLACEFILE_IGNORE_MERGE_ERRORS = 0x00000002;
+]]
 
-#endif /* _WIN32_WINNT >= 0x0400 */
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
+static const int REPLACEFILE_IGNORE_ACL_ERRORS  = 0x00000004;
+]]
+end
 
-#if (_WIN32_WINNT >= 0x0500)
-//
-// Define ReplaceFile option flags
-//
-
-#define REPLACEFILE_WRITE_THROUGH       0x00000001
-#define REPLACEFILE_IGNORE_MERGE_ERRORS 0x00000002
-
-#if (_WIN32_WINNT >= 0x0600)
-#define REPLACEFILE_IGNORE_ACL_ERRORS   0x00000004
-#endif
-
-#endif // #if (_WIN32_WINNT >= 0x0500)
-
-//
-// Define the NamedPipe definitions
-//
+end --// #if (_WIN32_WINNT >= 0x0500)
 
 
+ffi.cdef[[
 //
 // Define the dwOpenMode values for CreateNamedPipe
 //
 
-#define PIPE_ACCESS_INBOUND         0x00000001
-#define PIPE_ACCESS_OUTBOUND        0x00000002
-#define PIPE_ACCESS_DUPLEX          0x00000003
+static const int PIPE_ACCESS_INBOUND        = 0x00000001;
+static const int PIPE_ACCESS_OUTBOUND       = 0x00000002;
+static const int PIPE_ACCESS_DUPLEX         = 0x00000003;
 
 //
 // Define the Named Pipe End flags for GetNamedPipeInfo
 //
 
-#define PIPE_CLIENT_END             0x00000000
-#define PIPE_SERVER_END             0x00000001
+static const int PIPE_CLIENT_END            = 0x00000000;
+static const int PIPE_SERVER_END            = 0x00000001;
 
 //
 // Define the dwPipeMode values for CreateNamedPipe
 //
 
-#define PIPE_WAIT                   0x00000000
-#define PIPE_NOWAIT                 0x00000001
-#define PIPE_READMODE_BYTE          0x00000000
-#define PIPE_READMODE_MESSAGE       0x00000002
-#define PIPE_TYPE_BYTE              0x00000000
-#define PIPE_TYPE_MESSAGE           0x00000004
-#define PIPE_ACCEPT_REMOTE_CLIENTS  0x00000000
-#define PIPE_REJECT_REMOTE_CLIENTS  0x00000008
+static const int PIPE_WAIT                  = 0x00000000;
+static const int PIPE_NOWAIT                = 0x00000001;
+static const int PIPE_READMODE_BYTE         = 0x00000000;
+static const int PIPE_READMODE_MESSAGE      = 0x00000002;
+static const int PIPE_TYPE_BYTE             = 0x00000000;
+static const int PIPE_TYPE_MESSAGE          = 0x00000004;
+static const int PIPE_ACCEPT_REMOTE_CLIENTS = 0x00000000;
+static const int PIPE_REJECT_REMOTE_CLIENTS = 0x00000008;
 
 //
 // Define the well known values for CreateNamedPipe nMaxInstances
 //
 
-#define PIPE_UNLIMITED_INSTANCES    255
+static const int PIPE_UNLIMITED_INSTANCES   = 255;
+]]
 
+--[=[
 //
 // Define the Security Quality of Service bits to be passed
 // into CreateFile
