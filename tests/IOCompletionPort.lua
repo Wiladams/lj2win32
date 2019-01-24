@@ -1,9 +1,10 @@
 
 local ffi = require("ffi")
+local C = ffi.C 
 
-local core_io = require("win32.ioapiset");
-local errorhandling = require("win32.errhandlingapi");
-local WinBase = require("win32.winbase");
+local require("win32.ioapiset");
+local require("win32.errhandlingapi");
+local require("win32.winbase");
 
 ffi.cdef[[
 typedef struct {
@@ -11,18 +12,23 @@ typedef struct {
 } IOCompletionHandle;
 ]]
 
-
-local IOCompletionHandle = ffi.typeof("IOCompletionHandle")
-local IOCompletionHandle_mt = {
-	__index = {},
-}
-ffi.metatype(IOCompletionHandle, IOCompletionHandle_mt)
-
-
 local IOCompletionPort = {}
+
+--local IOCompletionHandle = ffi.typeof("IOCompletionHandle")
+local IOCompletionHandle_mt = {
+	__index = IOCompletionPort,
+
+	__new = function(ct,rawhandle)
+		return ffi.new(ct, rawhandle)
+	end;
+}
+ffi.metatype("IOCompletionHandle", IOCompletionHandle_mt)
+
+
+
 setmetatable(IOCompletionPort, {
 	__call = function(self, ...)
-		return self:create(...);
+		return self:new(...);
 	end,
 });
 
@@ -40,18 +46,18 @@ function IOCompletionPort.init(self, rawhandle)
 	return obj;
 end
 
-function IOCompletionPort.create(self, ExistingCompletionPort, FileHandle, NumberOfConcurrentThreads)
-	FileHandle = FileHandle or INVALID_HANDLE_VALUE;
+function IOCompletionPort.new(self, ExistingCompletionPort, FileHandle, NumberOfConcurrentThreads)
+	FileHandle = FileHandle or C.INVALID_HANDLE_VALUE;
 	NumberOfConcurrentThreads = NumberOfConcurrentThreads or 0
 	local CompletionKey = 0;
 
-	local rawhandle = core_io.CreateIoCompletionPort(FileHandle,
+	local rawhandle = C.CreateIoCompletionPort(FileHandle,
 		ExistingCompletionPort,
 		CompletionKey,
 		NumberOfConcurrentThreads);
 
 	if rawhandle == nil then
-		return false, errorhandling.GetLastError();
+		return false, C.GetLastError();
 	end
 
 	return self:init(rawhandle);
@@ -72,17 +78,17 @@ function IOCompletionPort.addIoHandle(self, otherhandle, Key)
 	Key = Key or ffi.cast("ULONG_PTR", 0);
 	Key = ffi.cast("ULONG_PTR", ffi.cast("void *",Key));
 
-	local rawhandle = core_io.CreateIoCompletionPort(otherhandle, self:getNativeHandle(), Key, 0);
+	local rawhandle = C.CreateIoCompletionPort(otherhandle, self:getNativeHandle(), Key, 0);
 
 	if rawhandle == nil then
-		return false, errorhandling.GetLastError();
+		return false, C.GetLastError();
 	end
 
 	return IOCompletionPort(rawhandle);
 end
 
 function IOCompletionPort.HasOverlappedIoCompleted(self, lpOverlapped) 
-	return ffi.cast("DWORD",lpOverlapped.Internal) ~= ffi.C.STATUS_PENDING;
+	return ffi.cast("DWORD",lpOverlapped.Internal) ~= C.STATUS_PENDING;
 end
 
 function IOCompletionPort.enqueue(self, dwCompletionKey, dwNumberOfBytesTransferred, lpOverlapped)
@@ -93,13 +99,13 @@ function IOCompletionPort.enqueue(self, dwCompletionKey, dwNumberOfBytesTransfer
 
 	dwNumberOfBytesTransferred = dwNumberOfBytesTransferred or 0;
 
-	local status = core_io.PostQueuedCompletionStatus(self:getNativeHandle(),
+	local status = C.PostQueuedCompletionStatus(self:getNativeHandle(),
 		dwNumberOfBytesTransferred,
 		ffi.cast("ULONG_PTR",ffi.cast("void *", dwCompletionKey)),
 		lpOverlapped);
 	
 	if status == 0 then
-		return false, errorhandling.GetLastError();
+		return false, C.GetLastError();
 	end
 
 	return self;
@@ -111,14 +117,14 @@ function IOCompletionPort.dequeue(self, dwMilliseconds)
 	local lpNumberOfBytesTransferred = ffi.new("DWORD[1]");
 	local lpCompletionKey = ffi.new("ULONG_PTR[1]");	-- PULONG_PTR
 	local lpOverlapped = ffi.new("LPOVERLAPPED[1]");
-	local status = core_io.GetQueuedCompletionStatus(self:getNativeHandle(),
+	local status = C.GetQueuedCompletionStatus(self:getNativeHandle(),
     	lpNumberOfBytesTransferred,
     	lpCompletionKey,
     	lpOverlapped,
     	dwMilliseconds);
 
 	if status == 0 then
-		local err = errorhandling.GetLastError();
+		local err = C.GetLastError();
 		
 		-- If the dequeue failed, there can be two cases
 		-- In the first case, the lpOverlapped is nil,

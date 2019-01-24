@@ -1,12 +1,14 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local C = ffi.C 
+
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 
-local heapapi = require("win32.heapapi")
+require("win32.heapapi")
 
-local procHeap = ffi.C.GetProcessHeap();
+local procHeap = C.GetProcessHeap();
 if procHeap == nil then 
     print("Could not get Process Heap Handle")
     return false 
@@ -14,12 +16,12 @@ end
 
 
 local function heapInformation(handle)
-    local HeapInformationClass = ffi.C.HeapCompatibilityInformation;
+    local HeapInformationClass = C.HeapCompatibilityInformation;
     local HeapInformation = ffi.new("ULONG[1]")
     local HeapInformationLength = ffi.sizeof("ULONG");
     local ReturnLength = ffi.new("SIZE_T[1]")
 
-    local success = ffi.C.HeapQueryInformation(handle, HeapInformationClass, HeapInformation, HeapInformationLength, ReturnLength) ~= 0;
+    local success = C.HeapQueryInformation(handle, HeapInformationClass, HeapInformation, HeapInformationLength, ReturnLength) ~= 0;
 
     print("heapInformation: ", success)
     print("  Info: ", HeapInformation[0])
@@ -55,27 +57,27 @@ local function heapWalk(hHeap)
 
     local res = {};
     
-    ffi.C.HeapLock(hHeap)
+    C.HeapLock(hHeap)
 
 
-    while ffi.C.HeapWalk(hHeap, heapEntry) ~= 0 do
+    while C.HeapWalk(hHeap, heapEntry) ~= 0 do
         local newEntry = {};
         newEntry.size = heapEntry.cbData
         newEntry.data = tonumber(ffi.cast("intptr_t",heapEntry.lpData))
         newEntry.flags = heapEntry.wFlags
 
-		if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_BUSY) ~= 0 then
+		if band(heapEntry.wFlags, C.PROCESS_HEAP_ENTRY_BUSY) ~= 0 then
             -- Allocated block
             newEntry.kind = "allocated"
-             if band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_ENTRY_MOVEABLE) ~= 0 then
+             if band(heapEntry.wFlags, C.PROCESS_HEAP_ENTRY_MOVEABLE) ~= 0 then
                 newEntry.moveable = tonumber(ffi.cast("intptr_t",heapEntry.Block.hMem))
             end
-		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_REGION) ~= 0 then
+		elseif band(heapEntry.wFlags, C.PROCESS_HEAP_REGION) ~= 0 then
             newEntry.index = heapEntry.iRegionIndex;
 			newEntry.kind = "region";
 			newEntry.committed = heapEntry.Region.dwCommittedSize; 
 			newEntry.uncommitted = heapEntry.Region.dwUnCommittedSize;
-		elseif band(heapEntry.wFlags, ffi.C.PROCESS_HEAP_UNCOMMITTED_RANGE) ~= 0 then
+		elseif band(heapEntry.wFlags, C.PROCESS_HEAP_UNCOMMITTED_RANGE) ~= 0 then
 			newEntry.kind = "uncommitted";
 		else
             newEntry.kind = "block";
@@ -85,7 +87,7 @@ local function heapWalk(hHeap)
         table.insert(res, newEntry)
 	end
 
-	ffi.C.HeapUnlock(hHeap);
+	C.HeapUnlock(hHeap);
 
 	return res;
 end
@@ -99,7 +101,7 @@ local function printRegion(entry)
 end
 
 local function test_heapWalk()
-    local procHeap = ffi.C.GetProcessHeap();
+    local procHeap = C.GetProcessHeap();
     local entries = heapWalk(procHeap)
 
     for i, entry in ipairs(entries) do

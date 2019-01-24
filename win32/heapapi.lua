@@ -2,10 +2,10 @@
 -- HeapApi.h -- ApiSet Contract for api-ms-win-core-heap-l1                      *  
 
 
---[[
+
 if not _HEAPAPI_H_ then
 _HEAPAPI_H_ = true;
---]]
+
 
 local ffi = require("ffi")
 
@@ -166,4 +166,4 @@ HeapQueryInformation(
     );
 ]]
 
-
+end
