@@ -1,3 +1,4 @@
+local ffi = require("ffi")
 
 if not _WINSVC_ then
 _WINSVC_ = true
@@ -20,10 +21,6 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) t
 --]]
 
 --[[
-//
-// Character to designate that a name is a group
-//
-
 #define SC_GROUP_IDENTIFIERW           L'+'
 #define SC_GROUP_IDENTIFIERA           '+'
 --]]
@@ -37,7 +34,7 @@ if UNICODE then
 
 #define SC_GROUP_IDENTIFIER            SC_GROUP_IDENTIFIERW
 
-#else // ndef UNICODE
+else // ndef UNICODE
 
 #define SERVICES_ACTIVE_DATABASE       SERVICES_ACTIVE_DATABASEA
 #define SERVICES_FAILED_DATABASE       SERVICES_FAILED_DATABASEA
@@ -48,19 +45,15 @@ end -- ndef UNICODE
 
 
 ffi.cdef[[
-//
-// Value to indicate no change to an optional parameter
-//
 static const int SERVICE_NO_CHANGE              = 0xffffffff;
 
-//
-// Service State -- for Enum Requests (Bit Mask)
-//
 static const int SERVICE_ACTIVE                 = 0x00000001;
 static const int SERVICE_INACTIVE               = 0x00000002;
 static const int SERVICE_STATE_ALL              =(SERVICE_ACTIVE   | \
                                         SERVICE_INACTIVE);
+]]
 
+ffi.cdef[[
 //
 // Controls
 //
@@ -86,7 +79,9 @@ static const int SERVICE_CONTROL_TRIGGEREVENT           = 0x00000020;
 //reserved for internal use                    = 0x00000050;
 static const int SERVICE_CONTROL_LOWRESOURCES           = 0x00000060;
 static const int SERVICE_CONTROL_SYSTEMLOWRESOURCES     = 0x00000061;
+]]
 
+ffi.cdef[[
 //
 // Service State -- for CurrentState
 //
@@ -97,7 +92,9 @@ static const int SERVICE_RUNNING                        = 0x00000004;
 static const int SERVICE_CONTINUE_PENDING               = 0x00000005;
 static const int SERVICE_PAUSE_PENDING                  = 0x00000006;
 static const int SERVICE_PAUSED                         = 0x00000007;
+]]
 
+ffi.cdef[[
 //
 // Controls Accepted  (Bit Mask)
 //
@@ -116,7 +113,9 @@ static const int SERVICE_ACCEPT_USER_LOGOFF             = 0x00000800;
 // reserved for internal use                   = 0x00001000;
 static const int SERVICE_ACCEPT_LOWRESOURCES            = 0x00002000;
 static const int SERVICE_ACCEPT_SYSTEMLOWRESOURCES      = 0x00004000;
+]]
 
+ffi.cdef[[
 //
 // Service Control Manager object specific access types
 //
@@ -126,7 +125,9 @@ static const int SC_MANAGER_ENUMERATE_SERVICE   = 0x0004;
 static const int SC_MANAGER_LOCK                = 0x0008;
 static const int SC_MANAGER_QUERY_LOCK_STATUS   = 0x0010;
 static const int SC_MANAGER_MODIFY_BOOT_CONFIG  = 0x0020;
+]]
 
+ffi.cdef[[
 static const int SC_MANAGER_ALL_ACCESS         = (STANDARD_RIGHTS_REQUIRED      | \
                                         SC_MANAGER_CONNECT            | \
                                         SC_MANAGER_CREATE_SERVICE     | \
@@ -134,9 +135,9 @@ static const int SC_MANAGER_ALL_ACCESS         = (STANDARD_RIGHTS_REQUIRED      
                                         SC_MANAGER_LOCK               | \
                                         SC_MANAGER_QUERY_LOCK_STATUS  | \
                                         SC_MANAGER_MODIFY_BOOT_CONFIG);
+]]
 
-
-
+ffi.cdef[[
 //
 // Service object specific access type
 //
@@ -160,7 +161,9 @@ static const int SERVICE_ALL_ACCESS             =(STANDARD_RIGHTS_REQUIRED     |
                                         SERVICE_PAUSE_CONTINUE       | \
                                         SERVICE_INTERROGATE          | \
                                         SERVICE_USER_DEFINED_CONTROL);
+]]
 
+ffi.cdef[[
 //
 // Service flags for QueryServiceStatusEx
 //
@@ -189,7 +192,9 @@ static const int SERVICE_NOTIFY_STATUS_CHANGE_1         = 1;
 static const int SERVICE_NOTIFY_STATUS_CHANGE_2         = 2;
 
 static const int SERVICE_NOTIFY_STATUS_CHANGE           = SERVICE_NOTIFY_STATUS_CHANGE_2;
+]]
 
+ffi.cdef[[
 //
 // Service notification masks
 //
@@ -203,11 +208,9 @@ static const int SERVICE_NOTIFY_PAUSED                   = 0x00000040;
 static const int SERVICE_NOTIFY_CREATED                  = 0x00000080;
 static const int SERVICE_NOTIFY_DELETED                  = 0x00000100;
 static const int SERVICE_NOTIFY_DELETE_PENDING           = 0x00000200;
+]]
 
-//
-// The following defines are for service stop reason codes
-//
-
+ffi.cdef[[
 //
 // Stop reason flags. Update SERVICE_STOP_REASON_FLAG_MAX when
 // new flags are added.
@@ -217,7 +220,9 @@ static const int SERVICE_STOP_REASON_FLAG_UNPLANNED                      = 0x100
 static const int SERVICE_STOP_REASON_FLAG_CUSTOM                         = 0x20000000;
 static const int SERVICE_STOP_REASON_FLAG_PLANNED                        = 0x40000000;
 static const int SERVICE_STOP_REASON_FLAG_MAX                            = 0x80000000;
+]]
 
+ffi.cdef[[
 //
 // Microsoft major reasons. Update SERVICE_STOP_REASON_MAJOR_MAX when
 // new codes are added.
@@ -232,7 +237,9 @@ static const int SERVICE_STOP_REASON_MAJOR_NONE                          = 0x000
 static const int SERVICE_STOP_REASON_MAJOR_MAX                           = 0x00070000;
 static const int SERVICE_STOP_REASON_MAJOR_MIN_CUSTOM                    = 0x00400000;
 static const int SERVICE_STOP_REASON_MAJOR_MAX_CUSTOM                    = 0x00ff0000;
+]]
 
+ffi.cdef[[
 //
 // Microsoft minor reasons. Update SERVICE_STOP_REASON_MINOR_MAX when
 // new codes are added.
@@ -271,58 +278,58 @@ ffi.cdef[[
 //
 // Info levels for ControlServiceEx
 //
-#define SERVICE_CONTROL_STATUS_REASON_INFO      1
+static const int SERVICE_CONTROL_STATUS_REASON_INFO     = 1;
 
 //
 // Service SID types supported
 //
-#define SERVICE_SID_TYPE_NONE                                   0x00000000
-#define SERVICE_SID_TYPE_UNRESTRICTED                           0x00000001
-#define SERVICE_SID_TYPE_RESTRICTED                             ( 0x00000002 | SERVICE_SID_TYPE_UNRESTRICTED )
+static const int SERVICE_SID_TYPE_NONE                               =    0x00000000;
+static const int SERVICE_SID_TYPE_UNRESTRICTED                       =    0x00000001;
+static const int SERVICE_SID_TYPE_RESTRICTED                         =    ( 0x00000002 | SERVICE_SID_TYPE_UNRESTRICTED );
 
 //
 // Service trigger types
 //
-#define SERVICE_TRIGGER_TYPE_DEVICE_INTERFACE_ARRIVAL               1
-#define SERVICE_TRIGGER_TYPE_IP_ADDRESS_AVAILABILITY                2
-#define SERVICE_TRIGGER_TYPE_DOMAIN_JOIN                            3
-#define SERVICE_TRIGGER_TYPE_FIREWALL_PORT_EVENT                    4
-#define SERVICE_TRIGGER_TYPE_GROUP_POLICY                           5
-#define SERVICE_TRIGGER_TYPE_NETWORK_ENDPOINT                       6
-#define SERVICE_TRIGGER_TYPE_CUSTOM_SYSTEM_STATE_CHANGE             7
-#define SERVICE_TRIGGER_TYPE_CUSTOM                                 20
-#define SERVICE_TRIGGER_TYPE_AGGREGATE                              30
+static const int SERVICE_TRIGGER_TYPE_DEVICE_INTERFACE_ARRIVAL          =     1;
+static const int SERVICE_TRIGGER_TYPE_IP_ADDRESS_AVAILABILITY           =     2;
+static const int SERVICE_TRIGGER_TYPE_DOMAIN_JOIN                       =     3;
+static const int SERVICE_TRIGGER_TYPE_FIREWALL_PORT_EVENT               =     4;
+static const int SERVICE_TRIGGER_TYPE_GROUP_POLICY                      =     5;
+static const int SERVICE_TRIGGER_TYPE_NETWORK_ENDPOINT                  =     6;
+static const int SERVICE_TRIGGER_TYPE_CUSTOM_SYSTEM_STATE_CHANGE        =     7;
+static const int SERVICE_TRIGGER_TYPE_CUSTOM                            =     20;
+static const int SERVICE_TRIGGER_TYPE_AGGREGATE                         =     30;
 
 //
 // Service trigger data types
 //
-#define SERVICE_TRIGGER_DATA_TYPE_BINARY                            1
-#define SERVICE_TRIGGER_DATA_TYPE_STRING                            2
-#define SERVICE_TRIGGER_DATA_TYPE_LEVEL                             3
-#define SERVICE_TRIGGER_DATA_TYPE_KEYWORD_ANY                       4
-#define SERVICE_TRIGGER_DATA_TYPE_KEYWORD_ALL                       5
+static const int SERVICE_TRIGGER_DATA_TYPE_BINARY                        =    1;
+static const int SERVICE_TRIGGER_DATA_TYPE_STRING                        =    2;
+static const int SERVICE_TRIGGER_DATA_TYPE_LEVEL                         =    3;
+static const int SERVICE_TRIGGER_DATA_TYPE_KEYWORD_ANY                   =    4;
+static const int SERVICE_TRIGGER_DATA_TYPE_KEYWORD_ALL                   =    5;
 
 //
 //  Service start reason
 //
-#define SERVICE_START_REASON_DEMAND                                 0x00000001
-#define SERVICE_START_REASON_AUTO                                   0x00000002
-#define SERVICE_START_REASON_TRIGGER                                0x00000004
-#define SERVICE_START_REASON_RESTART_ON_FAILURE                     0x00000008
-#define SERVICE_START_REASON_DELAYEDAUTO                            0x00000010
+static const int SERVICE_START_REASON_DEMAND                              =   0x00000001;
+static const int SERVICE_START_REASON_AUTO                                =   0x00000002;
+static const int SERVICE_START_REASON_TRIGGER                             =   0x00000004;
+static const int SERVICE_START_REASON_RESTART_ON_FAILURE                  =   0x00000008;
+static const int SERVICE_START_REASON_DELAYEDAUTO                         =   0x00000010;
 
 //
 //  Service dynamic information levels
 //
-#define SERVICE_DYNAMIC_INFORMATION_LEVEL_START_REASON              1
+static const int SERVICE_DYNAMIC_INFORMATION_LEVEL_START_REASON            =  1;
 
 //
 // Service LaunchProtected types supported
 //
-#define SERVICE_LAUNCH_PROTECTED_NONE                               0
-#define SERVICE_LAUNCH_PROTECTED_WINDOWS                            1
-#define SERVICE_LAUNCH_PROTECTED_WINDOWS_LIGHT                      2
-#define SERVICE_LAUNCH_PROTECTED_ANTIMALWARE_LIGHT                  3
+static const int SERVICE_LAUNCH_PROTECTED_NONE                             =  0;
+static const int SERVICE_LAUNCH_PROTECTED_WINDOWS                          =  1;
+static const int SERVICE_LAUNCH_PROTECTED_WINDOWS_LIGHT                    =  2;
+static const int SERVICE_LAUNCH_PROTECTED_ANTIMALWARE_LIGHT                =  3;
 ]]
 
 --[=[
@@ -481,29 +488,29 @@ static const int SERVICE_TRIGGER_ACTION_SERVICE_STOP                     =    2;
 --]]
 
 ffi.cdef[[
-//
-// Service description string
-//
+
 typedef struct _SERVICE_DESCRIPTIONA {
     LPSTR       lpDescription;
 } SERVICE_DESCRIPTIONA, *LPSERVICE_DESCRIPTIONA;
-//
-// Service description string
-//
+
 typedef struct _SERVICE_DESCRIPTIONW {
     LPWSTR      lpDescription;
 } SERVICE_DESCRIPTIONW, *LPSERVICE_DESCRIPTIONW;
 ]]
 
---[[
+
 if UNICODE then
+ffi.cdef[[
 typedef SERVICE_DESCRIPTIONW SERVICE_DESCRIPTION;
 typedef LPSERVICE_DESCRIPTIONW LPSERVICE_DESCRIPTION;
-#else
+]]
+else
+ffi.cdef[[
 typedef SERVICE_DESCRIPTIONA SERVICE_DESCRIPTION;
 typedef LPSERVICE_DESCRIPTIONA LPSERVICE_DESCRIPTION;
+]]
 end -- UNICODE
---]]
+
 
 ffi.cdef[[
 //
@@ -545,43 +552,29 @@ typedef struct _SERVICE_FAILURE_ACTIONSW {
 if UNICODE then
 typedef SERVICE_FAILURE_ACTIONSW SERVICE_FAILURE_ACTIONS;
 typedef LPSERVICE_FAILURE_ACTIONSW LPSERVICE_FAILURE_ACTIONS;
-#else
+else
 typedef SERVICE_FAILURE_ACTIONSA SERVICE_FAILURE_ACTIONS;
 typedef LPSERVICE_FAILURE_ACTIONSA LPSERVICE_FAILURE_ACTIONS;
 end -- UNICODE
 --]]
 
 ffi.cdef[[
-//
-// Service delayed autostart info setting
-//
 typedef struct _SERVICE_DELAYED_AUTO_START_INFO {
     BOOL       fDelayedAutostart;      // Delayed autostart flag
 } SERVICE_DELAYED_AUTO_START_INFO, *LPSERVICE_DELAYED_AUTO_START_INFO;
 
-//
-// Service failure actions flag setting
-//
 typedef struct _SERVICE_FAILURE_ACTIONS_FLAG {
     BOOL       fFailureActionsOnNonCrashFailures;       // Failure actions flag
 } SERVICE_FAILURE_ACTIONS_FLAG, *LPSERVICE_FAILURE_ACTIONS_FLAG;
 
-//
-// Service SID info setting
-//
 typedef struct _SERVICE_SID_INFO {
     DWORD       dwServiceSidType;     // Service SID type
 } SERVICE_SID_INFO, *LPSERVICE_SID_INFO;
 
-//
-// Service required privileges information
-//
 typedef struct _SERVICE_REQUIRED_PRIVILEGES_INFOA {
     LPSTR       pmszRequiredPrivileges;             // Required privileges multi-sz
 } SERVICE_REQUIRED_PRIVILEGES_INFOA, *LPSERVICE_REQUIRED_PRIVILEGES_INFOA;
-//
-// Service required privileges information
-//
+
 typedef struct _SERVICE_REQUIRED_PRIVILEGES_INFOW {
     LPWSTR      pmszRequiredPrivileges;             // Required privileges multi-sz
 } SERVICE_REQUIRED_PRIVILEGES_INFOW, *LPSERVICE_REQUIRED_PRIVILEGES_INFOW;
@@ -591,7 +584,7 @@ typedef struct _SERVICE_REQUIRED_PRIVILEGES_INFOW {
 if UNICODE then
 typedef SERVICE_REQUIRED_PRIVILEGES_INFOW SERVICE_REQUIRED_PRIVILEGES_INFO;
 typedef LPSERVICE_REQUIRED_PRIVILEGES_INFOW LPSERVICE_REQUIRED_PRIVILEGES_INFO;
-#else
+else
 typedef SERVICE_REQUIRED_PRIVILEGES_INFOA SERVICE_REQUIRED_PRIVILEGES_INFO;
 typedef LPSERVICE_REQUIRED_PRIVILEGES_INFOA LPSERVICE_REQUIRED_PRIVILEGES_INFO;
 end -- UNICODE
@@ -742,7 +735,7 @@ typedef struct _ENUM_SERVICE_STATUSW {
 if UNICODE then
 typedef ENUM_SERVICE_STATUSW ENUM_SERVICE_STATUS;
 typedef LPENUM_SERVICE_STATUSW LPENUM_SERVICE_STATUS;
-#else
+else
 typedef ENUM_SERVICE_STATUSA ENUM_SERVICE_STATUS;
 typedef LPENUM_SERVICE_STATUSA LPENUM_SERVICE_STATUS;
 end -- UNICODE
@@ -765,7 +758,7 @@ typedef struct _ENUM_SERVICE_STATUS_PROCESSW {
 if UNICODE then
 typedef ENUM_SERVICE_STATUS_PROCESSW ENUM_SERVICE_STATUS_PROCESS;
 typedef LPENUM_SERVICE_STATUS_PROCESSW LPENUM_SERVICE_STATUS_PROCESS;
-#else
+else
 typedef ENUM_SERVICE_STATUS_PROCESSA ENUM_SERVICE_STATUS_PROCESS;
 typedef LPENUM_SERVICE_STATUS_PROCESSA LPENUM_SERVICE_STATUS_PROCESS;
 end -- UNICODE
@@ -794,7 +787,7 @@ typedef struct _QUERY_SERVICE_LOCK_STATUSW {
 if UNICODE then
 typedef QUERY_SERVICE_LOCK_STATUSW QUERY_SERVICE_LOCK_STATUS;
 typedef LPQUERY_SERVICE_LOCK_STATUSW LPQUERY_SERVICE_LOCK_STATUS;
-#else
+else
 typedef QUERY_SERVICE_LOCK_STATUSA QUERY_SERVICE_LOCK_STATUS;
 typedef LPQUERY_SERVICE_LOCK_STATUSA LPQUERY_SERVICE_LOCK_STATUS;
 end -- UNICODE
@@ -833,7 +826,7 @@ typedef struct _QUERY_SERVICE_CONFIGW {
 if UNICODE then
 typedef QUERY_SERVICE_CONFIGW QUERY_SERVICE_CONFIG;
 typedef LPQUERY_SERVICE_CONFIGW LPQUERY_SERVICE_CONFIG;
-#else
+else
 typedef QUERY_SERVICE_CONFIGA QUERY_SERVICE_CONFIG;
 typedef LPQUERY_SERVICE_CONFIGA LPQUERY_SERVICE_CONFIG;
 end -- UNICODE
@@ -858,7 +851,7 @@ typedef void __stdcall SERVICE_MAIN_FUNCTIONA (
 --[[
 if UNICODE then
 #define SERVICE_MAIN_FUNCTION SERVICE_MAIN_FUNCTIONW
-#else
+else
 #define SERVICE_MAIN_FUNCTION SERVICE_MAIN_FUNCTIONA
 end --UNICODE
 --]]
@@ -878,7 +871,7 @@ typedef void (__stdcall *LPSERVICE_MAIN_FUNCTIONA)(
 --[[
 if UNICODE then
 #define LPSERVICE_MAIN_FUNCTION LPSERVICE_MAIN_FUNCTIONW
-#else
+else
 #define LPSERVICE_MAIN_FUNCTION LPSERVICE_MAIN_FUNCTIONA
 end --UNICODE
 --]]
@@ -902,7 +895,7 @@ typedef struct _SERVICE_TABLE_ENTRYW {
 if UNICODE then
 typedef SERVICE_TABLE_ENTRYW SERVICE_TABLE_ENTRY;
 typedef LPSERVICE_TABLE_ENTRYW LPSERVICE_TABLE_ENTRY;
-#else
+else
 typedef SERVICE_TABLE_ENTRYA SERVICE_TABLE_ENTRY;
 typedef LPSERVICE_TABLE_ENTRYA LPSERVICE_TABLE_ENTRY;
 end -- UNICODE
@@ -979,7 +972,7 @@ typedef struct _SERVICE_NOTIFY_2W {
 if UNICODE then
 typedef SERVICE_NOTIFY_2W SERVICE_NOTIFY_2;
 typedef PSERVICE_NOTIFY_2W PSERVICE_NOTIFY_2;
-#else
+else
 typedef SERVICE_NOTIFY_2A SERVICE_NOTIFY_2;
 typedef PSERVICE_NOTIFY_2A PSERVICE_NOTIFY_2;
 end -- UNICODE
@@ -994,7 +987,7 @@ typedef SERVICE_NOTIFY_2W SERVICE_NOTIFYW, *PSERVICE_NOTIFYW;
 if UNICODE then
 typedef SERVICE_NOTIFYW SERVICE_NOTIFY;
 typedef PSERVICE_NOTIFYW PSERVICE_NOTIFY;
-#else
+else
 typedef SERVICE_NOTIFYA SERVICE_NOTIFY;
 typedef PSERVICE_NOTIFYA PSERVICE_NOTIFY;
 end -- UNICODE
@@ -1023,7 +1016,7 @@ typedef struct _SERVICE_CONTROL_STATUS_REASON_PARAMSW {
 if UNICODE then
 typedef SERVICE_CONTROL_STATUS_REASON_PARAMSW SERVICE_CONTROL_STATUS_REASON_PARAMS;
 typedef PSERVICE_CONTROL_STATUS_REASON_PARAMSW PSERVICE_CONTROL_STATUS_REASON_PARAMS;
-#else
+else
 typedef SERVICE_CONTROL_STATUS_REASON_PARAMSA SERVICE_CONTROL_STATUS_REASON_PARAMS;
 typedef PSERVICE_CONTROL_STATUS_REASON_PARAMSA PSERVICE_CONTROL_STATUS_REASON_PARAMS;
 end -- UNICODE
@@ -1075,12 +1068,12 @@ ChangeServiceConfigW(
         LPCWSTR     lpPassword,
         LPCWSTR     lpDisplayName
     );
---]]
+]]
 
 --[[
 if UNICODE then
 #define ChangeServiceConfig  ChangeServiceConfigW
-#else
+else
 #define ChangeServiceConfig  ChangeServiceConfigA
 end -- !UNICODE
 --]]
@@ -1106,7 +1099,7 @@ ChangeServiceConfig2W(
 --[[
 if UNICODE then
 #define ChangeServiceConfig2  ChangeServiceConfig2W
-#else
+else
 #define ChangeServiceConfig2  ChangeServiceConfig2A
 end -- !UNICODE
 --]]
@@ -1167,21 +1160,19 @@ CreateServiceW(
     );
 ]]
 
---[=[
+
 if UNICODE then
-#define CreateService  CreateServiceW
-#else
-#define CreateService  CreateServiceA
+--#define CreateService  CreateServiceW
+else
+--#define CreateService  CreateServiceA
 end -- !UNICODE
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 DeleteService(
             SC_HANDLE   hService
     );
-
-
 
 BOOL
 __stdcall
@@ -1195,7 +1186,6 @@ EnumDependentServicesA(
                LPDWORD                 lpServicesReturned
     );
 
-
 BOOL
 __stdcall
 EnumDependentServicesW(
@@ -1207,20 +1197,22 @@ EnumDependentServicesW(
                LPDWORD                 pcbBytesNeeded,
                LPDWORD                 lpServicesReturned
     );
+]]
+
+--[[
 if UNICODE then
 #define EnumDependentServices  EnumDependentServicesW
-#else
+else
 #define EnumDependentServices  EnumDependentServicesA
 end -- !UNICODE
-
+--]]
 end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Desktop Family
-if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumServicesStatusA(
@@ -1232,9 +1224,8 @@ EnumServicesStatusA(
                 DWORD                   cbBufSize,
                LPDWORD                 pcbBytesNeeded,
                LPDWORD                 lpServicesReturned,
-    _Inout_opt_     LPDWORD                 lpResumeHandle
+         LPDWORD                 lpResumeHandle
     );
-
 
 BOOL
 __stdcall
@@ -1247,22 +1238,25 @@ EnumServicesStatusW(
                 DWORD                   cbBufSize,
                LPDWORD                 pcbBytesNeeded,
                LPDWORD                 lpServicesReturned,
-    _Inout_opt_     LPDWORD                 lpResumeHandle
+         LPDWORD                 lpResumeHandle
     );
+]]
+
+--[[
 if UNICODE then
 #define EnumServicesStatus  EnumServicesStatusW
-#else
+else
 #define EnumServicesStatus  EnumServicesStatusA
 end -- !UNICODE
+--]]
 
 end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#pragma region Desktop Family or OneCore Family
-if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 EnumServicesStatusExA(
@@ -1275,10 +1269,9 @@ EnumServicesStatusExA(
                 DWORD                   cbBufSize,
                LPDWORD                 pcbBytesNeeded,
                LPDWORD                 lpServicesReturned,
-    _Inout_opt_     LPDWORD                 lpResumeHandle,
+         LPDWORD                 lpResumeHandle,
             LPCSTR                pszGroupName
     );
-
 
 BOOL
 __stdcall
@@ -1292,25 +1285,28 @@ EnumServicesStatusExW(
                 DWORD                   cbBufSize,
                LPDWORD                 pcbBytesNeeded,
                LPDWORD                 lpServicesReturned,
-    _Inout_opt_     LPDWORD                 lpResumeHandle,
+         LPDWORD                 lpResumeHandle,
             LPCWSTR                pszGroupName
     );
+]]
+
+--[[
 if UNICODE then
 #define EnumServicesStatusEx  EnumServicesStatusExW
-#else
+else
 #define EnumServicesStatusEx  EnumServicesStatusExA
 end -- !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetServiceKeyNameA(
                 SC_HANDLE               hSCManager,
                 LPCSTR                lpDisplayName,
-    _Out_writes_opt_(*lpcchBuffer)
+    
                     LPSTR                 lpServiceName,
-    _Inout_         LPDWORD                 lpcchBuffer
+             LPDWORD                 lpcchBuffer
     );
 
 
@@ -1319,26 +1315,29 @@ __stdcall
 GetServiceKeyNameW(
                 SC_HANDLE               hSCManager,
                 LPCWSTR                lpDisplayName,
-    _Out_writes_opt_(*lpcchBuffer)
+    
                     LPWSTR                 lpServiceName,
-    _Inout_         LPDWORD                 lpcchBuffer
+             LPDWORD                 lpcchBuffer
     );
+]]
+
+--[[
 if UNICODE then
 #define GetServiceKeyName  GetServiceKeyNameW
-#else
+else
 #define GetServiceKeyName  GetServiceKeyNameA
 end -- !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetServiceDisplayNameA(
                 SC_HANDLE               hSCManager,
                 LPCSTR                lpServiceName,
-    _Out_writes_opt_(*lpcchBuffer)
+    
                     LPSTR                 lpDisplayName,
-    _Inout_         LPDWORD                 lpcchBuffer
+             LPDWORD                 lpcchBuffer
     );
 
 
@@ -1347,23 +1346,25 @@ __stdcall
 GetServiceDisplayNameW(
                 SC_HANDLE               hSCManager,
                 LPCWSTR                lpServiceName,
-    _Out_writes_opt_(*lpcchBuffer)
+    
                     LPWSTR                 lpDisplayName,
-    _Inout_         LPDWORD                 lpcchBuffer
+             LPDWORD                 lpcchBuffer
     );
+]]
+
+--[[
 if UNICODE then
 #define GetServiceDisplayName  GetServiceDisplayNameW
-#else
+else
 #define GetServiceDisplayName  GetServiceDisplayNameA
 end -- !UNICODE
-
+--]]
 end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#pragma region Desktop Family
-if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 SC_LOCK
 __stdcall
 LockServiceDatabase(
@@ -1376,9 +1377,9 @@ __stdcall
 NotifyBootConfigStatus(
                 BOOL                    BootAcceptable
     );
-
+]]
 end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
---]=]
+
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
@@ -1405,7 +1406,7 @@ OpenSCManagerW(
 --[[
 if UNICODE then
 #define OpenSCManager  OpenSCManagerW
-#else
+else
 #define OpenSCManager  OpenSCManagerA
 end -- !UNICODE
 --]]
@@ -1432,7 +1433,7 @@ OpenServiceW(
 --[[
 if UNICODE then
 #define OpenService  OpenServiceW
-#else
+else
 #define OpenService  OpenServiceA
 end -- !UNICODE
 --]]
@@ -1463,7 +1464,7 @@ QueryServiceConfigW(
 --[[
 if UNICODE then
 #define QueryServiceConfig  QueryServiceConfigW
-#else
+else
 #define QueryServiceConfig  QueryServiceConfigA
 end -- !UNICODE
 --]]
@@ -1498,7 +1499,7 @@ QueryServiceConfig2W(
 --[[
 if UNICODE then
 #define QueryServiceConfig2  QueryServiceConfig2W
-#else
+else
 #define QueryServiceConfig2  QueryServiceConfig2A
 end -- !UNICODE
 --]]
@@ -1535,7 +1536,7 @@ QueryServiceLockStatusW(
 --[[
     if UNICODE then
 #define QueryServiceLockStatus  QueryServiceLockStatusW
-#else
+else
 #define QueryServiceLockStatus  QueryServiceLockStatusA
 end -- !UNICODE
 --]]
@@ -1604,7 +1605,7 @@ RegisterServiceCtrlHandlerW(
 --[[
     if UNICODE then
 #define RegisterServiceCtrlHandler  RegisterServiceCtrlHandlerW
-#else
+else
 #define RegisterServiceCtrlHandler  RegisterServiceCtrlHandlerA
 end -- !UNICODE
 --]]
@@ -1634,7 +1635,7 @@ RegisterServiceCtrlHandlerExW(
 --[[
 if UNICODE then
 #define RegisterServiceCtrlHandlerEx  RegisterServiceCtrlHandlerExW
-#else
+else
 #define RegisterServiceCtrlHandlerEx  RegisterServiceCtrlHandlerExA
 end -- !UNICODE
 --]]
@@ -1673,7 +1674,7 @@ StartServiceCtrlDispatcherW(
 --[[
 if UNICODE then
 #define StartServiceCtrlDispatcher  StartServiceCtrlDispatcherW
-#else
+else
 #define StartServiceCtrlDispatcher  StartServiceCtrlDispatcherA
 end -- !UNICODE
 --]]
@@ -1701,7 +1702,7 @@ StartServiceW(
 --[[
 if UNICODE then
 #define StartService  StartServiceW
-#else
+else
 #define StartService  StartServiceA
 end -- !UNICODE
 --]]
@@ -1742,7 +1743,7 @@ NotifyServiceStatusChangeW (
 --[[
 if UNICODE then
 #define NotifyServiceStatusChange  NotifyServiceStatusChangeW
-#else
+else
 #define NotifyServiceStatusChange  NotifyServiceStatusChangeA
 end -- !UNICODE
 --]]
@@ -1754,7 +1755,7 @@ ControlServiceExA(
             SC_HANDLE               hService,
             DWORD                   dwControl,
             DWORD                   dwInfoLevel,
-    _Inout_     PVOID                   pControlParams
+         PVOID                   pControlParams
     );
 
 BOOL
@@ -1763,14 +1764,14 @@ ControlServiceExW(
             SC_HANDLE               hService,
             DWORD                   dwControl,
             DWORD                   dwInfoLevel,
-    _Inout_     PVOID                   pControlParams
+         PVOID                   pControlParams
     );
 ]]
 
 --[[
 if UNICODE then
 #define ControlServiceEx  ControlServiceExW
-#else
+else
 #define ControlServiceEx  ControlServiceExA
 end -- !UNICODE
 --]]
@@ -1869,3 +1870,4 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYS
 
 end -- _WINSVC_
 
+return ffi.load("Advapi32")

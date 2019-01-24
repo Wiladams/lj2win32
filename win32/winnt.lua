@@ -18551,62 +18551,64 @@ static const int REG_QWORD                   = 11; // 64-bit number
 static const int REG_QWORD_LITTLE_ENDIAN     = 11; // 64-bit number (same as REG_QWORD)
 ]]
 
---[==[
-// begin_wdm
-//
+ffi.cdef[[
 // Service Types (Bit Mask)
 //
-#define SERVICE_KERNEL_DRIVER          0x00000001
-#define SERVICE_FILE_SYSTEM_DRIVER     0x00000002
-#define SERVICE_ADAPTER                0x00000004
-#define SERVICE_RECOGNIZER_DRIVER      0x00000008
+static const int SERVICE_KERNEL_DRIVER         = 0x00000001;
+static const int SERVICE_FILE_SYSTEM_DRIVER    = 0x00000002;
+static const int SERVICE_ADAPTER               = 0x00000004;
+static const int SERVICE_RECOGNIZER_DRIVER     = 0x00000008;
 
-#define SERVICE_DRIVER                 (SERVICE_KERNEL_DRIVER | \
+static const int SERVICE_DRIVER                = (SERVICE_KERNEL_DRIVER | \
                                         SERVICE_FILE_SYSTEM_DRIVER | \
-                                        SERVICE_RECOGNIZER_DRIVER)
+                                        SERVICE_RECOGNIZER_DRIVER);
 
-#define SERVICE_WIN32_OWN_PROCESS      0x00000010
-#define SERVICE_WIN32_SHARE_PROCESS    0x00000020
-#define SERVICE_WIN32                  (SERVICE_WIN32_OWN_PROCESS | \
-                                        SERVICE_WIN32_SHARE_PROCESS)
+static const int SERVICE_WIN32_OWN_PROCESS     = 0x00000010;
+static const int SERVICE_WIN32_SHARE_PROCESS   = 0x00000020;
+static const int SERVICE_WIN32                 = (SERVICE_WIN32_OWN_PROCESS | \
+                                        SERVICE_WIN32_SHARE_PROCESS);
 
-#define SERVICE_USER_SERVICE           0x00000040
-#define SERVICE_USERSERVICE_INSTANCE   0x00000080
+static const int SERVICE_USER_SERVICE          = 0x00000040;
+static const int SERVICE_USERSERVICE_INSTANCE  = 0x00000080;
 
-#define SERVICE_USER_SHARE_PROCESS     (SERVICE_USER_SERVICE | \
-                                        SERVICE_WIN32_SHARE_PROCESS)
-#define SERVICE_USER_OWN_PROCESS       (SERVICE_USER_SERVICE | \
-                                        SERVICE_WIN32_OWN_PROCESS)
+static const int SERVICE_USER_SHARE_PROCESS    = (SERVICE_USER_SERVICE | \
+                                        SERVICE_WIN32_SHARE_PROCESS);
+static const int SERVICE_USER_OWN_PROCESS      = (SERVICE_USER_SERVICE | \
+                                        SERVICE_WIN32_OWN_PROCESS);
 
-#define SERVICE_INTERACTIVE_PROCESS    0x00000100
-#define SERVICE_PKG_SERVICE            0x00000200
+static const int SERVICE_INTERACTIVE_PROCESS   = 0x00000100;
+static const int SERVICE_PKG_SERVICE           = 0x00000200;
 
-#define SERVICE_TYPE_ALL               (SERVICE_WIN32  | \
+static const int SERVICE_TYPE_ALL              = (SERVICE_WIN32  | \
                                         SERVICE_ADAPTER | \
                                         SERVICE_DRIVER  | \
                                         SERVICE_INTERACTIVE_PROCESS | \
                                         SERVICE_USER_SERVICE | \
                                         SERVICE_USERSERVICE_INSTANCE | \
-                                        SERVICE_PKG_SERVICE)
+                                        SERVICE_PKG_SERVICE);
+]]
 
+ffi.cdef[[
 //
 // Start Type
 //
 
-#define SERVICE_BOOT_START             0x00000000
-#define SERVICE_SYSTEM_START           0x00000001
-#define SERVICE_AUTO_START             0x00000002
-#define SERVICE_DEMAND_START           0x00000003
-#define SERVICE_DISABLED               0x00000004
+static const int SERVICE_BOOT_START            = 0x00000000;
+static const int SERVICE_SYSTEM_START          = 0x00000001;
+static const int SERVICE_AUTO_START            = 0x00000002;
+static const int SERVICE_DEMAND_START          = 0x00000003;
+static const int SERVICE_DISABLED              = 0x00000004;
 
 //
 // Error control type
 //
-#define SERVICE_ERROR_IGNORE           0x00000000
-#define SERVICE_ERROR_NORMAL           0x00000001
-#define SERVICE_ERROR_SEVERE           0x00000002
-#define SERVICE_ERROR_CRITICAL         0x00000003
+static const int SERVICE_ERROR_IGNORE          = 0x00000000;
+static const int SERVICE_ERROR_NORMAL          = 0x00000001;
+static const int SERVICE_ERROR_SEVERE          = 0x00000002;
+static const int SERVICE_ERROR_CRITICAL        = 0x00000003;
+]]
 
+ffi.cdef[[
 //
 //
 // Define the registry driver node enumerations
@@ -18635,7 +18637,9 @@ typedef enum _CM_ERROR_CONTROL_TYPE {
     SevereError   = SERVICE_ERROR_SEVERE,
     CriticalError = SERVICE_ERROR_CRITICAL
 } SERVICE_ERROR_TYPE;
+]]
 
+--[==[
 //
 // Service node Flags. These flags are used by the OS loader to promote
 // a driver's start type to boot start if the system is booting using
