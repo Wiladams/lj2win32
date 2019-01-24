@@ -1,15 +1,3 @@
---[[]
-The GDI Graphics system has a concept of regions, which can be
-used for clipping, and shaping things such as windows.
-
-this file represents a fairly simple representation of regions
-which makes creating and manipulating them easier.
-
-Of particular note is the rects() function, which is an 
-    iterator over the rectangles that make up a region.
-    The iterator will return a table representing the 
-    rectangle each time through the iteration.
---]]
 local ffi = require("ffi")
 local C = ffi.C
 
@@ -43,7 +31,7 @@ local RegionHandle_mt = {
         if type(select(1,...)) == 'cdata' then
             -- create new region
             local dstRegion = C.CreateRectRgn(0,0,0,0)
-            local rhs = select(1,...)
+
             local res = C.CombineRgn(dstRegion, lhs.Handle, rhs.Handle, C.RGN_OR)
             return RegionHandle(dstRegion)
         end
@@ -52,9 +40,8 @@ local RegionHandle_mt = {
         if type(select(1,...)) == 'table' then
             local tbl = select(1,...)
             local res = C.OffsetRgn(lhs.Handle, tbl[1], tbl[2])
-
         end
-        
+
         return self;
     end;
 
