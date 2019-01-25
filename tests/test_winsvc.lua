@@ -16,13 +16,27 @@ local serviceTypes = {
     [C.SERVICE_WIN32_SHARE_PROCESS] = "SERVICE_WIN32_SHARE_PROCESS";
 }
 
+local serviceStates = {
+    [C.SERVICE_CONTINUE_PENDING] = "SERVICE_CONTINUE_PENDING";
+    [C.SERVICE_PAUSE_PENDING] = "SERVICE_PAUSE_PENDING";
+    [C.SERVICE_PAUSED] = "SERVICE_PAUSED";
+    [C.SERVICE_RUNNING] = "SERVICE_RUNNING";
+    [C.SERVICE_START_PENDING] = "SERVICE_START_PENDING";
+    [C.SERVICE_STOP_PENDING] = "SERVICE_STOP_PENDING";
+    [C.SERVICE_STOPPED] = "SERVICE_STOPPED";
+
+}
 
 local function printServices(sch)
     print("== Services ==")
     for svc in sch:services() do
-        print(string.format("{name = '%-30s',\tdisplay = '%s'};", 
-            svc.name, svc.displayName))
-        print("  ServiceType: ", serviceTypes[svc.serviceType])
+        print(string.format("{name = '%s', display = '%s', kind = '%s', state='%s'};", 
+            svc.name, svc.displayName,
+            serviceTypes[tonumber(svc.serviceType)] or string.format("0x%0x",svc.serviceType),
+            serviceStates[svc.currentState] or string.format("0x%0x", svc.currentState)
+        ))
+        --print("  ServiceType: ", serviceTypes[tonumber(svc.serviceType)] or string.format("0x%0x",svc.serviceType))
+        --print(" ServiceState: ", serviceStates[svc.currentState] or string.format("0x%0x", svc.currentState))
     end
 end
 
