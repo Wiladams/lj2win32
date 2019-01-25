@@ -169,7 +169,87 @@ StrokeWeight = 1;
     driver changes.
 ]]
 
+--[[
+    MATHS
+]]
 
+
+function lerp(low, high, x)
+    return low + x*(high-low)
+end
+
+function mag(x, y)
+    return sqrt(x*x +y*y)
+end
+
+function map(x, olow, ohigh, rlow, rhigh)
+    rlow = rlow or olow
+    rhigh = rhigh or ohigh
+    return rlow + (x-olow)*((rhigh-rlow)/(ohigh-olow))
+end
+
+function sq(x)
+    return x*x
+end
+
+abs = math.abs
+asin = math.asin
+acos = math.acos
+atan = math.atan
+
+function atan2(y,x)
+    return atan(y/x)
+end
+
+ceil = math.ceil
+
+function constrain(x, low, high)
+    return math.min(math.max(x, low), high)
+end
+clamp = constrain
+cos = math.cos
+
+degrees = math.deg
+
+function dist(x1, y1, x2, y2)
+    return math.sqrt(sq(x2-x1) + sq(y2-y1))
+end
+
+exp = math.exp
+floor = math.floor
+log = math.log
+max = math.max
+min = math.min
+
+function norm(val, low, high)
+    return map(value, low, high, 0, 1)
+end
+
+function pow(x,y)
+    return x^y;
+end
+
+radians = math.rad
+random = math.random
+
+function round(n)
+	if n >= 0 then
+		return floor(n+0.5)
+	end
+
+	return ceil(n-0.5)
+end
+
+sin = math.sin
+sqrt = math.sqrt
+
+
+
+
+
+--[[
+    COLOR
+]]
 function color(...)
 	local nargs = select('#', ...)
 	local self = {}
@@ -337,7 +417,7 @@ function createCanvas(width, height)
     return false;
 end
 
-random = math.random
+
 
 
 
@@ -620,7 +700,7 @@ local function main(params)
 
     -- setup the periodic frame calling
     local framePeriod = math.floor((1/FrameRate)*1000)
-    print("Frame Period: ", framePeriod)
+    --print("Frame Period: ", framePeriod)
     periodic(framePeriod, handleFrame)
 
     signalAll("gap_ready");
