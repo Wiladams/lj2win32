@@ -180,6 +180,9 @@ function stroke(...)
 	return true;
 end
 
+function set(x,y,c)
+	surface.DC:SetPixel(x, y, c.cref)
+end
 
 function point(x,y,z)
 	--print("point(), x,y,z: ", x, y, z, StrokeColor.cref)
