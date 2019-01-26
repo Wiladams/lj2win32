@@ -1,7 +1,11 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
-local user32 = require("win32.user32")
+local C = ffi.C 
+
+local user32 = require("win32.sdkddkver")
+local user32 = require("win32.wingdi")
+local user32 = require("win32.winuser")
 
 --[[
 typedef BOOL (__stdcall *WINSTAENUMPROC) (LPTSTR lpszWindowStation,LPARAM lParam);
@@ -23,7 +27,7 @@ end
 
 local function test_EnumWindowStations()
     print("==== test_EnumWindowStations ====")
-    user32.EnumWindowStationsA(OneStation, 0)
+    C.EnumWindowStationsA(OneStation, 0)
 end
 
 local function test_enumerator()

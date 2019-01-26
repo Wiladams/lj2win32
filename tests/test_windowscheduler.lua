@@ -2,9 +2,12 @@ package.path = "../?.lua;"..package.path;
 
 local os = require("os")
 local ffi = require("ffi")
+local C = ffi.C 
 
+require("win32.sdkddkver")
+require("win32.wingdi")
+require("win32.winuser")
 
-local User32 = require("win32.user32")
 local WindowKind = require("WindowKind")
 local wmmsgs = require("wmmsgs")
 --local wmmsgs = require("wm_reserved")
@@ -26,17 +29,17 @@ jit.off(WindowProc)
 function WindowProc(hwnd, msg, wparam, lparam)
     print(string.format("WindowProc: msg: 0x%x, %s", msg, wmmsgs[msg]))
 
-    if msg == ffi.C.WM_DESTROY then
-        User32.PostQuitMessage(0);
+    if msg == C.WM_DESTROY then
+        C.PostQuitMessage(0);
         --halt();
     end
 
-    if msg == ffi.C.WM_QUIT then
+    if msg == C.WM_QUIT then
         print("WM_QUIT")
         --halt();
     end
 
-	return User32.DefWindowProcA(hwnd, msg, wparam, lparam);
+	return C.DefWindowProcA(hwnd, msg, wparam, lparam);
 end
 
 -- You MUST register a window class before you can use it.

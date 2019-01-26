@@ -3,7 +3,7 @@ local bit = require("bit")
 local bnot = bit.bnot
 
 local ffi = require("ffi")
-local ws2 = require("win32.ws2_32")
+local ws2 = require("win32.winsock2")
 
 print(INVALID_SOCKET)
 sock = ffi.new("SOCKET", -1)

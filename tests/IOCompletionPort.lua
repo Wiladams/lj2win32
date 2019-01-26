@@ -21,6 +21,10 @@ local IOCompletionHandle_mt = {
 	__new = function(ct,rawhandle)
 		return ffi.new(ct, rawhandle)
 	end;
+
+	__gc = function(self)
+		C.CloseHandle(self.Handle)
+	end;
 }
 ffi.metatype("IOCompletionHandle", IOCompletionHandle_mt)
 

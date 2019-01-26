@@ -1,6 +1,7 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local C = ffi.C 
 
 local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
@@ -81,7 +82,7 @@ local function printModeInfo(mode)
         print("  height: ", mode.sourceMode.height);
         print("  format: ", DISPLAYCONFIG_PIXELFORMAT[tonumber(mode.sourceMode.pixelFormat)])
         print("  locate: ", mode.sourceMode.position.x, mode.sourceMode.position.y)
-    elseif mode.infoType == ffi.C.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET then
+    elseif mode.infoType == C.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET then
         local targetInfo = mode.targetMode.targetVideoSignalInfo;
 
         print("TARGET")
@@ -101,13 +102,13 @@ local function printModeInfo(mode)
 end
 
 local function test_DisplayConfig()
-    local flags = ffi.C.QDC_ALL_PATHS;
-    --local flags = ffi.C.QDC_ONLY_ACTIVE_PATHS;
-    --local flags = ffi.C.QDC_DATABASE_CURRENT;
+    local flags = C.QDC_ALL_PATHS;
+    --local flags = C.QDC_ONLY_ACTIVE_PATHS;
+    --local flags = C.QDC_DATABASE_CURRENT;
 
     local pnumPathArrayElements = ffi.new("UINT32[1]")
     local pnumModeInfoArrayElements = ffi.new("UINT32[1]")
-    local res = ffi.C.GetDisplayConfigBufferSizes(flags,pnumPathArrayElements,pnumModeInfoArrayElements);
+    local res = C.GetDisplayConfigBufferSizes(flags,pnumPathArrayElements,pnumModeInfoArrayElements);
 
     numPathArrayElements = tonumber(pnumPathArrayElements[0])
     numInfoArrayElements = tonumber(pnumModeInfoArrayElements[0])
@@ -117,11 +118,11 @@ local function test_DisplayConfig()
     local pathArray = ffi.new("DISPLAYCONFIG_PATH_INFO[?]",numPathArrayElements)
     local modeInfoArray = ffi.new("DISPLAYCONFIG_MODE_INFO[?]", numInfoArrayElements)
     local currentTopologyId = nil;
-    if flags == ffi.C.QDC_DATABASE_CURRENT then
+    if flags == C.QDC_DATABASE_CURRENT then
         currentTopologyId = ffi.new("DISPLAYCONFIG_TOPOLOGY_ID[1]")
     end
 
-    res = ffi.C.QueryDisplayConfig(
+    res = C.QueryDisplayConfig(
         flags, 
         pnumPathArrayElements, 
         pathArray, 
@@ -143,5 +144,4 @@ end
 test_DisplayConfig()
 --test_deviceinfo();
 
-ffi.C.MessageBeep(ffi.C.MB_ICONINFORMATION);
 

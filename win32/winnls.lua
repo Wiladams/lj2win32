@@ -1,14 +1,10 @@
 local ffi = require("ffi")
 
 
---#ifndef _WINNLS_
---#define _WINNLS_
+if not _WINNLS_ then
+_WINNLS_ = true
 
 require("win32.winapifamily")
-
-
-
-
 
 
 if not NOAPISET then
@@ -38,7 +34,7 @@ end
 #define DEPRECATED(x) [[deprecated(x)]]
 #else
 #define DEPRECATED(x) __declspec(deprecated(x))
-#endif // _MSC_VER > 1900
+end  -- _MSC_VER > 1900
 #else // Not Standard C++ or MSVC, ignore the construct.
 #define DEPRECATED(x)
 #endif  // C++ deprecation
@@ -238,7 +234,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 #define LCMAP_UPPERCASE           0x00000200  // UPPER CASE LETTERS
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define LCMAP_TITLECASE           0x00000300  // Title Case Letters
-#endif // (WINVER >= _WIN32_WINNT_WIN7)
+end  -- (WINVER >= _WIN32_WINNT_WIN7)
 
 #define LCMAP_SORTKEY             0x00000400  // WC sort key (normalize)
 #define LCMAP_BYTEREV             0x00000800  // byte reversal
@@ -257,7 +253,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 #if (WINVER >= _WIN32_WINNT_WIN8)
 #define LCMAP_SORTHANDLE   0x20000000
 #define LCMAP_HASH         0x00040000
-#endif // (WINVER >= _WIN32_WINNT_WIN7)
+end  -- (WINVER >= _WIN32_WINNT_WIN7)
 
 //
 //  Search Flags
@@ -300,11 +296,11 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 #define LOCALE_SUPPLEMENTAL         0x00000002            // supplemental locales only
 #define LOCALE_ALTERNATE_SORTS      0x00000004            // alternate sort locales
 #define LOCALE_REPLACEMENT          0x00000008            // locales that replace shipped locales (callback flag only)
-#endif // (WINVER >= _WIN32_WINNT_VISTA)
+end  -- (WINVER >= _WIN32_WINNT_VISTA)
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define LOCALE_NEUTRALDATA          0x00000010            // Locales that are "neutral" (language only, region data is default)
 #define LOCALE_SPECIFICDATA         0x00000020            // Locales that contain language and region data
-#endif // (WINVER >= _WIN32_WINNT_WIN7)
+end  -- (WINVER >= _WIN32_WINNT_WIN7)
 
 
 //
@@ -349,7 +345,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 //  Sort digits as numbers (ie: 2 comes before 10)
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define SORT_DIGITSASNUMBERS      0x00000008  // use digits as numbers sort method
-#endif // (WINVER >= _WIN32_WINNT_WIN7)
+end  -- (WINVER >= _WIN32_WINNT_WIN7)
 --]=]
 
 ffi.cdef[[
@@ -537,7 +533,7 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define LOCALE_RETURN_GENITIVE_NAMES  0x10000000;   //Flag to return the Genitive forms of month names
 #define LOCALE_ALLOW_NEUTRAL_NAMES    0x08000000;   //Flag to allow returning neutral names/lcids for name conversion
-#endif //(WINVER >= _WIN32_WINNT_WIN7)
+end  --(WINVER >= _WIN32_WINNT_WIN7)
 
 
 //
@@ -552,11 +548,11 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define LOCALE_SENGLISHDISPLAYNAME    0x00000072;   // Display name (language + country/region usually) in English, eg "German (Germany)"
 #define LOCALE_SNATIVEDISPLAYNAME     0x00000073;   // Display name in native locale language, eg "Deutsch (Deutschland)
-#endif //(WINVER >= _WIN32_WINNT_WIN7)
+end  --(WINVER >= _WIN32_WINNT_WIN7)
 
 #if (WINVER >= _WIN32_WINNT_VISTA)
 #define LOCALE_SLOCALIZEDLANGUAGENAME 0x0000006f;   // Language Display Name for a language, eg "German" in UI language
-#endif //(WINVER >= _WIN32_WINNT_VISTA)
+end  --(WINVER >= _WIN32_WINNT_VISTA)
 #define LOCALE_SENGLISHLANGUAGENAME   0x00001001;   // English name of language, eg "German"
 #define LOCALE_SNATIVELANGUAGENAME    0x00000004;   // native name of language, eg "Deutsch"
 
@@ -682,7 +678,7 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #define LOCALE_SSCRIPTS               0x0000006c;   // Typical scripts in the locale: ; delimited script codes, eg "Latn;"
 #define LOCALE_SPARENT                0x0000006d;   // Fallback name for resources, eg "en" for "en-US"
 #define LOCALE_SCONSOLEFALLBACKNAME   0x0000006e;   // Fallback name for within the console for Unicode Only locales, eg "en" for bn-IN
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define LOCALE_IREADINGLAYOUT         0x00000070;   // Returns one of the following 4 reading layout values:
@@ -699,7 +695,7 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #define LOCALE_SSHORTTIME             0x00000079;   // Returns the preferred short time format (ie: no seconds, just h:mm)
 #define LOCALE_SOPENTYPELANGUAGETAG   0x0000007a;   // Open type language tag, eg: "latn" or "dflt"
 #define LOCALE_SSORTLOCALE            0x0000007b;   // Name of locale to use for sorting/collation/casing behavior.
-#endif //(WINVER >= _WIN32_WINNT_WIN7)
+end  --(WINVER >= _WIN32_WINNT_WIN7)
 
 #if (WINVER >= _WIN32_WINNT_WIN8)
 #define LOCALE_SRELATIVELONGDATE      0x0000007c;   // Long date without year, day of week, month, date, eg: for lock screen
@@ -757,7 +753,7 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #define LOCALE_SLANGUAGE              LOCALE_SLOCALIZEDDISPLAYNAME   // DEPRECATED as new name is more readable.
 #if (WINVER >= _WIN32_WINNT_VISTA)
 #define LOCALE_SLANGDISPLAYNAME       LOCALE_SLOCALIZEDLANGUAGENAME  // DEPRECATED as new name is more readable.
-#endif //(WINVER >= _WIN32_WINNT_VISTA)
+end  --(WINVER >= _WIN32_WINNT_VISTA)
 #define LOCALE_SENGLANGUAGE           LOCALE_SENGLISHLANGUAGENAME    // DEPRECATED as new name is more readable.
 #define LOCALE_SNATIVELANGNAME        LOCALE_SNATIVELANGUAGENAME     // DEPRECATED as new name is more readable.
 #define LOCALE_SCOUNTRY               LOCALE_SLOCALIZEDCOUNTRYNAME   // DEPRECATED as new name is more readable.
@@ -793,11 +789,11 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define DATE_AUTOLAYOUT          = 0x00000040;  // add appropriate marks for left-to-right or right-to-left reading order layout
-#endif //(WINVER >= _WIN32_WINNT_WIN7)
+end  --(WINVER >= _WIN32_WINNT_WIN7)
 
 #if (WINVER >= _WIN32_WINNT_WINTHRESHOLD)
 #define DATE_MONTHDAY            = 0x00000080;  // include month day pictures
-#endif //(WINVER >= _WIN32_WINNT_WINTHRESHOLD)
+end  --(WINVER >= _WIN32_WINNT_WINTHRESHOLD)
 
 //
 //  Calendar Types.
@@ -829,7 +825,7 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define CAL_RETURN_GENITIVE_NAMES = LOCALE_RETURN_GENITIVE_NAMES;  // return genitive forms of month names
-#endif // winver >= windows 7
+end  -- winver >= windows 7
 
 //
 //  The following CalTypes are mutually exclusive in that they may NOT
@@ -896,12 +892,12 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 #define CAL_SSHORTESTDAYNAME5    = 0x00000035;  // Shortest day name for Fr
 #define CAL_SSHORTESTDAYNAME6    = 0x00000036;  // Shortest day name for Sa
 #define CAL_SSHORTESTDAYNAME7    = 0x00000037;  // Shortest day name for Su
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= _WIN32_WINNT_WIN7)
 #define CAL_SMONTHDAY            = 0x00000038;  // Month/day format
 #define CAL_SABBREVERASTRING     = 0x00000039;  // Abbreviated era string (eg: AD)
-#endif // winver >= windows 7
+end  -- winver >= windows 7
 
 #if (WINVER >= _WIN32_WINNT_WIN8)
 #define CAL_SRELATIVELONGDATE    = 0x0000003a;   // Long date without year, day of week, month, date, eg: for lock screen
@@ -1032,7 +1028,9 @@ static const int  CP_UTF8                 =  65001;       // UTF-8 translation
 // ** DEPRECATED ** DEPRECATED ** DEPRECATED ** DEPRECATED ** DEPRECATED **
 //
 typedef DWORD LGRPID;
+--]=]
 
+ffi.cdef[[
 //
 //  Locale type constant.
 //
@@ -1048,8 +1046,9 @@ typedef DWORD CALTYPE;
 //  Calendar ID.
 //
 typedef DWORD CALID;
+]]
 
-
+--[[
 //
 //  CP Info.
 //
@@ -1064,8 +1063,9 @@ typedef struct _cpinfo {
     BYTE    DefaultChar[MAX_DEFAULTCHAR];   // default character
     BYTE    LeadByte[MAX_LEADBYTES];        // lead byte ranges
 } CPINFO, *LPCPINFO;
+--]]
 
-
+--[[
 DEPRECATED("Use Unicode. The information in this structure cannot represent all encodings accurately and may be unreliable on many machines. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 typedef struct _cpinfoexA {
     UINT    MaxCharSize;                    // max length (in bytes) of a char
@@ -1075,6 +1075,9 @@ typedef struct _cpinfoexA {
     UINT    CodePage;                       // code page id
     CHAR    CodePageName[MAX_PATH];         // code page name (Unicode)
 } CPINFOEXA, *LPCPINFOEXA;
+--]]
+
+--[[
 DEPRECATED("Use Unicode. The information in this structure cannot represent all encodings accurately and may be unreliable on many machines. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 typedef struct _cpinfoexW {
     UINT    MaxCharSize;                    // max length (in bytes) of a char
@@ -1084,15 +1087,19 @@ typedef struct _cpinfoexW {
     UINT    CodePage;                       // code page id
     WCHAR   CodePageName[MAX_PATH];         // code page name (Unicode)
 } CPINFOEXW, *LPCPINFOEXW;
+--]]
+
+--[[
 #ifdef UNICODE
 typedef CPINFOEXW CPINFOEX;
 typedef LPCPINFOEXW LPCPINFOEX;
 #else
 typedef CPINFOEXA CPINFOEX;
 typedef LPCPINFOEXA LPCPINFOEX;
-#endif // UNICODE
+end  -- UNICODE
+--]]
 
-
+ffi.cdef[[
 //
 //  Number format.
 //
@@ -1113,15 +1120,19 @@ typedef struct _numberfmtW {
     LPWSTR  lpThousandSep;             // ptr to thousand separator string
     UINT    NegativeOrder;             // negative number ordering
 } NUMBERFMTW, *LPNUMBERFMTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef NUMBERFMTW NUMBERFMT;
 typedef LPNUMBERFMTW LPNUMBERFMT;
 #else
 typedef NUMBERFMTA NUMBERFMT;
 typedef LPNUMBERFMTA LPNUMBERFMT;
-#endif // UNICODE
+end  -- UNICODE
+--]]
 
-
+ffi.cdef[[
 //
 //  Currency format.
 //
@@ -1146,14 +1157,19 @@ typedef struct _currencyfmtW {
     UINT    PositiveOrder;             // positive currency ordering
     LPWSTR  lpCurrencySymbol;          // ptr to currency symbol string
 } CURRENCYFMTW, *LPCURRENCYFMTW;
+]]
+
+--[[
 #ifdef UNICODE
 typedef CURRENCYFMTW CURRENCYFMT;
 typedef LPCURRENCYFMTW LPCURRENCYFMT;
 #else
 typedef CURRENCYFMTA CURRENCYFMT;
 typedef LPCURRENCYFMTA LPCURRENCYFMT;
-#endif // UNICODE
+end  -- UNICODE
+--]]
 
+ffi.cdef[[
 //
 //  NLS function capabilities
 //
@@ -1162,15 +1178,11 @@ enum SYSNLS_FUNCTION{
     COMPARE_STRING    =  0x0001,
 };
 typedef DWORD NLS_FUNCTION;
---]=]
+]]
 
---[[
-//
-//  NLS version structure.
-//
---]]
 
---#if (WINVER >= _WIN32_WINNT_WIN8)
+
+if (WINVER >= _WIN32_WINNT_WIN8) then
 ffi.cdef[[
 //
 // New structures are the same
@@ -1188,9 +1200,9 @@ typedef struct _nlsversioninfo{
 } NLSVERSIONINFO, *LPNLSVERSIONINFO;
 ]]
 
---[[
 else
-// 
+ffi.cdef[[
+     // 
 // Windows 7 and below had different sizes
 //
 
@@ -1202,10 +1214,11 @@ typedef struct _nlsversioninfo{		// Use NLSVERSIONINFOEX instead
     DWORD dwNLSVersion;
     DWORD dwDefinedVersion;         // Deprecated, use dwNLSVersion instead
 } NLSVERSIONINFO, *LPNLSVERSIONINFO;
-#endif
---]]
+]]
+end
 
---[=[
+
+ffi.cdef[[
 // The combination of dwNLSVersion, and guidCustomVersion
 // identify specific sort behavior, persist those to ensure identical
 // behavior in the future.
@@ -1216,7 +1229,9 @@ typedef struct _nlsversioninfoex{
     DWORD dwEffectiveId;            // Deprecated, use guidCustomVerison instead
     GUID  guidCustomVersion;        // Explicit sort version
 } NLSVERSIONINFOEX, *LPNLSVERSIONINFOEX;
+]]
 
+ffi.cdef[[
 //
 //  GEO defines
 //
@@ -1235,7 +1250,9 @@ typedef DWORD   GEOCLASS;
 // ** DEPRECATED ** DEPRECATED ** DEPRECATED ** DEPRECATED ** DEPRECATED **
 //
 typedef LONG    GEOID;
+]]
 
+--[=[
 #define GEOID_NOT_AVAILABLE -1
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
@@ -1306,7 +1323,7 @@ typedef enum _NORM_FORM {
 #define VS_ALLOW_LATIN              0x0001  // Allow Latin in test script even if not present in locale script
 
 #define GSS_ALLOW_INHERITED_COMMON  0x0001  // Output script ids for inherited and common character types if present
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 //
 //  Enumeration function constants.
@@ -1315,32 +1332,32 @@ typedef enum _NORM_FORM {
 #ifdef STRICT
 
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
-typedef BOOL (CALLBACK* LANGUAGEGROUP_ENUMPROCA)(LGRPID, LPSTR, LPSTR, DWORD, LONG_PTR);    // Deprecated, please use Unicode
+typedef BOOL (__stdcall* LANGUAGEGROUP_ENUMPROCA)(LGRPID, LPSTR, LPSTR, DWORD, LONG_PTR);    // Deprecated, please use Unicode
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
-typedef BOOL (CALLBACK* LANGGROUPLOCALE_ENUMPROCA)(LGRPID, LCID, LPSTR, LONG_PTR);          // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* UILANGUAGE_ENUMPROCA)(LPSTR, LONG_PTR);                             // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* CODEPAGE_ENUMPROCA)(LPSTR);                                         // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* DATEFMT_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* DATEFMT_ENUMPROCEXA)(LPSTR, CALID);                                 // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* TIMEFMT_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* CALINFO_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* CALINFO_ENUMPROCEXA)(LPSTR, CALID);                                 // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* LOCALE_ENUMPROCA)(LPSTR);                                           // Deprecated, please use Unicode
-typedef BOOL (CALLBACK* LOCALE_ENUMPROCW)(LPWSTR);                                          // DEPRECATED: please use LOCALE_ENUMPROCEX
+typedef BOOL (__stdcall* LANGGROUPLOCALE_ENUMPROCA)(LGRPID, LCID, LPSTR, LONG_PTR);          // Deprecated, please use Unicode
+typedef BOOL (__stdcall* UILANGUAGE_ENUMPROCA)(LPSTR, LONG_PTR);                             // Deprecated, please use Unicode
+typedef BOOL (__stdcall* CODEPAGE_ENUMPROCA)(LPSTR);                                         // Deprecated, please use Unicode
+typedef BOOL (__stdcall* DATEFMT_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
+typedef BOOL (__stdcall* DATEFMT_ENUMPROCEXA)(LPSTR, CALID);                                 // Deprecated, please use Unicode
+typedef BOOL (__stdcall* TIMEFMT_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
+typedef BOOL (__stdcall* CALINFO_ENUMPROCA)(LPSTR);                                          // Deprecated, please use Unicode
+typedef BOOL (__stdcall* CALINFO_ENUMPROCEXA)(LPSTR, CALID);                                 // Deprecated, please use Unicode
+typedef BOOL (__stdcall* LOCALE_ENUMPROCA)(LPSTR);                                           // Deprecated, please use Unicode
+typedef BOOL (__stdcall* LOCALE_ENUMPROCW)(LPWSTR);                                          // DEPRECATED: please use LOCALE_ENUMPROCEX
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
-typedef BOOL (CALLBACK* LANGUAGEGROUP_ENUMPROCW)(LGRPID, LPWSTR, LPWSTR, DWORD, LONG_PTR);  // DEPRECATED: Language groups are no longer supported
+typedef BOOL (__stdcall* LANGUAGEGROUP_ENUMPROCW)(LGRPID, LPWSTR, LPWSTR, DWORD, LONG_PTR);  // DEPRECATED: Language groups are no longer supported
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
-typedef BOOL (CALLBACK* LANGGROUPLOCALE_ENUMPROCW)(LGRPID, LCID, LPWSTR, LONG_PTR);         // DEPRECATED: Language groups are no longer supported
-typedef BOOL (CALLBACK* UILANGUAGE_ENUMPROCW)(LPWSTR, LONG_PTR);
-typedef BOOL (CALLBACK* CODEPAGE_ENUMPROCW)(LPWSTR);            // Please use Unicode / UTF-8
-typedef BOOL (CALLBACK* DATEFMT_ENUMPROCW)(LPWSTR);
-typedef BOOL (CALLBACK* DATEFMT_ENUMPROCEXW)(LPWSTR, CALID);
-typedef BOOL (CALLBACK* TIMEFMT_ENUMPROCW)(LPWSTR);
-typedef BOOL (CALLBACK* CALINFO_ENUMPROCW)(LPWSTR);
-typedef BOOL (CALLBACK* CALINFO_ENUMPROCEXW)(LPWSTR, CALID);
-typedef BOOL (CALLBACK* GEO_ENUMPROC)(GEOID);                   // DEPRECATED, use GEO_ENUMNAMEPROC instead
+typedef BOOL (__stdcall* LANGGROUPLOCALE_ENUMPROCW)(LGRPID, LCID, LPWSTR, LONG_PTR);         // DEPRECATED: Language groups are no longer supported
+typedef BOOL (__stdcall* UILANGUAGE_ENUMPROCW)(LPWSTR, LONG_PTR);
+typedef BOOL (__stdcall* CODEPAGE_ENUMPROCW)(LPWSTR);            // Please use Unicode / UTF-8
+typedef BOOL (__stdcall* DATEFMT_ENUMPROCW)(LPWSTR);
+typedef BOOL (__stdcall* DATEFMT_ENUMPROCEXW)(LPWSTR, CALID);
+typedef BOOL (__stdcall* TIMEFMT_ENUMPROCW)(LPWSTR);
+typedef BOOL (__stdcall* CALINFO_ENUMPROCW)(LPWSTR);
+typedef BOOL (__stdcall* CALINFO_ENUMPROCEXW)(LPWSTR, CALID);
+typedef BOOL (__stdcall* GEO_ENUMPROC)(GEOID);                   // DEPRECATED, use GEO_ENUMNAMEPROC instead
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
-typedef BOOL (CALLBACK* GEO_ENUMNAMEPROC)(PWSTR, LPARAM);
+typedef BOOL (__stdcall* GEO_ENUMNAMEPROC)(PWSTR, LPARAM);
 #endif
 
 #else // !STRICT
@@ -1374,7 +1391,7 @@ typedef FARPROC CALINFO_ENUMPROCEXW;
 typedef FARPROC GEO_ENUMNAMEPROC;
 #endif
 
-#endif // !STRICT
+end  -- !STRICT
 
 #ifdef UNICODE
 
@@ -1406,7 +1423,7 @@ typedef FARPROC GEO_ENUMNAMEPROC;
 #define CALINFO_ENUMPROCEX        CALINFO_ENUMPROCEXA
 #define LOCALE_ENUMPROC           LOCALE_ENUMPROCA
 
-#endif // !UNICODE
+end  -- !UNICODE
 
 //
 // Information about a MUI file, used as input/output in GetFileMUIInfo
@@ -1500,13 +1517,13 @@ typedef struct _FILEMUIINFO {
 
 
 BOOL
-WINAPI
+__stdcall
 IsValidCodePage(
      UINT  CodePage);
 
 
 UINT
-WINAPI
+__stdcall
 GetACP(void);
 
 end
@@ -1517,7 +1534,7 @@ end
 
 
 UINT
-WINAPI
+__stdcall
 GetOEMCP(void);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -1529,7 +1546,7 @@ GetOEMCP(void);
 DEPRECATED("Use Unicode. The information in this structure cannot represent all encodings accuratedly and may be unreliable on many machines. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 GetCPInfo(
      UINT       CodePage,
     _Out_ LPCPINFO  lpCPInfo);
@@ -1537,7 +1554,7 @@ GetCPInfo(
 DEPRECATED("Use Unicode. The information in this structure cannot represent all encodings accurately and may be unreliable on many machines. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 GetCPInfoExA(
      UINT          CodePage,
      DWORD         dwFlags,
@@ -1545,7 +1562,7 @@ GetCPInfoExA(
 DEPRECATED("Use Unicode. The information in this structure cannot represent all encodings accurately and may be unreliable on many machines. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 GetCPInfoExW(
      UINT          CodePage,
      DWORD         dwFlags,
@@ -1554,7 +1571,7 @@ GetCPInfoExW(
 #define GetCPInfoEx  GetCPInfoExW
 #else
 #define GetCPInfoEx  GetCPInfoExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP|WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -1569,7 +1586,7 @@ GetCPInfoExW(
 // DEPRECATED: CompareStringEx is preferred
 
 int
-WINAPI
+__stdcall
 CompareStringA(
      LCID     Locale,
      DWORD    dwCmpFlags,
@@ -1580,7 +1597,7 @@ CompareStringA(
 
 #ifndef UNICODE
 #define CompareString  CompareStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef CompareString
@@ -1615,22 +1632,22 @@ CompareString(
 // DEPRECATED: FindNLSStringEx is preferred
 
 int
-WINAPI
+__stdcall
 FindNLSString(
                         LCID Locale,
                         DWORD dwFindNLSStringFlags,
-    _In_reads_(cchSource)  LPCWSTR lpStringSource,
+      LPCWSTR lpStringSource,
                         int cchSource,
-    _In_reads_(cchValue)   LPCWSTR lpStringValue,
+       LPCWSTR lpStringValue,
                         int cchValue,
-    _Out_opt_               LPINT pcchFound);
+                   LPINT pcchFound);
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 // DEPRECATED: LCMapStringEx is preferred
 
 int
-WINAPI
+__stdcall
 LCMapStringW(
      LCID     Locale,
      DWORD    dwMapFlags,
@@ -1645,7 +1662,7 @@ LCMapStringW(
 // DEPRECATED: Use Unicode, LCMapStringEx is preferred
 
 int
-WINAPI
+__stdcall
 LCMapStringA(
      LCID     Locale,
      DWORD    dwMapFlags,
@@ -1666,11 +1683,11 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 // DEPRECATED: GetLocaleInfoEx is preferred
 
 int
-WINAPI
+__stdcall
 GetLocaleInfoW(
      LCID     Locale,
      LCTYPE   LCType,
-    _Out_writes_opt_(cchData) LPWSTR lpLCData,
+     LPWSTR lpLCData,
      int      cchData);
     
 #ifdef UNICODE
@@ -1680,11 +1697,11 @@ GetLocaleInfoW(
 // DEPRECATED: Use Unicode. GetLocaleInfoEx is preferred
 
 int 
-WINAPI 
+__stdcall 
 GetLocaleInfoA(
      LCID Locale,
      LCTYPE LCType,
-    _Out_writes_opt_(cchData) LPSTR lpLCData,
+     LPSTR lpLCData,
      int cchData
     );
 
@@ -1700,14 +1717,14 @@ end
 
 
 BOOL
-WINAPI
+__stdcall
 SetLocaleInfoA(
      LCID     Locale,
      LCTYPE   LCType,
      LPCSTR  lpLCData);
 
 BOOL
-WINAPI
+__stdcall
 SetLocaleInfoW(
      LCID     Locale,
      LCTYPE   LCType,
@@ -1716,41 +1733,41 @@ SetLocaleInfoW(
 #define SetLocaleInfo  SetLocaleInfoW
 #else
 #define SetLocaleInfo  SetLocaleInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if (WINVER >= 0x040A)
 
 // DEPRECATED: GetCalendarInfoEx is preferred
 
 int
-WINAPI
+__stdcall
 GetCalendarInfoA(
      LCID     Locale,
      CALID    Calendar,
      CALTYPE  CalType,
-    _Out_writes_opt_(cchData) LPSTR   lpCalData,
+     LPSTR   lpCalData,
      int      cchData,
-    _Out_opt_ LPDWORD  lpValue);
+     LPDWORD  lpValue);
 // DEPRECATED: GetCalendarInfoEx is preferred
 
 int
-WINAPI
+__stdcall
 GetCalendarInfoW(
      LCID     Locale,
      CALID    Calendar,
      CALTYPE  CalType,
-    _Out_writes_opt_(cchData) LPWSTR   lpCalData,
+     LPWSTR   lpCalData,
      int      cchData,
-    _Out_opt_ LPDWORD  lpValue);
+     LPDWORD  lpValue);
 #ifdef UNICODE
 #define GetCalendarInfo  GetCalendarInfoW
 #else
 #define GetCalendarInfo  GetCalendarInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 SetCalendarInfoA(
      LCID     Locale,
      CALID    Calendar,
@@ -1758,7 +1775,7 @@ SetCalendarInfoA(
      LPCSTR  lpCalData);
 
 BOOL
-WINAPI
+__stdcall
 SetCalendarInfoW(
      LCID     Locale,
      CALID    Calendar,
@@ -1768,7 +1785,7 @@ SetCalendarInfoW(
 #define SetCalendarInfo  SetCalendarInfoW
 #else
 #define SetCalendarInfo  SetCalendarInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -1789,7 +1806,7 @@ SetCalendarInfoW(
         
                                 
 BOOL                                      
-WINAPI                                    
+__stdcall                                    
 LoadStringByReference(                    
            DWORD   Flags,             
            PCWSTR  Language,      
@@ -1797,9 +1814,9 @@ LoadStringByReference(
     _Out_writes_opt_(cchBuffer)   PWSTR   Buffer,     
            ULONG  cchBuffer,                      
        PCWSTR  Directory,                     
-    _Out_opt_  PULONG  pcchBufferOut                  
+      PULONG  pcchBufferOut                  
     );                                                
-#endif // (WINVER >= _WIN32_WINNT_WIN7)	    
+end  -- (WINVER >= _WIN32_WINNT_WIN7)	    
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
@@ -1811,7 +1828,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 DEPRECATED("Use Unicode. The information provided by this structure is inaccurate for some encodings and may be unreliable on many machines.")
          
 BOOL               
-WINAPI             
+__stdcall             
 IsDBCSLeadByte(    
      BYTE  TestChar 
     );
@@ -1819,7 +1836,7 @@ IsDBCSLeadByte(
 DEPRECATED("Use Unicode. The information provided by this structure is inaccurate for some encodings and may be unreliable on many machines.")
 
 BOOL
-WINAPI
+__stdcall
 IsDBCSLeadByteEx(
      UINT  CodePage,
      BYTE  TestChar
@@ -1830,7 +1847,7 @@ IsDBCSLeadByteEx(
 // This function is provided to enable compatibility with legacy data sets only.
 
 int
-WINAPI
+__stdcall
 LCIDToLocaleName(
      LCID     Locale,
     _Out_writes_opt_(cchName) LPWSTR  lpName,
@@ -1841,7 +1858,7 @@ LCIDToLocaleName(
 // This function is provided to enable compatibility with legacy data sets only.
 
 LCID
-WINAPI
+__stdcall
 LocaleNameToLCID(
      LPCWSTR lpName,
      DWORD dwFlags);
@@ -1858,16 +1875,16 @@ end
 #if (WINVER >= 0x0600)
 
 int
-WINAPI
+__stdcall
 GetDurationFormat(
      LCID             Locale,
      DWORD            dwFlags,
      const SYSTEMTIME *lpDuration,
      ULONGLONG ullDuration,
      LPCWSTR          lpFormat,
-    _Out_writes_opt_(cchDuration) LPWSTR          lpDurationStr,
+     LPWSTR          lpDurationStr,
      int              cchDuration);
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -1878,7 +1895,7 @@ GetDurationFormat(
 // DEPRECATED: GetNumberFormatEx is preferred
 
 int
-WINAPI
+__stdcall
 GetNumberFormatA(
      LCID             Locale,
      DWORD            dwFlags,
@@ -1889,7 +1906,7 @@ GetNumberFormatA(
 // DEPRECATED: GetNumberFormatEx is preferred
 
 int
-WINAPI
+__stdcall
 GetNumberFormatW(
      LCID             Locale,
      DWORD            dwFlags,
@@ -1901,12 +1918,12 @@ GetNumberFormatW(
 #define GetNumberFormat  GetNumberFormatW
 #else
 #define GetNumberFormat  GetNumberFormatA
-#endif // !UNICODE
+end  -- !UNICODE
 
 // DEPRECATED: GetCurrencyFormatEx is preferred
 
 int
-WINAPI
+__stdcall
 GetCurrencyFormatA(
      LCID               Locale,
      DWORD              dwFlags,
@@ -1917,7 +1934,7 @@ GetCurrencyFormatA(
 // DEPRECATED: GetCurrencyFormatEx is preferred
 
 int
-WINAPI
+__stdcall
 GetCurrencyFormatW(
      LCID               Locale,
      DWORD              dwFlags,
@@ -1929,12 +1946,12 @@ GetCurrencyFormatW(
 #define GetCurrencyFormat  GetCurrencyFormatW
 #else
 #define GetCurrencyFormat  GetCurrencyFormatA
-#endif // !UNICODE
+end  -- !UNICODE
 
 // DEPRECATED: EnumCalendarInfoExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumCalendarInfoA(
      CALINFO_ENUMPROCA lpCalInfoEnumProc,
      LCID              Locale,
@@ -1943,7 +1960,7 @@ EnumCalendarInfoA(
 // DEPRECATED: EnumCalendarInfoExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumCalendarInfoW(
      CALINFO_ENUMPROCW lpCalInfoEnumProc,
      LCID              Locale,
@@ -1953,13 +1970,13 @@ EnumCalendarInfoW(
 #define EnumCalendarInfo  EnumCalendarInfoW
 #else
 #define EnumCalendarInfo  EnumCalendarInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if(WINVER >= 0x0500)
 // DEPRECATED: EnumCalendarInfoExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumCalendarInfoExA(
      CALINFO_ENUMPROCEXA lpCalInfoEnumProcEx,
      LCID                Locale,
@@ -1968,7 +1985,7 @@ EnumCalendarInfoExA(
 // DEPRECATED: EnumCalendarInfoExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumCalendarInfoExW(
      CALINFO_ENUMPROCEXW lpCalInfoEnumProcEx,
      LCID                Locale,
@@ -1978,13 +1995,13 @@ EnumCalendarInfoExW(
 #define EnumCalendarInfoEx  EnumCalendarInfoExW
 #else
 #define EnumCalendarInfoEx  EnumCalendarInfoExA
-#endif // !UNICODE
+end  -- !UNICODE
 #endif /* WINVER >= 0x0500 */
 
 // DEPRECATED: EnumTimeFormatsEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumTimeFormatsA(
      TIMEFMT_ENUMPROCA lpTimeFmtEnumProc,
      LCID              Locale,
@@ -1992,7 +2009,7 @@ EnumTimeFormatsA(
 // DEPRECATED: EnumTimeFormatsEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumTimeFormatsW(
      TIMEFMT_ENUMPROCW lpTimeFmtEnumProc,
      LCID              Locale,
@@ -2001,12 +2018,12 @@ EnumTimeFormatsW(
 #define EnumTimeFormats  EnumTimeFormatsW
 #else
 #define EnumTimeFormats  EnumTimeFormatsA
-#endif // !UNICODE
+end  -- !UNICODE
 
 // DEPRECATED: EnumDateFormatsExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumDateFormatsA(
      DATEFMT_ENUMPROCA lpDateFmtEnumProc,
      LCID              Locale,
@@ -2014,7 +2031,7 @@ EnumDateFormatsA(
 // DEPRECATED: EnumDateFormatsExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumDateFormatsW(
      DATEFMT_ENUMPROCW lpDateFmtEnumProc,
      LCID              Locale,
@@ -2023,13 +2040,13 @@ EnumDateFormatsW(
 #define EnumDateFormats  EnumDateFormatsW
 #else
 #define EnumDateFormats  EnumDateFormatsA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if(WINVER >= 0x0500)
 // DEPRECATED: EnumDateFormatsExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumDateFormatsExA(
      DATEFMT_ENUMPROCEXA lpDateFmtEnumProcEx,
      LCID                Locale,
@@ -2037,7 +2054,7 @@ EnumDateFormatsExA(
 // DEPRECATED: EnumDateFormatsExEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 EnumDateFormatsExW(
      DATEFMT_ENUMPROCEXW lpDateFmtEnumProcEx,
      LCID                Locale,
@@ -2046,14 +2063,14 @@ EnumDateFormatsExW(
 #define EnumDateFormatsEx  EnumDateFormatsExW
 #else
 #define EnumDateFormatsEx  EnumDateFormatsExA
-#endif // !UNICODE
+end  -- !UNICODE
 #endif /* WINVER >= 0x0500 */
 
 #if(WINVER >= 0x0500)
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 IsValidLanguageGroup(
      LGRPID  LanguageGroup,
      DWORD   dwFlags);
@@ -2062,16 +2079,16 @@ IsValidLanguageGroup(
 // DEPRECATED: GetNLSVersionEx is preferred
 
 BOOL
-WINAPI
+__stdcall
 GetNLSVersion(
         NLS_FUNCTION     Function,
         LCID             Locale,
-    _Inout_ LPNLSVERSIONINFO lpVersionInformation);
+     LPNLSVERSIONINFO lpVersionInformation);
 
 // DEPRECATED: IsValidLocaleName is preferred
 
 BOOL
-WINAPI
+__stdcall
 IsValidLocale(
      LCID   Locale,
      DWORD  dwFlags);
@@ -2085,33 +2102,33 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 // GetGeoInfoEx is preferred where available
 
 int
-WINAPI
+__stdcall
 GetGeoInfoA(
      GEOID       Location,
      GEOTYPE     GeoType,
-    _Out_writes_opt_(cchData) LPSTR     lpGeoData,
+     LPSTR     lpGeoData,
      int         cchData,
      LANGID      LangId);
 // GetGeoInfoEx is preferred where available
 
 int
-WINAPI
+__stdcall
 GetGeoInfoW(
      GEOID       Location,
      GEOTYPE     GeoType,
-    _Out_writes_opt_(cchData) LPWSTR     lpGeoData,
+     LPWSTR     lpGeoData,
      int         cchData,
      LANGID      LangId);
 #ifdef UNICODE
 #define GetGeoInfo  GetGeoInfoW
 #else
 #define GetGeoInfo  GetGeoInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 
 int
-WINAPI
+__stdcall
 GetGeoInfoEx(
      PWSTR       location,
      GEOTYPE     geoType,
@@ -2128,7 +2145,7 @@ end
 // EnumSystemGeoNames is preferred where available
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemGeoID(
      GEOCLASS        GeoClass,
      GEOID           ParentGeoId,
@@ -2137,7 +2154,7 @@ EnumSystemGeoID(
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemGeoNames(
      GEOCLASS            geoClass,
      GEO_ENUMNAMEPROC    geoEnumProc,
@@ -2145,19 +2162,22 @@ EnumSystemGeoNames(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
-
+--]=]
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+ffi.cdef[[
 // GetUserDefaultGeoName is preferred where available
 
 GEOID
-WINAPI
+__stdcall
 GetUserGeoID(
      GEOCLASS    GeoClass);
+]]
 
+ffi.cdef[[
 /**
  * Note: This API was added in the Windows 10 Fall Creators Update.
  * (Please use this API instead of calling GetUserGeoID.)
@@ -2165,15 +2185,15 @@ GetUserGeoID(
  */
 
 int
-WINAPI
+__stdcall
 GetUserDefaultGeoName(
-    _Out_writes_z_(geoNameCount) LPWSTR geoName,
+     LPWSTR geoName,
      int geoNameCount
 );
-
+]]
 end
 
-
+--[=[
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
@@ -2181,7 +2201,7 @@ end
 // Applications are recommended to not change user settings themselves.
 
 BOOL
-WINAPI
+__stdcall
 SetUserGeoID(
      GEOID       GeoId);
 
@@ -2189,7 +2209,7 @@ SetUserGeoID(
 // Applications are recommended to not change user settings themselves.
 
 BOOL
-WINAPI
+__stdcall
 SetUserGeoName(
      PWSTR       geoName);
 #endif
@@ -2197,18 +2217,18 @@ SetUserGeoName(
 // DEPRECATED: Please use ResolveLocaleName
 
 LCID
-WINAPI
+__stdcall
 ConvertDefaultLocale(
      LCID   Locale);
 
 
 LCID
-WINAPI
+__stdcall
 GetThreadLocale(void);
 
 
 BOOL
-WINAPI
+__stdcall
 SetThreadLocale(
      LCID  Locale
     );
@@ -2217,7 +2237,7 @@ SetThreadLocale(
 // DEPRECATED: Please use the user's language profile.
 
 LANGID
-WINAPI
+__stdcall
 GetSystemDefaultUILanguage(void);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -2229,14 +2249,14 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 // DEPRECATED: Please use the user's language profile.
 
 LANGID
-WINAPI
+__stdcall
 GetUserDefaultUILanguage(void);
 #endif /* WINVER >= 0x0500 */
 
 // DEPRECATED: Please use GetUserDefaultLocaleName
 
 LANGID
-WINAPI
+__stdcall
 GetUserDefaultLangID(void);
 
 end
@@ -2248,19 +2268,19 @@ end
 // DEPRECATED: Please use GetUserDefaultLocaleName or the user's Language Profile
 
 LANGID
-WINAPI
+__stdcall
 GetSystemDefaultLangID(void);
 
 // DEPRECATED: Please use GetUserDefaultLocaleName or the user's Language Profile
 
 LCID
-WINAPI
+__stdcall
 GetSystemDefaultLCID(void);
 
 // DEPRECATED: Please use GetUserDefaultLocaleName
 
 LCID
-WINAPI
+__stdcall
 GetUserDefaultLCID(void);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -2278,7 +2298,7 @@ GetUserDefaultLCID(void);
 
 
 LANGID
-WINAPI
+__stdcall
 SetThreadUILanguage( LANGID LangId);
 
 
@@ -2286,27 +2306,27 @@ SetThreadUILanguage( LANGID LangId);
 
 
 LANGID
-WINAPI
+__stdcall
 GetThreadUILanguage(void);
 
 
 BOOL
-WINAPI
+__stdcall
 GetProcessPreferredUILanguages(
      DWORD dwFlags,
     _Out_ PULONG pulNumLanguages,
     _Out_writes_opt_(*pcchLanguagesBuffer) PZZWSTR pwszLanguagesBuffer,
-    _Inout_ PULONG pcchLanguagesBuffer
+     PULONG pcchLanguagesBuffer
 );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetProcessPreferredUILanguages(
             DWORD dwFlags,
         PCZZWSTR pwszLanguagesBuffer,
-    _Out_opt_   PULONG pulNumLanguages
+       PULONG pulNumLanguages
 );
 
 #endif /* WINVER >= 0x0600 */
@@ -2319,12 +2339,12 @@ SetProcessPreferredUILanguages(
 #if(WINVER >= 0x0600)
 
 BOOL
-WINAPI
+__stdcall
 GetUserPreferredUILanguages (
      DWORD dwFlags,
     _Out_ PULONG pulNumLanguages,
     _Out_writes_opt_(*pcchLanguagesBuffer) PZZWSTR pwszLanguagesBuffer,
-    _Inout_ PULONG pcchLanguagesBuffer
+     PULONG pcchLanguagesBuffer
 );
 
 #endif /* WINVER >= 0x0600 */
@@ -2339,62 +2359,62 @@ GetUserPreferredUILanguages (
 
 
 BOOL
-WINAPI
+__stdcall
 GetSystemPreferredUILanguages (
      DWORD dwFlags,
     _Out_ PULONG pulNumLanguages,
     _Out_writes_opt_(*pcchLanguagesBuffer) PZZWSTR pwszLanguagesBuffer,
-    _Inout_ PULONG pcchLanguagesBuffer
+     PULONG pcchLanguagesBuffer
 );
 
 
 
 BOOL
-WINAPI
+__stdcall
 GetThreadPreferredUILanguages(
      DWORD dwFlags,
     _Out_ PULONG pulNumLanguages,
     _Out_writes_opt_(*pcchLanguagesBuffer) PZZWSTR pwszLanguagesBuffer,
-    _Inout_ PULONG pcchLanguagesBuffer
+     PULONG pcchLanguagesBuffer
 );
 
 
 
 BOOL
-WINAPI
+__stdcall
 SetThreadPreferredUILanguages(
             DWORD dwFlags,
         PCZZWSTR pwszLanguagesBuffer,
-    _Out_opt_   PULONG pulNumLanguages
+       PULONG pulNumLanguages
 );
 
 
 _Success_(return!=FALSE)
 BOOL
-WINAPI
+__stdcall
 GetFileMUIInfo(
                         DWORD           dwFlags,
                     PCWSTR          pcwszFilePath,
     _Inout_updates_bytes_to_opt_(*pcbFileMUIInfo,*pcbFileMUIInfo) PFILEMUIINFO    pFileMUIInfo,
-    _Inout_             DWORD*          pcbFileMUIInfo);
+                 DWORD*          pcbFileMUIInfo);
 
 
 BOOL
-WINAPI
+__stdcall
 GetFileMUIPath(
      DWORD      dwFlags,
      PCWSTR     pcwszFilePath ,
     _Inout_updates_opt_    (*pcchLanguage)   PWSTR pwszLanguage,
-    _Inout_ PULONG  pcchLanguage,
+     PULONG  pcchLanguage,
     _Out_writes_opt_    (*pcchFileMUIPath) PWSTR pwszFileMUIPath,
-    _Inout_         PULONG pcchFileMUIPath,
-    _Inout_         PULONGLONG pululEnumerator
+             PULONG pcchFileMUIPath,
+             PULONGLONG pululEnumerator
 );
 
 
 
 BOOL
-WINAPI
+__stdcall
 GetUILanguageInfo(
      DWORD dwFlags,
      PCZZWSTR pwmszLanguage,
@@ -2415,13 +2435,13 @@ GetUILanguageInfo(
 
 
 BOOL
-WINAPI
+__stdcall
 NotifyUILanguageChange(
             DWORD dwFlags,
         PCWSTR pcwstrNewLanguage,
         PCWSTR pcwstrPreviousLanguage,
             DWORD dwReserved,
-    _Out_opt_   PDWORD pdwStatusRtrn
+       PDWORD pdwStatusRtrn
 );
 
 #endif /* WINVER >= 0x0600 */
@@ -2439,7 +2459,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
 
 BOOL
-WINAPI
+__stdcall
 GetStringTypeExA(
                      LCID       Locale,
                      DWORD      dwInfoType,
@@ -2469,7 +2489,7 @@ end
 //
 
 BOOL
-WINAPI
+__stdcall
 GetStringTypeA(
      LCID     Locale,
      DWORD    dwInfoType,
@@ -2479,7 +2499,7 @@ GetStringTypeA(
 
 
 int
-WINAPI
+__stdcall
 FoldStringA(
      DWORD    dwMapFlags,
      LPCSTR  lpSrcStr,
@@ -2495,14 +2515,14 @@ FoldStringA(
 // DEPRECATED, please use Locale Names and call EnumSystemLocalesEx
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemLocalesA(
      LOCALE_ENUMPROCA lpLocaleEnumProc,
      DWORD            dwFlags);
 // DEPRECATED, please use Locale Names and call EnumSystemLocalesEx
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemLocalesW(
      LOCALE_ENUMPROCW lpLocaleEnumProc,
      DWORD            dwFlags);
@@ -2510,7 +2530,7 @@ EnumSystemLocalesW(
 #define EnumSystemLocales  EnumSystemLocalesW
 #else
 #define EnumSystemLocales  EnumSystemLocalesA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINVER >= 0x0500 */
 
@@ -2519,7 +2539,7 @@ EnumSystemLocalesW(
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemLanguageGroupsA(
      LANGUAGEGROUP_ENUMPROCA lpLanguageGroupEnumProc,
      DWORD                   dwFlags,
@@ -2527,7 +2547,7 @@ EnumSystemLanguageGroupsA(
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemLanguageGroupsW(
      LANGUAGEGROUP_ENUMPROCW lpLanguageGroupEnumProc,
      DWORD                   dwFlags,
@@ -2536,12 +2556,12 @@ EnumSystemLanguageGroupsW(
 #define EnumSystemLanguageGroups  EnumSystemLanguageGroupsW
 #else
 #define EnumSystemLanguageGroups  EnumSystemLanguageGroupsA
-#endif // !UNICODE
+end  -- !UNICODE
 
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 EnumLanguageGroupLocalesA(
      LANGGROUPLOCALE_ENUMPROCA lpLangGroupLocaleEnumProc,
      LGRPID                    LanguageGroup,
@@ -2550,7 +2570,7 @@ EnumLanguageGroupLocalesA(
 DEPRECATED("The Language Group concept is obsolete and no longer supported. Set DISABLE_NLS_DEPRECATION to disable this warning.")
 
 BOOL
-WINAPI
+__stdcall
 EnumLanguageGroupLocalesW(
      LANGGROUPLOCALE_ENUMPROCW lpLangGroupLocaleEnumProc,
      LGRPID                    LanguageGroup,
@@ -2560,7 +2580,7 @@ EnumLanguageGroupLocalesW(
 #define EnumLanguageGroupLocales  EnumLanguageGroupLocalesW
 #else
 #define EnumLanguageGroupLocales  EnumLanguageGroupLocalesA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
@@ -2571,7 +2591,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 // DEPRECATED: use the user language profile instead.
 
 BOOL
-WINAPI
+__stdcall
 EnumUILanguagesA(
      UILANGUAGE_ENUMPROCA lpUILanguageEnumProc,
      DWORD                dwFlags,
@@ -2579,7 +2599,7 @@ EnumUILanguagesA(
 // DEPRECATED: use the user language profile instead.
 
 BOOL
-WINAPI
+__stdcall
 EnumUILanguagesW(
      UILANGUAGE_ENUMPROCW lpUILanguageEnumProc,
      DWORD                dwFlags,
@@ -2588,7 +2608,7 @@ EnumUILanguagesW(
 #define EnumUILanguages  EnumUILanguagesW
 #else
 #define EnumUILanguages  EnumUILanguagesA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINVER >= 0x0500 */
 
@@ -2601,14 +2621,14 @@ end
 // Please use Unicode instead.  Use of other code pages/encodings is discouraged.
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemCodePagesA(
      CODEPAGE_ENUMPROCA lpCodePageEnumProc,
      DWORD              dwFlags);
 // Please use Unicode instead.  Use of other code pages/encodings is discouraged.
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemCodePagesW(
      CODEPAGE_ENUMPROCW lpCodePageEnumProc,
      DWORD              dwFlags);
@@ -2616,7 +2636,7 @@ EnumSystemCodePagesW(
 #define EnumSystemCodePages  EnumSystemCodePagesW
 #else
 #define EnumSystemCodePages  EnumSystemCodePagesA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP  | WINAPI_PARTITION_SYSTEM) */
 
@@ -2632,7 +2652,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
 
 int
-WINAPI NormalizeString(                           NORM_FORM NormForm,
+__stdcall NormalizeString(                           NORM_FORM NormForm,
                         _In_reads_(cwSrcLength)      LPCWSTR   lpSrcString,
                                                   int       cwSrcLength,
                         _Out_writes_opt_(cwDstLength) LPWSTR    lpDstString,
@@ -2640,12 +2660,12 @@ WINAPI NormalizeString(                           NORM_FORM NormForm,
 
 
 BOOL
-WINAPI IsNormalizedString(                    NORM_FORM NormForm,
+__stdcall IsNormalizedString(                    NORM_FORM NormForm,
                            _In_reads_(cwLength)  LPCWSTR   lpString,
                                               int       cwLength );
 
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= 0x0600)
 
@@ -2654,43 +2674,43 @@ WINAPI IsNormalizedString(                    NORM_FORM NormForm,
 //
 
 int
-WINAPI IdnToAscii(                           DWORD    dwFlags,
+__stdcall IdnToAscii(                           DWORD    dwFlags,
                   _In_reads_(cchUnicodeChar) 	 LPCWSTR  lpUnicodeCharStr,
                                           	 int      cchUnicodeChar,
                   _Out_writes_opt_(cchASCIIChar) LPWSTR   lpASCIICharStr,
                                           	 int      cchASCIIChar);
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= 0x0600)
 
 
 int
-WINAPI IdnToNameprepUnicode(                            	DWORD   dwFlags,
+__stdcall IdnToNameprepUnicode(                            	DWORD   dwFlags,
                             _In_reads_(cchUnicodeChar)     	LPCWSTR lpUnicodeCharStr,
                                                         	int     cchUnicodeChar,
                             _Out_writes_opt_(cchNameprepChar)   LPWSTR  lpNameprepCharStr,
                                                         	int     cchNameprepChar);
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= 0x0600)
 
 
 int
-WINAPI IdnToUnicode(                         	 DWORD   dwFlags,
+__stdcall IdnToUnicode(                         	 DWORD   dwFlags,
                     _In_reads_(cchASCIIChar)    	 LPCWSTR lpASCIICharStr,
                                              	 int     cchASCIIChar,
                     _Out_writes_opt_(cchUnicodeChar) LPWSTR  lpUnicodeCharStr,
                                              	 int     cchUnicodeChar);
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 #if (WINVER >= 0x0600)
 
 
 BOOL
-WINAPI VerifyScripts(
+__stdcall VerifyScripts(
         DWORD   dwFlags,            // optional behavior flags
         LPCWSTR lpLocaleScripts,    // Locale list of scripts string
         int     cchLocaleScripts,   // size of locale script list string
@@ -2699,23 +2719,23 @@ WINAPI VerifyScripts(
 
 
 int
-WINAPI GetStringScripts(
+__stdcall GetStringScripts(
                                  DWORD   dwFlags,        // optional behavior flags
                                  LPCWSTR lpString,       // Unicode character input string
                                  int     cchString,      // size of input string
         _Out_writes_opt_(cchScripts) LPWSTR  lpScripts,      // Script list output string
                                  int     cchScripts);    // size of output string
 
-#endif //(WINVER >= 0x0600)
+end  --(WINVER >= 0x0600)
 
 end
+--]=]
 
-
-#if (WINVER >= 0x0600)
+if (WINVER >= 0x0600) then
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
-
+--[[
 //
 // String based NLS APIs
 //
@@ -2723,56 +2743,57 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 #define LOCALE_NAME_USER_DEFAULT            NULL
 #define LOCALE_NAME_INVARIANT               L""
 #define LOCALE_NAME_SYSTEM_DEFAULT          L"!x-sys-default-locale"
-
-
+--]]
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 GetLocaleInfoEx(
      LPCWSTR lpLocaleName,
      LCTYPE LCType,
-    _Out_writes_to_opt_(cchData, return) LPWSTR lpLCData,
+     LPWSTR lpLCData,
      int cchData
 );
-
+]]
 end
 
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_PC_APP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 GetCalendarInfoEx(
      LPCWSTR lpLocaleName,
      CALID Calendar,
      LPCWSTR lpReserved,
      CALTYPE CalType,
-    _Out_writes_opt_(cchData) LPWSTR lpCalData,
+     LPWSTR lpCalData,
      int cchData,
-    _Out_opt_ LPDWORD lpValue
+     LPDWORD lpValue
 );
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) then
 
-#ifndef GetDurationFormatEx_DEFINED
-
+if not GetDurationFormatEx_DEFINED then
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 GetDurationFormatEx(
      LPCWSTR lpLocaleName,
      DWORD dwFlags,
      const SYSTEMTIME *lpDuration,
      ULONGLONG ullDuration,
      LPCWSTR lpFormat,
-    _Out_writes_opt_(cchDuration) LPWSTR lpDurationStr,
+     LPWSTR lpDurationStr,
      int cchDuration
 );
-#endif
+]]
+end
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
@@ -2780,9 +2801,9 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 GetNumberFormatEx(
      LPCWSTR lpLocaleName,
      DWORD dwFlags,
@@ -2794,7 +2815,7 @@ GetNumberFormatEx(
 
 
 int
-WINAPI
+__stdcall
 GetCurrencyFormatEx(
      LPCWSTR lpLocaleName,
      DWORD dwFlags,
@@ -2806,21 +2827,21 @@ GetCurrencyFormatEx(
 
 
 int
-WINAPI
+__stdcall
 GetUserDefaultLocaleName(
      LPWSTR lpLocaleName,
      int cchLocaleName
 );
-
+]]
 end
 
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_PC_APP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 GetSystemDefaultLocaleName(
      LPWSTR lpLocaleName,
      int cchLocaleName
@@ -2828,51 +2849,53 @@ GetSystemDefaultLocaleName(
 
 
 BOOL
-WINAPI
+__stdcall
 IsNLSDefinedString(
      NLS_FUNCTION     Function,
      DWORD            dwFlags,
      LPNLSVERSIONINFO lpVersionInformation,
-    _In_reads_(cchStr) LPCWSTR          lpString,
+     LPCWSTR          lpString,
      INT              cchStr);
 
 
 BOOL
-WINAPI
+__stdcall
 GetNLSVersionEx(
     	    NLS_FUNCTION function,
         LPCWSTR lpLocaleName,
-    _Inout_	    LPNLSVERSIONINFOEX lpVersionInformation
+    	    LPNLSVERSIONINFOEX lpVersionInformation
 );
+]]
 
-#if (WINVER >= _WIN32_WINNT_WIN8)
-
+if (WINVER >= _WIN32_WINNT_WIN8) then
+ffi.cdef[[
 DWORD
-WINAPI
+__stdcall
 IsValidNLSVersion(
             NLS_FUNCTION function,
         LPCWSTR lpLocaleName,
             LPNLSVERSIONINFOEX lpVersionInformation
 );
-#endif
+]]
+end
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 FindNLSStringEx(
      LPCWSTR lpLocaleName,
      DWORD dwFindNLSStringFlags,
-    _In_reads_(cchSource) LPCWSTR lpStringSource,
+     LPCWSTR lpStringSource,
      int cchSource,
-    _In_reads_(cchValue) LPCWSTR lpStringValue,
+     LPCWSTR lpStringValue,
      int cchValue,
-    _Out_opt_ LPINT pcchFound,
+     LPINT pcchFound,
      LPNLSVERSIONINFO lpVersionInformation,
      LPVOID lpReserved,
      LPARAM sortHandle
@@ -2881,7 +2904,7 @@ FindNLSStringEx(
 
 
 int
-WINAPI
+__stdcall
 LCMapStringEx(
      LPCWSTR lpLocaleName,
      DWORD dwMapFlags,
@@ -2896,21 +2919,22 @@ LCMapStringEx(
 
 
 BOOL
-WINAPI
+__stdcall
 IsValidLocaleName(
      LPCWSTR lpLocaleName
 );
+]]
 end
 
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM)
-
-typedef BOOL (CALLBACK* CALINFO_ENUMPROCEXEX)(LPWSTR, CALID, LPWSTR, LPARAM);
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_PC_APP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
+typedef BOOL (__stdcall* CALINFO_ENUMPROCEXEX)(LPWSTR, CALID, LPWSTR, LPARAM);
 
 
 BOOL
-WINAPI
+__stdcall
 EnumCalendarInfoExEx(
      CALINFO_ENUMPROCEXEX pCalInfoEnumProcExEx,
      LPCWSTR lpLocaleName,
@@ -2919,75 +2943,74 @@ EnumCalendarInfoExEx(
      CALTYPE CalType,
      LPARAM lParam
 );
+]]
 
-typedef BOOL (CALLBACK* DATEFMT_ENUMPROCEXEX)(LPWSTR, CALID, LPARAM);
+ffi.cdef[[
+typedef BOOL (__stdcall* DATEFMT_ENUMPROCEXEX)(LPWSTR, CALID, LPARAM);
 
 
 BOOL
-WINAPI
+__stdcall
 EnumDateFormatsExEx(
      DATEFMT_ENUMPROCEXEX lpDateFmtEnumProcExEx,
      LPCWSTR lpLocaleName,
      DWORD dwFlags,
      LPARAM lParam
 );
+]]
 
-typedef BOOL (CALLBACK* TIMEFMT_ENUMPROCEX)(LPWSTR, LPARAM);
+ffi.cdef[[
+typedef BOOL (__stdcall* TIMEFMT_ENUMPROCEX)(LPWSTR, LPARAM);
 
 
 BOOL
-WINAPI
+__stdcall
 EnumTimeFormatsEx(
      TIMEFMT_ENUMPROCEX lpTimeFmtEnumProcEx,
      LPCWSTR lpLocaleName,
      DWORD dwFlags,
      LPARAM lParam
 );
+]]
 
-typedef BOOL (CALLBACK* LOCALE_ENUMPROCEX)(LPWSTR, DWORD, LPARAM);
+ffi.cdef[[
+typedef BOOL (__stdcall* LOCALE_ENUMPROCEX)(LPWSTR, DWORD, LPARAM);
 
 
 BOOL
-WINAPI
+__stdcall
 EnumSystemLocalesEx(
      LOCALE_ENUMPROCEX lpLocaleEnumProcEx,
      DWORD dwFlags,
      LPARAM lParam,
      LPVOID lpReserved
 );
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP | WINAPI_PARTITION_SYSTEM) */
+
+end --//(WINVER >= 0x0600)
 
 
-#endif //(WINVER >= 0x0600)
-
-#if (WINVER >= _WIN32_WINNT_WIN7)
+if (WINVER >= _WIN32_WINNT_WIN7) then
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
-WINAPI
+__stdcall
 ResolveLocaleName(
                             LPCWSTR lpNameToResolve,
      LPWSTR  lpLocaleName,
                                 int     cchLocaleName
 );
-
+]]
 end
 
 
-#endif // (WINVER >= _WIN32_WINNT_WIN7)
+end  -- (WINVER >= _WIN32_WINNT_WIN7)
 
+--end  -- NONLS
 
-
-#endif // NONLS
-
-
-// Restore the original value of the 'DEPRECATED' macro");
-#pragma pop_macro("DEPRECATED")
---]=]
-
-
---#endif // _WINNLS_
+end --// _WINNLS_

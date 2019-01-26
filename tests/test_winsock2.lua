@@ -1,6 +1,7 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local C = ffi.C 
 
 NOGDI = true
 
@@ -11,10 +12,10 @@ require("win32.winerror")
 local winsock = require("win32.winsock2")
 
 
-print("_SS_MAXSIZE: ", ffi.C._SS_MAXSIZE)
-print("_SS_ALIGNSIZE: ", ffi.C._SS_ALIGNSIZE)
+print("_SS_MAXSIZE: ", C._SS_MAXSIZE)
+print("_SS_ALIGNSIZE: ", C._SS_ALIGNSIZE)
 
-print("FIONREAD: ", string.format("0x%x",ffi.C.FIONREAD))
+print("FIONREAD: ", string.format("0x%x", C.FIONREAD))
 
 local function test_timeval()
     local tv = ffi.new("struct timeval")

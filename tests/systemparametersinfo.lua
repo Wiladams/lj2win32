@@ -1,12 +1,13 @@
 local ffi = require("ffi")
+local C = ffi.C 
 
---local errorhandling = require("win32.core.errorhandling_l1_1_1");
-local user32 = require("win32.user32")
+require("win32.errhandlingapi");
+require("win32.winuser")
 
 
 local function getBool(what)
     local pBool = ffi.new("BOOL",0)
-    local value = user32.SystemParametersInfo(what, 0, pBool, 0)
+    local value = C.SystemParametersInfo(what, 0, pBool, 0)
 
     print(value, pBool)
 
@@ -308,18 +309,16 @@ print("entry: ", entry)
         return entry.converter()
     end
 
-    local value = user32.SystemParametersInfo(entry.value, 0, pBool, 0)
+    local value = C.SystemParametersInfo(entry.value, 0, pBool, 0)
 
     return value;    
 end
 
-local function setSystemParameterInfo()
+local function setSystemParameterInfo(name, val)
+    return false;
 end
 
---[[
-local function SystemParametersInfo()
-end
-]]
+
 
 setmetatable(exports, {
 	__index = function(self, what)
@@ -327,7 +326,7 @@ setmetatable(exports, {
     end,
     
     __newindex = function(self, name, val)
-        return false;
+        return setSystemParameterInfo(name, val);
     end,
 })
 
