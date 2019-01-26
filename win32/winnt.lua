@@ -519,22 +519,22 @@ typedef DWORDLONG *PDWORDLONG;
 ULONGLONG
 __stdcall
 Int64ShllMod32 (
-    _In_ ULONGLONG Value,
-    _In_ DWORD ShiftCount
+     ULONGLONG Value,
+     DWORD ShiftCount
     );
 
 LONGLONG
 __stdcall
 Int64ShraMod32 (
-    _In_ LONGLONG Value,
-    _In_ DWORD ShiftCount
+     LONGLONG Value,
+     DWORD ShiftCount
     );
 
 ULONGLONG
 __stdcall
 Int64ShrlMod32 (
-    _In_ ULONGLONG Value,
-    _In_ DWORD ShiftCount
+     ULONGLONG Value,
+     DWORD ShiftCount
     );
 
 #if _MSC_VER >= 1200
@@ -545,8 +545,8 @@ Int64ShrlMod32 (
 __inline ULONGLONG
 __stdcall
 Int64ShllMod32 (
-    _In_ ULONGLONG Value,
-    _In_ DWORD ShiftCount
+     ULONGLONG Value,
+     DWORD ShiftCount
     )
 {
     __asm    {
@@ -561,8 +561,8 @@ Int64ShllMod32 (
 __inline LONGLONG
 __stdcall
 Int64ShraMod32 (
-    _In_ LONGLONG Value,
-    _In_ DWORD ShiftCount
+     LONGLONG Value,
+     DWORD ShiftCount
     )
 {
     __asm {
@@ -577,8 +577,8 @@ Int64ShraMod32 (
 __inline ULONGLONG
 __stdcall
 Int64ShrlMod32 (
-    _In_ ULONGLONG Value,
-    _In_ DWORD ShiftCount
+     ULONGLONG Value,
+     DWORD ShiftCount
     )
 {
     __asm    {
@@ -620,29 +620,29 @@ extern "C" {
 unsigned char
 __cdecl
 _rotl8 (
-    _In_ unsigned char Value,
-    _In_ unsigned char Shift
+     unsigned char Value,
+     unsigned char Shift
     );
 
 unsigned short
 __cdecl
 _rotl16 (
-    _In_ unsigned short Value,
-    _In_ unsigned char Shift
+     unsigned short Value,
+     unsigned char Shift
     );
 
 unsigned char
 __cdecl
 _rotr8 (
-    _In_ unsigned char Value,
-    _In_ unsigned char Shift
+     unsigned char Value,
+     unsigned char Shift
     );
 
 unsigned short
 __cdecl
 _rotr16 (
-    _In_ unsigned short Value,
-    _In_ unsigned char Shift
+     unsigned short Value,
+     unsigned char Shift
     );
 
 #pragma intrinsic(_rotl8)
@@ -662,29 +662,29 @@ _rotr16 (
 unsigned int
 __cdecl
 _rotl (
-    _In_ unsigned int Value,
-    _In_ int Shift
+     unsigned int Value,
+     int Shift
     );
 
 unsigned __int64
 __cdecl
 _rotl64 (
-    _In_ unsigned __int64 Value,
-    _In_ int Shift
+     unsigned __int64 Value,
+     int Shift
     );
 
 unsigned int
 __cdecl
 _rotr (
-    _In_ unsigned int Value,
-    _In_ int Shift
+     unsigned int Value,
+     int Shift
     );
 
 unsigned __int64
 __cdecl
 _rotr64 (
-    _In_ unsigned __int64 Value,
-    _In_ int Shift
+     unsigned __int64 Value,
+     int Shift
     );
 
 #pragma intrinsic(_rotl)
@@ -987,9 +987,9 @@ EXCEPTION_DISPOSITION
 __stdcall
 EXCEPTION_ROUTINE (
     _Inout_ struct _EXCEPTION_RECORD *ExceptionRecord,
-    _In_ PVOID EstablisherFrame,
+     PVOID EstablisherFrame,
     _Inout_ struct _CONTEXT *ContextRecord,
-    _In_ PVOID DispatcherContext
+     PVOID DispatcherContext
     );
 
 typedef EXCEPTION_ROUTINE *PEXCEPTION_ROUTINE;
@@ -1460,11 +1460,11 @@ require("win32.sdkddkver")
 #define SUBLANG_GERMAN_LIECHTENSTEIN                0x05    // German (Liechtenstein)
 #define SUBLANG_GREEK_GREECE                        0x01    // Greek (Greece)
 #define SUBLANG_GREENLANDIC_GREENLAND               0x01    // Greenlandic (Greenland) 0x046f kl-GL
-#define SUBLANG_GUJARATI_INDIA                      0x01    // Gujarati (India (Gujarati Script)) 0x0447 gu-IN
+#define SUBLANG_GUJARATI_INDIA                      0x01    // Gujarati (India (Gujarati Script)) 0x0447 gu-
 #define SUBLANG_HAUSA_NIGERIA_LATIN                 0x01    // Hausa (Latin, Nigeria) 0x0468 ha-NG-Latn
 #define SUBLANG_HAWAIIAN_US                         0x01    // Hawiian (US) 0x0475 haw-US
 #define SUBLANG_HEBREW_ISRAEL                       0x01    // Hebrew (Israel) 0x040d
-#define SUBLANG_HINDI_INDIA                         0x01    // Hindi (India) 0x0439 hi-IN
+#define SUBLANG_HINDI_INDIA                         0x01    // Hindi (India) 0x0439 hi-
 #define SUBLANG_HUNGARIAN_HUNGARY                   0x01    // Hungarian (Hungary) 0x040e
 #define SUBLANG_ICELANDIC_ICELAND                   0x01    // Icelandic (Iceland) 0x040f
 #define SUBLANG_IGBO_NIGERIA                        0x01    // Igbo (Nigeria) 0x0470 ig-NG
@@ -1475,14 +1475,14 @@ require("win32.sdkddkver")
 #define SUBLANG_ITALIAN                             0x01    // Italian
 #define SUBLANG_ITALIAN_SWISS                       0x02    // Italian (Swiss)
 #define SUBLANG_JAPANESE_JAPAN                      0x01    // Japanese (Japan) 0x0411
-#define SUBLANG_KANNADA_INDIA                       0x01    // Kannada (India (Kannada Script)) 0x044b kn-IN
+#define SUBLANG_KANNADA_INDIA                       0x01    // Kannada (India (Kannada Script)) 0x044b kn-
 #define SUBLANG_KASHMIRI_SASIA                      0x02    // Kashmiri (South Asia)
 #define SUBLANG_KASHMIRI_INDIA                      0x02    // For app compatibility only
 #define SUBLANG_KAZAK_KAZAKHSTAN                    0x01    // Kazakh (Kazakhstan) 0x043f kk-KZ
 #define SUBLANG_KHMER_CAMBODIA                      0x01    // Khmer (Cambodia) 0x0453 kh-KH
 #define SUBLANG_KICHE_GUATEMALA                     0x01    // K'iche (Guatemala)
 #define SUBLANG_KINYARWANDA_RWANDA                  0x01    // Kinyarwanda (Rwanda) 0x0487 rw-RW
-#define SUBLANG_KONKANI_INDIA                       0x01    // Konkani (India) 0x0457 kok-IN
+#define SUBLANG_KONKANI_INDIA                       0x01    // Konkani (India) 0x0457 kok-
 #define SUBLANG_KOREAN                              0x01    // Korean (Extended Wansung)
 #define SUBLANG_KYRGYZ_KYRGYZSTAN                   0x01    // Kyrgyz (Kyrgyzstan) 0x0440 ky-KG
 #define SUBLANG_LAO_LAO                             0x01    // Lao (Lao PDR) 0x0454 lo-LA
@@ -1493,11 +1493,11 @@ require("win32.sdkddkver")
 #define SUBLANG_MACEDONIAN_MACEDONIA                0x01    // Macedonian (Macedonia (FYROM)) 0x042f mk-MK
 #define SUBLANG_MALAY_MALAYSIA                      0x01    // Malay (Malaysia)
 #define SUBLANG_MALAY_BRUNEI_DARUSSALAM             0x02    // Malay (Brunei Darussalam)
-#define SUBLANG_MALAYALAM_INDIA                     0x01    // Malayalam (India (Malayalam Script) ) 0x044c ml-IN
+#define SUBLANG_MALAYALAM_INDIA                     0x01    // Malayalam (India (Malayalam Script) ) 0x044c ml-
 #define SUBLANG_MALTESE_MALTA                       0x01    // Maltese (Malta) 0x043a mt-MT
 #define SUBLANG_MAORI_NEW_ZEALAND                   0x01    // Maori (New Zealand) 0x0481 mi-NZ
 #define SUBLANG_MAPUDUNGUN_CHILE                    0x01    // Mapudungun (Chile) 0x047a arn-CL
-#define SUBLANG_MARATHI_INDIA                       0x01    // Marathi (India) 0x044e mr-IN
+#define SUBLANG_MARATHI_INDIA                       0x01    // Marathi (India) 0x044e mr-
 #define SUBLANG_MOHAWK_MOHAWK                       0x01    // Mohawk (Mohawk) 0x047c moh-CA
 #define SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA         0x01    // Mongolian (Cyrillic, Mongolia)
 #define SUBLANG_MONGOLIAN_PRC                       0x02    // Mongolian (PRC)
@@ -1506,7 +1506,7 @@ require("win32.sdkddkver")
 #define SUBLANG_NORWEGIAN_BOKMAL                    0x01    // Norwegian (Bokmal)
 #define SUBLANG_NORWEGIAN_NYNORSK                   0x02    // Norwegian (Nynorsk)
 #define SUBLANG_OCCITAN_FRANCE                      0x01    // Occitan (France) 0x0482 oc-FR
-#define SUBLANG_ODIA_INDIA                          0x01    // Odia (India (Odia Script)) 0x0448 or-IN
+#define SUBLANG_ODIA_INDIA                          0x01    // Odia (India (Odia Script)) 0x0448 or-
 #define SUBLANG_ORIYA_INDIA                         0x01    // Deprecated: use SUBLANG_ODIA_INDIA instead
 #define SUBLANG_PASHTO_AFGHANISTAN                  0x01    // Pashto (Afghanistan)
 #define SUBLANG_PERSIAN_IRAN                        0x01    // Persian (Iran) 0x0429 fa-IR
@@ -1514,7 +1514,7 @@ require("win32.sdkddkver")
 #define SUBLANG_PORTUGUESE                          0x02    // Portuguese
 #define SUBLANG_PORTUGUESE_BRAZILIAN                0x01    // Portuguese (Brazil)
 #define SUBLANG_PULAR_SENEGAL                       0x02    // Deprecated: Use SUBLANG_FULAH_SENEGAL instead
-#define SUBLANG_PUNJABI_INDIA                       0x01    // Punjabi (India (Gurmukhi Script)) 0x0446 pa-IN
+#define SUBLANG_PUNJABI_INDIA                       0x01    // Punjabi (India (Gurmukhi Script)) 0x0446 pa-
 #define SUBLANG_PUNJABI_PAKISTAN                    0x02    // Punjabi (Pakistan (Arabic Script)) 0x0846 pa-Arab-PK
 #define SUBLANG_QUECHUA_BOLIVIA                     0x01    // Quechua (Bolivia)
 #define SUBLANG_QUECHUA_ECUADOR                     0x02    // Quechua (Ecuador)
@@ -1532,7 +1532,7 @@ require("win32.sdkddkver")
 #define SUBLANG_SAMI_SOUTHERN_SWEDEN                0x07    // Southern Sami (Sweden)
 #define SUBLANG_SAMI_SKOLT_FINLAND                  0x08    // Skolt Sami (Finland)
 #define SUBLANG_SAMI_INARI_FINLAND                  0x09    // Inari Sami (Finland)
-#define SUBLANG_SANSKRIT_INDIA                      0x01    // Sanskrit (India) 0x044f sa-IN
+#define SUBLANG_SANSKRIT_INDIA                      0x01    // Sanskrit (India) 0x044f sa-
 #define SUBLANG_SCOTTISH_GAELIC                     0x01    // Scottish Gaelic (United Kingdom) 0x0491 gd-GB
 #define SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_LATIN    0x06    // Serbian (Bosnia and Herzegovina - Latin)
 #define SUBLANG_SERBIAN_BOSNIA_HERZEGOVINA_CYRILLIC 0x07    // Serbian (Bosnia and Herzegovina - Cyrillic)
@@ -1581,7 +1581,7 @@ require("win32.sdkddkver")
 #define SUBLANG_TAMIL_INDIA                         0x01    // Tamil (India)
 #define SUBLANG_TAMIL_SRI_LANKA                     0x02    // Tamil (Sri Lanka) 0x0849 ta-LK
 #define SUBLANG_TATAR_RUSSIA                        0x01    // Tatar (Russia) 0x0444 tt-RU
-#define SUBLANG_TELUGU_INDIA                        0x01    // Telugu (India (Telugu Script)) 0x044a te-IN
+#define SUBLANG_TELUGU_INDIA                        0x01    // Telugu (India (Telugu Script)) 0x044a te-
 #define SUBLANG_THAI_THAILAND                       0x01    // Thai (Thailand) 0x041e th-TH
 #define SUBLANG_TIBETAN_PRC                         0x01    // Tibetan (PRC)
 #define SUBLANG_TIGRIGNA_ERITREA                    0x02    // Tigrigna (Eritrea)
@@ -2276,28 +2276,28 @@ _Success_(return!=0)
 BOOLEAN
 _BitScanForward (
     _Out_ DWORD *Index,
-    _In_ DWORD Mask
+     DWORD Mask
     );
 
 _Success_(return!=0)
 BOOLEAN
 _BitScanReverse (
     _Out_ DWORD *Index,
-    _In_ DWORD Mask
+     DWORD Mask
     );
 
 _Success_(return!=0)
 BOOLEAN
 _BitScanForward64 (
     _Out_ DWORD *Index,
-    _In_ DWORD64 Mask
+     DWORD64 Mask
     );
 
 _Success_(return!=0)
 BOOLEAN
 _BitScanReverse64 (
     _Out_ DWORD *Index,
-    _In_ DWORD64 Mask
+     DWORD64 Mask
     );
 
 #pragma intrinsic(_BitScanForward)
@@ -2426,44 +2426,44 @@ InterlockedDecrement16 (
 SHORT
 InterlockedCompareExchange16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT ExChange,
-    _In_ SHORT Comperand
+     SHORT ExChange,
+     SHORT Comperand
     );
 
 LONG
 InterlockedAnd (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 InterlockedOr (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 InterlockedXor (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG64
 InterlockedAnd64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     );
 
 LONG64
 InterlockedOr64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     );
 
 LONG64
 InterlockedXor64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     );
 
 LONG
@@ -2479,13 +2479,13 @@ InterlockedDecrement (
 LONG
 InterlockedExchange (
     _Inout_ _Interlocked_operand_ LONG volatile *Target,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 InterlockedExchangeAdd (
     _Inout_ _Interlocked_operand_ LONG volatile *Addend,
-    _In_ LONG Value
+     LONG Value
     );
 
 #if !defined(_X86AMD64_)
@@ -2494,7 +2494,7 @@ __forceinline
 LONG
 InterlockedAdd (
     _Inout_ _Interlocked_operand_ LONG volatile *Addend,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -2506,8 +2506,8 @@ InterlockedAdd (
 LONG
 InterlockedCompareExchange (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG ExChange,
-    _In_ LONG Comperand
+     LONG ExChange,
+     LONG Comperand
     );
 
 LONG64
@@ -2523,13 +2523,13 @@ InterlockedDecrement64 (
 LONG64
 InterlockedExchange64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Target,
-    _In_ LONG64 Value
+     LONG64 Value
     );
 
 LONG64
 InterlockedExchangeAdd64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Addend,
-    _In_ LONG64 Value
+     LONG64 Value
     );
 
 #if !defined(_X86AMD64_)
@@ -2538,7 +2538,7 @@ __forceinline
 LONG64
 _InlineInterlockedAdd64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Addend,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -2550,15 +2550,15 @@ _InlineInterlockedAdd64 (
 LONG64
 InterlockedCompareExchange64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 ExChange,
-    _In_ LONG64 Comperand
+     LONG64 ExChange,
+     LONG64 Comperand
     );
 
 BOOLEAN
 InterlockedCompareExchange128 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 ExchangeHigh,
-    _In_ LONG64 ExchangeLow,
+     LONG64 ExchangeHigh,
+     LONG64 ExchangeLow,
     _Inout_ LONG64 *ComparandResult
     );
 
@@ -2618,13 +2618,13 @@ InterlockedExchangePointer(
 CHAR
 InterlockedExchange8 (
     _Inout_ _Interlocked_operand_ CHAR volatile *Target,
-    _In_ CHAR Value
+     CHAR Value
     );
 
 SHORT
 InterlockedExchange16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT ExChange
+     SHORT ExChange
     );
 
 #pragma intrinsic(_InterlockedExchange8)
@@ -2645,43 +2645,43 @@ InterlockedExchange16 (
 char 
 InterlockedExchangeAdd8 (
     _Inout_ _Interlocked_operand_ char volatile * _Addend, 
-    _In_ char _Value
+     char _Value
     );
 
 char
 InterlockedAnd8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 char
 InterlockedOr8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 char
 InterlockedXor8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 SHORT
 InterlockedAnd16(
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 SHORT
 InterlockedOr16(
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 SHORT
 InterlockedXor16(
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 #pragma intrinsic (_InterlockedExchangeAdd8)
@@ -2721,7 +2721,7 @@ __cpuidex (
 
 VOID
 _mm_clflush (
-    _In_ VOID const *Address
+     VOID const *Address
     );
 
 #pragma intrinsic(_mm_clflush)
@@ -2778,13 +2778,13 @@ _mm_pause (
 
 VOID
 _mm_prefetch (
-    _In_ CHAR const *a,
-    _In_ int sel
+     CHAR const *a,
+     int sel
     );
 
 VOID
 _m_prefetchw (
-    _In_ volatile const VOID *Source
+     volatile const VOID *Source
     );
 
 //
@@ -2838,7 +2838,7 @@ _mm_getcsr (
 
 VOID
 _mm_setcsr (
-    _In_ unsigned int MxCsr
+     unsigned int MxCsr
     );
 
 #pragma intrinsic(_mm_getcsr)
@@ -2865,7 +2865,7 @@ __getcallerseflags (
 
 DWORD
 __segmentlimit (
-    _In_ DWORD Selector
+     DWORD Selector
     );
 
 #pragma intrinsic(__segmentlimit)
@@ -2878,7 +2878,7 @@ __segmentlimit (
 
 DWORD64
 __readpmc (
-    _In_ DWORD Counter
+     DWORD Counter
     );
 
 #pragma intrinsic(__readpmc)
@@ -2904,28 +2904,28 @@ VOID
 __movsb (
     _Out_writes_all_(Count) PBYTE  Destination,
     _In_reads_(Count) BYTE  const *Source,
-    _In_ SIZE_T Count
+     SIZE_T Count
     );
 
 VOID
 __movsw (
     _Out_writes_all_(Count) PWORD   Destination,
     _In_reads_(Count) WORD   const *Source,
-    _In_ SIZE_T Count
+     SIZE_T Count
     );
 
 VOID
 __movsd (
     _Out_writes_all_(Count) PDWORD Destination,
     _In_reads_(Count) DWORD const *Source,
-    _In_ SIZE_T Count
+     SIZE_T Count
     );
 
 VOID
 __movsq (
     _Out_writes_all_(Count) PDWORD64 Destination,
     _In_reads_(Count) DWORD64 const *Source,
-    _In_ SIZE_T Count
+     SIZE_T Count
     );
 
 #pragma intrinsic(__movsb)
@@ -2940,29 +2940,29 @@ __movsq (
 VOID
 __stosb (
     _Out_writes_all_(Count) PBYTE  Destination,
-    _In_ BYTE  Value,
-    _In_ SIZE_T Count
+     BYTE  Value,
+     SIZE_T Count
     );
 
 VOID
 __stosw (
     _Out_writes_all_(Count) PWORD   Destination,
-    _In_ WORD   Value,
-    _In_ SIZE_T Count
+     WORD   Value,
+     SIZE_T Count
     );
 
 VOID
 __stosd (
     _Out_writes_all_(Count) PDWORD Destination,
-    _In_ DWORD Value,
-    _In_ SIZE_T Count
+     DWORD Value,
+     SIZE_T Count
     );
 
 VOID
 __stosq (
     _Out_writes_all_(Count) PDWORD64 Destination,
-    _In_ DWORD64 Value,
-    _In_ SIZE_T Count
+     DWORD64 Value,
+     SIZE_T Count
     );
 
 #pragma intrinsic(__stosb)
@@ -2979,14 +2979,14 @@ __stosq (
 
 LONGLONG
 MultiplyHigh (
-    _In_ LONG64 Multiplier,
-    _In_ LONG64 Multiplicand
+     LONG64 Multiplier,
+     LONG64 Multiplicand
     );
 
 ULONGLONG
 UnsignedMultiplyHigh (
-    _In_ DWORD64 Multiplier,
-    _In_ DWORD64 Multiplicand
+     DWORD64 Multiplier,
+     DWORD64 Multiplicand
     );
 
 #pragma intrinsic(__mulh)
@@ -3000,7 +3000,7 @@ UnsignedMultiplyHigh (
 
 DWORD64
 PopulationCount64 (
-    _In_ DWORD64 operand
+     DWORD64 operand
     );
 
 #if _MSC_VER >= 1500
@@ -3018,16 +3018,16 @@ PopulationCount64 (
 
 DWORD64
 ShiftLeft128 (
-    _In_ DWORD64 LowPart,
-    _In_ DWORD64 HighPart,
-    _In_ BYTE  Shift
+     DWORD64 LowPart,
+     DWORD64 HighPart,
+     BYTE  Shift
     );
 
 DWORD64
 ShiftRight128 (
-    _In_ DWORD64 LowPart,
-    _In_ DWORD64 HighPart,
-    _In_ BYTE  Shift
+     DWORD64 LowPart,
+     DWORD64 HighPart,
+     BYTE  Shift
     );
 
 #pragma intrinsic(__shiftleft128)
@@ -3041,8 +3041,8 @@ ShiftRight128 (
 
 LONG64
 Multiply128 (
-    _In_ LONG64 Multiplier,
-    _In_ LONG64 Multiplicand,
+     LONG64 Multiplier,
+     LONG64 Multiplicand,
     _Out_ LONG64 *HighProduct
     );
 
@@ -3054,8 +3054,8 @@ Multiply128 (
 
 DWORD64
 UnsignedMultiply128 (
-    _In_ DWORD64 Multiplier,
-    _In_ DWORD64 Multiplicand,
+     DWORD64 Multiplier,
+     DWORD64 Multiplicand,
     _Out_ DWORD64 *HighProduct
     );
 
@@ -3066,9 +3066,9 @@ UnsignedMultiply128 (
 __forceinline
 LONG64
 MultiplyExtract128 (
-    _In_ LONG64 Multiplier,
-    _In_ LONG64 Multiplicand,
-    _In_ BYTE  Shift
+     LONG64 Multiplier,
+     LONG64 Multiplicand,
+     BYTE  Shift
     )
 
 {
@@ -3104,9 +3104,9 @@ MultiplyExtract128 (
 __forceinline
 DWORD64
 UnsignedMultiplyExtract128 (
-    _In_ DWORD64 Multiplier,
-    _In_ DWORD64 Multiplicand,
-    _In_ BYTE  Shift
+     DWORD64 Multiplier,
+     DWORD64 Multiplicand,
+     BYTE  Shift
     )
 
 {
@@ -3126,46 +3126,46 @@ UnsignedMultiplyExtract128 (
 
 BYTE 
 __readgsbyte (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 WORD  
 __readgsword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 DWORD
 __readgsdword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 DWORD64
 __readgsqword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __writegsbyte (
-    _In_ DWORD Offset,
-    _In_ BYTE  Data
+     DWORD Offset,
+     BYTE  Data
     );
 
 VOID
 __writegsword (
-    _In_ DWORD Offset,
-    _In_ WORD   Data
+     DWORD Offset,
+     WORD   Data
     );
 
 VOID
 __writegsdword (
-    _In_ DWORD Offset,
-    _In_ DWORD Data
+     DWORD Offset,
+     DWORD Data
     );
 
 VOID
 __writegsqword (
-    _In_ DWORD Offset,
-    _In_ DWORD64 Data
+     DWORD Offset,
+     DWORD64 Data
     );
 
 #pragma intrinsic(__readgsbyte)
@@ -3181,46 +3181,46 @@ __writegsqword (
 
 VOID
 __incgsbyte (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addgsbyte (
-    _In_ DWORD Offset,
-    _In_ BYTE  Value
+     DWORD Offset,
+     BYTE  Value
     );
 
 VOID
 __incgsword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addgsword (
-    _In_ DWORD Offset,
-    _In_ WORD   Value
+     DWORD Offset,
+     WORD   Value
     );
 
 VOID
 __incgsdword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addgsdword (
-    _In_ DWORD Offset,
-    _In_ DWORD Value
+     DWORD Offset,
+     DWORD Value
     );
 
 VOID
 __incgsqword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addgsqword (
-    _In_ DWORD Offset,
-    _In_ DWORD64 Value
+     DWORD Offset,
+     DWORD64 Value
     );
 
 #if 0
@@ -3520,7 +3520,7 @@ typedef
 _Function_class_(GET_RUNTIME_FUNCTION_CALLBACK)
 PRUNTIME_FUNCTION
 GET_RUNTIME_FUNCTION_CALLBACK (
-    _In_ DWORD64 ControlPc,
+     DWORD64 ControlPc,
     _In_opt_ PVOID Context
     );
 typedef GET_RUNTIME_FUNCTION_CALLBACK *PGET_RUNTIME_FUNCTION_CALLBACK;
@@ -3529,8 +3529,8 @@ typedef
 _Function_class_(OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK)
 DWORD   
 OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK (
-    _In_ HANDLE Process,
-    _In_ PVOID TableAddress,
+     HANDLE Process,
+     PVOID TableAddress,
     _Out_ PDWORD Entries,
     _Out_ PRUNTIME_FUNCTION* Functions
     );
@@ -4017,7 +4017,7 @@ YieldProcessor (
 FORCEINLINE
 CHAR
 ReadAcquire8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -4032,7 +4032,7 @@ ReadAcquire8 (
 FORCEINLINE
 CHAR
 ReadNoFence8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -4047,7 +4047,7 @@ FORCEINLINE
 VOID
 WriteRelease8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -4061,7 +4061,7 @@ FORCEINLINE
 VOID
 WriteNoFence8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -4073,7 +4073,7 @@ WriteNoFence8 (
 FORCEINLINE
 SHORT
 ReadAcquire16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -4088,7 +4088,7 @@ ReadAcquire16 (
 FORCEINLINE
 SHORT
 ReadNoFence16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -4103,7 +4103,7 @@ FORCEINLINE
 VOID
 WriteRelease16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -4117,7 +4117,7 @@ FORCEINLINE
 VOID
 WriteNoFence16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -4129,7 +4129,7 @@ WriteNoFence16 (
 FORCEINLINE
 LONG
 ReadAcquire (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -4144,7 +4144,7 @@ ReadAcquire (
 FORCEINLINE
 LONG
 ReadNoFence (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -4159,7 +4159,7 @@ CFORCEINLINE
 VOID
 WriteRelease (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -4173,7 +4173,7 @@ FORCEINLINE
 VOID
 WriteNoFence (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -4185,7 +4185,7 @@ WriteNoFence (
 FORCEINLINE
 LONG64
 ReadAcquire64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -4200,7 +4200,7 @@ ReadAcquire64 (
 FORCEINLINE
 LONG64
 ReadNoFence64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -4215,7 +4215,7 @@ CFORCEINLINE
 VOID
 WriteRelease64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -4229,7 +4229,7 @@ FORCEINLINE
 VOID
 WriteNoFence64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -4285,7 +4285,7 @@ ReadTimeStampCounter(
 FORCEINLINE
 DWORD64
 ReadPMC (
-    _In_ DWORD Counter
+     DWORD Counter
     )
 {
 
@@ -4556,7 +4556,7 @@ typedef
 _Function_class_(GET_RUNTIME_FUNCTION_CALLBACK)
 PRUNTIME_FUNCTION
 GET_RUNTIME_FUNCTION_CALLBACK (
-    _In_ DWORD ControlPc,
+     DWORD ControlPc,
     _In_opt_ PVOID Context
     );
 typedef GET_RUNTIME_FUNCTION_CALLBACK *PGET_RUNTIME_FUNCTION_CALLBACK;
@@ -4565,8 +4565,8 @@ typedef
 _Function_class_(OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK)
 DWORD   
 OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK (
-    _In_ HANDLE Process,
-    _In_ PVOID TableAddress,
+     HANDLE Process,
+     PVOID TableAddress,
     _Out_ PDWORD Entries,
     _Out_ PRUNTIME_FUNCTION* Functions
     );
@@ -5053,7 +5053,7 @@ YieldProcessor (
 FORCEINLINE
 CHAR
 ReadAcquire8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -5068,7 +5068,7 @@ ReadAcquire8 (
 FORCEINLINE
 CHAR
 ReadNoFence8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -5083,7 +5083,7 @@ FORCEINLINE
 VOID
 WriteRelease8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -5097,7 +5097,7 @@ FORCEINLINE
 VOID
 WriteNoFence8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -5109,7 +5109,7 @@ WriteNoFence8 (
 FORCEINLINE
 SHORT
 ReadAcquire16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -5124,7 +5124,7 @@ ReadAcquire16 (
 FORCEINLINE
 SHORT
 ReadNoFence16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -5139,7 +5139,7 @@ FORCEINLINE
 VOID
 WriteRelease16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -5153,7 +5153,7 @@ FORCEINLINE
 VOID
 WriteNoFence16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -5165,7 +5165,7 @@ WriteNoFence16 (
 FORCEINLINE
 LONG
 ReadAcquire (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -5180,7 +5180,7 @@ ReadAcquire (
 FORCEINLINE
 LONG
 ReadNoFence (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -5195,7 +5195,7 @@ FORCEINLINE
 VOID
 WriteRelease (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -5209,7 +5209,7 @@ FORCEINLINE
 VOID
 WriteNoFence (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -5221,7 +5221,7 @@ WriteNoFence (
 FORCEINLINE
 LONG64
 ReadAcquire64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -5236,7 +5236,7 @@ ReadAcquire64 (
 FORCEINLINE
 LONG64
 ReadNoFence64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -5251,7 +5251,7 @@ FORCEINLINE
 VOID
 WriteRelease64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -5265,7 +5265,7 @@ FORCEINLINE
 VOID
 WriteNoFence64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -5331,7 +5331,7 @@ ReadTimeStampCounter(
 FORCEINLINE
 DWORD64
 ReadPMC (
-    _In_ DWORD Counter
+     DWORD Counter
     )
 {
     // ARM64_WORKITEM: These can be directly accessed, but
@@ -5638,7 +5638,7 @@ typedef
 _Function_class_(GET_RUNTIME_FUNCTION_CALLBACK)
 PRUNTIME_FUNCTION
 GET_RUNTIME_FUNCTION_CALLBACK (
-    _In_ DWORD64 ControlPc,
+     DWORD64 ControlPc,
     _In_opt_ PVOID Context
     );
 typedef GET_RUNTIME_FUNCTION_CALLBACK *PGET_RUNTIME_FUNCTION_CALLBACK;
@@ -5647,8 +5647,8 @@ typedef
 _Function_class_(OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK)
 DWORD   
 OUT_OF_PROCESS_FUNCTION_TABLE_CALLBACK (
-    _In_ HANDLE Process,
-    _In_ PVOID TableAddress,
+     HANDLE Process,
+     PVOID TableAddress,
     _Out_ PDWORD Entries,
     _Out_ PRUNTIME_FUNCTION* Functions
     );
@@ -5788,7 +5788,7 @@ DbgRaiseAssertionFailure (
 
 void
 __break(
-    _In_ int StIIM
+     int StIIM
     );
 
 #pragma intrinsic (__break)
@@ -5810,7 +5810,7 @@ __break(
 
 void
 __break(
-    _In_ int Code
+     int Code
     );
 
 #pragma intrinsic (__break)
@@ -5976,14 +5976,14 @@ _Success_(return != 0)
 BOOLEAN
 _BitScanForward (
     _Out_ DWORD *Index,
-    _In_ DWORD Mask
+     DWORD Mask
     );
 
 _Success_(return != 0)
 BOOLEAN
 _BitScanReverse (
     _Out_ DWORD *Index,
-    _In_ DWORD Mask
+     DWORD Mask
     );
 
 #pragma intrinsic(_BitScanForward)
@@ -5994,7 +5994,7 @@ FORCEINLINE
 BOOLEAN
 _InlineBitScanForward64 (
     _Out_ DWORD *Index,
-    _In_ DWORD64 Mask
+     DWORD64 Mask
     )
 {
     if (_BitScanForward(Index, (DWORD)Mask)) {
@@ -6016,7 +6016,7 @@ FORCEINLINE
 BOOLEAN
 _InlineBitScanReverse64 (
     _Out_ DWORD *Index,
-    _In_ DWORD64 Mask
+     DWORD64 Mask
     )
 {
     if (_BitScanReverse(Index, (DWORD)(Mask >> 32))) {
@@ -6074,15 +6074,15 @@ InterlockedDecrement16 (
 SHORT
 InterlockedCompareExchange16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT ExChange,
-    _In_ SHORT Comperand
+     SHORT ExChange,
+     SHORT Comperand
     );
 
 LONG64
 InterlockedCompareExchange64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 ExChange,
-    _In_ LONG64 Comperand
+     LONG64 ExChange,
+     LONG64 Comperand
     );
 
 #pragma intrinsic(_InterlockedIncrement16)
@@ -6142,19 +6142,19 @@ InterlockedCompareExchange64 (
 LONG
 InterlockedAnd (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 InterlockedOr (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 InterlockedXor (
     _Inout_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
@@ -6173,21 +6173,21 @@ LONG
 __cdecl
 InterlockedExchange (
     _Inout_ _Interlocked_operand_ LONG volatile *Target,
-    _In_ LONG Value
+     LONG Value
     );
 
 LONG
 __cdecl
 InterlockedExchangeAdd (
     _Inout_ _Interlocked_operand_ LONG volatile *Addend,
-    _In_ LONG Value
+     LONG Value
     );
 
 FORCEINLINE
 LONG
 _InlineInterlockedAdd (
     _Inout_ _Interlocked_operand_ LONG volatile *Addend,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -6199,8 +6199,8 @@ LONG
 CDECL_NON_WVMPURE
 InterlockedCompareExchange (
     _Inout_ _Interlocked_operand_ LONG volatile * Destination,
-    _In_ LONG ExChange,
-    _In_ LONG Comperand
+     LONG ExChange,
+     LONG Comperand
     );
 
 #undef _InterlockedExchangePointer
@@ -6270,13 +6270,13 @@ _InlineInterlockedCompareExchangePointer (
 CHAR
 InterlockedExchange8 (
     _Inout_ _Interlocked_operand_ CHAR volatile *Target,
-    _In_ CHAR Value
+     CHAR Value
     );
 
 SHORT
 InterlockedExchange16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT ExChange
+     SHORT ExChange
     );
 
 #pragma intrinsic(_InterlockedExchange8)
@@ -6300,50 +6300,50 @@ InterlockedExchange16 (
 char 
 InterlockedExchangeAdd8 (
     _Inout_ _Interlocked_operand_ char volatile * _Addend, 
-    _In_ char _Value
+     char _Value
     );
 
 char
 InterlockedAnd8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 char
 InterlockedOr8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 char
 InterlockedXor8 (
     _Inout_ _Interlocked_operand_ char volatile *Destination,
-    _In_ char Value
+     char Value
     );
 
 SHORT
 _InterlockedAnd16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 SHORT
 InterlockedXor16(
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 SHORT
 _InterlockedCompareExchange16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT ExChange,
-    _In_ SHORT Comperand
+     SHORT ExChange,
+     SHORT Comperand
     );
 
 SHORT
 _InterlockedOr16 (
     _Inout_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     );
 
 SHORT
@@ -6380,7 +6380,7 @@ FORCEINLINE
 LONG64
 _InlineInterlockedAnd64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 {
     LONG64 Old;
@@ -6403,7 +6403,7 @@ FORCEINLINE
 LONG64
 _InlineInterlockedAdd64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Addend,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 {
     LONG64 Old;
@@ -6440,7 +6440,7 @@ _InlineInterlockedAdd64 (
 LONG
 _InterlockedXor (
     _Inout_ _Interlocked_operand_ LONG volatile *Target,
-    _In_ LONG Set
+     LONG Set
     );
 
 #pragma intrinsic(_InterlockedXor)
@@ -6453,7 +6453,7 @@ LONGLONG
 FORCEINLINE
 _InlineInterlockedOr64 (
     _Inout_ _Interlocked_operand_ LONGLONG volatile *Destination,
-    _In_ LONGLONG Value
+     LONGLONG Value
     )
 {
     LONGLONG Old;
@@ -6473,7 +6473,7 @@ FORCEINLINE
 LONG64
 _InlineInterlockedXor64 (
     _Inout_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 {
     LONG64 Old;
@@ -6533,7 +6533,7 @@ FORCEINLINE
 LONGLONG
 _InlineInterlockedExchange64 (
     _Inout_ _Interlocked_operand_ LONGLONG volatile *Target,
-    _In_ LONGLONG Value
+     LONGLONG Value
     )
 {
     LONGLONG Old;
@@ -6556,7 +6556,7 @@ FORCEINLINE
 LONGLONG
 _InlineInterlockedExchangeAdd64 (
     _Inout_ _Interlocked_operand_ LONGLONG volatile *Addend,
-    _In_ LONGLONG Value
+     LONGLONG Value
     )
 {
     LONGLONG Old;
@@ -6579,35 +6579,35 @@ _InlineInterlockedExchangeAdd64 (
 
 VOID
 __incfsbyte (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addfsbyte (
-    _In_ DWORD Offset,
-    _In_ BYTE  Value
+     DWORD Offset,
+     BYTE  Value
     );
 
 VOID
 __incfsword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addfsword (
-    _In_ DWORD Offset,
-    _In_ WORD   Value
+     DWORD Offset,
+     WORD   Value
     );
 
 VOID
 __incfsdword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __addfsdword (
-    _In_ DWORD Offset,
-    _In_ DWORD Value
+     DWORD Offset,
+     DWORD Value
     );
 
 #pragma intrinsic(__incfsbyte)
@@ -6650,35 +6650,35 @@ __cpuidex (
 
 BYTE 
 __readfsbyte (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 WORD  
 __readfsword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 DWORD
 __readfsdword (
-    _In_ DWORD Offset
+     DWORD Offset
     );
 
 VOID
 __writefsbyte (
-    _In_ DWORD Offset,
-    _In_ BYTE  Data
+     DWORD Offset,
+     BYTE  Data
     );
 
 VOID
 __writefsword (
-    _In_ DWORD Offset,
-    _In_ WORD   Data
+     DWORD Offset,
+     WORD   Data
     );
 
 VOID
 __writefsdword (
-    _In_ DWORD Offset,
-    _In_ DWORD Data
+     DWORD Offset,
+     DWORD Data
     );
 
 #pragma intrinsic(__readfsbyte)
@@ -6747,8 +6747,8 @@ MemoryBarrier (
 
 VOID
 _mm_prefetch (
-    _In_ CHAR const *a,
-    _In_ int sel
+     CHAR const *a,
+     int sel
     );
 
 #pragma intrinsic(_mm_prefetch)
@@ -6776,7 +6776,7 @@ _mm_prefetch (
 
 DWORD64
 __readpmc (
-    _In_ DWORD Counter
+     DWORD Counter
     );
 
 #pragma intrinsic(__readpmc)
@@ -6921,7 +6921,7 @@ typedef struct _CONTEXT {
     // is being used to modify a threads context, then only that
     // portion of the threads context will be modified.
     //
-    // If the context record is used as an IN OUT parameter to capture
+    // If the context record is used as an  OUT parameter to capture
     // the context of a thread, then only those portions of the thread's
     // context corresponding to set flags will be returned.
     //
@@ -7046,7 +7046,7 @@ extern "C" {
 FORCEINLINE
 CHAR
 ReadAcquire8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -7060,7 +7060,7 @@ ReadAcquire8 (
 FORCEINLINE
 CHAR
 ReadNoFence8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -7075,7 +7075,7 @@ FORCEINLINE
 VOID
 WriteRelease8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -7088,7 +7088,7 @@ FORCEINLINE
 VOID
 WriteNoFence8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -7100,7 +7100,7 @@ WriteNoFence8 (
 FORCEINLINE
 SHORT
 ReadAcquire16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -7114,7 +7114,7 @@ ReadAcquire16 (
 FORCEINLINE
 SHORT
 ReadNoFence16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -7129,7 +7129,7 @@ FORCEINLINE
 VOID
 WriteRelease16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -7142,7 +7142,7 @@ FORCEINLINE
 VOID
 WriteNoFence16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -7154,7 +7154,7 @@ WriteNoFence16 (
 FORCEINLINE
 LONG
 ReadAcquire (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -7168,7 +7168,7 @@ ReadAcquire (
 FORCEINLINE
 LONG
 ReadNoFence (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -7183,7 +7183,7 @@ CFORCEINLINE
 VOID
 WriteRelease (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -7196,7 +7196,7 @@ FORCEINLINE
 VOID
 WriteNoFence (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -7208,7 +7208,7 @@ WriteNoFence (
 FORCEINLINE
 LONG64
 ReadAcquire64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -7222,7 +7222,7 @@ ReadAcquire64 (
 FORCEINLINE
 LONG64
 ReadNoFence64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -7237,7 +7237,7 @@ CFORCEINLINE
 VOID
 WriteRelease64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -7250,7 +7250,7 @@ FORCEINLINE
 VOID
 WriteNoFence64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -7272,7 +7272,7 @@ WriteNoFence64 (
 FORCEINLINE
 CHAR
 ReadRaw8 (
-    _In_ _Interlocked_operand_ CHAR const volatile *Source
+     _Interlocked_operand_ CHAR const volatile *Source
     )
 
 {
@@ -7287,7 +7287,7 @@ FORCEINLINE
 VOID
 WriteRaw8 (
     _Out_ _Interlocked_operand_ CHAR volatile *Destination,
-    _In_ CHAR Value
+     CHAR Value
     )
 
 {
@@ -7299,7 +7299,7 @@ WriteRaw8 (
 FORCEINLINE
 SHORT
 ReadRaw16 (
-    _In_ _Interlocked_operand_ SHORT const volatile *Source
+     _Interlocked_operand_ SHORT const volatile *Source
     )
 
 {
@@ -7314,7 +7314,7 @@ FORCEINLINE
 VOID
 WriteRaw16 (
     _Out_ _Interlocked_operand_ SHORT volatile *Destination,
-    _In_ SHORT Value
+     SHORT Value
     )
 
 {
@@ -7326,7 +7326,7 @@ WriteRaw16 (
 FORCEINLINE
 LONG
 ReadRaw (
-    _In_ _Interlocked_operand_ LONG const volatile *Source
+     _Interlocked_operand_ LONG const volatile *Source
     )
 
 {
@@ -7341,7 +7341,7 @@ CFORCEINLINE
 VOID
 WriteRaw (
     _Out_ _Interlocked_operand_ LONG volatile *Destination,
-    _In_ LONG Value
+     LONG Value
     )
 
 {
@@ -7353,7 +7353,7 @@ WriteRaw (
 FORCEINLINE
 LONG64
 ReadRaw64 (
-    _In_ _Interlocked_operand_ LONG64 const volatile *Source
+     _Interlocked_operand_ LONG64 const volatile *Source
     )
 
 {
@@ -7368,7 +7368,7 @@ FORCEINLINE
 VOID
 WriteRaw64 (
     _Out_ _Interlocked_operand_ LONG64 volatile *Destination,
-    _In_ LONG64 Value
+     LONG64 Value
     )
 
 {
@@ -7384,7 +7384,7 @@ WriteRaw64 (
 FORCEINLINE
 BYTE 
 ReadUCharAcquire (
-    _In_ _Interlocked_operand_ BYTE  const volatile *Source
+     _Interlocked_operand_ BYTE  const volatile *Source
     )
 
 {
@@ -7395,7 +7395,7 @@ ReadUCharAcquire (
 FORCEINLINE
 BYTE 
 ReadUCharNoFence (
-    _In_ _Interlocked_operand_ BYTE  const volatile *Source
+     _Interlocked_operand_ BYTE  const volatile *Source
     )
 
 {
@@ -7406,7 +7406,7 @@ ReadUCharNoFence (
 FORCEINLINE
 BYTE 
 ReadBooleanAcquire (
-    _In_ _Interlocked_operand_ BOOLEAN const volatile *Source
+     _Interlocked_operand_ BOOLEAN const volatile *Source
     )
 
 {
@@ -7417,7 +7417,7 @@ ReadBooleanAcquire (
 FORCEINLINE
 BYTE 
 ReadBooleanNoFence (
-    _In_ _Interlocked_operand_ BOOLEAN const volatile *Source
+     _Interlocked_operand_ BOOLEAN const volatile *Source
     )
 
 {
@@ -7428,7 +7428,7 @@ ReadBooleanNoFence (
 FORCEINLINE
 BYTE 
 ReadUCharRaw (
-    _In_ _Interlocked_operand_ BYTE  const volatile *Source
+     _Interlocked_operand_ BYTE  const volatile *Source
     )
 
 {
@@ -7440,7 +7440,7 @@ FORCEINLINE
 VOID
 WriteUCharRelease (
     _Out_ _Interlocked_operand_ BYTE  volatile *Destination,
-    _In_ BYTE  Value
+     BYTE  Value
     )
 
 {
@@ -7453,7 +7453,7 @@ FORCEINLINE
 VOID
 WriteUCharNoFence (
     _Out_ _Interlocked_operand_ BYTE  volatile *Destination,
-    _In_ BYTE  Value
+     BYTE  Value
     )
 
 {
@@ -7466,7 +7466,7 @@ FORCEINLINE
 VOID
 WriteBooleanRelease (
     _Out_ _Interlocked_operand_ BOOLEAN volatile *Destination,
-    _In_ BOOLEAN Value
+     BOOLEAN Value
     )
 
 {
@@ -7479,7 +7479,7 @@ FORCEINLINE
 VOID
 WriteBooleanNoFence (
     _Out_ _Interlocked_operand_ BOOLEAN volatile *Destination,
-    _In_ BOOLEAN Value
+     BOOLEAN Value
     )
 
 {
@@ -7492,7 +7492,7 @@ FORCEINLINE
 VOID
 WriteUCharRaw (
     _Out_ _Interlocked_operand_ BYTE  volatile *Destination,
-    _In_ BYTE  Value
+     BYTE  Value
     )
 
 {
@@ -7504,7 +7504,7 @@ WriteUCharRaw (
 FORCEINLINE
 WORD  
 ReadUShortAcquire (
-    _In_ _Interlocked_operand_ WORD   const volatile *Source
+     _Interlocked_operand_ WORD   const volatile *Source
     )
 
 {
@@ -7515,7 +7515,7 @@ ReadUShortAcquire (
 FORCEINLINE
 WORD  
 ReadUShortNoFence (
-    _In_ _Interlocked_operand_ WORD   const volatile *Source
+     _Interlocked_operand_ WORD   const volatile *Source
     )
 
 {
@@ -7526,7 +7526,7 @@ ReadUShortNoFence (
 FORCEINLINE
 WORD  
 ReadUShortRaw (
-    _In_ _Interlocked_operand_ WORD   const volatile *Source
+     _Interlocked_operand_ WORD   const volatile *Source
     )
 
 {
@@ -7538,7 +7538,7 @@ FORCEINLINE
 VOID
 WriteUShortRelease (
     _Out_ _Interlocked_operand_ WORD   volatile *Destination,
-    _In_ WORD   Value
+     WORD   Value
     )
 
 {
@@ -7551,7 +7551,7 @@ FORCEINLINE
 VOID
 WriteUShortNoFence (
     _Out_ _Interlocked_operand_ WORD   volatile *Destination,
-    _In_ WORD   Value
+     WORD   Value
     )
 
 {
@@ -7564,7 +7564,7 @@ FORCEINLINE
 VOID
 WriteUShortRaw (
     _Out_ _Interlocked_operand_ WORD   volatile *Destination,
-    _In_ WORD   Value
+     WORD   Value
     )
 
 {
@@ -7576,7 +7576,7 @@ WriteUShortRaw (
 FORCEINLINE
 DWORD
 ReadULongAcquire (
-    _In_ _Interlocked_operand_ DWORD const volatile *Source
+     _Interlocked_operand_ DWORD const volatile *Source
     )
 
 {
@@ -7587,7 +7587,7 @@ ReadULongAcquire (
 FORCEINLINE
 DWORD
 ReadULongNoFence (
-    _In_ _Interlocked_operand_ DWORD const volatile *Source
+     _Interlocked_operand_ DWORD const volatile *Source
     )
 
 {
@@ -7598,7 +7598,7 @@ ReadULongNoFence (
 FORCEINLINE
 DWORD
 ReadULongRaw (
-    _In_ _Interlocked_operand_ DWORD const volatile *Source
+     _Interlocked_operand_ DWORD const volatile *Source
     )
 
 {
@@ -7610,7 +7610,7 @@ CFORCEINLINE
 VOID
 WriteULongRelease (
     _Out_ _Interlocked_operand_ DWORD volatile *Destination,
-    _In_ DWORD Value
+     DWORD Value
     )
 
 {
@@ -7623,7 +7623,7 @@ FORCEINLINE
 VOID
 WriteULongNoFence (
     _Out_ _Interlocked_operand_ DWORD volatile *Destination,
-    _In_ DWORD Value
+     DWORD Value
     )
 
 {
@@ -7636,7 +7636,7 @@ FORCEINLINE
 VOID
 WriteULongRaw (
     _Out_ _Interlocked_operand_ DWORD volatile *Destination,
-    _In_ DWORD Value
+     DWORD Value
     )
 
 {
@@ -7648,7 +7648,7 @@ WriteULongRaw (
 FORCEINLINE
 DWORD64
 ReadULong64Acquire (
-    _In_ _Interlocked_operand_ DWORD64 const volatile *Source
+     _Interlocked_operand_ DWORD64 const volatile *Source
     )
 
 {
@@ -7659,7 +7659,7 @@ ReadULong64Acquire (
 FORCEINLINE
 DWORD64
 ReadULong64NoFence (
-    _In_ _Interlocked_operand_ DWORD64 const volatile *Source
+     _Interlocked_operand_ DWORD64 const volatile *Source
     )
 
 {
@@ -7670,7 +7670,7 @@ ReadULong64NoFence (
 FORCEINLINE
 DWORD64
 ReadULong64Raw (
-    _In_ _Interlocked_operand_ DWORD64 const volatile *Source
+     _Interlocked_operand_ DWORD64 const volatile *Source
     )
 
 {
@@ -7682,7 +7682,7 @@ CFORCEINLINE
 VOID
 WriteULong64Release (
     _Out_ _Interlocked_operand_ DWORD64 volatile *Destination,
-    _In_ DWORD64 Value
+     DWORD64 Value
     )
 
 {
@@ -7695,7 +7695,7 @@ FORCEINLINE
 VOID
 WriteULong64NoFence (
     _Out_ _Interlocked_operand_ DWORD64 volatile *Destination,
-    _In_ DWORD64 Value
+     DWORD64 Value
     )
 
 {
@@ -7708,7 +7708,7 @@ FORCEINLINE
 VOID
 WriteULong64Raw (
     _Out_ _Interlocked_operand_ DWORD64 volatile *Destination,
-    _In_ DWORD64 Value
+     DWORD64 Value
     )
 
 {
@@ -7734,7 +7734,7 @@ WriteULong64Raw (
 FORCEINLINE
 PVOID
 ReadPointerAcquire (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7745,7 +7745,7 @@ ReadPointerAcquire (
 FORCEINLINE
 PVOID
 ReadPointerNoFence (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7756,7 +7756,7 @@ ReadPointerNoFence (
 FORCEINLINE
 PVOID
 ReadPointerRaw (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7768,7 +7768,7 @@ CFORCEINLINE
 VOID
 WritePointerRelease (
     _Out_ _Interlocked_operand_ PVOID volatile *Destination,
-    _In_ PVOID Value
+     PVOID Value
     )
 
 {
@@ -7832,7 +7832,7 @@ WritePointerRaw (
 FORCEINLINE
 PVOID
 ReadPointerAcquire (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7843,7 +7843,7 @@ ReadPointerAcquire (
 FORCEINLINE
 PVOID
 ReadPointerNoFence (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7854,7 +7854,7 @@ ReadPointerNoFence (
 FORCEINLINE
 PVOID
 ReadPointerRaw (
-    _In_ _Interlocked_operand_ PVOID const volatile *Source
+     _Interlocked_operand_ PVOID const volatile *Source
     )
 
 {
@@ -7866,7 +7866,7 @@ FORCEINLINE
 VOID
 WritePointerRelease (
     _Out_ _Interlocked_operand_ PVOID volatile *Destination,
-    _In_ PVOID Value
+     PVOID Value
     )
 
 {
@@ -7879,7 +7879,7 @@ FORCEINLINE
 VOID
 WritePointerNoFence (
     _Out_ _Interlocked_operand_ PVOID volatile *Destination,
-    _In_ PVOID Value
+     PVOID Value
     )
 
 {
@@ -7892,7 +7892,7 @@ FORCEINLINE
 VOID
 WritePointerRaw (
     _Out_ _Interlocked_operand_ PVOID volatile *Destination,
-    _In_ PVOID Value
+     PVOID Value
     )
 
 {
@@ -8006,7 +8006,7 @@ typedef struct _WOW64_CONTEXT {
     // is being used to modify a threads context, then only that
     // portion of the threads context will be modified.
     //
-    // If the context record is used as an IN OUT parameter to capture
+    // If the context record is used as an  OUT parameter to capture
     // the context of a thread, then only those portions of the thread's
     // context corresponding to set flags will be returned.
     //
@@ -8189,8 +8189,8 @@ RtlUnwind2 (
     _In_opt_ FRAME_POINTERS TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue,
-    _In_ PCONTEXT ContextRecord
+     PVOID ReturnValue,
+     PCONTEXT ContextRecord
     );
 
 #endif
@@ -16401,8 +16401,8 @@ _Success_(return != 0)
 WORD  
 __stdcall
 RtlCaptureStackBackTrace(
-    _In_ DWORD FramesToSkip,
-    _In_ DWORD FramesToCapture,
+     DWORD FramesToSkip,
+     DWORD FramesToCapture,
     _Out_writes_to_(FramesToCapture, return) PVOID * BackTrace,
     _Out_opt_ PDWORD BackTraceHash
     );
@@ -16446,7 +16446,7 @@ RtlUnwind(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue
+     PVOID ReturnValue
     );
 
 
@@ -16465,8 +16465,8 @@ BOOLEAN
 __cdecl
 RtlAddFunctionTable(
     _In_reads_(EntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ DWORD64 BaseAddress
+     DWORD EntryCount,
+     DWORD64 BaseAddress
     );
 
 
@@ -16474,7 +16474,7 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlDeleteFunctionTable(
-    _In_ PRUNTIME_FUNCTION FunctionTable
+     PRUNTIME_FUNCTION FunctionTable
     );
 
 
@@ -16482,10 +16482,10 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlInstallFunctionTableCallback(
-    _In_ DWORD64 TableIdentifier,
-    _In_ DWORD64 BaseAddress,
-    _In_ DWORD Length,
-    _In_ PGET_RUNTIME_FUNCTION_CALLBACK Callback,
+     DWORD64 TableIdentifier,
+     DWORD64 BaseAddress,
+     DWORD Length,
+     PGET_RUNTIME_FUNCTION_CALLBACK Callback,
     _In_opt_ PVOID Context,
     _In_opt_ PCWSTR OutOfProcessCallbackDll
     );
@@ -16502,10 +16502,10 @@ __stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ DWORD MaximumEntryCount,
-    _In_ ULONG_PTR RangeBase,
-    _In_ ULONG_PTR RangeEnd
+     DWORD EntryCount,
+     DWORD MaximumEntryCount,
+     ULONG_PTR RangeBase,
+     ULONG_PTR RangeEnd
     );
 
 
@@ -16514,7 +16514,7 @@ VOID
 __stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
-    _In_ DWORD NewEntryCount
+     DWORD NewEntryCount
     );
 
 
@@ -16522,7 +16522,7 @@ NTSYSAPI
 VOID
 __stdcall
 RtlDeleteGrowableFunctionTable(
-    _In_ PVOID DynamicTable
+     PVOID DynamicTable
     );
 
 
@@ -16541,7 +16541,7 @@ NTSYSAPI
 PRUNTIME_FUNCTION
 __stdcall
 RtlLookupFunctionEntry(
-    _In_ DWORD64 ControlPc,
+     DWORD64 ControlPc,
     _Out_ PDWORD64 ImageBase,
     _Inout_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
@@ -16558,7 +16558,7 @@ NTSYSAPI
 VOID
 __cdecl
 RtlRestoreContext(
-    _In_ PCONTEXT ContextRecord,
+     PCONTEXT ContextRecord,
     _In_opt_ struct _EXCEPTION_RECORD * ExceptionRecord
     );
 
@@ -16577,8 +16577,8 @@ RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue,
-    _In_ PCONTEXT ContextRecord,
+     PVOID ReturnValue,
+     PCONTEXT ContextRecord,
     _In_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
 
@@ -16594,10 +16594,10 @@ NTSYSAPI
 PEXCEPTION_ROUTINE
 __stdcall
 RtlVirtualUnwind(
-    _In_ DWORD HandlerType,
-    _In_ DWORD64 ImageBase,
-    _In_ DWORD64 ControlPc,
-    _In_ PRUNTIME_FUNCTION FunctionEntry,
+     DWORD HandlerType,
+     DWORD64 ImageBase,
+     DWORD64 ControlPc,
+     PRUNTIME_FUNCTION FunctionEntry,
     _Inout_ PCONTEXT ContextRecord,
     _Out_ PVOID * HandlerData,
     _Out_ PDWORD64 EstablisherFrame,
@@ -16623,8 +16623,8 @@ BOOLEAN
 __cdecl
 RtlAddFunctionTable(
     _In_reads_(EntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ DWORD BaseAddress
+     DWORD EntryCount,
+     DWORD BaseAddress
     );
 
 
@@ -16632,7 +16632,7 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlDeleteFunctionTable(
-    _In_ PRUNTIME_FUNCTION FunctionTable
+     PRUNTIME_FUNCTION FunctionTable
     );
 
 
@@ -16640,10 +16640,10 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlInstallFunctionTableCallback(
-    _In_ DWORD TableIdentifier,
-    _In_ DWORD BaseAddress,
-    _In_ DWORD Length,
-    _In_ PGET_RUNTIME_FUNCTION_CALLBACK Callback,
+     DWORD TableIdentifier,
+     DWORD BaseAddress,
+     DWORD Length,
+     PGET_RUNTIME_FUNCTION_CALLBACK Callback,
     _In_opt_ PVOID Context,
     _In_opt_ PCWSTR OutOfProcessCallbackDll
     );
@@ -16660,10 +16660,10 @@ __stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ DWORD MaximumEntryCount,
-    _In_ ULONG_PTR RangeBase,
-    _In_ ULONG_PTR RangeEnd
+     DWORD EntryCount,
+     DWORD MaximumEntryCount,
+     ULONG_PTR RangeBase,
+     ULONG_PTR RangeEnd
     );
 
 
@@ -16672,7 +16672,7 @@ VOID
 __stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
-    _In_ DWORD NewEntryCount
+     DWORD NewEntryCount
     );
 
 
@@ -16680,7 +16680,7 @@ NTSYSAPI
 VOID
 __stdcall
 RtlDeleteGrowableFunctionTable(
-    _In_ PVOID DynamicTable
+     PVOID DynamicTable
     );
 
 
@@ -16699,7 +16699,7 @@ NTSYSAPI
 PRUNTIME_FUNCTION
 __stdcall
 RtlLookupFunctionEntry(
-    _In_ ULONG_PTR ControlPc,
+     ULONG_PTR ControlPc,
     _Out_ PDWORD ImageBase,
     _Inout_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
@@ -16716,7 +16716,7 @@ NTSYSAPI
 VOID
 __cdecl
 RtlRestoreContext(
-    _In_ PCONTEXT ContextRecord,
+     PCONTEXT ContextRecord,
     _In_opt_ struct _EXCEPTION_RECORD * ExceptionRecord
     );
 
@@ -16735,8 +16735,8 @@ RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue,
-    _In_ PCONTEXT ContextRecord,
+     PVOID ReturnValue,
+     PCONTEXT ContextRecord,
     _In_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
 
@@ -16752,10 +16752,10 @@ NTSYSAPI
 PEXCEPTION_ROUTINE
 __stdcall
 RtlVirtualUnwind(
-    _In_ DWORD HandlerType,
-    _In_ DWORD ImageBase,
-    _In_ DWORD ControlPc,
-    _In_ PRUNTIME_FUNCTION FunctionEntry,
+     DWORD HandlerType,
+     DWORD ImageBase,
+     DWORD ControlPc,
+     PRUNTIME_FUNCTION FunctionEntry,
     _Inout_ PCONTEXT ContextRecord,
     _Out_ PVOID * HandlerData,
     _Out_ PDWORD EstablisherFrame,
@@ -16781,8 +16781,8 @@ BOOLEAN
 __cdecl
 RtlAddFunctionTable(
     _In_reads_(EntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ ULONG_PTR BaseAddress
+     DWORD EntryCount,
+     ULONG_PTR BaseAddress
     );
 
 
@@ -16790,7 +16790,7 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlDeleteFunctionTable(
-    _In_ PRUNTIME_FUNCTION FunctionTable
+     PRUNTIME_FUNCTION FunctionTable
     );
 
 
@@ -16798,10 +16798,10 @@ NTSYSAPI
 BOOLEAN
 __cdecl
 RtlInstallFunctionTableCallback(
-    _In_ ULONG_PTR TableIdentifier,
-    _In_ ULONG_PTR BaseAddress,
-    _In_ DWORD Length,
-    _In_ PGET_RUNTIME_FUNCTION_CALLBACK Callback,
+     ULONG_PTR TableIdentifier,
+     ULONG_PTR BaseAddress,
+     DWORD Length,
+     PGET_RUNTIME_FUNCTION_CALLBACK Callback,
     _In_opt_ PVOID Context,
     _In_opt_ PCWSTR OutOfProcessCallbackDll
     );
@@ -16818,10 +16818,10 @@ __stdcall
 RtlAddGrowableFunctionTable(
     _Out_ PVOID * DynamicTable,
     _In_reads_(MaximumEntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ DWORD MaximumEntryCount,
-    _In_ ULONG_PTR RangeBase,
-    _In_ ULONG_PTR RangeEnd
+     DWORD EntryCount,
+     DWORD MaximumEntryCount,
+     ULONG_PTR RangeBase,
+     ULONG_PTR RangeEnd
     );
 
 
@@ -16830,7 +16830,7 @@ VOID
 __stdcall
 RtlGrowFunctionTable(
     _Inout_ PVOID DynamicTable,
-    _In_ DWORD NewEntryCount
+     DWORD NewEntryCount
     );
 
 
@@ -16838,7 +16838,7 @@ NTSYSAPI
 VOID
 __stdcall
 RtlDeleteGrowableFunctionTable(
-    _In_ PVOID DynamicTable
+     PVOID DynamicTable
     );
 
 
@@ -16857,7 +16857,7 @@ NTSYSAPI
 PRUNTIME_FUNCTION
 __stdcall
 RtlLookupFunctionEntry(
-    _In_ ULONG_PTR ControlPc,
+     ULONG_PTR ControlPc,
     _Out_ PULONG_PTR ImageBase,
     _Inout_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
@@ -16874,7 +16874,7 @@ NTSYSAPI
 VOID
 __cdecl
 RtlRestoreContext(
-    _In_ PCONTEXT ContextRecord,
+     PCONTEXT ContextRecord,
     _In_opt_ struct _EXCEPTION_RECORD * ExceptionRecord
     );
 
@@ -16893,8 +16893,8 @@ RtlUnwindEx(
     _In_opt_ PVOID TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue,
-    _In_ PCONTEXT ContextRecord,
+     PVOID ReturnValue,
+     PCONTEXT ContextRecord,
     _In_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
 
@@ -16910,10 +16910,10 @@ NTSYSAPI
 PEXCEPTION_ROUTINE
 __stdcall
 RtlVirtualUnwind(
-    _In_ DWORD HandlerType,
-    _In_ ULONG_PTR ImageBase,
-    _In_ ULONG_PTR ControlPc,
-    _In_ PRUNTIME_FUNCTION FunctionEntry,
+     DWORD HandlerType,
+     ULONG_PTR ImageBase,
+     ULONG_PTR ControlPc,
+     PRUNTIME_FUNCTION FunctionEntry,
     _Inout_ PCONTEXT ContextRecord,
     _Out_ PVOID * HandlerData,
     _Out_ PULONG_PTR EstablisherFrame,
@@ -16941,9 +16941,9 @@ BOOLEAN
 __stdcall
 RtlAddFunctionTable(
     _In_reads_(EntryCount) PRUNTIME_FUNCTION FunctionTable,
-    _In_ DWORD EntryCount,
-    _In_ ULONGLONG BaseAddress,
-    _In_ ULONGLONG TargetGp
+     DWORD EntryCount,
+     ULONGLONG BaseAddress,
+     ULONGLONG TargetGp
     );
 
 
@@ -16953,7 +16953,7 @@ NTSYSAPI
 BOOLEAN
 __stdcall
 RtlDeleteFunctionTable(
-    _In_ PRUNTIME_FUNCTION FunctionTable
+     PRUNTIME_FUNCTION FunctionTable
     );
 
 
@@ -16963,11 +16963,11 @@ NTSYSAPI
 BOOLEAN
 __stdcall
 RtlInstallFunctionTableCallback(
-    _In_ DWORD64 TableIdentifier,
-    _In_ DWORD64 BaseAddress,
-    _In_ DWORD Length,
-    _In_ DWORD64 TargetGp,
-    _In_ PGET_RUNTIME_FUNCTION_CALLBACK Callback,
+     DWORD64 TableIdentifier,
+     DWORD64 BaseAddress,
+     DWORD Length,
+     DWORD64 TargetGp,
+     PGET_RUNTIME_FUNCTION_CALLBACK Callback,
     _In_opt_ PVOID Context,
     _In_opt_ PCWSTR OutOfProcessCallbackDll
     );
@@ -16986,7 +16986,7 @@ NTSYSAPI
 PRUNTIME_FUNCTION
 __stdcall
 RtlLookupFunctionEntry(
-    _In_ ULONGLONG ControlPc,
+     ULONGLONG ControlPc,
     _Out_ PULONGLONG ImageBase,
     _Out_ PULONGLONG TargetGp
     );
@@ -17003,7 +17003,7 @@ NTSYSAPI
 VOID
 __stdcall
 RtlRestoreContext(
-    _In_ PCONTEXT ContextRecord,
+     PCONTEXT ContextRecord,
     _In_opt_ struct _EXCEPTION_RECORD * ExceptionRecord
     );
 
@@ -17012,9 +17012,9 @@ NTSYSAPI
 ULONGLONG
 __stdcall
 RtlVirtualUnwind(
-    _In_ ULONGLONG ImageBase,
-    _In_ ULONGLONG ControlPc,
-    _In_ PRUNTIME_FUNCTION FunctionEntry,
+     ULONGLONG ImageBase,
+     ULONGLONG ControlPc,
+     PRUNTIME_FUNCTION FunctionEntry,
     _Inout_ PCONTEXT ContextRecord,
     _Out_ PBOOLEAN InFunction,
     _Out_ PFRAME_POINTERS EstablisherFrame,
@@ -17042,8 +17042,8 @@ RtlUnwindEx(
     _In_opt_ FRAME_POINTERS TargetFrame,
     _In_opt_ PVOID TargetIp,
     _In_opt_ PEXCEPTION_RECORD ExceptionRecord,
-    _In_ PVOID ReturnValue,
-    _In_ PCONTEXT ContextRecord,
+     PVOID ReturnValue,
+     PCONTEXT ContextRecord,
     _In_opt_ PUNWIND_HISTORY_TABLE HistoryTable
     );
 
@@ -17065,7 +17065,7 @@ NTSYSAPI
 PVOID
 __stdcall
 RtlPcToFileHeader(
-    _In_ PVOID PcValue,
+     PVOID PcValue,
     _Out_ PVOID * BaseOfImage
     );
 
@@ -17090,9 +17090,9 @@ NTSYSAPI
 SIZE_T
 __stdcall
 RtlCompareMemory(
-    _In_ const VOID * Source1,
-    _In_ const VOID * Source2,
-    _In_ SIZE_T Length
+     const VOID * Source1,
+     const VOID * Source2,
+     SIZE_T Length
     );
 
 
@@ -17217,7 +17217,7 @@ NTSYSAPI
 PSLIST_ENTRY
 __stdcall
 RtlFirstEntrySList (
-    _In_ const SLIST_HEADER *ListHead
+     const SLIST_HEADER *ListHead
     );
 
 NTSYSAPI
@@ -17242,7 +17242,7 @@ RtlInterlockedPushListSListEx (
     _Inout_ PSLIST_HEADER ListHead,
     _Inout_ __drv_aliasesMem PSLIST_ENTRY List,
     _Inout_ PSLIST_ENTRY ListEnd,
-    _In_ DWORD Count
+     DWORD Count
     );
 
 NTSYSAPI
@@ -17256,7 +17256,7 @@ NTSYSAPI
 WORD  
 __stdcall
 RtlQueryDepthSList (
-    _In_ PSLIST_HEADER ListHead
+     PSLIST_HEADER ListHead
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
@@ -17361,7 +17361,7 @@ typedef struct _RTL_BARRIER {
 DECLSPEC_NORETURN
 VOID
 __fastfail(
-    _In_ unsigned int Code
+     unsigned int Code
     );
 
 #pragma intrinsic(__fastfail)
@@ -17388,8 +17388,8 @@ __fastfail(
 FORCEINLINE
 DWORD
 HEAP_MAKE_TAG_FLAGS (
-    _In_ DWORD TagBase,
-    _In_ DWORD Tag
+     DWORD TagBase,
+     DWORD Tag
     )
 
 {
@@ -17438,7 +17438,7 @@ __cdecl
 memcpy_inline (
     _Out_writes_bytes_all_(size) void *dst,
     _In_reads_bytes_(size) const void *src,
-    _In_ size_t size
+     size_t size
     )
 {
     //
@@ -17468,7 +17468,7 @@ FORCEINLINE
 PVOID
 RtlSecureZeroMemory(
     _Out_writes_bytes_all_(cnt) PVOID ptr,
-    _In_ SIZE_T cnt
+     SIZE_T cnt
     )
 {
     volatile char *vptr = (volatile char *)ptr;
@@ -17686,9 +17686,9 @@ NTSYSAPI
 ULONGLONG
 __stdcall
 VerSetConditionMask(
-    _In_ ULONGLONG ConditionMask,
-    _In_ DWORD TypeMask,
-    _In_ BYTE  Condition
+     ULONGLONG ConditionMask,
+     DWORD TypeMask,
+     BYTE  Condition
     );
 
 #endif
@@ -17711,10 +17711,10 @@ NTSYSAPI
 BOOLEAN
 __stdcall
 RtlGetProductInfo(
-    _In_  DWORD  OSMajorVersion,
-    _In_  DWORD  OSMinorVersion,
-    _In_  DWORD  SpMajorVersion,
-    _In_  DWORD  SpMinorVersion,
+      DWORD  OSMajorVersion,
+      DWORD  OSMinorVersion,
+      DWORD  SpMajorVersion,
+      DWORD  SpMinorVersion,
     _Out_ PDWORD ReturnedProductType
     );
 
@@ -17749,9 +17749,9 @@ _Function_class_(RTL_UMS_SCHEDULER_ENTRY_POINT)
 VOID
 __stdcall
 RTL_UMS_SCHEDULER_ENTRY_POINT(
-    _In_ RTL_UMS_SCHEDULER_REASON Reason,
-    _In_ ULONG_PTR ActivationPayload,
-    _In_ PVOID SchedulerParam
+     RTL_UMS_SCHEDULER_REASON Reason,
+     ULONG_PTR ActivationPayload,
+     PVOID SchedulerParam
     );
 
 typedef RTL_UMS_SCHEDULER_ENTRY_POINT *PRTL_UMS_SCHEDULER_ENTRY_POINT;
@@ -17821,8 +17821,8 @@ DWORD
 __stdcall
 RtlCrc32(
     _In_reads_bytes_(Size) const void *Buffer,
-    _In_ size_t Size,
-    _In_ DWORD InitialCrc
+     size_t Size,
+     DWORD InitialCrc
     );
 
 NTSYSAPI
@@ -17830,8 +17830,8 @@ ULONGLONG
 __stdcall
 RtlCrc64(
     _In_reads_bytes_(Size) const void *Buffer,
-    _In_ size_t Size,
-    _In_ ULONGLONG InitialCrc
+     size_t Size,
+     ULONGLONG InitialCrc
     );
 
 // end_ntosp
@@ -17863,7 +17863,7 @@ NTSYSAPI
 OS_DEPLOYEMENT_STATE_VALUES
 __stdcall
 RtlOsDeploymentState(
-    _In_ DWORD Flags    /* No flags currently defined, passed 0 */
+     DWORD Flags    /* No flags currently defined, passed 0 */
     );
 
 
@@ -17966,18 +17966,23 @@ typedef struct _HEAP_OPTIMIZE_RESOURCES_INFORMATION {
 ]]
 
 
---[==[
-#define WT_EXECUTEDEFAULT       0x00000000                           
-#define WT_EXECUTEINIOTHREAD    0x00000001                           
-#define WT_EXECUTEINUITHREAD    0x00000002                           
-#define WT_EXECUTEINWAITTHREAD  0x00000004                           
-#define WT_EXECUTEONLYONCE      0x00000008                           
-#define WT_EXECUTEINTIMERTHREAD 0x00000020                           
-#define WT_EXECUTELONGFUNCTION  0x00000010                           
-#define WT_EXECUTEINPERSISTENTIOTHREAD  0x00000040                   
-#define WT_EXECUTEINPERSISTENTTHREAD 0x00000080                      
-#define WT_TRANSFER_IMPERSONATION 0x00000100                         
-#define WT_SET_MAX_THREADPOOL_THREADS(Flags, Limit)  ((Flags) |= (Limit)<<16) 
+
+ffi.cdef[[
+static const int WT_EXECUTEDEFAULT      = 0x00000000;                           
+static const int WT_EXECUTEINIOTHREAD   = 0x00000001;                           
+static const int WT_EXECUTEINUITHREAD   = 0x00000002;                           
+static const int WT_EXECUTEINWAITTHREAD = 0x00000004;                           
+static const int WT_EXECUTEONLYONCE     = 0x00000008;                           
+static const int WT_EXECUTEINTIMERTHREAD = 0x00000020;                           
+static const int WT_EXECUTELONGFUNCTION  = 0x00000010;                           
+static const int WT_EXECUTEINPERSISTENTIOTHREAD = 0x00000040;                   
+static const int WT_EXECUTEINPERSISTENTTHREAD = 0x00000080;                      
+static const int WT_TRANSFER_IMPERSONATION = 0x00000100;
+]]
+
+--#define WT_SET_MAX_THREADPOOL_THREADS(Flags, Limit)  ((Flags) |= (Limit)<<16) 
+
+ffi.cdef[[
 typedef VOID (__stdcall * WAITORTIMERCALLBACKFUNC) (PVOID, BOOLEAN );   
 typedef VOID (__stdcall * WORKERCALLBACKFUNC) (PVOID );                 
 typedef VOID (__stdcall * APC_CALLBACK_FUNCTION) (DWORD   , PVOID, PVOID); 
@@ -17985,19 +17990,23 @@ typedef WAITORTIMERCALLBACKFUNC WAITORTIMERCALLBACK;
 typedef
 VOID
 (__stdcall *PFLS_CALLBACK_FUNCTION) (
-    IN PVOID lpFlsData
+     PVOID lpFlsData
     );
 
 typedef
 BOOLEAN
 (__stdcall *PSECURE_MEMORY_CACHE_CALLBACK) (
-    _In_reads_bytes_(Range) PVOID Addr,
-    _In_ SIZE_T Range
+     PVOID Addr,
+     SIZE_T Range
     );
+]]
 
-#define WT_EXECUTEINLONGTHREAD  0x00000010                           
-#define WT_EXECUTEDELETEWAIT    0x00000008                           
+ffi.cdef[[
+static const int WT_EXECUTEINLONGTHREAD  = 0x00000010;                           
+static const int WT_EXECUTEDELETEWAIT    = 0x00000008;                           
+]]
 
+ffi.cdef[[
 typedef enum _ACTIVATION_CONTEXT_INFO_CLASS {
     ActivationContextBasicInformation                       = 1,
     ActivationContextDetailedInformation                    = 2,
@@ -18014,18 +18023,19 @@ typedef enum _ACTIVATION_CONTEXT_INFO_CLASS {
     AssemblyDetailedInformationInActivationContxt           = 3,
     FileInformationInAssemblyOfAssemblyInActivationContxt   = 4
 } ACTIVATION_CONTEXT_INFO_CLASS;
+]]
+--#define ACTIVATIONCONTEXTINFOCLASS ACTIVATION_CONTEXT_INFO_CLASS
 
-#define ACTIVATIONCONTEXTINFOCLASS ACTIVATION_CONTEXT_INFO_CLASS
-
-
+ffi.cdef[[
 typedef struct _ACTIVATION_CONTEXT_QUERY_INDEX {
     DWORD ulAssemblyIndex;
     DWORD ulFileIndexInAssembly;
 } ACTIVATION_CONTEXT_QUERY_INDEX, * PACTIVATION_CONTEXT_QUERY_INDEX;
 
 typedef const struct _ACTIVATION_CONTEXT_QUERY_INDEX * PCACTIVATION_CONTEXT_QUERY_INDEX;
+]]
 
-
+--[==[
 #define ACTIVATION_CONTEXT_PATH_TYPE_NONE (1)
 #define ACTIVATION_CONTEXT_PATH_TYPE_WIN32_FILE (2)
 #define ACTIVATION_CONTEXT_PATH_TYPE_URL (3)
@@ -18259,9 +18269,9 @@ RtlConvertDeviceFamilyInfoToString(
 DWORD   
 __stdcall
 RtlSwitchedVVI(
-    _In_ PRTL_OSVERSIONINFOEXW VersionInfo,
-    _In_ DWORD TypeMask,
-    _In_ ULONGLONG  ConditionMask
+     PRTL_OSVERSIONINFOEXW VersionInfo,
+     DWORD TypeMask,
+     ULONGLONG  ConditionMask
     );
 
 
@@ -19480,7 +19490,7 @@ FORCEINLINE
 VOID
 TpSetCallbackThreadpool(
     _Inout_ PTP_CALLBACK_ENVIRON CallbackEnviron,
-    _In_    PTP_POOL             Pool
+        PTP_POOL             Pool
     )
 {
     CallbackEnviron->Pool = Pool;
@@ -19490,7 +19500,7 @@ FORCEINLINE
 VOID
 TpSetCallbackCleanupGroup(
     _Inout_  PTP_CALLBACK_ENVIRON              CallbackEnviron,
-    _In_     PTP_CLEANUP_GROUP                 CleanupGroup,
+         PTP_CLEANUP_GROUP                 CleanupGroup,
     _In_opt_ PTP_CLEANUP_GROUP_CANCEL_CALLBACK CleanupGroupCancelCallback
     )
 {
@@ -19530,7 +19540,7 @@ FORCEINLINE
 VOID
 TpSetCallbackRaceWithDll(
     _Inout_ PTP_CALLBACK_ENVIRON CallbackEnviron,
-    _In_    PVOID                DllHandle
+        PVOID                DllHandle
     )
 {
     CallbackEnviron->RaceDll = DllHandle;
@@ -19540,7 +19550,7 @@ FORCEINLINE
 VOID
 TpSetCallbackFinalizationCallback(
     _Inout_ PTP_CALLBACK_ENVIRON CallbackEnviron,
-    _In_    PTP_SIMPLE_CALLBACK  FinalizationCallback
+        PTP_SIMPLE_CALLBACK  FinalizationCallback
     )
 {
     CallbackEnviron->FinalizationCallback = FinalizationCallback;
@@ -19552,7 +19562,7 @@ FORCEINLINE
 VOID
 TpSetCallbackPriority(
     _Inout_ PTP_CALLBACK_ENVIRON CallbackEnviron,
-    _In_    TP_CALLBACK_PRIORITY Priority
+        TP_CALLBACK_PRIORITY Priority
     )
 {
     CallbackEnviron->CallbackPriority = Priority;
@@ -19573,7 +19583,7 @@ TpSetCallbackPersistent(
 FORCEINLINE
 VOID
 TpDestroyCallbackEnviron(
-    _In_ PTP_CALLBACK_ENVIRON CallbackEnviron
+     PTP_CALLBACK_ENVIRON CallbackEnviron
     )
 {
     //
@@ -19612,7 +19622,7 @@ typedef VOID (__stdcall *PTP_WAIT_CALLBACK)(
     _Inout_     PTP_CALLBACK_INSTANCE Instance,
     _Inout_opt_ PVOID                 Context,
     _Inout_     PTP_WAIT              Wait,
-    _In_        TP_WAIT_RESULT        WaitResult
+            TP_WAIT_RESULT        WaitResult
     );
 
 typedef struct _TP_IO TP_IO, *PTP_IO;
