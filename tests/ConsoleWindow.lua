@@ -1,5 +1,7 @@
 -- test_console.lua
 local ffi = require("ffi");
+local C = ffi.C 
+
 local bit = require("bit");
 local band = bit.band;
 local bor = bit.bor;
@@ -22,22 +24,6 @@ setmetatable(ConsoleWindow, {
 		return self:create(...);
 	end,
 
-	__index = {
-		CreateNew = function(self, ...)
-			-- Detach from current console if attached
-			--ffi.C.FreeConsole();
-
-
-			-- Allocate new console
-			local res = ffi.C.AllocConsole();
-
-			if res == 0 then
-				return false, ffi.C.GetLastError();
-			end
-
-			return ConsoleWindow();
-		end,
-	},
 })
 
 -- Metatable for ConsoleWindow instances
@@ -47,7 +33,7 @@ local ConsoleWindow_mt = {
 
 function ConsoleWindow.init(self, ...)
 	local obj = {}
-	setmetatable(obj, Console_mt);
+	setmetatable(obj, ConsoleWindow_mt);
 
 	return obj;
 end
@@ -55,6 +41,23 @@ end
 function ConsoleWindow.create(self, ...)
 	return self:init(...);
 end
+
+function ConsoleWindow.CreateNew(self, ...)
+	-- Detach from current console if attached
+	ffi.C.FreeConsole();
+
+
+	-- Allocate new console
+	local res = C.AllocConsole();
+
+	if res == 0 then
+		return false, C.GetLastError();
+	end
+
+	return ConsoleWindow();
+end
+
+
 
 --[[
 	Input Mode attributes
@@ -126,15 +129,15 @@ ConsoleWindow.enableLineWrap = function(self)
 end
 
 ConsoleWindow.enableMouseInput = function(self)
-	return self:enableMode(ffi.C.ENABLE_MOUSE_INPUT);
+	return self:enableMode(C.ENABLE_MOUSE_INPUT);
 end
 
 ConsoleWindow.enableProcessedInput = function(self)
-	return self:enableMode(ffi.C.ENABLE_PROCESSED_INPUT);
+	return self:enableMode(C.ENABLE_PROCESSED_INPUT);
 end
 
 ConsoleWindow.enableProcessedOutput = function(self)
-	return self:enableMode(ffi.C.ENABLE_PROCESSED_OUTPUT, self:getStdOut());
+	return self:enableMode(C.ENABLE_PROCESSED_OUTPUT, self:getStdOut());
 end
 
 ConsoleWindow.enableQuickEditMode = function(self)

@@ -26,6 +26,8 @@
     graphicApp.run();
 ]]
 local ffi = require("ffi")
+local C = ffi.C 
+
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
