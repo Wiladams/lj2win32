@@ -3,7 +3,9 @@ local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local lshift, rshift = bit.lshift, bit.rshift
 
-
+-- BUGBUG, this STRICT global should not be here
+-- but I put it here just in case
+STRICT = true
 
 -- _WIN32_WINNT version constants
 --
