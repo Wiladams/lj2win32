@@ -366,7 +366,9 @@ typedef enum _PROCESSINFOCLASS {
 typedef enum _THREADINFOCLASS {
     ThreadIsIoPending = 16
 } THREADINFOCLASS;
+]]
 
+ffi.cdef[[
 typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemBasicInformation = 0,
     SystemPerformanceInformation = 2,
@@ -380,6 +382,7 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemPolicyInformation = 134,
 } SYSTEM_INFORMATION_CLASS;
 ]]
+
 
 ffi.cdef[[
 //
@@ -1043,6 +1046,4 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYS
 
 end --// _WINTERNL_
 
-local lib = ffi.load("ntdll")
-
-return lib
+return ffi.load("ntdll")

@@ -237,7 +237,7 @@ static const int ERROR_BAD_FORMAT             =   11L;
 //
 // The access code is invalid.
 //
-static const int ERROR_INVALID_ACCESS             12L
+static const int ERROR_INVALID_ACCESS             12L;
 
 //
 // MessageId: ERROR_INVALID_DATA
@@ -246,7 +246,7 @@ static const int ERROR_INVALID_ACCESS             12L
 //
 // The data is invalid.
 //
-static const int ERROR_INVALID_DATA               13L
+static const int ERROR_INVALID_DATA               13L;
 
 //
 // MessageId: ERROR_OUTOFMEMORY
@@ -255,7 +255,7 @@ static const int ERROR_INVALID_DATA               13L
 //
 // Not enough memory resources are available to complete this operation.
 //
-static const int ERROR_OUTOFMEMORY                14L
+static const int ERROR_OUTOFMEMORY                14L;
 
 //
 // MessageId: ERROR_INVALID_DRIVE
@@ -264,7 +264,7 @@ static const int ERROR_OUTOFMEMORY                14L
 //
 // The system cannot find the drive specified.
 //
-static const int ERROR_INVALID_DRIVE              15L
+static const int ERROR_INVALID_DRIVE              15L;
 
 //
 // MessageId: ERROR_CURRENT_DIRECTORY
@@ -273,7 +273,7 @@ static const int ERROR_INVALID_DRIVE              15L
 //
 // The directory cannot be removed.
 //
-static const int ERROR_CURRENT_DIRECTORY          16L
+static const int ERROR_CURRENT_DIRECTORY          16L;
 
 //
 // MessageId: ERROR_NOT_SAME_DEVICE
@@ -282,7 +282,7 @@ static const int ERROR_CURRENT_DIRECTORY          16L
 //
 // The system cannot move the file to a different disk drive.
 //
-static const int ERROR_NOT_SAME_DEVICE            17L
+static const int ERROR_NOT_SAME_DEVICE            17L;
 
 //
 // MessageId: ERROR_NO_MORE_FILES
@@ -291,7 +291,7 @@ static const int ERROR_NOT_SAME_DEVICE            17L
 //
 // There are no more files.
 //
-static const int ERROR_NO_MORE_FILES              18L
+static const int ERROR_NO_MORE_FILES              18L;
 
 //
 // MessageId: ERROR_WRITE_PROTECT
@@ -300,7 +300,7 @@ static const int ERROR_NO_MORE_FILES              18L
 //
 // The media is write protected.
 //
-static const int ERROR_WRITE_PROTECT              19L
+static const int ERROR_WRITE_PROTECT              19L;
 
 //
 // MessageId: ERROR_BAD_UNIT
@@ -309,7 +309,7 @@ static const int ERROR_WRITE_PROTECT              19L
 //
 // The system cannot find the device specified.
 //
-static const int ERROR_BAD_UNIT                   20L
+static const int ERROR_BAD_UNIT                   20L;
 
 //
 // MessageId: ERROR_NOT_READY
@@ -318,7 +318,7 @@ static const int ERROR_BAD_UNIT                   20L
 //
 // The device is not ready.
 //
-static const int ERROR_NOT_READY                  21L
+static const int ERROR_NOT_READY                  21L;
 
 //
 // MessageId: ERROR_BAD_COMMAND
@@ -327,7 +327,7 @@ static const int ERROR_NOT_READY                  21L
 //
 // The device does not recognize the command.
 //
-static const int ERROR_BAD_COMMAND                22L
+static const int ERROR_BAD_COMMAND                22L;
 
 //
 // MessageId: ERROR_CRC
@@ -336,7 +336,7 @@ static const int ERROR_BAD_COMMAND                22L
 //
 // Data error (cyclic redundancy check).
 //
-static const int ERROR_CRC                        23L
+static const int ERROR_CRC                        23L;
 
 //
 // MessageId: ERROR_BAD_LENGTH
@@ -345,7 +345,7 @@ static const int ERROR_CRC                        23L
 //
 // The program issued a command but the command length is incorrect.
 //
-static const int ERROR_BAD_LENGTH                 24L
+static const int ERROR_BAD_LENGTH                 24L;
 
 //
 // MessageId: ERROR_SEEK
@@ -354,7 +354,7 @@ static const int ERROR_BAD_LENGTH                 24L
 //
 // The drive cannot locate a specific area or track on the disk.
 //
-static const int ERROR_SEEK                       25L
+static const int ERROR_SEEK                       25L;
 
 //
 // MessageId: ERROR_NOT_DOS_DISK
@@ -363,7 +363,7 @@ static const int ERROR_SEEK                       25L
 //
 // The specified disk or diskette cannot be accessed.
 //
-static const int ERROR_NOT_DOS_DISK               26L
+static const int ERROR_NOT_DOS_DISK               26L;
 
 //
 // MessageId: ERROR_SECTOR_NOT_FOUND
@@ -372,7 +372,7 @@ static const int ERROR_NOT_DOS_DISK               26L
 //
 // The drive cannot find the sector requested.
 //
-static const int ERROR_SECTOR_NOT_FOUND           27L
+static const int ERROR_SECTOR_NOT_FOUND           27L;
 
 //
 // MessageId: ERROR_OUT_OF_PAPER
@@ -381,7 +381,7 @@ static const int ERROR_SECTOR_NOT_FOUND           27L
 //
 // The printer is out of paper.
 //
-static const int ERROR_OUT_OF_PAPER               28L
+static const int ERROR_OUT_OF_PAPER               28L;
 
 //
 // MessageId: ERROR_WRITE_FAULT
@@ -390,7 +390,7 @@ static const int ERROR_OUT_OF_PAPER               28L
 //
 // The system cannot write to the specified device.
 //
-static const int ERROR_WRITE_FAULT                29L
+static const int ERROR_WRITE_FAULT                29L;
 
 //
 // MessageId: ERROR_READ_FAULT
@@ -399,7 +399,7 @@ static const int ERROR_WRITE_FAULT                29L
 //
 // The system cannot read from the specified device.
 //
-static const int ERROR_READ_FAULT                 30L
+static const int ERROR_READ_FAULT                 30L;
 
 //
 // MessageId: ERROR_GEN_FAILURE
@@ -408,7 +408,7 @@ static const int ERROR_READ_FAULT                 30L
 //
 // A device attached to the system is not functioning.
 //
-static const int ERROR_GEN_FAILURE                31L
+static const int ERROR_GEN_FAILURE                31L;
 
 //
 // MessageId: ERROR_SHARING_VIOLATION
@@ -417,7 +417,7 @@ static const int ERROR_GEN_FAILURE                31L
 //
 // The process cannot access the file because it is being used by another process.
 //
-static const int ERROR_SHARING_VIOLATION          32L
+static const int ERROR_SHARING_VIOLATION          32L;
 
 //
 // MessageId: ERROR_LOCK_VIOLATION
@@ -426,7 +426,7 @@ static const int ERROR_SHARING_VIOLATION          32L
 //
 // The process cannot access the file because another process has locked a portion of the file.
 //
-static const int ERROR_LOCK_VIOLATION             33L
+static const int ERROR_LOCK_VIOLATION             33L;
 
 //
 // MessageId: ERROR_WRONG_DISK
@@ -436,7 +436,7 @@ static const int ERROR_LOCK_VIOLATION             33L
 // The wrong diskette is in the drive.
 // Insert %2 (Volume Serial Number: %3) into drive %1.
 //
-static const int ERROR_WRONG_DISK                 34L
+static const int ERROR_WRONG_DISK                 34L;
 
 //
 // MessageId: ERROR_SHARING_BUFFER_EXCEEDED
@@ -445,7 +445,7 @@ static const int ERROR_WRONG_DISK                 34L
 //
 // Too many files opened for sharing.
 //
-static const int ERROR_SHARING_BUFFER_EXCEEDED    36L
+static const int ERROR_SHARING_BUFFER_EXCEEDED    36L;
 
 //
 // MessageId: ERROR_HANDLE_EOF
@@ -454,7 +454,7 @@ static const int ERROR_SHARING_BUFFER_EXCEEDED    36L
 //
 // Reached the end of the file.
 //
-static const int ERROR_HANDLE_EOF                 38L
+static const int ERROR_HANDLE_EOF                 38L;
 
 //
 // MessageId: ERROR_HANDLE_DISK_FULL
@@ -463,7 +463,7 @@ static const int ERROR_HANDLE_EOF                 38L
 //
 // The disk is full.
 //
-static const int ERROR_HANDLE_DISK_FULL           39L
+static const int ERROR_HANDLE_DISK_FULL           39L;
 
 //
 // MessageId: ERROR_NOT_SUPPORTED
@@ -472,7 +472,7 @@ static const int ERROR_HANDLE_DISK_FULL           39L
 //
 // The request is not supported.
 //
-static const int ERROR_NOT_SUPPORTED              50L
+static const int ERROR_NOT_SUPPORTED              50L;
 
 //
 // MessageId: ERROR_REM_NOT_LIST

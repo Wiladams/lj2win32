@@ -19732,7 +19732,7 @@ GetFiberData (
 
 #if defined(_M_IX86) && !defined(MIDL_PASS)
 
-#define PcTeb 0x18
+#define PcTeb = 0x18
 
 #if !defined(_M_CEE_PURE)
 
