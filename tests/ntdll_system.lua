@@ -14,8 +14,9 @@ local enum = require("enum")
 
 ffi.cdef[[
 static const int STATUS_SUCCESS                  = ((NTSTATUS)0x00000000L);
+static const int STATUS_INVALID_INFO_CLASS       = ((NTSTATUS)0xC0000003L);
 static const int STATUS_INFO_LENGTH_MISMATCH     = ((NTSTATUS)0xC0000004L);
-static const int STATUS_INVALID_INFO_CLASS        ((NTSTATUS)0xC0000003L);
+
 ]]
 
 local exports = {}
