@@ -2,11 +2,32 @@
     Functional programming toolkit
 
     Inspired by luafun, but using coroutine iterator model, just for kicks
+
+    The fundamental structure is a producer/consumer thing.
 ]]
+
+local exports = {}
+
+local function receive (prod)
+    --print("receive, pulling")
+    local results = {coroutine.resume(prod)}
+    local status = results[1]
+    --print("receive, status: ", status)
+    if not status then return nil end
+    
+    table.remove(results, 1)
+    
+    return unpack(results)
+end
+  
+local  function send (...)
+    coroutine.yield(...)
+end
+
 --[[
     Generators
 ]]
-local exports = {}
+
 
 -- An iterator that returns no values
 -- convenient for when the parameters don't
@@ -29,7 +50,7 @@ function exports.string_iter(str)
             end
 
             local r = string.sub(str, state, state)
-            coroutine.yield(r)
+            send(r)
             state = state + 1
         end
     end
@@ -40,7 +61,7 @@ end
 function exports.table_iter(tbl)
     local function iterator()
         for i, value in ipairs(tbl) do
-            coroutine.yield(value)
+            send(value)
         end
     end
 
@@ -48,7 +69,7 @@ function exports.table_iter(tbl)
 end
 
 --[[
-    GENERATORS
+    PRODUCERS
 ]]
 
 function exports.duplicate(...)
@@ -60,13 +81,13 @@ function exports.duplicate(...)
 
     local function duplicate_1_gen()
         while true do
-            coroutine.yield(args)
+            send(args)
         end
     end
 
     local function duplicate_table_gen()
         while true do
-            coroutine.yield(unpack(args))
+            send(unpack(args))
         end
     end
     
@@ -77,6 +98,15 @@ function exports.duplicate(...)
     return coroutine.wrap(duplicate_table_gen)
 end
 
+local function ones_prod()
+    return coroutine.create(function()
+        while true do
+            send(1)
+        end
+    end)
+end
+
+exports.ones = ones_prod
 
 
 function exports.range(start, stop, step)
@@ -103,7 +133,7 @@ function exports.range(start, stop, step)
     local function range_gen()
         local i = start
         while i <= stop do
-            coroutine.yield(i)
+            send(i)
             i = i + step;
         end
     end
@@ -111,7 +141,7 @@ function exports.range(start, stop, step)
     local function range_gen_rev()
         local i = start
         while i >= stop do
-            coroutine.yield(i)
+            send(i)
             i = i + step;
         end
     end
@@ -122,6 +152,19 @@ function exports.range(start, stop, step)
 
     return coroutine.wrap(range_gen_rev)
 end
+
+local function zeroes_prod()
+    return coroutine.create(function()
+        while true do
+            --print("zeroes, sending")
+            send(0)
+        end
+    end)
+end
+
+exports.zeroes = zeroes_prod
+
+
 
 --[[
     REDUCING
@@ -162,11 +205,13 @@ function exports.any(predicate, source)
     return false;
 end
 
-function exports.length(source)
+-- return a count of elements in iterator
+function exports.length(prod)
     local counter = 0;
-    for value in source do
+    while(receive(prod)) do
         counter = counter + 1;
     end
+    
     return counter;
 end
 
@@ -223,30 +268,42 @@ end
 --[[
     SLICING
 ]]
-function exports.take_n(n, source)
-    local function take_n_gen()
-        local counter = 1;
-        for value in source do
-            if counter > n then
-                return nil;
-            end
-            coroutine.yield(value);
+local function take_n_prod(n, prod)
+    return coroutine.create(function ()
+        local counter = 0;
+        while true do
             counter = counter + 1
-        end
-    end
+            --print("taken_n, counter: ", counter, n)
+            if counter > n then
+                return nil
+            end
 
-    return coroutine.wrap(take_n_gen)
+            local results = {receive(prod)}
+            
+            --print("take_n, receive: ", #results)
+            if #results == 0 then break end
+
+            send(unpack(results))
+        end
+
+    end)
 end
+exports.take_n = take_n_prod
+
+
 
 -- return the 'nth' iterated value
-function exports.nth(n, source)
-    local counter = 1
+function exports.nth(n, prod)
+    local counter = 0
 
-    for value in source do
-        if counter == n then
-            return value;
-        end
+    while true do
         counter = counter + 1
+        local results = {receive(prod)}
+        if #results == 0 then break end
+
+        if counter == n then
+            return unpack(results)
+        end
     end
 
     return nil
@@ -263,19 +320,22 @@ exports.car = exports.head
 
 
 
-function exports.each(func, source)
-    local iter = source
+function exports.each(func, prod)
+    if not func then return false end
+    
+    local iter = prod
 
-    if type(source) == "string" then
+    if type(prod) == "string" then
         iter = exports.string_iter(source)
     elseif type(source) == "table" then
         iter = exports.table_iter(source)
     end
 
-    for value in iter do
-        if func then
-            func(value)
-        end
+    while true do
+        local results = {receive(prod)}
+        if #results == 0 then break end
+
+        func(unpack(results))
     end
 end
 
