@@ -1,6 +1,34 @@
 require("funkit")()
 
+local function test_all()
+    print(all(function(x) return x end, {true, true, true, true}))
+    print(all(function(x) return x end, {true, true, true, false}))
+    
+    print("all(function(x) return x end, 'aaaaaaaa')")
+    print(all(function(x) return x end, "aaaaaaaa"))
 
+    print("all(function(x) return x end, 'aaabaaaa')")
+    print(all(function(x) return x end, "aaabaaaa"))
+end
+
+local function test_length()
+    print("== test_length ==")
+    print("print(length(range(0)))")
+    print(length(range(0)))
+    
+    print("print(length(range(5)))")
+    print(length(range(5)))
+end
+
+local function test_maximum()
+    print('maximum({"f", "b", "c", "d", "e"})')
+    print(maximum({"f", "b", "c", "d", "e"}))
+end
+
+local function test_minimum()
+    print('minimum({"f", "d", "c", "d", "e"})')
+    print(minimum({"f", "d", "c", "d", "e"}))
+end
 
 local function test_range()
     print("range(5)")
@@ -69,9 +97,26 @@ local function test_duplicate()
     each(print, duplicate('a', 'b', 'c'))
 end
 
+local function test_each()
+    each(print, "hello, world!")
+end
 
---test_range();
---test_nth();
---test_take_n();
+local function test_totable()
+    local tab = totable("abcdef")
+    print(type(tab), #tab)
+    
+    each(print, tab)
+end
+
+--test_all();
+--test_duplicate();
+--test_each();
 --test_grep();
-test_duplicate();
+--test_length();
+test_maximum();
+--test_minimum();
+--test_nth();
+--test_range();
+--test_take_n();
+--test_totable();
+

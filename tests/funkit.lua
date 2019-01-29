@@ -15,8 +15,37 @@ function exports.nil_gen()
     local function iterator()
         return nil
     end
+
+    return coroutine.wrap(iterator)
 end
 
+function exports.string_iter(str)
+    local state = 1
+
+    local function iterator()
+        while true do
+            if state > #str then
+                return nil
+            end
+
+            local r = string.sub(str, state, state)
+            coroutine.yield(r)
+            state = state + 1
+        end
+    end
+
+    return coroutine.wrap(iterator)
+end
+
+function exports.table_iter(tbl)
+    local function iterator()
+        for i, value in ipairs(tbl) do
+            coroutine.yield(value)
+        end
+    end
+
+    return coroutine.wrap(iterator)
+end
 
 --[[
     GENERATORS
@@ -95,6 +124,103 @@ function exports.range(start, stop, step)
 end
 
 --[[
+    REDUCING
+]]
+function exports.all(predicate, source)
+    local iter = source
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    for value in iter do
+        --print (value)
+        if not predicate(value) then
+            return false
+        end
+    end
+
+    return true;
+end
+exports.every = exports.all
+
+function exports.any(predicate, source)
+    local iter = source
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    for value in iter do
+        if predicate(value) then
+            return true
+        end
+    end
+
+    return false;
+end
+
+function exports.length(source)
+    local counter = 0;
+    for value in source do
+        counter = counter + 1;
+    end
+    return counter;
+end
+
+function exports.maximum(source)
+    local iter = source
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    local maxval = nil
+    for value in iter do
+        if not maxval then maxval = value end
+        if value > maxval then maxval = value end
+    end
+
+    return maxval
+end
+
+function exports.minimum(source)
+    local iter = source
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    local minval = nil
+    for value in iter do
+        if not minval then minval = value end
+        if value < minval then minval = value end
+    end
+
+    return minval
+end
+
+function exports.totable(source)
+    local tbl = {}
+
+    local iter = source
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    for value in iter do
+        table.insert(tbl, value)
+    end
+    return tbl
+end
+
+--[[
     SLICING
 ]]
 function exports.take_n(n, source)
@@ -130,6 +256,7 @@ function exports.head(source)
     return exports.nth(1, source)
 end
 
+exports.car = exports.head
 
 
 
@@ -137,7 +264,15 @@ end
 
 
 function exports.each(func, source)
-    for value in source do
+    local iter = source
+
+    if type(source) == "string" then
+        iter = exports.string_iter(source)
+    elseif type(source) == "table" then
+        iter = exports.table_iter(source)
+    end
+
+    for value in iter do
         if func then
             func(value)
         end
