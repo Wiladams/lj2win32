@@ -220,12 +220,12 @@ static const int PIPE_UNLIMITED_INSTANCES   = 255;
 //
 
 #if(_WIN32_WINNT >= 0x0400)
-typedef VOID (WINAPI *PFIBER_START_ROUTINE)(
+typedef VOID (__stdcall *PFIBER_START_ROUTINE)(
     LPVOID lpFiberParameter
     );
 typedef PFIBER_START_ROUTINE LPFIBER_START_ROUTINE;
 
-typedef LPVOID (WINAPI *PFIBER_CALLOUT_ROUTINE)(
+typedef LPVOID (__stdcall *PFIBER_CALLOUT_ROUTINE)(
     LPVOID lpParameter
     );
 #endif /* _WIN32_WINNT >= 0x0400 */
@@ -239,7 +239,7 @@ typedef LPVOID (WINAPI *PFIBER_CALLOUT_ROUTINE)(
 
 #if defined(_X86_)
 typedef PLDT_ENTRY LPLDT_ENTRY;
-#else
+else
 typedef LPVOID LPLDT_ENTRY;
 #endif
 
@@ -610,8 +610,8 @@ typedef PEXCEPTION_POINTERS LPEXCEPTION_POINTERS;
 
 #ifndef _MAC
 #define GetFreeSpace(w)                 (0x100000L)
-#else
-WINBASEAPI DWORD WINAPI GetFreeSpace( UINT);
+else
+ DWORD __stdcall GetFreeSpace( UINT);
 #endif
 
 
@@ -830,19 +830,19 @@ typedef struct _OFSTRUCT {
 #define INVALID_ATOM ((ATOM)0)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 int
 #if !defined(_MAC)
 #if defined(_M_CEE_PURE)
 __clrcall
-#else
-WINAPI
+else
+__stdcall
 #endif
-#else
+else
 CALLBACK
 #endif
 WinMain (
@@ -855,8 +855,8 @@ WinMain (
 int
 #if defined(_M_CEE_PURE)
 __clrcall
-#else
-WINAPI
+else
+__stdcall
 #endif
 wWinMain(
      HINSTANCE hInstance,
@@ -866,33 +866,33 @@ wWinMain(
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 _Success_(return != NULL)
 _Post_writable_byte_size_(dwBytes)
 DECLSPEC_ALLOCATOR
 HGLOBAL
-WINAPI
+__stdcall
 GlobalAlloc(
      UINT uFlags,
      SIZE_T dwBytes
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
-WINBASEAPI
+
 _Ret_reallocated_bytes_(hMem, dwBytes)
 DECLSPEC_ALLOCATOR
 HGLOBAL
-WINAPI
+__stdcall
 GlobalReAlloc (
     _Frees_ptr_ HGLOBAL hMem,
      SIZE_T dwBytes,
@@ -900,140 +900,140 @@ GlobalReAlloc (
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 SIZE_T
-WINAPI
+__stdcall
 GlobalSize (
      HGLOBAL hMem
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GlobalUnlock(
      HGLOBAL hMem
     );
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 GlobalLock (
      HGLOBAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 UINT
-WINAPI
+__stdcall
 GlobalFlags (
      HGLOBAL hMem
     );
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HGLOBAL
-WINAPI
+__stdcall
 GlobalHandle (
      LPCVOID pMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 _Success_(return==0)
 HGLOBAL
-WINAPI
+__stdcall
 GlobalFree(
     _Frees_ptr_opt_ HGLOBAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 SIZE_T
-WINAPI
+__stdcall
 GlobalCompact(
      DWORD dwMinFree
     );
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 GlobalFix(
      HGLOBAL hMem
     );
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 GlobalUnfix(
      HGLOBAL hMem
     );
 
-WINBASEAPI
+
 LPVOID
-WINAPI
+__stdcall
 GlobalWire(
      HGLOBAL hMem
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GlobalUnWire(
      HGLOBAL hMem
     );
 
 __drv_preferredFunction("GlobalMemoryStatusEx","Deprecated. See MSDN for details")
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 GlobalMemoryStatus(
-    _Out_ LPMEMORYSTATUS lpBuffer
+     LPMEMORYSTATUS lpBuffer
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 _Success_(return != NULL)
 _Post_writable_byte_size_(uBytes)
 DECLSPEC_ALLOCATOR
 HLOCAL
-WINAPI
+__stdcall
 LocalAlloc(
      UINT uFlags,
      SIZE_T uBytes
     );
 
-WINBASEAPI
+
 _Ret_reallocated_bytes_(hMem, uBytes)
 DECLSPEC_ALLOCATOR
 HLOCAL
-WINAPI
+__stdcall
 LocalReAlloc(
     _Frees_ptr_opt_ HLOCAL hMem,
      SIZE_T uBytes,
@@ -1041,98 +1041,98 @@ LocalReAlloc(
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)*/
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 LocalLock(
      HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
-_Ret_maybenull_
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+
 HLOCAL
-WINAPI
+__stdcall
 LocalHandle(
      LPCVOID pMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 LocalUnlock(
      HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 SIZE_T
-WINAPI
+__stdcall
 LocalSize(
      HLOCAL hMem
     );
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 LocalFlags(
      HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 _Success_(return==0)
-_Ret_maybenull_
+
 HLOCAL
-WINAPI
+__stdcall
 LocalFree(
     _Frees_ptr_opt_ HLOCAL hMem
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 SIZE_T
-WINAPI
+__stdcall
 LocalShrink(
      HLOCAL hMem,
      UINT cbNewSize
     );
 
-WINBASEAPI
+
 SIZE_T
-WINAPI
+__stdcall
 LocalCompact(
      UINT uMinFree
     );
@@ -1149,34 +1149,34 @@ LocalCompact(
 
 #if defined(_WIN64)
 # define SCS_THIS_PLATFORM_BINARY SCS_64BIT_BINARY
-#else
+else
 # define SCS_THIS_PLATFORM_BINARY SCS_32BIT_BINARY
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetBinaryTypeA(
       LPCSTR lpApplicationName,
-    _Out_ LPDWORD  lpBinaryType
+     LPDWORD  lpBinaryType
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetBinaryTypeW(
       LPCWSTR lpApplicationName,
-    _Out_ LPDWORD  lpBinaryType
+     LPDWORD  lpBinaryType
     );
 #ifdef UNICODE
 #define GetBinaryType  GetBinaryTypeW
-#else
+else
 #define GetBinaryType  GetBinaryTypeA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 _Success_(return != 0 && return < cchBuffer)
 DWORD
-WINAPI
+__stdcall
 GetShortPathNameA(
      LPCSTR lpszLongPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPSTR  lpszShortPath,
@@ -1188,20 +1188,20 @@ GetShortPathNameA(
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 _Success_(return != 0 && return < cchBuffer)
 DWORD
-WINAPI
+__stdcall
 GetLongPathNameTransactedA(
          LPCSTR lpszShortPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPSTR  lpszLongPath,
          DWORD cchBuffer,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 _Success_(return != 0 && return < cchBuffer)
 DWORD
-WINAPI
+__stdcall
 GetLongPathNameTransactedW(
          LPCWSTR lpszShortPath,
     _Out_writes_to_opt_(cchBuffer, return + 1) LPWSTR  lpszLongPath,
@@ -1210,96 +1210,96 @@ GetLongPathNameTransactedW(
     );
 #ifdef UNICODE
 #define GetLongPathNameTransacted  GetLongPathNameTransactedW
-#else
+else
 #define GetLongPathNameTransacted  GetLongPathNameTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetProcessAffinityMask(
       HANDLE hProcess,
-    _Out_ PDWORD_PTR lpProcessAffinityMask,
-    _Out_ PDWORD_PTR lpSystemAffinityMask
+     PDWORD_PTR lpProcessAffinityMask,
+     PDWORD_PTR lpSystemAffinityMask
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetProcessAffinityMask(
      HANDLE hProcess,
      DWORD_PTR dwProcessAffinityMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 GetProcessIoCounters(
       HANDLE hProcess,
-    _Out_ PIO_COUNTERS lpIoCounters
+     PIO_COUNTERS lpIoCounters
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetProcessWorkingSetSize(
       HANDLE hProcess,
-    _Out_ PSIZE_T lpMinimumWorkingSetSize,
-    _Out_ PSIZE_T lpMaximumWorkingSetSize
+     PSIZE_T lpMinimumWorkingSetSize,
+     PSIZE_T lpMaximumWorkingSetSize
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 SetProcessWorkingSetSize(
      HANDLE hProcess,
      SIZE_T dwMinimumWorkingSetSize,
      SIZE_T dwMaximumWorkingSetSize
     );
 
-WINBASEAPI
+
 __analysis_noreturn
 VOID
-WINAPI
+__stdcall
 FatalExit(
      int ExitCode
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetEnvironmentStringsA(
      _Pre_ _NullNull_terminated_ LPCH NewEnvironment
     );
@@ -1308,7 +1308,7 @@ SetEnvironmentStringsA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if(_WIN32_WINNT >= 0x0400)
 
@@ -1316,40 +1316,40 @@ SetEnvironmentStringsA(
 // Fiber begin
 //
 
-#pragma region Application Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #define FIBER_FLAG_FLOAT_SWITCH 0x1     // context switch floating point
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 SwitchToFiber(
      LPVOID lpFiber
     );
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 DeleteFiber(
      LPVOID lpFiber
     );
 
 #if (_WIN32_WINNT >= 0x0501)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ConvertFiberToThread(
     VOID
     );
 
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 CreateFiberEx(
          SIZE_T dwStackCommitSize,
          SIZE_T dwStackReserveSize,
@@ -1358,41 +1358,41 @@ CreateFiberEx(
      LPVOID lpParameter
     );
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 ConvertThreadToFiberEx(
      LPVOID lpParameter,
          DWORD dwFlags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 CreateFiber(
          SIZE_T dwStackSize,
          LPFIBER_START_ROUTINE lpStartAddress,
      LPVOID lpParameter
     );
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 LPVOID
-WINAPI
+__stdcall
 ConvertThreadToFiber(
      LPVOID lpParameter
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 //
 // Fiber end
@@ -1402,8 +1402,8 @@ ConvertThreadToFiber(
 // UMS begin
 //
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0601) && !defined(MIDL_PASS)
 
@@ -1455,80 +1455,80 @@ typedef struct _UMS_SYSTEM_THREAD_INFORMATION {
     } DUMMYUNIONNAME;
 } UMS_SYSTEM_THREAD_INFORMATION, *PUMS_SYSTEM_THREAD_INFORMATION;
 
-_Must_inspect_result_
-WINBASEAPI
+
+
 BOOL
-WINAPI
+__stdcall
 CreateUmsCompletionList(
-    _Outptr_ PUMS_COMPLETION_LIST* UmsCompletionList
+     PUMS_COMPLETION_LIST* UmsCompletionList
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DequeueUmsCompletionListItems(
      PUMS_COMPLETION_LIST UmsCompletionList,
      DWORD WaitTimeOut,
-    _Out_ PUMS_CONTEXT* UmsThreadList
+     PUMS_CONTEXT* UmsThreadList
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetUmsCompletionListEvent(
      PUMS_COMPLETION_LIST UmsCompletionList,
-    _Inout_ PHANDLE UmsCompletionEvent
+     PHANDLE UmsCompletionEvent
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ExecuteUmsThread(
-    _Inout_ PUMS_CONTEXT UmsThread
+     PUMS_CONTEXT UmsThread
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 UmsThreadYield(
      PVOID SchedulerParam
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeleteUmsCompletionList(
      PUMS_COMPLETION_LIST UmsCompletionList
     );
 
-WINBASEAPI
+
 PUMS_CONTEXT
-WINAPI
+__stdcall
 GetCurrentUmsThread(
     VOID
     );
 
-WINBASEAPI
+
 PUMS_CONTEXT
-WINAPI
+__stdcall
 GetNextUmsListItem(
-    _Inout_ PUMS_CONTEXT UmsContext
+     PUMS_CONTEXT UmsContext
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 QueryUmsThreadInformation(
      PUMS_CONTEXT UmsThread,
      UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
     _Out_writes_bytes_to_(UmsThreadInformationLength, *ReturnLength) PVOID UmsThreadInformation,
      ULONG UmsThreadInformationLength,
-    _Out_opt_ PULONG ReturnLength
+     PULONG ReturnLength
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetUmsThreadInformation(
      PUMS_CONTEXT UmsThread,
      UMS_THREAD_INFO_CLASS UmsThreadInfoClass,
@@ -1536,39 +1536,39 @@ SetUmsThreadInformation(
      ULONG UmsThreadInformationLength
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeleteUmsThreadContext(
      PUMS_CONTEXT UmsThread
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateUmsThreadContext(
-    _Outptr_ PUMS_CONTEXT *lpUmsThread
+     PUMS_CONTEXT *lpUmsThread
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnterUmsSchedulingMode(
      PUMS_SCHEDULER_STARTUP_INFO SchedulerStartupInfo
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetUmsSystemThreadInformation(
      HANDLE ThreadHandle,
-    _Inout_ PUMS_SYSTEM_THREAD_INFORMATION SystemThreadInfo
+     PUMS_SYSTEM_THREAD_INFORMATION SystemThreadInfo
     );
 
-#endif // (_WIN32_WINNT >= 0x0601) && !defined(MIDL_PASS)
+end  -- (_WIN32_WINNT >= 0x0601) && !defined(MIDL_PASS)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 //
 // UMS end
@@ -1576,72 +1576,72 @@ GetUmsSystemThreadInformation(
 
 #endif /* _WIN32_WINNT >= 0x0400 */
 
-#pragma region Application Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 DWORD_PTR
-WINAPI
+__stdcall
 SetThreadAffinityMask(
      HANDLE hThread,
      DWORD_PTR dwThreadAffinityMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
 
 #define PROCESS_DEP_ENABLE                          0x00000001
 #define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION     0x00000002
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetProcessDEPPolicy(
      DWORD dwFlags
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetProcessDEPPolicy(
      HANDLE hProcess,
-    _Out_ LPDWORD lpFlags,
-    _Out_ PBOOL lpPermanent
+     LPDWORD lpFlags,
+     PBOOL lpPermanent
     );
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RequestWakeupLatency(
      LATENCY_TIME latency
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsSystemResumeAutomatic(
     VOID
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetThreadSelectorEntry(
       HANDLE hThread,
       DWORD dwSelector,
-    _Out_ LPLDT_ENTRY lpSelectorEntry
+     LPLDT_ENTRY lpSelectorEntry
     );
 
-WINBASEAPI
+
 EXECUTION_STATE
-WINAPI
+__stdcall
 SetThreadExecutionState(
      EXECUTION_STATE esFlags
     );
@@ -1654,35 +1654,35 @@ SetThreadExecutionState(
 
 typedef REASON_CONTEXT POWER_REQUEST_CONTEXT, *PPOWER_REQUEST_CONTEXT, *LPPOWER_REQUEST_CONTEXT;
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 PowerCreateRequest (
      PREASON_CONTEXT Context
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 PowerSetRequest (
      HANDLE PowerRequest,
      POWER_REQUEST_TYPE RequestType
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 PowerClearRequest (
      HANDLE PowerRequest,
      POWER_REQUEST_TYPE RequestType
     );
 
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
+end  -- (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
 #ifdef _M_CEE_PURE
@@ -1690,23 +1690,23 @@ PowerClearRequest (
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if !defined(RC_INVOKED) // RC warns because "WINBASE_DECLARE_RESTORE_LAST_ERROR" is a bit long.
 //#if _WIN32_WINNT >= 0x0501 || defined(WINBASE_DECLARE_RESTORE_LAST_ERROR)
 #if defined(WINBASE_DECLARE_RESTORE_LAST_ERROR)
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 RestoreLastError(
      DWORD dwErrCode
     );
 
-typedef VOID (WINAPI* PRESTORE_LAST_ERROR)(DWORD);
+typedef VOID (__stdcall* PRESTORE_LAST_ERROR)(DWORD);
 #define RESTORE_LAST_ERROR_NAME_A      "RestoreLastError"
 #define RESTORE_LAST_ERROR_NAME_W     L"RestoreLastError"
 #define RESTORE_LAST_ERROR_NAME   TEXT("RestoreLastError")
@@ -1717,9 +1717,9 @@ typedef VOID (WINAPI* PRESTORE_LAST_ERROR)(DWORD);
 #define HasOverlappedIoCompleted(lpOverlapped) (((DWORD)(lpOverlapped)->Internal) != STATUS_PENDING)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0600)
@@ -1740,21 +1740,21 @@ typedef VOID (WINAPI* PRESTORE_LAST_ERROR)(DWORD);
 //
 #define FILE_SKIP_SET_EVENT_ON_HANDLE           0x2
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileCompletionNotificationModes(
      HANDLE FileHandle,
      UCHAR Flags
     );
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #define SEM_FAILCRITICALERRORS      0x0001
 #define SEM_NOGPFAULTERRORBOX       0x0002
@@ -1765,68 +1765,68 @@ SetFileCompletionNotificationModes(
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 Wow64GetThreadContext(
         HANDLE hThread,
-    _Inout_ PWOW64_CONTEXT lpContext
+     PWOW64_CONTEXT lpContext
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 Wow64SetThreadContext(
      HANDLE hThread,
-     CONST WOW64_CONTEXT *lpContext
+     const WOW64_CONTEXT *lpContext
     );
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #if (_WIN32_WINNT >= 0x0601)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 Wow64GetThreadSelectorEntry(
      HANDLE hThread,
      DWORD dwSelector,
-    _Out_ PWOW64_LDT_ENTRY lpSelectorEntry
+     PWOW64_LDT_ENTRY lpSelectorEntry
     );
 
-#endif // (_WIN32_WINNT >= 0x0601)
+end  -- (_WIN32_WINNT >= 0x0601)
 
-#endif // !defined(MIDL_PASS)
+end  -- !defined(MIDL_PASS)
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 Wow64SuspendThread(
      HANDLE hThread
     );
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DebugSetProcessKillOnExit(
      BOOL KillOnExit
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DebugBreakProcess (
      HANDLE Process
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
 #if (_WIN32_WINNT >= 0x0403)
@@ -1834,105 +1834,105 @@ DebugBreakProcess (
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 PulseEvent(
      HANDLE hEvent
     );
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalDeleteAtom(
      ATOM nAtom
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 InitAtomTable(
      DWORD nSize
     );
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 DeleteAtom(
      ATOM nAtom
     );
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 SetHandleCount(
      UINT uNumber
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RequestDeviceWakeup(
      HANDLE hDevice
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CancelDeviceWakeupRequest(
      HANDLE hDevice
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetDevicePowerState(
       HANDLE hDevice,
-    _Out_ BOOL *pfOn
+     BOOL *pfOn
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetMessageWaitingIndicator(
      HANDLE hMsgIndicator,
      ULONG ulMsgCount
     );
 
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileShortNameA(
      HANDLE hFile,
      LPCSTR lpShortName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileShortNameW(
      HANDLE hFile,
      LPCWSTR lpShortName
     );
 #ifdef UNICODE
 #define SetFileShortName  SetFileShortNameW
-#else
+else
 #define SetFileShortName  SetFileShortNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #define HANDLE_FLAG_INHERIT             0x00000001
 #define HANDLE_FLAG_PROTECT_FROM_CLOSE  0x00000002
 
 #define HINSTANCE_ERROR 32
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 LoadModule(
      LPCSTR lpModuleName,
      LPVOID lpParameterBlock
@@ -1940,9 +1940,9 @@ LoadModule(
 
 
 __drv_preferredFunction("CreateProcess","Deprecated. See MSDN for details")
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 WinExec(
      LPCSTR lpCmdLine,
      UINT uCmdShow
@@ -1950,195 +1950,195 @@ WinExec(
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore or App Family
+
+ or OneCore or App Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM | WINAPI_PARTITION_APP)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ClearCommBreak(
      HANDLE hFile
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ClearCommError(
           HANDLE hFile,
-    _Out_opt_ LPDWORD lpErrors,
-    _Out_opt_ LPCOMSTAT lpStat
+     LPDWORD lpErrors,
+     LPCOMSTAT lpStat
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetupComm(
      HANDLE hFile,
      DWORD dwInQueue,
      DWORD dwOutQueue
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EscapeCommFunction(
      HANDLE hFile,
      DWORD dwFunc
     );
 
-WINBASEAPI
-_Success_(return != FALSE)
+
+
 BOOL
-WINAPI
+__stdcall
 GetCommConfig(
           HANDLE hCommDev,
     _Out_writes_bytes_opt_(*lpdwSize) LPCOMMCONFIG lpCC,
-    _Inout_   LPDWORD lpdwSize
+       LPDWORD lpdwSize
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCommMask(
       HANDLE hFile,
-    _Out_ LPDWORD lpEvtMask
+     LPDWORD lpEvtMask
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCommProperties(
         HANDLE hFile,
-    _Inout_ LPCOMMPROP lpCommProp
+     LPCOMMPROP lpCommProp
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCommModemStatus(
       HANDLE hFile,
-    _Out_ LPDWORD lpModemStat
+     LPDWORD lpModemStat
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCommState(
       HANDLE hFile,
-    _Out_ LPDCB lpDCB
+     LPDCB lpDCB
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCommTimeouts(
       HANDLE hFile,
-    _Out_ LPCOMMTIMEOUTS lpCommTimeouts
+     LPCOMMTIMEOUTS lpCommTimeouts
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 PurgeComm(
      HANDLE hFile,
      DWORD dwFlags
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetCommBreak(
      HANDLE hFile
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetCommConfig(
      HANDLE hCommDev,
-    _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
+     LPCOMMCONFIG lpCC,
      DWORD dwSize
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetCommMask(
      HANDLE hFile,
      DWORD dwEvtMask
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetCommState(
      HANDLE hFile,
      LPDCB lpDCB
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetCommTimeouts(
      HANDLE hFile,
      LPCOMMTIMEOUTS lpCommTimeouts
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 TransmitCommChar(
      HANDLE hFile,
      char cChar
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WaitCommEvent(
             HANDLE hFile,
-    _Inout_     LPDWORD lpEvtMask,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped
+         LPDWORD lpEvtMask,
+     LPOVERLAPPED lpOverlapped
     );
 
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 OpenCommPort(
      ULONG uPortNumber,
      DWORD dwDesiredAccess,
      DWORD dwFlagsAndAttributes
     );
 
-#endif // (NTDDI_VERSION >= NTDDI_WIN10_RS3)
+end  -- (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3) // NTDDI_WIN10_RS4NTDDI_WIN10_RS4
 
-WINBASEAPI
+
 ULONG
-WINAPI
+__stdcall
 GetCommPorts(
     _Out_writes_(uPortNumbersCount) PULONG lpPortNumbers,
                                 ULONG uPortNumbersCount,
-    _Out_                           PULONG puPortNumbersFound
+                               PULONG puPortNumbersFound
     );
 
-#endif // (NTDDI_VERSION >= NTDDI_WIN10_RS3) // NTDDI_WIN10_RS4NTDDI_WIN10_RS4
+end  -- (NTDDI_VERSION >= NTDDI_WIN10_RS3) // NTDDI_WIN10_RS4NTDDI_WIN10_RS4
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM | WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 DWORD
-WINAPI
+__stdcall
 SetTapePosition(
      HANDLE hDevice,
      DWORD dwPositionMethod,
@@ -2148,38 +2148,38 @@ SetTapePosition(
      BOOL bImmediate
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetTapePosition(
       HANDLE hDevice,
       DWORD dwPositionType,
-    _Out_ LPDWORD lpdwPartition,
-    _Out_ LPDWORD lpdwOffsetLow,
-    _Out_ LPDWORD lpdwOffsetHigh
+     LPDWORD lpdwPartition,
+     LPDWORD lpdwOffsetLow,
+     LPDWORD lpdwOffsetHigh
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 PrepareTape(
      HANDLE hDevice,
      DWORD dwOperation,
      BOOL bImmediate
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 EraseTape(
      HANDLE hDevice,
      DWORD dwEraseType,
      BOOL bImmediate
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 CreateTapePartition(
      HANDLE hDevice,
      DWORD dwPartitionMethod,
@@ -2187,9 +2187,9 @@ CreateTapePartition(
      DWORD dwSize
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 WriteTapemark(
      HANDLE hDevice,
      DWORD dwTapemarkType,
@@ -2197,29 +2197,29 @@ WriteTapemark(
      BOOL bImmediate
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetTapeStatus(
      HANDLE hDevice
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetTapeParameters(
         HANDLE hDevice,
         DWORD dwOperation,
-    _Inout_ LPDWORD lpdwSize,
+     LPDWORD lpdwSize,
     _Out_writes_bytes_(*lpdwSize) LPVOID lpTapeInformation
     );
 
 #define GET_TAPE_MEDIA_INFORMATION 0
 #define GET_TAPE_DRIVE_INFORMATION 1
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 SetTapeParameters(
      HANDLE hDevice,
      DWORD dwOperation,
@@ -2230,14 +2230,14 @@ SetTapeParameters(
 #define SET_TAPE_DRIVE_INFORMATION 1
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 MulDiv(
      int nNumber,
      int nNumerator,
@@ -2245,10 +2245,10 @@ MulDiv(
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 typedef enum _DEP_SYSTEM_POLICY_TYPE {
     DEPPolicyAlwaysOff = 0,
@@ -2260,53 +2260,53 @@ typedef enum _DEP_SYSTEM_POLICY_TYPE {
 
 #if (NTDDI_VERSION >= NTDDI_WINXPSP3)
 
-WINBASEAPI
+
 DEP_SYSTEM_POLICY_TYPE
-WINAPI
+__stdcall
 GetSystemDEPPolicy(
     VOID
     );
 
-#endif // (NTDDI_VERSION >= NTDDI_WINXPSP3)
+end  -- (NTDDI_VERSION >= NTDDI_WINXPSP3)
 
 #if _WIN32_WINNT >= 0x0501
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetSystemRegistryQuota(
-    _Out_opt_ PDWORD pdwQuotaAllowed,
-    _Out_opt_ PDWORD pdwQuotaUsed
+     PDWORD pdwQuotaAllowed,
+     PDWORD pdwQuotaUsed
     );
 
-#endif // (_WIN32_WINNT >= 0x0501)
+end  -- (_WIN32_WINNT >= 0x0501)
 
 //
 // Routines to convert back and forth between system time and file time
 //
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FileTimeToDosDateTime(
-      CONST FILETIME *lpFileTime,
-    _Out_ LPWORD lpFatDate,
-    _Out_ LPWORD lpFatTime
+      const FILETIME *lpFileTime,
+     LPWORD lpFatDate,
+     LPWORD lpFatTime
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DosDateTimeToFileTime(
       WORD wFatDate,
       WORD wFatTime,
-    _Out_ LPFILETIME lpFileTime
+     LPFILETIME lpFileTime
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 //
@@ -2316,10 +2316,10 @@ DosDateTimeToFileTime(
 #define FORMAT_MESSAGE_ALLOCATE_BUFFER 0x00000100
 
 #if !defined(MIDL_PASS)
-WINBASEAPI
+
 _Success_(return != 0)
 DWORD
-WINAPI
+__stdcall
 FormatMessageA(
          DWORD dwFlags,
      LPCVOID lpSource,
@@ -2331,10 +2331,10 @@ FormatMessageA(
          DWORD nSize,
      va_list *Arguments
     );
-WINBASEAPI
+
 _Success_(return != 0)
 DWORD
-WINAPI
+__stdcall
 FormatMessageW(
          DWORD dwFlags,
      LPCVOID lpSource,
@@ -2348,9 +2348,9 @@ FormatMessageW(
     );
 #ifdef UNICODE
 #define FormatMessage  FormatMessageW
-#else
+else
 #define FormatMessage  FormatMessageA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef FormatMessage
@@ -2368,7 +2368,7 @@ FormatMessage(
 {
 #ifdef UNICODE
     return FormatMessageW(
-#else
+else
     return FormatMessageA(
 #endif
         dwFlags,
@@ -2391,24 +2391,24 @@ FormatMessage(
 #define FORMAT_MESSAGE_MAX_WIDTH_MASK  0x000000FF
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateMailslotA(
          LPCSTR lpName,
          DWORD nMaxMessageSize,
          DWORD lReadTimeout,
      LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateMailslotW(
          LPCWSTR lpName,
          DWORD nMaxMessageSize,
@@ -2417,24 +2417,24 @@ CreateMailslotW(
     );
 #ifdef UNICODE
 #define CreateMailslot  CreateMailslotW
-#else
+else
 #define CreateMailslot  CreateMailslotA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetMailslotInfo(
           HANDLE hMailslot,
-    _Out_opt_ LPDWORD lpMaxMessageSize,
-    _Out_opt_ LPDWORD lpNextSize,
-    _Out_opt_ LPDWORD lpMessageCount,
-    _Out_opt_ LPDWORD lpReadTimeout
+     LPDWORD lpMaxMessageSize,
+     LPDWORD lpNextSize,
+     LPDWORD lpMessageCount,
+     LPDWORD lpReadTimeout
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetMailslotInfo(
      HANDLE hMailslot,
      DWORD lReadTimeout
@@ -2446,41 +2446,41 @@ SetMailslotInfo(
 
 
 BOOL
-WINAPI
+__stdcall
 EncryptFileA(
      LPCSTR lpFileName
     );
 
 BOOL
-WINAPI
+__stdcall
 EncryptFileW(
      LPCWSTR lpFileName
     );
 #ifdef UNICODE
 #define EncryptFile  EncryptFileW
-#else
+else
 #define EncryptFile  EncryptFileA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 DecryptFileA(
            LPCSTR lpFileName,
     _Reserved_ DWORD dwReserved
     );
 
 BOOL
-WINAPI
+__stdcall
 DecryptFileW(
            LPCWSTR lpFileName,
     _Reserved_ DWORD dwReserved
     );
 #ifdef UNICODE
 #define DecryptFile  DecryptFileW
-#else
+else
 #define DecryptFile  DecryptFileA
-#endif // !UNICODE
+end  -- !UNICODE
 
 //
 //  Encryption Status Value
@@ -2499,23 +2499,23 @@ DecryptFileW(
 
 
 BOOL
-WINAPI
+__stdcall
 FileEncryptionStatusA(
       LPCSTR lpFileName,
-    _Out_ LPDWORD  lpStatus
+     LPDWORD  lpStatus
     );
 
 BOOL
-WINAPI
+__stdcall
 FileEncryptionStatusW(
       LPCWSTR lpFileName,
-    _Out_ LPDWORD  lpStatus
+     LPDWORD  lpStatus
     );
 #ifdef UNICODE
 #define FileEncryptionStatus  FileEncryptionStatusW
-#else
+else
 #define FileEncryptionStatus  FileEncryptionStatusA
-#endif // !UNICODE
+end  -- !UNICODE
 
 //
 // Currently defined recovery flags
@@ -2525,7 +2525,7 @@ FileEncryptionStatusW(
 
 typedef
 DWORD
-(WINAPI *PFE_EXPORT_FUNC)(
+(__stdcall *PFE_EXPORT_FUNC)(
     _In_reads_bytes_(ulLength) PBYTE pbData,
      PVOID pvCallbackContext,
          ULONG ulLength
@@ -2533,10 +2533,10 @@ DWORD
 
 typedef
 DWORD
-(WINAPI *PFE_IMPORT_FUNC)(
+(__stdcall *PFE_IMPORT_FUNC)(
     _Out_writes_bytes_to_(*ulLength, *ulLength) PBYTE pbData,
      PVOID pvCallbackContext,
-    _Inout_  PULONG ulLength
+      PULONG ulLength
     );
 
 
@@ -2553,29 +2553,29 @@ DWORD
 
 
 DWORD
-WINAPI
+__stdcall
 OpenEncryptedFileRawA(
             LPCSTR lpFileName,
             ULONG    ulFlags,
-    _Outptr_ PVOID   *pvContext
+     PVOID   *pvContext
     );
 
 DWORD
-WINAPI
+__stdcall
 OpenEncryptedFileRawW(
             LPCWSTR lpFileName,
             ULONG    ulFlags,
-    _Outptr_ PVOID   *pvContext
+     PVOID   *pvContext
     );
 #ifdef UNICODE
 #define OpenEncryptedFileRaw  OpenEncryptedFileRawW
-#else
+else
 #define OpenEncryptedFileRaw  OpenEncryptedFileRawA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 DWORD
-WINAPI
+__stdcall
 ReadEncryptedFileRaw(
          PFE_EXPORT_FUNC pfExportCallback,
      PVOID           pvCallbackContext,
@@ -2584,7 +2584,7 @@ ReadEncryptedFileRaw(
 
 
 DWORD
-WINAPI
+__stdcall
 WriteEncryptedFileRaw(
          PFE_IMPORT_FUNC pfImportCallback,
      PVOID           pvCallbackContext,
@@ -2593,85 +2593,85 @@ WriteEncryptedFileRaw(
 
 
 VOID
-WINAPI
+__stdcall
 CloseEncryptedFileRaw(
      PVOID           pvContext
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 //
 // _l Compat Functions
 //
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrcmpA(
      LPCSTR lpString1,
      LPCSTR lpString2
     );
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrcmpW(
      LPCWSTR lpString1,
      LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcmp  lstrcmpW
-#else
+else
 #define lstrcmp  lstrcmpA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrcmpiA(
      LPCSTR lpString1,
      LPCSTR lpString2
     );
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrcmpiW(
      LPCWSTR lpString1,
      LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcmpi  lstrcmpiW
-#else
+else
 #define lstrcmpi  lstrcmpiA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(DEPRECATE_SUPPORTED)
 #pragma warning(push)
 #pragma warning(disable:4995)
 #endif
 
-WINBASEAPI
+
 _Check_return_
 _Success_(return != NULL)
 _Post_satisfies_(return == lpString1)
-_Ret_maybenull_
+
 LPSTR
-WINAPI
+__stdcall
 lstrcpynA(
     _Out_writes_(iMaxLength) LPSTR lpString1,
      LPCSTR lpString2,
      int iMaxLength
     );
-WINBASEAPI
+
 _Check_return_
 _Success_(return != NULL)
 _Post_satisfies_(return == lpString1)
-_Ret_maybenull_
+
 LPWSTR
-WINAPI
+__stdcall
 lstrcpynW(
     _Out_writes_(iMaxLength) LPWSTR lpString1,
      LPCWSTR lpString2,
@@ -2679,149 +2679,149 @@ lstrcpynW(
     );
 #ifdef UNICODE
 #define lstrcpyn  lstrcpynW
-#else
+else
 #define lstrcpyn  lstrcpynA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 LPSTR
-WINAPI
+__stdcall
 lstrcpyA(
     _Out_writes_(_String_length_(lpString2) + 1) LPSTR lpString1, // deprecated: annotation is as good as it gets
       LPCSTR lpString2
     );
-WINBASEAPI
+
 LPWSTR
-WINAPI
+__stdcall
 lstrcpyW(
     _Out_writes_(_String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
       LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcpy  lstrcpyW
-#else
+else
 #define lstrcpy  lstrcpyA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 LPSTR
-WINAPI
+__stdcall
 lstrcatA(
     _Inout_updates_z_(_String_length_(lpString1) + _String_length_(lpString2) + 1) LPSTR lpString1, // deprecated: annotation is as good as it gets
         LPCSTR lpString2
     );
-WINBASEAPI
+
 LPWSTR
-WINAPI
+__stdcall
 lstrcatW(
     _Inout_updates_z_(_String_length_(lpString1) + _String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
         LPCWSTR lpString2
     );
 #ifdef UNICODE
 #define lstrcat  lstrcatW
-#else
+else
 #define lstrcat  lstrcatA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(DEPRECATE_SUPPORTED)
 #pragma warning(pop)
 #endif
 
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrlenA(
      LPCSTR lpString
     );
-WINBASEAPI
+
 int
-WINAPI
+__stdcall
 lstrlenW(
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define lstrlen  lstrlenW
-#else
+else
 #define lstrlen  lstrlenA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 HFILE
-WINAPI
+__stdcall
 OpenFile(
         LPCSTR lpFileName,
-    _Inout_ LPOFSTRUCT lpReOpenBuff,
+     LPOFSTRUCT lpReOpenBuff,
         UINT uStyle
     );
 
-WINBASEAPI
+
 HFILE
-WINAPI
+__stdcall
 _lopen(
      LPCSTR lpPathName,
      int iReadWrite
     );
 
-WINBASEAPI
+
 HFILE
-WINAPI
+__stdcall
 _lcreat(
      LPCSTR lpPathName,
      int  iAttribute
     );
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 _lread(
      HFILE hFile,
     _Out_writes_bytes_to_(uBytes, return) LPVOID lpBuffer,
      UINT uBytes
     );
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 _lwrite(
      HFILE hFile,
     _In_reads_bytes_(uBytes) LPCCH lpBuffer,
      UINT uBytes
     );
 
-WINBASEAPI
+
 long
-WINAPI
+__stdcall
 _hread(
      HFILE hFile,
     _Out_writes_bytes_to_(lBytes, return) LPVOID lpBuffer,
      long lBytes
     );
 
-WINBASEAPI
+
 long
-WINAPI
+__stdcall
 _hwrite(
      HFILE hFile,
     _In_reads_bytes_(lBytes) LPCCH lpBuffer,
      long lBytes
     );
 
-WINBASEAPI
+
 HFILE
-WINAPI
+__stdcall
 _lclose(
      HFILE hFile
     );
 
-WINBASEAPI
+
 LONG
-WINAPI
+__stdcall
 _llseek(
      HFILE hFile,
      LONG lOffset,
@@ -2830,23 +2830,23 @@ _llseek(
 
 
 BOOL
-WINAPI
+__stdcall
 IsTextUnicode(
-    _In_reads_bytes_(iSize) CONST VOID* lpv,
+    _In_reads_bytes_(iSize) const VOID* lpv,
             int iSize,
-    _Inout_opt_ LPINT lpiResult
+     LPINT lpiResult
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #if(_WIN32_WINNT >= 0x0400)
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 SignalObjectAndWait(
      HANDLE hObjectToSignal,
      HANDLE hObjectToWaitOn,
@@ -2856,47 +2856,47 @@ SignalObjectAndWait(
 #endif /* _WIN32_WINNT >= 0x0400 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 BackupRead(
         HANDLE hFile,
     _Out_writes_bytes_to_(nNumberOfBytesToRead, *lpNumberOfBytesRead) LPBYTE lpBuffer,
         DWORD nNumberOfBytesToRead,
-    _Out_   LPDWORD lpNumberOfBytesRead,
+       LPDWORD lpNumberOfBytesRead,
         BOOL bAbort,
         BOOL bProcessSecurity,
-    _Inout_ LPVOID *lpContext
+     LPVOID *lpContext
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BackupSeek(
         HANDLE hFile,
         DWORD  dwLowBytesToSeek,
         DWORD  dwHighBytesToSeek,
-    _Out_   LPDWORD lpdwLowByteSeeked,
-    _Out_   LPDWORD lpdwHighByteSeeked,
-    _Inout_ LPVOID *lpContext
+       LPDWORD lpdwLowByteSeeked,
+       LPDWORD lpdwHighByteSeeked,
+     LPVOID *lpContext
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BackupWrite(
         HANDLE hFile,
     _In_reads_bytes_(nNumberOfBytesToWrite) LPBYTE lpBuffer,
         DWORD nNumberOfBytesToWrite,
-    _Out_   LPDWORD lpNumberOfBytesWritten,
+       LPDWORD lpNumberOfBytesWritten,
         BOOL bAbort,
         BOOL bProcessSecurity,
-    _Inout_ LPVOID *lpContext
+     LPVOID *lpContext
     );
 
 //
@@ -2977,25 +2977,25 @@ typedef struct _STARTUPINFOEXW {
 #ifdef UNICODE
 typedef STARTUPINFOEXW STARTUPINFOEX;
 typedef LPSTARTUPINFOEXW LPSTARTUPINFOEX;
-#else
+else
 typedef STARTUPINFOEXA STARTUPINFOEX;
 typedef LPSTARTUPINFOEXA LPSTARTUPINFOEX;
-#endif // UNICODE
+end  -- UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #define SHUTDOWN_NORETRY                0x00000001
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 OpenMutexA(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
@@ -3005,10 +3005,10 @@ OpenMutexA(
 #define OpenMutex  OpenMutexA
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateSemaphoreA(
      LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
          LONG lInitialCount,
@@ -3020,15 +3020,15 @@ CreateSemaphoreA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 OpenSemaphoreA(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
@@ -3039,17 +3039,17 @@ OpenSemaphoreA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateWaitableTimerA(
      LPSECURITY_ATTRIBUTES lpTimerAttributes,
          BOOL bManualReset,
@@ -3059,10 +3059,10 @@ CreateWaitableTimerA(
 #define CreateWaitableTimer  CreateWaitableTimerA
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 OpenWaitableTimerA(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
@@ -3074,10 +3074,10 @@ OpenWaitableTimerA(
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateSemaphoreExA(
         LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
             LONG lInitialCount,
@@ -3090,10 +3090,10 @@ CreateSemaphoreExA(
 #define CreateSemaphoreEx  CreateSemaphoreExA
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateWaitableTimerExA(
      LPSECURITY_ATTRIBUTES lpTimerAttributes,
      LPCSTR lpTimerName,
@@ -3110,15 +3110,15 @@ CreateWaitableTimerExA(
 
 #endif /* (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400) */
 
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
-_Ret_maybenull_
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateFileMappingA(
          HANDLE hFile,
      LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
@@ -3133,10 +3133,10 @@ CreateFileMappingA(
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateFileMappingNumaA(
          HANDLE hFile,
      LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
@@ -3151,11 +3151,11 @@ CreateFileMappingNumaA(
 #define CreateFileMappingNuma  CreateFileMappingNumaA
 #endif
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 OpenFileMappingA(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
@@ -3166,15 +3166,15 @@ OpenFileMappingA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 _Success_(return != 0 && return <= nBufferLength)
 DWORD
-WINAPI
+__stdcall
 GetLogicalDriveStringsA(
      DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer
@@ -3184,33 +3184,33 @@ GetLogicalDriveStringsA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0602)
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HMODULE
-WINAPI
+__stdcall
 LoadPackagedLibrary (
            LPCWSTR lpwLibFileName,
     _Reserved_ DWORD Reserved
     );
 
-#endif // _WIN32_WINNT >= 0x0602
+end  -- _WIN32_WINNT >= 0x0602
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if (_WIN32_WINNT >= 0x0600)
 
@@ -3242,40 +3242,40 @@ LoadPackagedLibrary (
 //
 #define PROTECTION_LEVEL_NONE               0xFFFFFFFE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0600)
 
 #define PROCESS_NAME_NATIVE     0x00000001
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 QueryFullProcessImageNameA(
      HANDLE hProcess,
      DWORD dwFlags,
     _Out_writes_to_(*lpdwSize, *lpdwSize) LPSTR lpExeName,
-    _Inout_ PDWORD lpdwSize
+     PDWORD lpdwSize
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 QueryFullProcessImageNameW(
      HANDLE hProcess,
      DWORD dwFlags,
     _Out_writes_to_(*lpdwSize, *lpdwSize) LPWSTR lpExeName,
-    _Inout_ PDWORD lpdwSize
+     PDWORD lpdwSize
     );
 #ifdef UNICODE
 #define QueryFullProcessImageName  QueryFullProcessImageNameW
-#else
+else
 #define QueryFullProcessImageName  QueryFullProcessImageNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #if (_WIN32_WINNT >= 0x0600)
 
@@ -3332,7 +3332,7 @@ typedef enum _PROC_THREAD_ATTRIBUTE_NUM {
 #define PROC_THREAD_ATTRIBUTE_HANDLE_LIST \
     ProcThreadAttributeValue (ProcThreadAttributeHandleList, FALSE, TRUE, FALSE)
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
 #define PROC_THREAD_ATTRIBUTE_GROUP_AFFINITY \
@@ -3581,9 +3581,9 @@ typedef enum _PROC_THREAD_ATTRIBUTE_NUM {
 #define PROCESS_CREATION_MITIGATION_POLICY2_RESTRICT_INDIRECT_BRANCH_PREDICTION_ALWAYS_OFF  (0x00000002ui64 << 16)
 #define PROCESS_CREATION_MITIGATION_POLICY2_RESTRICT_INDIRECT_BRANCH_PREDICTION_RESERVED    (0x00000003ui64 << 16)
 
-#endif // _WIN32_WINNT_WINTHRESHOLD
-#endif // _WIN32_WINNT_WINBLUE
-#endif // _WIN32_WINNT_WIN8
+end  -- _WIN32_WINNT_WINTHRESHOLD
+end  -- _WIN32_WINNT_WINBLUE
+end  -- _WIN32_WINNT_WIN8
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WINTHRESHOLD)
 
@@ -3613,12 +3613,12 @@ typedef enum _PROC_THREAD_ATTRIBUTE_NUM {
 #define PROC_THREAD_ATTRIBUTE_WIN32K_FILTER \
     ProcThreadAttributeValue (ProcThreadAttributeWin32kFilter, FALSE, TRUE, FALSE)
 
-#endif // _WIN32_WINNT_WINTHRESHOLD
+end  -- _WIN32_WINNT_WINTHRESHOLD
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS1)
 
 
-#endif // NTDDI_WIN10_RS1
+end  -- NTDDI_WIN10_RS1
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS2)
 
@@ -3634,20 +3634,20 @@ typedef enum _PROC_THREAD_ATTRIBUTE_NUM {
     ProcThreadAttributeValue (ProcThreadAttributeDesktopAppPolicy, FALSE, TRUE, FALSE)
 
 
-#endif // NTDDI_WIN10_RS2
+end  -- NTDDI_WIN10_RS2
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
-
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+
 VOID
-WINAPI
+__stdcall
 GetStartupInfoA(
-    _Out_ LPSTARTUPINFOA lpStartupInfo
+     LPSTARTUPINFOA lpStartupInfo
     );
 #ifndef UNICODE
 #define GetStartupInfo  GetStartupInfoA
@@ -3672,7 +3672,7 @@ GetEnvironmentVariable(
 {
 #ifdef UNICODE
     return GetEnvironmentVariableW(
-#else
+else
     return GetEnvironmentVariableA(
 #endif
         lpName,
@@ -3698,7 +3698,7 @@ SetEnvironmentVariable(
 {
 #ifdef UNICODE
     return SetEnvironmentVariableW(
-#else
+else
     return SetEnvironmentVariableA(
 #endif
         lpName,
@@ -3708,23 +3708,23 @@ SetEnvironmentVariable(
 #endif  /* _M_CEE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #pragma region OneCore Family or App Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_SYSTEM | WINAPI_PARTITION_APP)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetFirmwareEnvironmentVariableA(
      LPCSTR lpName,
      LPCSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
      DWORD    nSize
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetFirmwareEnvironmentVariableW(
      LPCWSTR lpName,
      LPCWSTR lpGuid,
@@ -3733,52 +3733,52 @@ GetFirmwareEnvironmentVariableW(
     );
 #ifdef UNICODE
 #define GetFirmwareEnvironmentVariable  GetFirmwareEnvironmentVariableW
-#else
+else
 #define GetFirmwareEnvironmentVariable  GetFirmwareEnvironmentVariableA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetFirmwareEnvironmentVariableExA(
      LPCSTR lpName,
      LPCSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
      DWORD    nSize,
-    _Out_opt_ PDWORD pdwAttribubutes
+     PDWORD pdwAttribubutes
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetFirmwareEnvironmentVariableExW(
      LPCWSTR lpName,
      LPCWSTR lpGuid,
     _Out_writes_bytes_to_opt_(nSize, return) PVOID pBuffer,
      DWORD    nSize,
-    _Out_opt_ PDWORD pdwAttribubutes
+     PDWORD pdwAttribubutes
     );
 #ifdef UNICODE
 #define GetFirmwareEnvironmentVariableEx  GetFirmwareEnvironmentVariableExW
-#else
+else
 #define GetFirmwareEnvironmentVariableEx  GetFirmwareEnvironmentVariableExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFirmwareEnvironmentVariableA(
      LPCSTR lpName,
      LPCSTR lpGuid,
     _In_reads_bytes_opt_(nSize) PVOID pValue,
      DWORD    nSize
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFirmwareEnvironmentVariableW(
      LPCWSTR lpName,
      LPCWSTR lpGuid,
@@ -3787,15 +3787,15 @@ SetFirmwareEnvironmentVariableW(
     );
 #ifdef UNICODE
 #define SetFirmwareEnvironmentVariable  SetFirmwareEnvironmentVariableW
-#else
+else
 #define SetFirmwareEnvironmentVariable  SetFirmwareEnvironmentVariableA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFirmwareEnvironmentVariableExA(
      LPCSTR lpName,
      LPCSTR lpGuid,
@@ -3803,9 +3803,9 @@ SetFirmwareEnvironmentVariableExA(
      DWORD    nSize,
      DWORD    dwAttributes
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFirmwareEnvironmentVariableExW(
      LPCWSTR lpName,
      LPCWSTR lpGuid,
@@ -3815,41 +3815,41 @@ SetFirmwareEnvironmentVariableExW(
     );
 #ifdef UNICODE
 #define SetFirmwareEnvironmentVariableEx  SetFirmwareEnvironmentVariableExW
-#else
+else
 #define SetFirmwareEnvironmentVariableEx  SetFirmwareEnvironmentVariableExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_SYSTEM | WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetFirmwareType (
-    _Inout_ PFIRMWARE_TYPE FirmwareType
+     PFIRMWARE_TYPE FirmwareType
     );
 
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsNativeVhdBoot (
-    _Out_ PBOOL NativeVhdBoot
+     PBOOL NativeVhdBoot
     );
 
-#endif // _WIN32_WINNT >= _WIN32_WINNT_WIN8
+end  -- _WIN32_WINNT >= _WIN32_WINNT_WIN8
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HRSRC
-WINAPI
+__stdcall
 FindResourceA(
      HMODULE hModule,
          LPCSTR lpName,
@@ -3859,10 +3859,10 @@ FindResourceA(
 #define FindResource  FindResourceA
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HRSRC
-WINAPI
+__stdcall
 FindResourceExA(
      HMODULE hModule,
          LPCSTR lpType,
@@ -3873,17 +3873,17 @@ FindResourceExA(
 #define FindResourceEx  FindResourceExA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnumResourceTypesA(
      HMODULE hModule,
          ENUMRESTYPEPROCA lpEnumFunc,
          LONG_PTR lParam
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnumResourceTypesW(
      HMODULE hModule,
          ENUMRESTYPEPROCW lpEnumFunc,
@@ -3891,13 +3891,13 @@ EnumResourceTypesW(
     );
 #ifdef UNICODE
 #define EnumResourceTypes  EnumResourceTypesW
-#else
+else
 #define EnumResourceTypes  EnumResourceTypesA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnumResourceNamesA(
      HMODULE hModule,
          LPCSTR lpType,
@@ -3909,9 +3909,9 @@ EnumResourceNamesA(
 #define EnumResourceNames  EnumResourceNamesA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnumResourceLanguagesA(
      HMODULE hModule,
          LPCSTR lpType,
@@ -3919,9 +3919,9 @@ EnumResourceLanguagesA(
          ENUMRESLANGPROCA lpEnumFunc,
          LONG_PTR lParam
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EnumResourceLanguagesW(
      HMODULE hModule,
          LPCWSTR lpType,
@@ -3931,33 +3931,33 @@ EnumResourceLanguagesW(
     );
 #ifdef UNICODE
 #define EnumResourceLanguages  EnumResourceLanguagesW
-#else
+else
 #define EnumResourceLanguages  EnumResourceLanguagesA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 BeginUpdateResourceA(
      LPCSTR pFileName,
      BOOL bDeleteExistingResources
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 BeginUpdateResourceW(
      LPCWSTR pFileName,
      BOOL bDeleteExistingResources
     );
 #ifdef UNICODE
 #define BeginUpdateResource  BeginUpdateResourceW
-#else
+else
 #define BeginUpdateResource  BeginUpdateResourceA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 UpdateResourceA(
      HANDLE hUpdate,
      LPCSTR lpType,
@@ -3966,9 +3966,9 @@ UpdateResourceA(
     _In_reads_bytes_opt_(cb) LPVOID lpData,
      DWORD cb
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 UpdateResourceW(
      HANDLE hUpdate,
      LPCWSTR lpType,
@@ -3979,99 +3979,99 @@ UpdateResourceW(
     );
 #ifdef UNICODE
 #define UpdateResource  UpdateResourceW
-#else
+else
 #define UpdateResource  UpdateResourceA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EndUpdateResourceA(
      HANDLE hUpdate,
      BOOL   fDiscard
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 EndUpdateResourceW(
      HANDLE hUpdate,
      BOOL   fDiscard
     );
 #ifdef UNICODE
 #define EndUpdateResource  EndUpdateResourceW
-#else
+else
 #define EndUpdateResource  EndUpdateResourceA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #define ATOM_FLAG_GLOBAL 0x2
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalAddAtomA(
      LPCSTR lpString
     );
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalAddAtomW(
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define GlobalAddAtom  GlobalAddAtomW
-#else
+else
 #define GlobalAddAtom  GlobalAddAtomA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalAddAtomExA(
      LPCSTR lpString,
      DWORD Flags
     );
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalAddAtomExW(
      LPCWSTR lpString,
      DWORD Flags
     );
 #ifdef UNICODE
 #define GlobalAddAtomEx  GlobalAddAtomExW
-#else
+else
 #define GlobalAddAtomEx  GlobalAddAtomExA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalFindAtomA(
      LPCSTR lpString
     );
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 GlobalFindAtomW(
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define GlobalFindAtom  GlobalFindAtomW
-#else
+else
 #define GlobalFindAtom  GlobalFindAtomA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GlobalGetAtomNameA(
      ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPSTR lpBuffer,
      int nSize
     );
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GlobalGetAtomNameW(
      ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPWSTR lpBuffer,
@@ -4079,57 +4079,57 @@ GlobalGetAtomNameW(
     );
 #ifdef UNICODE
 #define GlobalGetAtomName  GlobalGetAtomNameW
-#else
+else
 #define GlobalGetAtomName  GlobalGetAtomNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 AddAtomA(
      LPCSTR lpString
     );
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 AddAtomW(
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define AddAtom  AddAtomW
-#else
+else
 #define AddAtom  AddAtomA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 FindAtomA(
      LPCSTR lpString
     );
-WINBASEAPI
+
 ATOM
-WINAPI
+__stdcall
 FindAtomW(
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define FindAtom  FindAtomW
-#else
+else
 #define FindAtom  FindAtomA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetAtomNameA(
      ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPSTR lpBuffer,
      int nSize
     );
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetAtomNameW(
      ATOM nAtom,
     _Out_writes_to_(nSize, return + 1) LPWSTR lpBuffer,
@@ -4137,27 +4137,27 @@ GetAtomNameW(
     );
 #ifdef UNICODE
 #define GetAtomName  GetAtomNameW
-#else
+else
 #define GetAtomName  GetAtomNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetProfileIntA(
      LPCSTR lpAppName,
      LPCSTR lpKeyName,
      INT nDefault
     );
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetProfileIntW(
      LPCWSTR lpAppName,
      LPCWSTR lpKeyName,
@@ -4165,13 +4165,13 @@ GetProfileIntW(
     );
 #ifdef UNICODE
 #define GetProfileInt  GetProfileIntW
-#else
+else
 #define GetProfileInt  GetProfileIntA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetProfileStringA(
      LPCSTR lpAppName,
      LPCSTR lpKeyName,
@@ -4179,9 +4179,9 @@ GetProfileStringA(
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
          DWORD nSize
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetProfileStringW(
      LPCWSTR lpAppName,
      LPCWSTR lpKeyName,
@@ -4191,27 +4191,27 @@ GetProfileStringW(
     );
 #ifdef UNICODE
 #define GetProfileString  GetProfileStringW
-#else
+else
 #define GetProfileString  GetProfileStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 WriteProfileStringA(
      LPCSTR lpAppName,
      LPCSTR lpKeyName,
      LPCSTR lpString
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WriteProfileStringW(
      LPCWSTR lpAppName,
      LPCWSTR lpKeyName,
@@ -4219,27 +4219,27 @@ WriteProfileStringW(
     );
 #ifdef UNICODE
 #define WriteProfileString  WriteProfileStringW
-#else
+else
 #define WriteProfileString  WriteProfileStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetProfileSectionA(
      LPCSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
      DWORD nSize
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetProfileSectionW(
      LPCWSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
@@ -4247,54 +4247,54 @@ GetProfileSectionW(
     );
 #ifdef UNICODE
 #define GetProfileSection  GetProfileSectionW
-#else
+else
 #define GetProfileSection  GetProfileSectionA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 WriteProfileSectionA(
      LPCSTR lpAppName,
      LPCSTR lpString
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WriteProfileSectionW(
      LPCWSTR lpAppName,
      LPCWSTR lpString
     );
 #ifdef UNICODE
 #define WriteProfileSection  WriteProfileSectionW
-#else
+else
 #define WriteProfileSection  WriteProfileSectionA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetPrivateProfileIntA(
          LPCSTR lpAppName,
          LPCSTR lpKeyName,
          INT nDefault,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 UINT
-WINAPI
+__stdcall
 GetPrivateProfileIntW(
          LPCWSTR lpAppName,
          LPCWSTR lpKeyName,
@@ -4303,9 +4303,9 @@ GetPrivateProfileIntW(
     );
 #ifdef UNICODE
 #define GetPrivateProfileInt  GetPrivateProfileIntW
-#else
+else
 #define GetPrivateProfileInt  GetPrivateProfileIntA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetPrivateProfileInt
@@ -4320,7 +4320,7 @@ GetPrivateProfileInt(
 {
 #ifdef UNICODE
     return GetPrivateProfileIntW(
-#else
+else
     return GetPrivateProfileIntA(
 #endif
         lpAppName,
@@ -4331,9 +4331,9 @@ GetPrivateProfileInt(
 }
 #endif  /* _M_CEE */
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileStringA(
      LPCSTR lpAppName,
      LPCSTR lpKeyName,
@@ -4342,9 +4342,9 @@ GetPrivateProfileStringA(
          DWORD nSize,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileStringW(
      LPCWSTR lpAppName,
      LPCWSTR lpKeyName,
@@ -4355,9 +4355,9 @@ GetPrivateProfileStringW(
     );
 #ifdef UNICODE
 #define GetPrivateProfileString  GetPrivateProfileStringW
-#else
+else
 #define GetPrivateProfileString  GetPrivateProfileStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetPrivateProfileString
@@ -4374,7 +4374,7 @@ GetPrivateProfileString(
 {
 #ifdef UNICODE
     return GetPrivateProfileStringW(
-#else
+else
     return GetPrivateProfileStringA(
 #endif
         lpAppName,
@@ -4387,18 +4387,18 @@ GetPrivateProfileString(
 }
 #endif  /* _M_CEE */
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileStringA(
      LPCSTR lpAppName,
      LPCSTR lpKeyName,
      LPCSTR lpString,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileStringW(
      LPCWSTR lpAppName,
      LPCWSTR lpKeyName,
@@ -4407,22 +4407,22 @@ WritePrivateProfileStringW(
     );
 #ifdef UNICODE
 #define WritePrivateProfileString  WritePrivateProfileStringW
-#else
+else
 #define WritePrivateProfileString  WritePrivateProfileStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileSectionA(
          LPCSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpReturnedString,
          DWORD nSize,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileSectionW(
          LPCWSTR lpAppName,
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpReturnedString,
@@ -4431,9 +4431,9 @@ GetPrivateProfileSectionW(
     );
 #ifdef UNICODE
 #define GetPrivateProfileSection  GetPrivateProfileSectionW
-#else
+else
 #define GetPrivateProfileSection  GetPrivateProfileSectionA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetPrivateProfileSection
@@ -4448,7 +4448,7 @@ GetPrivateProfileSection(
 {
 #ifdef UNICODE
     return GetPrivateProfileSectionW(
-#else
+else
     return GetPrivateProfileSectionA(
 #endif
         lpAppName,
@@ -4459,17 +4459,17 @@ GetPrivateProfileSection(
 }
 #endif  /* _M_CEE */
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileSectionA(
      LPCSTR lpAppName,
      LPCSTR lpString,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileSectionW(
      LPCWSTR lpAppName,
      LPCWSTR lpString,
@@ -4477,27 +4477,27 @@ WritePrivateProfileSectionW(
     );
 #ifdef UNICODE
 #define WritePrivateProfileSection  WritePrivateProfileSectionW
-#else
+else
 #define WritePrivateProfileSection  WritePrivateProfileSectionA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileSectionNamesA(
     _Out_writes_to_opt_(nSize, return + 1) LPSTR lpszReturnBuffer,
          DWORD nSize,
      LPCSTR lpFileName
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetPrivateProfileSectionNamesW(
     _Out_writes_to_opt_(nSize, return + 1) LPWSTR lpszReturnBuffer,
          DWORD nSize,
@@ -4505,9 +4505,9 @@ GetPrivateProfileSectionNamesW(
     );
 #ifdef UNICODE
 #define GetPrivateProfileSectionNames  GetPrivateProfileSectionNamesW
-#else
+else
 #define GetPrivateProfileSectionNames  GetPrivateProfileSectionNamesA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetPrivateProfileSectionNames
@@ -4521,7 +4521,7 @@ GetPrivateProfileSectionNames(
 {
 #ifdef UNICODE
     return GetPrivateProfileSectionNamesW(
-#else
+else
     return GetPrivateProfileSectionNamesA(
 #endif
         lpszReturnBuffer,
@@ -4531,9 +4531,9 @@ GetPrivateProfileSectionNames(
 }
 #endif  /* _M_CEE */
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetPrivateProfileStructA(
          LPCSTR lpszSection,
          LPCSTR lpszKey,
@@ -4541,9 +4541,9 @@ GetPrivateProfileStructA(
          UINT     uSizeStruct,
      LPCSTR szFile
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetPrivateProfileStructW(
          LPCWSTR lpszSection,
          LPCWSTR lpszKey,
@@ -4553,9 +4553,9 @@ GetPrivateProfileStructW(
     );
 #ifdef UNICODE
 #define GetPrivateProfileStruct  GetPrivateProfileStructW
-#else
+else
 #define GetPrivateProfileStruct  GetPrivateProfileStructA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetPrivateProfileStruct
@@ -4571,7 +4571,7 @@ GetPrivateProfileStruct(
 {
 #ifdef UNICODE
     return GetPrivateProfileStructW(
-#else
+else
     return GetPrivateProfileStructA(
 #endif
         lpszSection,
@@ -4583,9 +4583,9 @@ GetPrivateProfileStruct(
 }
 #endif  /* _M_CEE */
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileStructA(
          LPCSTR lpszSection,
          LPCSTR lpszKey,
@@ -4593,9 +4593,9 @@ WritePrivateProfileStructA(
          UINT     uSizeStruct,
      LPCSTR szFile
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WritePrivateProfileStructW(
          LPCWSTR lpszSection,
          LPCWSTR lpszKey,
@@ -4605,9 +4605,9 @@ WritePrivateProfileStructW(
     );
 #ifdef UNICODE
 #define WritePrivateProfileStruct  WritePrivateProfileStructW
-#else
+else
 #define WritePrivateProfileStruct  WritePrivateProfileStructA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef GetTempFileName
@@ -4622,7 +4622,7 @@ GetTempFileName(
 {
 #ifdef UNICODE
     return GetTempFileNameW(
-#else
+else
     return GetTempFileNameA(
 #endif
         lpPathName,
@@ -4636,9 +4636,9 @@ GetTempFileName(
 #if !defined(RC_INVOKED) // RC warns because "WINBASE_DECLARE_GET_SYSTEM_WOW64_DIRECTORY" is a bit long.
 #if _WIN32_WINNT >= 0x0501 || defined(WINBASE_DECLARE_GET_SYSTEM_WOW64_DIRECTORY)
 
-WINBASEAPI
+
 BOOLEAN
-WINAPI
+__stdcall
 Wow64EnableWow64FsRedirection (
      BOOLEAN Wow64FsEnableRedirection
     );
@@ -4646,8 +4646,8 @@ Wow64EnableWow64FsRedirection (
 //
 // for GetProcAddress
 //
-typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_A)(_Out_writes_to_opt_(uSize, return + 1) LPSTR lpBuffer,  UINT uSize);
-typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_W)(_Out_writes_to_opt_(uSize, return + 1) LPWSTR lpBuffer,  UINT uSize);
+typedef UINT (__stdcall* PGET_SYSTEM_WOW64_DIRECTORY_A)(_Out_writes_to_opt_(uSize, return + 1) LPSTR lpBuffer,  UINT uSize);
+typedef UINT (__stdcall* PGET_SYSTEM_WOW64_DIRECTORY_W)(_Out_writes_to_opt_(uSize, return + 1) LPWSTR lpBuffer,  UINT uSize);
 
 //
 // GetProcAddress only accepts GET_SYSTEM_WOW64_DIRECTORY_NAME_A_A,
@@ -4665,13 +4665,13 @@ typedef UINT (WINAPI* PGET_SYSTEM_WOW64_DIRECTORY_W)(_Out_writes_to_opt_(uSize, 
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_A GET_SYSTEM_WOW64_DIRECTORY_NAME_W_A
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_W GET_SYSTEM_WOW64_DIRECTORY_NAME_W_W
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_T GET_SYSTEM_WOW64_DIRECTORY_NAME_W_T
-#else
+else
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_A GET_SYSTEM_WOW64_DIRECTORY_NAME_A_A
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_W GET_SYSTEM_WOW64_DIRECTORY_NAME_A_W
 #define GET_SYSTEM_WOW64_DIRECTORY_NAME_T_T GET_SYSTEM_WOW64_DIRECTORY_NAME_A_T
 #endif
 
-#endif // _WIN32_WINNT >= 0x0501
+end  -- _WIN32_WINNT >= 0x0501
 #endif
 
 #if defined(_M_CEE)
@@ -4684,7 +4684,7 @@ SetCurrentDirectory(
 {
 #ifdef UNICODE
     return SetCurrentDirectoryW(
-#else
+else
     return SetCurrentDirectoryA(
 #endif
         lpPathName
@@ -4703,7 +4703,7 @@ GetCurrentDirectory(
 {
 #ifdef UNICODE
     return GetCurrentDirectoryW(
-#else
+else
     return GetCurrentDirectoryA(
 #endif
         nBufferLength,
@@ -4714,64 +4714,64 @@ GetCurrentDirectory(
 
 #if _WIN32_WINNT >= 0x0502
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetDllDirectoryA(
      LPCSTR lpPathName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetDllDirectoryW(
      LPCWSTR lpPathName
     );
 #ifdef UNICODE
 #define SetDllDirectory  SetDllDirectoryW
-#else
+else
 #define SetDllDirectory  SetDllDirectoryA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 _Success_(return != 0 && return < nBufferLength)
 DWORD
-WINAPI
+__stdcall
 GetDllDirectoryA(
      DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer
     );
-WINBASEAPI
+
 _Success_(return != 0 && return < nBufferLength)
 DWORD
-WINAPI
+__stdcall
 GetDllDirectoryW(
      DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPWSTR lpBuffer
     );
 #ifdef UNICODE
 #define GetDllDirectory  GetDllDirectoryW
-#else
+else
 #define GetDllDirectory  GetDllDirectoryA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0502
+end  -- _WIN32_WINNT >= 0x0502
 
 #define BASE_SEARCH_PATH_ENABLE_SAFE_SEARCHMODE 0x1
 #define BASE_SEARCH_PATH_DISABLE_SAFE_SEARCHMODE 0x10000
 #define BASE_SEARCH_PATH_PERMANENT 0x8000
 #define BASE_SEARCH_PATH_INVALID_FLAGS ~0x18001
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetSearchPathMode (
      DWORD Flags
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
 #if defined(_M_CEE)
@@ -4785,7 +4785,7 @@ CreateDirectory(
 {
 #ifdef UNICODE
     return CreateDirectoryW(
-#else
+else
     return CreateDirectoryA(
 #endif
         lpPathName,
@@ -4795,22 +4795,22 @@ CreateDirectory(
 #endif  /* _M_CEE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateDirectoryExA(
          LPCSTR lpTemplateDirectory,
          LPCSTR lpNewDirectory,
      LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateDirectoryExW(
          LPCWSTR lpTemplateDirectory,
          LPCWSTR lpNewDirectory,
@@ -4818,30 +4818,30 @@ CreateDirectoryExW(
     );
 #ifdef UNICODE
 #define CreateDirectoryEx  CreateDirectoryExW
-#else
+else
 #define CreateDirectoryEx  CreateDirectoryExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateDirectoryTransactedA(
      LPCSTR lpTemplateDirectory,
          LPCSTR lpNewDirectory,
      LPSECURITY_ATTRIBUTES lpSecurityAttributes,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateDirectoryTransactedW(
      LPCWSTR lpTemplateDirectory,
          LPCWSTR lpNewDirectory,
@@ -4850,64 +4850,64 @@ CreateDirectoryTransactedW(
     );
 #ifdef UNICODE
 #define CreateDirectoryTransacted  CreateDirectoryTransactedW
-#else
+else
 #define CreateDirectoryTransacted  CreateDirectoryTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RemoveDirectoryTransactedA(
      LPCSTR lpPathName,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RemoveDirectoryTransactedW(
      LPCWSTR lpPathName,
          HANDLE hTransaction
     );
 #ifdef UNICODE
 #define RemoveDirectoryTransacted  RemoveDirectoryTransactedW
-#else
+else
 #define RemoveDirectoryTransacted  RemoveDirectoryTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 _Success_(return != 0 && return < nBufferLength)
 DWORD
-WINAPI
+__stdcall
 GetFullPathNameTransactedA(
                 LPCSTR lpFileName,
                 DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPSTR lpBuffer,
-    _Outptr_opt_ LPSTR *lpFilePart,
+     LPSTR *lpFilePart,
                 HANDLE hTransaction
     );
-WINBASEAPI
+
 _Success_(return != 0 && return < nBufferLength)
 DWORD
-WINAPI
+__stdcall
 GetFullPathNameTransactedW(
                 LPCWSTR lpFileName,
                 DWORD nBufferLength,
     _Out_writes_to_opt_(nBufferLength, return + 1) LPWSTR lpBuffer,
-    _Outptr_opt_ LPWSTR *lpFilePart,
+     LPWSTR *lpFilePart,
                 HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetFullPathNameTransacted  GetFullPathNameTransactedW
-#else
+else
 #define GetFullPathNameTransacted  GetFullPathNameTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #define DDD_RAW_TARGET_PATH         0x00000001
@@ -4916,9 +4916,9 @@ GetFullPathNameTransactedW(
 #define DDD_NO_BROADCAST_SYSTEM     0x00000008
 #define DDD_LUID_BROADCAST_DRIVE    0x00000010
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DefineDosDeviceA(
          DWORD dwFlags,
          LPCSTR lpDeviceName,
@@ -4928,9 +4928,9 @@ DefineDosDeviceA(
 #define DefineDosDevice  DefineDosDeviceA
 #endif
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 QueryDosDeviceA(
      LPCSTR lpDeviceName,
     _Out_writes_to_opt_(ucchMax, return) LPSTR lpTargetPath,
@@ -4941,18 +4941,18 @@ QueryDosDeviceA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #define EXPAND_LOCAL_DRIVES
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateFileTransactedA(
            LPCSTR lpFileName,
            DWORD dwDesiredAccess,
@@ -4965,9 +4965,9 @@ CreateFileTransactedA(
        PUSHORT pusMiniVersion,
     _Reserved_ PVOID  lpExtendedParameter
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateFileTransactedW(
            LPCWSTR lpFileName,
            DWORD dwDesiredAccess,
@@ -4982,23 +4982,23 @@ CreateFileTransactedW(
     );
 #ifdef UNICODE
 #define CreateFileTransacted  CreateFileTransactedW
-#else
+else
 #define CreateFileTransacted  CreateFileTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if _WIN32_WINNT >= 0x0502
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 ReOpenFile(
      HANDLE  hOriginalFile,
      DWORD   dwDesiredAccess,
@@ -5006,28 +5006,28 @@ ReOpenFile(
      DWORD   dwFlagsAndAttributes
     );
 
-#endif // _WIN32_WINNT >= 0x0502
+end  -- _WIN32_WINNT >= 0x0502
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileAttributesTransactedA(
          LPCSTR lpFileName,
          DWORD dwFileAttributes,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileAttributesTransactedW(
          LPCWSTR lpFileName,
          DWORD dwFileAttributes,
@@ -5035,22 +5035,22 @@ SetFileAttributesTransactedW(
     );
 #ifdef UNICODE
 #define SetFileAttributesTransacted  SetFileAttributesTransactedW
-#else
+else
 #define SetFileAttributesTransacted  SetFileAttributesTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetFileAttributesTransactedA(
       LPCSTR lpFileName,
       GET_FILEEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FILE_ATTRIBUTE_DATA)) LPVOID lpFileInformation,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetFileAttributesTransactedW(
       LPCWSTR lpFileName,
       GET_FILEEX_INFO_LEVELS fInfoLevelId,
@@ -5059,58 +5059,58 @@ GetFileAttributesTransactedW(
     );
 #ifdef UNICODE
 #define GetFileAttributesTransacted  GetFileAttributesTransactedW
-#else
+else
 #define GetFileAttributesTransacted  GetFileAttributesTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetCompressedFileSizeTransactedA(
           LPCSTR lpFileName,
-    _Out_opt_ LPDWORD  lpFileSizeHigh,
+     LPDWORD  lpFileSizeHigh,
           HANDLE hTransaction
     );
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetCompressedFileSizeTransactedW(
           LPCWSTR lpFileName,
-    _Out_opt_ LPDWORD  lpFileSizeHigh,
+     LPDWORD  lpFileSizeHigh,
           HANDLE hTransaction
     );
 #ifdef UNICODE
 #define GetCompressedFileSizeTransacted  GetCompressedFileSizeTransactedW
-#else
+else
 #define GetCompressedFileSizeTransacted  GetCompressedFileSizeTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeleteFileTransactedA(
          LPCSTR lpFileName,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeleteFileTransactedW(
          LPCWSTR lpFileName,
          HANDLE hTransaction
     );
 #ifdef UNICODE
 #define DeleteFileTransacted  DeleteFileTransactedW
-#else
+else
 #define DeleteFileTransacted  DeleteFileTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
 #if defined(_M_CEE)
@@ -5123,7 +5123,7 @@ DeleteFile(
 {
 #ifdef UNICODE
     return DeleteFileW(
-#else
+else
     return DeleteFileA(
 #endif
         lpFileName
@@ -5132,54 +5132,54 @@ DeleteFile(
 #endif  /* _M_CEE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0501
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CheckNameLegalDOS8Dot3A(
           LPCSTR lpName,
     _Out_writes_opt_(OemNameSize) LPSTR lpOemName,
           DWORD OemNameSize,
-    _Out_opt_ PBOOL pbNameContainsSpaces OPTIONAL,
-    _Out_     PBOOL pbNameLegal
+     PBOOL pbNameContainsSpaces OPTIONAL,
+         PBOOL pbNameLegal
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CheckNameLegalDOS8Dot3W(
           LPCWSTR lpName,
     _Out_writes_opt_(OemNameSize) LPSTR lpOemName,
           DWORD OemNameSize,
-    _Out_opt_ PBOOL pbNameContainsSpaces OPTIONAL,
-    _Out_     PBOOL pbNameLegal
+     PBOOL pbNameContainsSpaces OPTIONAL,
+         PBOOL pbNameLegal
     );
 #ifdef UNICODE
 #define CheckNameLegalDOS8Dot3  CheckNameLegalDOS8Dot3W
-#else
+else
 #define CheckNameLegalDOS8Dot3  CheckNameLegalDOS8Dot3A
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0501)
+end  -- (_WIN32_WINNT >= 0x0501)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #if(_WIN32_WINNT >= 0x0400)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstFileTransactedA(
            LPCSTR lpFileName,
            FINDEX_INFO_LEVELS fInfoLevelId,
@@ -5189,9 +5189,9 @@ FindFirstFileTransactedA(
            DWORD dwAdditionalFlags,
            HANDLE hTransaction
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstFileTransactedW(
            LPCWSTR lpFileName,
            FINDEX_INFO_LEVELS fInfoLevelId,
@@ -5203,32 +5203,32 @@ FindFirstFileTransactedW(
     );
 #ifdef UNICODE
 #define FindFirstFileTransacted  FindFirstFileTransactedW
-#else
+else
 #define FindFirstFileTransacted  FindFirstFileTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #endif /* _WIN32_WINNT >= 0x0400 */
 
-#pragma region Application Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileA(
      LPCSTR lpExistingFileName,
      LPCSTR lpNewFileName,
      BOOL bFailIfExists
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileW(
      LPCWSTR lpExistingFileName,
      LPCWSTR lpNewFileName,
@@ -5236,9 +5236,9 @@ CopyFileW(
     );
 #ifdef UNICODE
 #define CopyFile  CopyFileW
-#else
+else
 #define CopyFile  CopyFileA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef CopyFile
@@ -5252,7 +5252,7 @@ CopyFile(
 {
 #ifdef UNICODE
     return CopyFileW(
-#else
+else
     return CopyFileA(
 #endif
         lpExistingFileName,
@@ -5263,16 +5263,16 @@ CopyFile(
 #endif  /* _M_CEE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if(_WIN32_WINNT >= 0x0400)
+--]=]
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef
 DWORD
-(WINAPI *LPPROGRESS_ROUTINE)(
+(__stdcall *LPPROGRESS_ROUTINE)(
          LARGE_INTEGER TotalFileSize,
          LARGE_INTEGER TotalBytesTransferred,
          LARGE_INTEGER StreamSize,
@@ -5284,47 +5284,51 @@ DWORD
      LPVOID lpData
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileExA(
             LPCSTR lpExistingFileName,
             LPCSTR lpNewFileName,
         LPPROGRESS_ROUTINE lpProgressRoutine,
         LPVOID lpData,
-    _When_(pbCancel != NULL, _Pre_satisfies_(*pbCancel == FALSE))
-    _Inout_opt_ LPBOOL pbCancel,
+    
+     LPBOOL pbCancel,
             DWORD dwCopyFlags
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileExW(
             LPCWSTR lpExistingFileName,
             LPCWSTR lpNewFileName,
         LPPROGRESS_ROUTINE lpProgressRoutine,
         LPVOID lpData,
-    _When_(pbCancel != NULL, _Pre_satisfies_(*pbCancel == FALSE))
-    _Inout_opt_ LPBOOL pbCancel,
+    
+     LPBOOL pbCancel,
             DWORD dwCopyFlags
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define CopyFileEx  CopyFileExW
-#else
+else
 #define CopyFileEx  CopyFileExA
-#endif // !UNICODE
+end  -- !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+--[=[
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileTransactedA(
          LPCSTR lpExistingFileName,
          LPCSTR lpNewFileName,
@@ -5334,9 +5338,9 @@ CopyFileTransactedA(
          DWORD dwCopyFlags,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CopyFileTransactedW(
          LPCWSTR lpExistingFileName,
          LPCWSTR lpNewFileName,
@@ -5346,26 +5350,29 @@ CopyFileTransactedW(
          DWORD dwCopyFlags,
          HANDLE hTransaction
     );
+
+--[[
 #ifdef UNICODE
 #define CopyFileTransacted  CopyFileTransactedW
-#else
+else
 #define CopyFileTransacted  CopyFileTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
+--]]
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+--]=]
 
-#pragma region Application Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-//
-// TODO: Win7 for now, when we roll over the version number this needs to be updated.
-//
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#if _WIN32_WINNT >= 0x0601
 
+
+if _WIN32_WINNT >= 0x0601 then
+
+
+ffi.cdef[[
 typedef enum _COPYFILE2_MESSAGE_TYPE {
      COPYFILE2_CALLBACK_NONE = 0,
      COPYFILE2_CALLBACK_CHUNK_STARTED,
@@ -5396,8 +5403,10 @@ typedef enum _COPYFILE2_COPY_PHASE {
     // ... etc phases.
     COPYFILE2_PHASE_MAX,
 } COPYFILE2_COPY_PHASE;
+]]
 
-#define COPYFILE2_MESSAGE_COPY_OFFLOAD     (0x00000001L)
+ffi.cdef[[
+static const int COPYFILE2_MESSAGE_COPY_OFFLOAD    = (0x00000001L);
 
 typedef struct COPYFILE2_MESSAGE {
 
@@ -5471,7 +5480,7 @@ typedef struct COPYFILE2_MESSAGE {
 } COPYFILE2_MESSAGE;
 
 typedef
-COPYFILE2_MESSAGE_ACTION (CALLBACK *PCOPYFILE2_PROGRESS_ROUTINE)(
+COPYFILE2_MESSAGE_ACTION (__stdcall *PCOPYFILE2_PROGRESS_ROUTINE)(
         const COPYFILE2_MESSAGE     *pMessage,
     PVOID                       pvCallbackContext
 );
@@ -5484,44 +5493,46 @@ typedef struct COPYFILE2_EXTENDED_PARAMETERS {
   PVOID                         pvCallbackContext;
 } COPYFILE2_EXTENDED_PARAMETERS;
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 CopyFile2(
         PCWSTR                          pwszExistingFileName,
         PCWSTR                          pwszNewFileName,
     COPYFILE2_EXTENDED_PARAMETERS   *pExtendedParameters
 );
+]]
 
-#endif // _WIN32_WINNT >= 0x0601
+end --// _WIN32_WINNT >= 0x0601
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+
+--[=[
 #endif /* _WIN32_WINNT >= 0x0400 */
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 MoveFileA(
      LPCSTR lpExistingFileName,
      LPCSTR lpNewFileName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileW(
      LPCWSTR lpExistingFileName,
      LPCWSTR lpNewFileName
     );
 #ifdef UNICODE
 #define MoveFile  MoveFileW
-#else
+else
 #define MoveFile  MoveFileA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #if defined(_M_CEE)
 #undef MoveFile
@@ -5534,7 +5545,7 @@ MoveFile(
 {
 #ifdef UNICODE
     return MoveFileW(
-#else
+else
     return MoveFileA(
 #endif
         lpExistingFileName,
@@ -5544,22 +5555,22 @@ MoveFile(
 #endif  /* _M_CEE */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileExA(
          LPCSTR lpExistingFileName,
      LPCSTR lpNewFileName,
          DWORD    dwFlags
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileExW(
          LPCWSTR lpExistingFileName,
      LPCWSTR lpNewFileName,
@@ -5567,20 +5578,20 @@ MoveFileExW(
     );
 #ifdef UNICODE
 #define MoveFileEx  MoveFileExW
-#else
+else
 #define MoveFileEx  MoveFileExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0500)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileWithProgressA(
          LPCSTR lpExistingFileName,
      LPCSTR lpNewFileName,
@@ -5588,9 +5599,9 @@ MoveFileWithProgressA(
      LPVOID lpData,
          DWORD dwFlags
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileWithProgressW(
          LPCWSTR lpExistingFileName,
      LPCWSTR lpNewFileName,
@@ -5600,21 +5611,21 @@ MoveFileWithProgressW(
     );
 #ifdef UNICODE
 #define MoveFileWithProgress  MoveFileWithProgressW
-#else
+else
 #define MoveFileWithProgress  MoveFileWithProgressA
-#endif // !UNICODE
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- !UNICODE
+end  -- (_WIN32_WINNT >= 0x0500)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileTransactedA(
          LPCSTR lpExistingFileName,
      LPCSTR lpNewFileName,
@@ -5623,9 +5634,9 @@ MoveFileTransactedA(
          DWORD dwFlags,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 MoveFileTransactedW(
          LPCWSTR lpExistingFileName,
      LPCWSTR lpNewFileName,
@@ -5636,15 +5647,15 @@ MoveFileTransactedW(
     );
 #ifdef UNICODE
 #define MoveFileTransacted  MoveFileTransactedW
-#else
+else
 #define MoveFileTransacted  MoveFileTransactedA
-#endif // !UNICODE
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- !UNICODE
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
 #define MOVEFILE_REPLACE_EXISTING       0x00000001
@@ -5654,26 +5665,26 @@ MoveFileTransactedW(
 #if (_WIN32_WINNT >= 0x0500)
 #define MOVEFILE_CREATE_HARDLINK        0x00000010
 #define MOVEFILE_FAIL_IF_NOT_TRACKABLE  0x00000020
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- (_WIN32_WINNT >= 0x0500)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0500)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ReplaceFileA(
            LPCSTR lpReplacedFileName,
            LPCSTR lpReplacementFileName,
@@ -5682,9 +5693,9 @@ ReplaceFileA(
     _Reserved_ LPVOID   lpExclude,
     _Reserved_ LPVOID  lpReserved
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ReplaceFileW(
            LPCWSTR lpReplacedFileName,
            LPCWSTR lpReplacementFileName,
@@ -5695,15 +5706,15 @@ ReplaceFileW(
     );
 #ifdef UNICODE
 #define ReplaceFile  ReplaceFileW
-#else
+else
 #define ReplaceFile  ReplaceFileA
-#endif // !UNICODE
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- !UNICODE
+end  -- (_WIN32_WINNT >= 0x0500)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0500)
@@ -5711,17 +5722,17 @@ ReplaceFileW(
 // API call to create hard links.
 //
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateHardLinkA(
            LPCSTR lpFileName,
            LPCSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateHardLinkW(
            LPCWSTR lpFileName,
            LPCWSTR lpExistingFileName,
@@ -5729,35 +5740,35 @@ CreateHardLinkW(
     );
 #ifdef UNICODE
 #define CreateHardLink  CreateHardLinkW
-#else
+else
 #define CreateHardLink  CreateHardLinkA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- (_WIN32_WINNT >= 0x0500)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
 //
 // API call to create hard links.
 //
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateHardLinkTransactedA(
            LPCSTR lpFileName,
            LPCSTR lpExistingFileName,
     _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
            HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CreateHardLinkTransactedW(
            LPCWSTR lpFileName,
            LPCWSTR lpExistingFileName,
@@ -5766,17 +5777,17 @@ CreateHardLinkTransactedW(
     );
 #ifdef UNICODE
 #define CreateHardLinkTransacted  CreateHardLinkTransactedW
-#else
+else
 #define CreateHardLinkTransacted  CreateHardLinkTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstStreamTransactedW (
            LPCWSTR lpFileName,
            STREAM_INFO_LEVELS InfoLevel,
@@ -5785,13 +5796,13 @@ FindFirstStreamTransactedW (
            HANDLE hTransaction
     );
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstFileNameTransactedW (
          LPCWSTR lpFileName,
          DWORD dwFlags,
-    _Inout_  LPDWORD StringLength,
+      LPDWORD StringLength,
     _Out_writes_(*StringLength) PWSTR LinkName,
      HANDLE hTransaction
     );
@@ -5799,14 +5810,14 @@ FindFirstFileNameTransactedW (
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateNamedPipeA(
          LPCSTR lpName,
          DWORD dwOpenMode,
@@ -5822,20 +5833,20 @@ CreateNamedPipeA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeHandleStateA(
           HANDLE hNamedPipe,
-    _Out_opt_ LPDWORD lpState,
-    _Out_opt_ LPDWORD lpCurInstances,
-    _Out_opt_ LPDWORD lpMaxCollectionCount,
-    _Out_opt_ LPDWORD lpCollectDataTimeout,
+     LPDWORD lpState,
+     LPDWORD lpCurInstances,
+     LPDWORD lpMaxCollectionCount,
+     LPDWORD lpCollectDataTimeout,
     _Out_writes_opt_(nMaxUserNameSize) LPSTR lpUserName,
           DWORD nMaxUserNameSize
     );
@@ -5843,16 +5854,16 @@ GetNamedPipeHandleStateA(
 #define GetNamedPipeHandleState  GetNamedPipeHandleStateA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CallNamedPipeA(
       LPCSTR lpNamedPipeName,
-    _In_reads_bytes_opt_(nInBufferSize) LPVOID lpInBuffer,
+     LPVOID lpInBuffer,
       DWORD nInBufferSize,
-    _Out_writes_bytes_to_opt_(nOutBufferSize, *lpBytesRead) LPVOID lpOutBuffer,
+     LPVOID lpOutBuffer,
       DWORD nOutBufferSize,
-    _Out_ LPDWORD lpBytesRead,
+     LPDWORD lpBytesRead,
       DWORD nTimeOut
     );
 
@@ -5860,9 +5871,9 @@ CallNamedPipeA(
 #define CallNamedPipe  CallNamedPipeA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 WaitNamedPipeA(
      LPCSTR lpNamedPipeName,
      DWORD nTimeOut
@@ -5872,26 +5883,26 @@ WaitNamedPipeA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if (_WIN32_WINNT >= 0x0600)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeClientComputerNameA(
      HANDLE Pipe,
-    _Out_writes_bytes_(ClientComputerNameLength)  LPSTR ClientComputerName,
+      LPSTR ClientComputerName,
      ULONG ClientComputerNameLength
     );
 
@@ -5900,105 +5911,105 @@ GetNamedPipeClientComputerNameA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeClientProcessId(
      HANDLE Pipe,
-    _Out_ PULONG ClientProcessId
+     PULONG ClientProcessId
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeClientSessionId(
      HANDLE Pipe,
-    _Out_ PULONG ClientSessionId
+     PULONG ClientSessionId
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeServerProcessId(
      HANDLE Pipe,
-    _Out_ PULONG ServerProcessId
+     PULONG ServerProcessId
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNamedPipeServerSessionId(
      HANDLE Pipe,
-    _Out_ PULONG ServerSessionId
+     PULONG ServerSessionId
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#endif // (_WIN32_WINNT >= 0x0600)
 
-#pragma region Application Family or Desktop Family
+end  -- (_WIN32_WINNT >= 0x0600)
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetVolumeLabelA(
      LPCSTR lpRootPathName,
      LPCSTR lpVolumeName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetVolumeLabelW(
      LPCWSTR lpRootPathName,
      LPCWSTR lpVolumeName
     );
 #ifdef UNICODE
 #define SetVolumeLabel  SetVolumeLabelW
-#else
+else
 #define SetVolumeLabel  SetVolumeLabelA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetFileBandwidthReservation(
       HANDLE  hFile,
       DWORD   nPeriodMilliseconds,
       DWORD   nBytesPerPeriod,
       BOOL    bDiscardable,
-    _Out_ LPDWORD lpTransferSize,
-    _Out_ LPDWORD lpNumOutstandingRequests
+     LPDWORD lpTransferSize,
+     LPDWORD lpNumOutstandingRequests
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetFileBandwidthReservation(
       HANDLE  hFile,
-    _Out_ LPDWORD lpPeriodMilliseconds,
-    _Out_ LPDWORD lpBytesPerPeriod,
-    _Out_ LPBOOL  pDiscardable,
-    _Out_ LPDWORD lpTransferSize,
-    _Out_ LPDWORD lpNumOutstandingRequests
+     LPDWORD lpPeriodMilliseconds,
+     LPDWORD lpBytesPerPeriod,
+     LPBOOL  pDiscardable,
+     LPDWORD lpTransferSize,
+     LPDWORD lpNumOutstandingRequests
     );
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 //
 // Event logging APIs
@@ -6006,61 +6017,61 @@ GetFileBandwidthReservation(
 
 
 BOOL
-WINAPI
+__stdcall
 ClearEventLogA (
          HANDLE hEventLog,
      LPCSTR lpBackupFileName
     );
 
 BOOL
-WINAPI
+__stdcall
 ClearEventLogW (
          HANDLE hEventLog,
      LPCWSTR lpBackupFileName
     );
 #ifdef UNICODE
 #define ClearEventLog  ClearEventLogW
-#else
+else
 #define ClearEventLog  ClearEventLogA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 BackupEventLogA (
      HANDLE hEventLog,
      LPCSTR lpBackupFileName
     );
 
 BOOL
-WINAPI
+__stdcall
 BackupEventLogW (
      HANDLE hEventLog,
      LPCWSTR lpBackupFileName
     );
 #ifdef UNICODE
 #define BackupEventLog  BackupEventLogW
-#else
+else
 #define BackupEventLog  BackupEventLogA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 CloseEventLog (
      HANDLE hEventLog
     );
 
 
 BOOL
-WINAPI
+__stdcall
 DeregisterEventSource (
      HANDLE hEventLog
     );
 
 
 BOOL
-WINAPI
+__stdcall
 NotifyChangeEventLog(
      HANDLE  hEventLog,
      HANDLE  hEvent
@@ -6068,113 +6079,119 @@ NotifyChangeEventLog(
 
 
 BOOL
-WINAPI
+__stdcall
 GetNumberOfEventLogRecords (
       HANDLE hEventLog,
-    _Out_ PDWORD NumberOfRecords
+     PDWORD NumberOfRecords
     );
 
 
 BOOL
-WINAPI
+__stdcall
 GetOldestEventLogRecord (
       HANDLE hEventLog,
-    _Out_ PDWORD OldestRecord
+     PDWORD OldestRecord
     );
 
 
 HANDLE
-WINAPI
+__stdcall
 OpenEventLogA (
      LPCSTR lpUNCServerName,
          LPCSTR lpSourceName
     );
 
 HANDLE
-WINAPI
+__stdcall
 OpenEventLogW (
      LPCWSTR lpUNCServerName,
          LPCWSTR lpSourceName
     );
+
+--[[
 #ifdef UNICODE
 #define OpenEventLog  OpenEventLogW
-#else
+else
 #define OpenEventLog  OpenEventLogA
-#endif // !UNICODE
-
+end  -- !UNICODE
+--]]
 
 HANDLE
-WINAPI
+__stdcall
 RegisterEventSourceA (
      LPCSTR lpUNCServerName,
          LPCSTR lpSourceName
     );
 
 HANDLE
-WINAPI
+__stdcall
 RegisterEventSourceW (
      LPCWSTR lpUNCServerName,
          LPCWSTR lpSourceName
     );
+
+--[[
 #ifdef UNICODE
 #define RegisterEventSource  RegisterEventSourceW
-#else
+else
 #define RegisterEventSource  RegisterEventSourceA
-#endif // !UNICODE
-
+end  -- !UNICODE
+--]]
 
 HANDLE
-WINAPI
+__stdcall
 OpenBackupEventLogA (
      LPCSTR lpUNCServerName,
          LPCSTR lpFileName
     );
 
 HANDLE
-WINAPI
+__stdcall
 OpenBackupEventLogW (
      LPCWSTR lpUNCServerName,
          LPCWSTR lpFileName
     );
+
+--[[
 #ifdef UNICODE
 #define OpenBackupEventLog  OpenBackupEventLogW
-#else
+else
 #define OpenBackupEventLog  OpenBackupEventLogA
-#endif // !UNICODE
-
+end  -- !UNICODE
+--]]
 
 BOOL
-WINAPI
+__stdcall
 ReadEventLogA (
       HANDLE     hEventLog,
       DWORD      dwReadFlags,
       DWORD      dwRecordOffset,
-    _Out_writes_bytes_to_(nNumberOfBytesToRead, *pnBytesRead) LPVOID     lpBuffer,
+     LPVOID     lpBuffer,
       DWORD      nNumberOfBytesToRead,
-    _Out_ DWORD      *pnBytesRead,
-    _Out_ DWORD      *pnMinNumberOfBytesNeeded
+     DWORD      *pnBytesRead,
+     DWORD      *pnMinNumberOfBytesNeeded
     );
 
 BOOL
-WINAPI
+__stdcall
 ReadEventLogW (
       HANDLE     hEventLog,
       DWORD      dwReadFlags,
       DWORD      dwRecordOffset,
-    _Out_writes_bytes_to_(nNumberOfBytesToRead, *pnBytesRead) LPVOID     lpBuffer,
+     LPVOID     lpBuffer,
       DWORD      nNumberOfBytesToRead,
-    _Out_ DWORD      *pnBytesRead,
-    _Out_ DWORD      *pnMinNumberOfBytesNeeded
+     DWORD      *pnBytesRead,
+     DWORD      *pnMinNumberOfBytesNeeded
     );
 #ifdef UNICODE
 #define ReadEventLog  ReadEventLogW
-#else
+else
 #define ReadEventLog  ReadEventLogA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 ReportEventA (
          HANDLE     hEventLog,
          WORD       wType,
@@ -6183,12 +6200,12 @@ ReportEventA (
      PSID       lpUserSid,
          WORD       wNumStrings,
          DWORD      dwDataSize,
-    _In_reads_opt_(wNumStrings) LPCSTR *lpStrings,
-    _In_reads_bytes_opt_(dwDataSize) LPVOID lpRawData
+     LPCSTR *lpStrings,
+     LPVOID lpRawData
     );
 
 BOOL
-WINAPI
+__stdcall
 ReportEventW (
          HANDLE     hEventLog,
          WORD       wType,
@@ -6197,14 +6214,14 @@ ReportEventW (
      PSID       lpUserSid,
          WORD       wNumStrings,
          DWORD      dwDataSize,
-    _In_reads_opt_(wNumStrings) LPCWSTR *lpStrings,
-    _In_reads_bytes_opt_(dwDataSize) LPVOID lpRawData
+     LPCWSTR *lpStrings,
+     LPVOID lpRawData
     );
 #ifdef UNICODE
 #define ReportEvent  ReportEventW
-#else
+else
 #define ReportEvent  ReportEventA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 #define EVENTLOG_FULL_INFO      0
@@ -6217,13 +6234,13 @@ EVENTLOG_FULL_INFORMATION, *LPEVENTLOG_FULL_INFORMATION;
 
 
 BOOL
-WINAPI
+__stdcall
 GetEventLogInformation (
       HANDLE     hEventLog,
       DWORD      dwInfoLevel,
-    _Out_writes_bytes_to_(cbBufSize, *pcbBytesNeeded) LPVOID lpBuffer,
+     LPVOID lpBuffer,
       DWORD      cbBufSize,
-    _Out_ LPDWORD    pcbBytesNeeded
+     LPDWORD    pcbBytesNeeded
     );
 
 #if (_WIN32_WINNT >= 0x0602)
@@ -6261,19 +6278,19 @@ typedef struct _OPERATION_END_PARAMETERS {
 
 
 BOOL
-WINAPI
+__stdcall
 OperationStart (
      OPERATION_START_PARAMETERS* OperationStartParams
     );
 
 
 BOOL
-WINAPI
+__stdcall
 OperationEnd (
      OPERATION_END_PARAMETERS* OperationEndParams
     );
 
-#endif // _WIN32_WINNT >= 0x0602
+end  -- _WIN32_WINNT >= 0x0602
 
 //
 //
@@ -6283,7 +6300,7 @@ OperationEnd (
 
 
 BOOL
-WINAPI
+__stdcall
 AccessCheckAndAuditAlarmA (
          LPCSTR SubsystemName,
      LPVOID HandleId,
@@ -6293,9 +6310,9 @@ AccessCheckAndAuditAlarmA (
          DWORD DesiredAccess,
          PGENERIC_MAPPING GenericMapping,
          BOOL ObjectCreation,
-    _Out_    LPDWORD GrantedAccess,
-    _Out_    LPBOOL AccessStatus,
-    _Out_    LPBOOL pfGenerateOnClose
+        LPDWORD GrantedAccess,
+        LPBOOL AccessStatus,
+        LPBOOL pfGenerateOnClose
     );
 #ifndef UNICODE
 #define AccessCheckAndAuditAlarm  AccessCheckAndAuditAlarmA
@@ -6305,7 +6322,7 @@ AccessCheckAndAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 AccessCheckByTypeAndAuditAlarmA (
          LPCSTR SubsystemName,
          LPVOID HandleId,
@@ -6316,13 +6333,13 @@ AccessCheckByTypeAndAuditAlarmA (
          DWORD DesiredAccess,
          AUDIT_EVENT_TYPE AuditType,
          DWORD Flags,
-    _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
+     POBJECT_TYPE_LIST ObjectTypeList,
          DWORD ObjectTypeListLength,
          PGENERIC_MAPPING GenericMapping,
          BOOL ObjectCreation,
-    _Out_    LPDWORD GrantedAccess,
-    _Out_    LPBOOL AccessStatus,
-    _Out_    LPBOOL pfGenerateOnClose
+        LPDWORD GrantedAccess,
+        LPBOOL AccessStatus,
+        LPBOOL pfGenerateOnClose
     );
 #ifndef UNICODE
 #define AccessCheckByTypeAndAuditAlarm  AccessCheckByTypeAndAuditAlarmA
@@ -6330,7 +6347,7 @@ AccessCheckByTypeAndAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 AccessCheckByTypeResultListAndAuditAlarmA (
          LPCSTR SubsystemName,
          LPVOID HandleId,
@@ -6341,13 +6358,13 @@ AccessCheckByTypeResultListAndAuditAlarmA (
          DWORD DesiredAccess,
          AUDIT_EVENT_TYPE AuditType,
          DWORD Flags,
-    _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
+     POBJECT_TYPE_LIST ObjectTypeList,
          DWORD ObjectTypeListLength,
          PGENERIC_MAPPING GenericMapping,
          BOOL ObjectCreation,
-    _Out_writes_(ObjectTypeListLength)       LPDWORD GrantedAccess,
-    _Out_writes_(ObjectTypeListLength)       LPDWORD AccessStatusList,
-    _Out_    LPBOOL pfGenerateOnClose
+           LPDWORD GrantedAccess,
+           LPDWORD AccessStatusList,
+        LPBOOL pfGenerateOnClose
     );
 #ifndef UNICODE
 #define AccessCheckByTypeResultListAndAuditAlarm  AccessCheckByTypeResultListAndAuditAlarmA
@@ -6355,7 +6372,7 @@ AccessCheckByTypeResultListAndAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 AccessCheckByTypeResultListAndAuditAlarmByHandleA (
          LPCSTR SubsystemName,
          LPVOID HandleId,
@@ -6367,22 +6384,22 @@ AccessCheckByTypeResultListAndAuditAlarmByHandleA (
          DWORD DesiredAccess,
          AUDIT_EVENT_TYPE AuditType,
          DWORD Flags,
-    _Inout_updates_opt_(ObjectTypeListLength) POBJECT_TYPE_LIST ObjectTypeList,
+     POBJECT_TYPE_LIST ObjectTypeList,
          DWORD ObjectTypeListLength,
          PGENERIC_MAPPING GenericMapping,
          BOOL ObjectCreation,
-    _Out_writes_(ObjectTypeListLength)       LPDWORD GrantedAccess,
-    _Out_writes_(ObjectTypeListLength)       LPDWORD AccessStatusList,
-    _Out_    LPBOOL pfGenerateOnClose
+           LPDWORD GrantedAccess,
+           LPDWORD AccessStatusList,
+        LPBOOL pfGenerateOnClose
     );
 #ifndef UNICODE
 #define AccessCheckByTypeResultListAndAuditAlarmByHandle  AccessCheckByTypeResultListAndAuditAlarmByHandleA
 #endif
-#endif //(_WIN32_WINNT >= 0x0500)
+end  --(_WIN32_WINNT >= 0x0500)
 
 
 BOOL
-WINAPI
+__stdcall
 ObjectOpenAuditAlarmA (
          LPCSTR SubsystemName,
          LPVOID HandleId,
@@ -6395,7 +6412,7 @@ ObjectOpenAuditAlarmA (
      PPRIVILEGE_SET Privileges,
          BOOL ObjectCreation,
          BOOL AccessGranted,
-    _Out_    LPBOOL GenerateOnClose
+        LPBOOL GenerateOnClose
     );
 #ifndef UNICODE
 #define ObjectOpenAuditAlarm  ObjectOpenAuditAlarmA
@@ -6403,7 +6420,7 @@ ObjectOpenAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 ObjectPrivilegeAuditAlarmA (
      LPCSTR SubsystemName,
      LPVOID HandleId,
@@ -6418,7 +6435,7 @@ ObjectPrivilegeAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 ObjectCloseAuditAlarmA (
      LPCSTR SubsystemName,
      LPVOID HandleId,
@@ -6430,7 +6447,7 @@ ObjectCloseAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 ObjectDeleteAuditAlarmA (
      LPCSTR SubsystemName,
      LPVOID HandleId,
@@ -6442,7 +6459,7 @@ ObjectDeleteAuditAlarmA (
 
 
 BOOL
-WINAPI
+__stdcall
 PrivilegedServiceAuditAlarmA (
      LPCSTR SubsystemName,
      LPCSTR ServiceName,
@@ -6457,28 +6474,28 @@ PrivilegedServiceAuditAlarmA (
 #if(_WIN32_WINNT >= 0x0601)
 
 BOOL
-WINAPI
+__stdcall
 AddConditionalAce (
-    _Inout_ PACL pAcl,
+     PACL pAcl,
         DWORD dwAceRevision,
         DWORD AceFlags,
         UCHAR AceType,
         DWORD AccessMask,
         PSID pSid,
-     _Null_terminated_ PWCHAR ConditionStr,
-    _Out_ DWORD *ReturnLength
+      PWCHAR ConditionStr,
+     DWORD *ReturnLength
     );
 #endif /* _WIN32_WINNT >=  0x0601 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 
 BOOL
-WINAPI
+__stdcall
 SetFileSecurityA (
      LPCSTR lpFileName,
      SECURITY_INFORMATION SecurityInformation,
@@ -6490,51 +6507,51 @@ SetFileSecurityA (
 
 
 BOOL
-WINAPI
+__stdcall
 GetFileSecurityA (
       LPCSTR lpFileName,
       SECURITY_INFORMATION RequestedInformation,
-    _Out_writes_bytes_to_opt_(nLength, *lpnLengthNeeded) PSECURITY_DESCRIPTOR pSecurityDescriptor,
+     PSECURITY_DESCRIPTOR pSecurityDescriptor,
       DWORD nLength,
-    _Out_ LPDWORD lpnLengthNeeded
+     LPDWORD lpnLengthNeeded
     );
 #ifndef UNICODE
 #define GetFileSecurity  GetFileSecurityA
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #if(_WIN32_WINNT >= 0x0400)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ReadDirectoryChangesW(
             HANDLE hDirectory,
-    _Out_writes_bytes_to_(nBufferLength, *lpBytesReturned) LPVOID lpBuffer,
+     LPVOID lpBuffer,
             DWORD nBufferLength,
             BOOL bWatchSubtree,
             DWORD dwNotifyFilter,
-    _Out_opt_   LPDWORD lpBytesReturned,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
+       LPDWORD lpBytesReturned,
+     LPOVERLAPPED lpOverlapped,
         LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     );
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ReadDirectoryChangesExW(
             HANDLE hDirectory,
-    _Out_writes_bytes_to_(nBufferLength, *lpBytesReturned) LPVOID lpBuffer,
+     LPVOID lpBuffer,
             DWORD nBufferLength,
             BOOL bWatchSubtree,
             DWORD dwNotifyFilter,
-    _Out_opt_   LPDWORD lpBytesReturned,
-    _Inout_opt_ LPOVERLAPPED lpOverlapped,
+       LPDWORD lpBytesReturned,
+     LPOVERLAPPED lpOverlapped,
         LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
             READ_DIRECTORY_NOTIFY_INFORMATION_CLASS ReadDirectoryNotifyInformationClass
     );
@@ -6542,17 +6559,17 @@ ReadDirectoryChangesExW(
 #endif /* _WIN32_WINNT >= 0x0400 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
-_Ret_maybenull_ __out_data_source(FILE)
+
+ 
 LPVOID
-WINAPI
+__stdcall
 MapViewOfFileExNuma(
          HANDLE hFileMappingObject,
          DWORD dwDesiredAccess,
@@ -6563,198 +6580,198 @@ MapViewOfFileExNuma(
          DWORD nndPreferred
     );
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadReadPtr(
-     CONST VOID *lp,
+     const VOID *lp,
          UINT_PTR ucb
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadWritePtr(
      LPVOID lp,
          UINT_PTR ucb
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadHugeReadPtr(
-     CONST VOID *lp,
+     const VOID *lp,
          UINT_PTR ucb
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadHugeWritePtr(
      LPVOID lp,
          UINT_PTR ucb
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadCodePtr(
      FARPROC lpfn
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadStringPtrA(
      LPCSTR lpsz,
          UINT_PTR ucchMax
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 IsBadStringPtrW(
      LPCWSTR lpsz,
          UINT_PTR ucchMax
     );
 #ifdef UNICODE
 #define IsBadStringPtr  IsBadStringPtrW
-#else
+else
 #define IsBadStringPtr  IsBadStringPtrA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountSidA(
      LPCSTR lpSystemName,
      PSID Sid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR Name,
-    _Inout_  LPDWORD cchName,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
-    _Inout_ LPDWORD cchReferencedDomainName,
-    _Out_ PSID_NAME_USE peUse
+     LPSTR Name,
+      LPDWORD cchName,
+     LPSTR ReferencedDomainName,
+     LPDWORD cchReferencedDomainName,
+     PSID_NAME_USE peUse
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountSidW(
      LPCWSTR lpSystemName,
      PSID Sid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR Name,
-    _Inout_  LPDWORD cchName,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
-    _Inout_ LPDWORD cchReferencedDomainName,
-    _Out_ PSID_NAME_USE peUse
+     LPWSTR Name,
+      LPDWORD cchName,
+     LPWSTR ReferencedDomainName,
+     LPDWORD cchReferencedDomainName,
+     PSID_NAME_USE peUse
     );
 #ifdef UNICODE
 #define LookupAccountSid  LookupAccountSidW
-#else
+else
 #define LookupAccountSid  LookupAccountSidA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountNameA(
      LPCSTR lpSystemName,
          LPCSTR lpAccountName,
-    _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
-    _Inout_  LPDWORD cbSid,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
-    _Inout_  LPDWORD cchReferencedDomainName,
-    _Out_    PSID_NAME_USE peUse
+     PSID Sid,
+      LPDWORD cbSid,
+     LPSTR ReferencedDomainName,
+      LPDWORD cchReferencedDomainName,
+        PSID_NAME_USE peUse
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountNameW(
      LPCWSTR lpSystemName,
          LPCWSTR lpAccountName,
-    _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
-    _Inout_  LPDWORD cbSid,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
-    _Inout_  LPDWORD cchReferencedDomainName,
-    _Out_    PSID_NAME_USE peUse
+     PSID Sid,
+      LPDWORD cbSid,
+     LPWSTR ReferencedDomainName,
+      LPDWORD cchReferencedDomainName,
+        PSID_NAME_USE peUse
     );
 #ifdef UNICODE
 #define LookupAccountName  LookupAccountNameW
-#else
+else
 #define LookupAccountName  LookupAccountNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if _WIN32_WINNT >= 0x0601
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountNameLocalA(
          LPCSTR lpAccountName,
-    _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
-    _Inout_  LPDWORD cbSid,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
-    _Inout_  LPDWORD cchReferencedDomainName,
-    _Out_    PSID_NAME_USE peUse
+     PSID Sid,
+      LPDWORD cbSid,
+     LPSTR ReferencedDomainName,
+      LPDWORD cchReferencedDomainName,
+        PSID_NAME_USE peUse
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountNameLocalW(
          LPCWSTR lpAccountName,
-    _Out_writes_bytes_to_opt_(*cbSid, *cbSid) PSID Sid,
-    _Inout_  LPDWORD cbSid,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
-    _Inout_  LPDWORD cchReferencedDomainName,
-    _Out_    PSID_NAME_USE peUse
+     PSID Sid,
+      LPDWORD cbSid,
+     LPWSTR ReferencedDomainName,
+      LPDWORD cchReferencedDomainName,
+        PSID_NAME_USE peUse
     );
 #ifdef UNICODE
 #define LookupAccountNameLocal  LookupAccountNameLocalW
-#else
+else
 #define LookupAccountNameLocal  LookupAccountNameLocalA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountSidLocalA(
      PSID Sid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR Name,
-    _Inout_  LPDWORD cchName,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
-    _Inout_ LPDWORD cchReferencedDomainName,
-    _Out_ PSID_NAME_USE peUse
+     LPSTR Name,
+      LPDWORD cchName,
+     LPSTR ReferencedDomainName,
+     LPDWORD cchReferencedDomainName,
+     PSID_NAME_USE peUse
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupAccountSidLocalW(
      PSID Sid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR Name,
-    _Inout_  LPDWORD cchName,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
-    _Inout_ LPDWORD cchReferencedDomainName,
-    _Out_ PSID_NAME_USE peUse
+     LPWSTR Name,
+      LPDWORD cchName,
+     LPWSTR ReferencedDomainName,
+     LPDWORD cchReferencedDomainName,
+     PSID_NAME_USE peUse
     );
 #ifdef UNICODE
 #define LookupAccountSidLocal  LookupAccountSidLocalW
-#else
+else
 #define LookupAccountSidLocal  LookupAccountSidLocalA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#else // _WIN32_WINNT >= 0x0601
+else // _WIN32_WINNT >= 0x0601
 
 #define LookupAccountNameLocalA(n, s, cs, d, cd, u) \
     LookupAccountNameA(NULL, n, s, cs, d, cd, u)
@@ -6762,9 +6779,9 @@ LookupAccountSidLocalW(
     LookupAccountNameW(NULL, n, s, cs, d, cd, u)
 #ifdef UNICODE
 #define LookupAccountNameLocal  LookupAccountNameLocalW
-#else
+else
 #define LookupAccountNameLocal  LookupAccountNameLocalA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #define LookupAccountSidLocalA(s, n, cn, d, cd, u)  \
     LookupAccountSidA(NULL, s, n, cn, d, cd, u)
@@ -6772,292 +6789,292 @@ LookupAccountSidLocalW(
     LookupAccountSidW(NULL, s, n, cn, d, cd, u)
 #ifdef UNICODE
 #define LookupAccountSidLocal  LookupAccountSidLocalW
-#else
+else
 #define LookupAccountSidLocal  LookupAccountSidLocalA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT >= 0x0601
+end  -- _WIN32_WINNT >= 0x0601
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 
 BOOL
-WINAPI
+__stdcall
 LookupPrivilegeValueA(
      LPCSTR lpSystemName,
          LPCSTR lpName,
-    _Out_    PLUID   lpLuid
+        PLUID   lpLuid
     );
 
 BOOL
-WINAPI
+__stdcall
 LookupPrivilegeValueW(
      LPCWSTR lpSystemName,
          LPCWSTR lpName,
-    _Out_    PLUID   lpLuid
+        PLUID   lpLuid
     );
 #ifdef UNICODE
 #define LookupPrivilegeValue  LookupPrivilegeValueW
-#else
+else
 #define LookupPrivilegeValue  LookupPrivilegeValueA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupPrivilegeNameA(
      LPCSTR lpSystemName,
          PLUID   lpLuid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR lpName,
-    _Inout_  LPDWORD cchName
+     LPSTR lpName,
+      LPDWORD cchName
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupPrivilegeNameW(
      LPCWSTR lpSystemName,
          PLUID   lpLuid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR lpName,
-    _Inout_  LPDWORD cchName
+     LPWSTR lpName,
+      LPDWORD cchName
     );
 #ifdef UNICODE
 #define LookupPrivilegeName  LookupPrivilegeNameW
-#else
+else
 #define LookupPrivilegeName  LookupPrivilegeNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupPrivilegeDisplayNameA(
      LPCSTR lpSystemName,
          LPCSTR lpName,
-    _Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) LPSTR lpDisplayName,
-    _Inout_  LPDWORD cchDisplayName,
-    _Out_    LPDWORD lpLanguageId
+     LPSTR lpDisplayName,
+      LPDWORD cchDisplayName,
+        LPDWORD lpLanguageId
     );
 
-_Success_(return != FALSE) BOOL
-WINAPI
+ BOOL
+__stdcall
 LookupPrivilegeDisplayNameW(
      LPCWSTR lpSystemName,
          LPCWSTR lpName,
-    _Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) LPWSTR lpDisplayName,
-    _Inout_  LPDWORD cchDisplayName,
-    _Out_    LPDWORD lpLanguageId
+     LPWSTR lpDisplayName,
+      LPDWORD cchDisplayName,
+        LPDWORD lpLanguageId
     );
 #ifdef UNICODE
 #define LookupPrivilegeDisplayName  LookupPrivilegeDisplayNameW
-#else
+else
 #define LookupPrivilegeDisplayName  LookupPrivilegeDisplayNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 BuildCommDCBA(
       LPCSTR lpDef,
-    _Out_ LPDCB lpDCB
+     LPDCB lpDCB
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BuildCommDCBW(
       LPCWSTR lpDef,
-    _Out_ LPDCB lpDCB
+     LPDCB lpDCB
     );
 #ifdef UNICODE
 #define BuildCommDCB  BuildCommDCBW
-#else
+else
 #define BuildCommDCB  BuildCommDCBA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BuildCommDCBAndTimeoutsA(
       LPCSTR lpDef,
-    _Out_ LPDCB lpDCB,
-    _Out_ LPCOMMTIMEOUTS lpCommTimeouts
+     LPDCB lpDCB,
+     LPCOMMTIMEOUTS lpCommTimeouts
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BuildCommDCBAndTimeoutsW(
       LPCWSTR lpDef,
-    _Out_ LPDCB lpDCB,
-    _Out_ LPCOMMTIMEOUTS lpCommTimeouts
+     LPDCB lpDCB,
+     LPCOMMTIMEOUTS lpCommTimeouts
     );
 #ifdef UNICODE
 #define BuildCommDCBAndTimeouts  BuildCommDCBAndTimeoutsW
-#else
+else
 #define BuildCommDCBAndTimeouts  BuildCommDCBAndTimeoutsA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CommConfigDialogA(
          LPCSTR lpszName,
      HWND hWnd,
-    _Inout_  LPCOMMCONFIG lpCC
+      LPCOMMCONFIG lpCC
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 CommConfigDialogW(
          LPCWSTR lpszName,
      HWND hWnd,
-    _Inout_  LPCOMMCONFIG lpCC
+      LPCOMMCONFIG lpCC
     );
 #ifdef UNICODE
 #define CommConfigDialog  CommConfigDialogW
-#else
+else
 #define CommConfigDialog  CommConfigDialogA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetDefaultCommConfigA(
         LPCSTR lpszName,
-    _Out_writes_bytes_to_(*lpdwSize, *lpdwSize) LPCOMMCONFIG lpCC,
-    _Inout_ LPDWORD lpdwSize
+     LPCOMMCONFIG lpCC,
+     LPDWORD lpdwSize
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetDefaultCommConfigW(
         LPCWSTR lpszName,
-    _Out_writes_bytes_to_(*lpdwSize, *lpdwSize) LPCOMMCONFIG lpCC,
-    _Inout_ LPDWORD lpdwSize
+     LPCOMMCONFIG lpCC,
+     LPDWORD lpdwSize
     );
 #ifdef UNICODE
 #define GetDefaultCommConfig  GetDefaultCommConfigW
-#else
+else
 #define GetDefaultCommConfig  GetDefaultCommConfigA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetDefaultCommConfigA(
      LPCSTR lpszName,
-    _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
+     LPCOMMCONFIG lpCC,
      DWORD dwSize
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetDefaultCommConfigW(
      LPCWSTR lpszName,
-    _In_reads_bytes_(dwSize) LPCOMMCONFIG lpCC,
+     LPCOMMCONFIG lpCC,
      DWORD dwSize
     );
 #ifdef UNICODE
 #define SetDefaultCommConfig  SetDefaultCommConfigW
-#else
+else
 #define SetDefaultCommConfig  SetDefaultCommConfigA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 #ifndef _MAC
 #define MAX_COMPUTERNAME_LENGTH 15
-#else
+else
 #define MAX_COMPUTERNAME_LENGTH 31
 #endif
 
-WINBASEAPI
+
 _Success_(return != 0)
 BOOL
-WINAPI
+__stdcall
 GetComputerNameA (
-    _Out_writes_to_opt_(*nSize, *nSize + 1) LPSTR lpBuffer,
-    _Inout_ LPDWORD nSize
+     LPSTR lpBuffer,
+     LPDWORD nSize
     );
-WINBASEAPI
+
 _Success_(return != 0)
 BOOL
-WINAPI
+__stdcall
 GetComputerNameW (
-    _Out_writes_to_opt_(*nSize, *nSize + 1) LPWSTR lpBuffer,
-    _Inout_ LPDWORD nSize
+     LPWSTR lpBuffer,
+     LPDWORD nSize
     );
 #ifdef UNICODE
 #define GetComputerName  GetComputerNameW
-#else
+else
 #define GetComputerName  GetComputerNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0500)
 
 
-WINBASEAPI
-_Success_(return != FALSE)
+
+
 BOOL
-WINAPI
+__stdcall
 DnsHostnameToComputerNameA (
         LPCSTR Hostname,
-    _Out_writes_to_opt_(*nSize, *nSize + 1) LPSTR ComputerName,
-    _Inout_ LPDWORD nSize
+     LPSTR ComputerName,
+     LPDWORD nSize
     );
-WINBASEAPI
-_Success_(return != FALSE)
+
+
 BOOL
-WINAPI
+__stdcall
 DnsHostnameToComputerNameW (
         LPCWSTR Hostname,
-    _Out_writes_to_opt_(*nSize, *nSize + 1) LPWSTR ComputerName,
-    _Inout_ LPDWORD nSize
+     LPWSTR ComputerName,
+     LPDWORD nSize
     );
 #ifdef UNICODE
 #define DnsHostnameToComputerName  DnsHostnameToComputerNameW
-#else
+else
 #define DnsHostnameToComputerName  DnsHostnameToComputerNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // _WIN32_WINNT
+end  -- _WIN32_WINNT
 
 
 BOOL
-WINAPI
+__stdcall
 GetUserNameA (
-    _Out_writes_to_opt_(*pcbBuffer, *pcbBuffer) LPSTR lpBuffer,
-    _Inout_ LPDWORD pcbBuffer
+     LPSTR lpBuffer,
+     LPDWORD pcbBuffer
     );
 
 BOOL
-WINAPI
+__stdcall
 GetUserNameW (
-    _Out_writes_to_opt_(*pcbBuffer, *pcbBuffer) LPWSTR lpBuffer,
-    _Inout_ LPDWORD pcbBuffer
+     LPWSTR lpBuffer,
+     LPDWORD pcbBuffer
     );
 #ifdef UNICODE
 #define GetUserName  GetUserNameW
-#else
+else
 #define GetUserName  GetUserNameA
-#endif // !UNICODE
+end  -- !UNICODE
 
 //
 // Logon Support APIs
@@ -7071,7 +7088,7 @@ GetUserNameW (
 #if(_WIN32_WINNT >= 0x0500)
 #define LOGON32_LOGON_NETWORK_CLEARTEXT 8
 #define LOGON32_LOGON_NEW_CREDENTIALS   9
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- (_WIN32_WINNT >= 0x0500)
 
 #define LOGON32_PROVIDER_DEFAULT    0
 #define LOGON32_PROVIDER_WINNT35    1
@@ -7080,87 +7097,87 @@ GetUserNameW (
 #endif /* _WIN32_WINNT >= 0x0400 */
 #if(_WIN32_WINNT >= 0x0500)
 #define LOGON32_PROVIDER_WINNT50    3
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- (_WIN32_WINNT >= 0x0500)
 #if(_WIN32_WINNT >= 0x0600)
 #define LOGON32_PROVIDER_VIRTUAL    4
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 
 
 
 BOOL
-WINAPI
+__stdcall
 LogonUserA (
             LPCSTR lpszUsername,
         LPCSTR lpszDomain,
         LPCSTR lpszPassword,
             DWORD dwLogonType,
             DWORD dwLogonProvider,
-    _Outptr_ PHANDLE phToken
+     PHANDLE phToken
     );
 
 BOOL
-WINAPI
+__stdcall
 LogonUserW (
             LPCWSTR lpszUsername,
         LPCWSTR lpszDomain,
         LPCWSTR lpszPassword,
             DWORD dwLogonType,
             DWORD dwLogonProvider,
-    _Outptr_ PHANDLE phToken
+     PHANDLE phToken
     );
 #ifdef UNICODE
 #define LogonUser  LogonUserW
-#else
+else
 #define LogonUser  LogonUserA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 BOOL
-WINAPI
+__stdcall
 LogonUserExA (
                 LPCSTR lpszUsername,
             LPCSTR lpszDomain,
             LPCSTR lpszPassword,
                 DWORD dwLogonType,
                 DWORD dwLogonProvider,
-    _Outptr_opt_ PHANDLE phToken,
-    _Outptr_opt_ PSID  *ppLogonSid,
-    _Outptr_opt_result_bytebuffer_all_(*pdwProfileLength) PVOID *ppProfileBuffer,
-    _Out_opt_       LPDWORD pdwProfileLength,
-    _Out_opt_       PQUOTA_LIMITS pQuotaLimits
+     PHANDLE phToken,
+     PSID  *ppLogonSid,
+     PVOID *ppProfileBuffer,
+           LPDWORD pdwProfileLength,
+           PQUOTA_LIMITS pQuotaLimits
     );
 
 BOOL
-WINAPI
+__stdcall
 LogonUserExW (
                 LPCWSTR lpszUsername,
             LPCWSTR lpszDomain,
             LPCWSTR lpszPassword,
                 DWORD dwLogonType,
                 DWORD dwLogonProvider,
-    _Outptr_opt_ PHANDLE phToken,
-    _Outptr_opt_ PSID  *ppLogonSid,
-    _Outptr_opt_result_bytebuffer_all_(*pdwProfileLength) PVOID *ppProfileBuffer,
-    _Out_opt_       LPDWORD pdwProfileLength,
-    _Out_opt_       PQUOTA_LIMITS pQuotaLimits
+     PHANDLE phToken,
+     PSID  *ppLogonSid,
+     PVOID *ppProfileBuffer,
+           LPDWORD pdwProfileLength,
+           PQUOTA_LIMITS pQuotaLimits
     );
 #ifdef UNICODE
 #define LogonUserEx  LogonUserExW
-#else
+else
 #define LogonUserEx  LogonUserExA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #if(_WIN32_WINNT >= 0x0600)
 
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if(_WIN32_WINNT >= 0x0500)
 
@@ -7173,42 +7190,42 @@ LogonUserExW (
 
 //@[comment("MVI_tracked")]
 
-_Must_inspect_result_ BOOL
-WINAPI
+ BOOL
+__stdcall
 CreateProcessWithLogonW(
             LPCWSTR lpUsername,
         LPCWSTR lpDomain,
             LPCWSTR lpPassword,
             DWORD dwLogonFlags,
         LPCWSTR lpApplicationName,
-    _Inout_opt_ LPWSTR lpCommandLine,
+     LPWSTR lpCommandLine,
             DWORD dwCreationFlags,
         LPVOID lpEnvironment,
         LPCWSTR lpCurrentDirectory,
             LPSTARTUPINFOW lpStartupInfo,
-    _Out_       LPPROCESS_INFORMATION lpProcessInformation
+           LPPROCESS_INFORMATION lpProcessInformation
       );
 
 
-_Must_inspect_result_ BOOL
-WINAPI
+ BOOL
+__stdcall
 CreateProcessWithTokenW(
             HANDLE hToken,
             DWORD dwLogonFlags,
         LPCWSTR lpApplicationName,
-    _Inout_opt_ LPWSTR lpCommandLine,
+     LPWSTR lpCommandLine,
             DWORD dwCreationFlags,
         LPVOID lpEnvironment,
         LPCWSTR lpCurrentDirectory,
             LPSTARTUPINFOW lpStartupInfo,
-    _Out_       LPPROCESS_INFORMATION lpProcessInformation
+           LPPROCESS_INFORMATION lpProcessInformation
       );
 
-#endif // (_WIN32_WINNT >= 0x0500)
+end  -- (_WIN32_WINNT >= 0x0500)
 
 
 BOOL
-WINAPI
+__stdcall
 IsTokenUntrusted(
      HANDLE TokenHandle
     );
@@ -7219,11 +7236,11 @@ IsTokenUntrusted(
 
 #if (_WIN32_WINNT >= 0x0500)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RegisterWaitForSingleObject(
-    _Outptr_ PHANDLE phNewWaitObject,
+     PHANDLE phNewWaitObject,
             HANDLE hObject,
             WAITORTIMERCALLBACK Callback,
         PVOID Context,
@@ -7231,26 +7248,26 @@ RegisterWaitForSingleObject(
             ULONG dwFlags
     );
 
-WINBASEAPI
-_Must_inspect_result_
+
+
 BOOL
-WINAPI
+__stdcall
 UnregisterWait(
      HANDLE WaitHandle
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 BindIoCompletionCallback (
      HANDLE FileHandle,
      LPOVERLAPPED_COMPLETION_ROUTINE Function,
      ULONG Flags
     );
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 SetTimerQueueTimer(
      HANDLE TimerQueue,
          WAITORTIMERCALLBACK Callback,
@@ -7260,24 +7277,24 @@ SetTimerQueueTimer(
          BOOL PreferIo
     );
 
-WINBASEAPI
-_Must_inspect_result_
+
+
 BOOL
-WINAPI
+__stdcall
 CancelTimerQueueTimer(
      HANDLE TimerQueue,
          HANDLE Timer
     );
 
-WINBASEAPI
-_Must_inspect_result_
+
+
 BOOL
-WINAPI
+__stdcall
 DeleteTimerQueue(
      HANDLE TimerQueue
     );
 
-#endif // _WIN32_WINNT >= 0x0500
+end  -- _WIN32_WINNT >= 0x0500
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -7292,7 +7309,7 @@ DeleteTimerQueue(
 FORCEINLINE
 VOID
 InitializeThreadpoolEnvironment(
-    _Out_ PTP_CALLBACK_ENVIRON pcbe
+     PTP_CALLBACK_ENVIRON pcbe
     )
 {
     TpInitializeCallbackEnviron(pcbe);
@@ -7301,7 +7318,7 @@ InitializeThreadpoolEnvironment(
 FORCEINLINE
 VOID
 SetThreadpoolCallbackPool(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe,
+     PTP_CALLBACK_ENVIRON pcbe,
         PTP_POOL             ptpp
     )
 {
@@ -7311,7 +7328,7 @@ SetThreadpoolCallbackPool(
 FORCEINLINE
 VOID
 SetThreadpoolCallbackCleanupGroup(
-    _Inout_  PTP_CALLBACK_ENVIRON              pcbe,
+      PTP_CALLBACK_ENVIRON              pcbe,
          PTP_CLEANUP_GROUP                 ptpcg,
      PTP_CLEANUP_GROUP_CANCEL_CALLBACK pfng
     )
@@ -7322,7 +7339,7 @@ SetThreadpoolCallbackCleanupGroup(
 FORCEINLINE
 VOID
 SetThreadpoolCallbackRunsLong(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe
+     PTP_CALLBACK_ENVIRON pcbe
     )
 {
     TpSetCallbackLongFunction(pcbe);
@@ -7331,7 +7348,7 @@ SetThreadpoolCallbackRunsLong(
 FORCEINLINE
 VOID
 SetThreadpoolCallbackLibrary(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe,
+     PTP_CALLBACK_ENVIRON pcbe,
         PVOID                mod
     )
 {
@@ -7343,7 +7360,7 @@ SetThreadpoolCallbackLibrary(
 FORCEINLINE
 VOID
 SetThreadpoolCallbackPriority(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe,
+     PTP_CALLBACK_ENVIRON pcbe,
         TP_CALLBACK_PRIORITY Priority
     )
 {
@@ -7355,52 +7372,52 @@ SetThreadpoolCallbackPriority(
 FORCEINLINE
 VOID
 DestroyThreadpoolEnvironment(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe
+     PTP_CALLBACK_ENVIRON pcbe
     )
 {
     TpDestroyCallbackEnviron(pcbe);
 }
 
-#endif // !defined(MIDL_PASS)
+end  -- !defined(MIDL_PASS)
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
-#endif // _WIN32_WINNT >= 0x0500
+end  -- _WIN32_WINNT >= 0x0500
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
 #if (_WIN32_WINNT >= 0x0600)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if !defined(MIDL_PASS)
 
 FORCEINLINE
 VOID
 SetThreadpoolCallbackPersistent(
-    _Inout_ PTP_CALLBACK_ENVIRON pcbe
+     PTP_CALLBACK_ENVIRON pcbe
     )
 {
     TpSetCallbackPersistent(pcbe);
 }
 
-#endif // !defined(MIDL_PASS)
+end  -- !defined(MIDL_PASS)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 //
 //  Private Namespaces support
 //
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 CreatePrivateNamespaceA(
      LPSECURITY_ATTRIBUTES lpPrivateNamespaceAttributes,
          LPVOID lpBoundaryDescriptor,
@@ -7409,14 +7426,14 @@ CreatePrivateNamespaceA(
 
 #ifndef UNICODE
 #define CreatePrivateNamespace CreatePrivateNamespaceA
-#else
+else
 #define CreatePrivateNamespace CreatePrivateNamespaceW
 #endif
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 OpenPrivateNamespaceA(
          LPVOID lpBoundaryDescriptor,
          LPCSTR lpAliasPrefix
@@ -7424,7 +7441,7 @@ OpenPrivateNamespaceA(
 
 #ifndef UNICODE
 #define OpenPrivateNamespace OpenPrivateNamespaceA
-#else
+else
 #define OpenPrivateNamespace OpenPrivateNamespaceW
 #endif
 
@@ -7433,8 +7450,8 @@ OpenPrivateNamespaceA(
 //  Boundary descriptors support
 //
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
 APIENTRY
 CreateBoundaryDescriptorA(
@@ -7444,31 +7461,31 @@ CreateBoundaryDescriptorA(
 
 #ifndef UNICODE
 #define CreateBoundaryDescriptor CreateBoundaryDescriptorA
-#else
+else
 #define CreateBoundaryDescriptor CreateBoundaryDescriptorW
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 AddIntegrityLabelToBoundaryDescriptor(
-    _Inout_ HANDLE * BoundaryDescriptor,
+     HANDLE * BoundaryDescriptor,
      PSID IntegrityLabel
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#endif // _WIN32_WINNT >= 0x0600
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+end  -- _WIN32_WINNT >= 0x0600
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if(_WIN32_WINNT >= 0x0400)
 //
@@ -7497,56 +7514,56 @@ typedef struct tagHW_PROFILE_INFOW {
 #ifdef UNICODE
 typedef HW_PROFILE_INFOW HW_PROFILE_INFO;
 typedef LPHW_PROFILE_INFOW LPHW_PROFILE_INFO;
-#else
+else
 typedef HW_PROFILE_INFOA HW_PROFILE_INFO;
 typedef LPHW_PROFILE_INFOA LPHW_PROFILE_INFO;
-#endif // UNICODE
+end  -- UNICODE
 
 
 
 BOOL
-WINAPI
+__stdcall
 GetCurrentHwProfileA (
-    _Out_ LPHW_PROFILE_INFOA  lpHwProfileInfo
+     LPHW_PROFILE_INFOA  lpHwProfileInfo
     );
 
 BOOL
-WINAPI
+__stdcall
 GetCurrentHwProfileW (
-    _Out_ LPHW_PROFILE_INFOW  lpHwProfileInfo
+     LPHW_PROFILE_INFOW  lpHwProfileInfo
     );
 #ifdef UNICODE
 #define GetCurrentHwProfile  GetCurrentHwProfileW
-#else
+else
 #define GetCurrentHwProfile  GetCurrentHwProfileA
-#endif // !UNICODE
+end  -- !UNICODE
 #endif /* _WIN32_WINNT >= 0x0400 */
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 VerifyVersionInfoA(
-    _Inout_ LPOSVERSIONINFOEXA lpVersionInformation,
+     LPOSVERSIONINFOEXA lpVersionInformation,
         DWORD dwTypeMask,
         DWORDLONG dwlConditionMask
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 VerifyVersionInfoW(
-    _Inout_ LPOSVERSIONINFOEXW lpVersionInformation,
+     LPOSVERSIONINFOEXW lpVersionInformation,
         DWORD dwTypeMask,
         DWORDLONG dwlConditionMask
     );
 #ifdef UNICODE
 #define VerifyVersionInfo  VerifyVersionInfoW
-#else
+else
 #define VerifyVersionInfo  VerifyVersionInfoA
-#endif // !UNICODE
+end  -- !UNICODE
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 // DOS and OS/2 Compatible Error Code definitions returned by the Win32 Base
 // API functions.
@@ -7555,8 +7572,8 @@ VerifyVersionInfoW(
 require("win32.winerror")
 require("win32.timezoneapi")
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 /* Abnormal termination codes */
 
@@ -7570,9 +7587,9 @@ require("win32.timezoneapi")
 // Power Management APIs
 //
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetSystemPowerState(
      BOOL fSuspend,
      BOOL fForce
@@ -7581,7 +7598,7 @@ SetSystemPowerState(
 #endif /* WINVER >= 0x0400 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #pragma region  Desktop or PC Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP)
@@ -7618,29 +7635,29 @@ typedef struct _SYSTEM_POWER_STATUS {
     DWORD BatteryFullLifeTime;
 }   SYSTEM_POWER_STATUS, *LPSYSTEM_POWER_STATUS;
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetSystemPowerStatus(
-    _Out_ LPSYSTEM_POWER_STATUS lpSystemPowerStatus
+     LPSYSTEM_POWER_STATUS lpSystemPowerStatus
     );
 
 #endif /* WINVER >= 0x0400 */
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PC_APP) */
-#pragma endregion
+
 
 #if (_WIN32_WINNT >= 0x0500)
 //
 // Very Large Memory API Subset
 //
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 MapUserPhysicalPagesScatter(
     _In_reads_(NumberOfPages) PVOID *VirtualAddresses,
      ULONG_PTR NumberOfPages,
@@ -7648,15 +7665,15 @@ MapUserPhysicalPagesScatter(
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
-_Ret_maybenull_
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
+
 HANDLE
-WINAPI
+__stdcall
 CreateJobObjectA(
      LPSECURITY_ATTRIBUTES lpJobAttributes,
      LPCSTR lpName
@@ -7664,14 +7681,14 @@ CreateJobObjectA(
 
 #ifdef UNICODE
 #define CreateJobObject  CreateJobObjectW
-#else
+else
 #define CreateJobObject  CreateJobObjectA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
-_Ret_maybenull_
+
+
 HANDLE
-WINAPI
+__stdcall
 OpenJobObjectA(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
@@ -7680,33 +7697,33 @@ OpenJobObjectA(
 
 #ifdef UNICODE
 #define OpenJobObject  OpenJobObjectW
-#else
+else
 #define OpenJobObject  OpenJobObjectA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 BOOL
-WINAPI
+__stdcall
 CreateJobSet (
      ULONG NumJob,
     _In_reads_(NumJob) PJOB_SET_ARRAY UserJobSet,
      ULONG Flags);
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstVolumeA(
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
      DWORD cchBufferLength
@@ -7715,11 +7732,11 @@ FindFirstVolumeA(
 #define FindFirstVolume FindFirstVolumeA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindNextVolumeA(
-    _Inout_ HANDLE hFindVolume,
+     HANDLE hFindVolume,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
         DWORD cchBufferLength
     );
@@ -7728,22 +7745,22 @@ FindNextVolumeA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstVolumeMountPointA(
      LPCSTR lpszRootPathName,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 FindFirstVolumeMountPointW(
      LPCWSTR lpszRootPathName,
     _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
@@ -7751,21 +7768,21 @@ FindFirstVolumeMountPointW(
     );
 #ifdef UNICODE
 #define FindFirstVolumeMountPoint FindFirstVolumeMountPointW
-#else
+else
 #define FindFirstVolumeMountPoint FindFirstVolumeMountPointA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindNextVolumeMountPointA(
      HANDLE hFindVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindNextVolumeMountPointW(
      HANDLE hFindVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
@@ -7773,46 +7790,46 @@ FindNextVolumeMountPointW(
     );
 #ifdef UNICODE
 #define FindNextVolumeMountPoint FindNextVolumeMountPointW
-#else
+else
 #define FindNextVolumeMountPoint FindNextVolumeMountPointA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindVolumeMountPointClose(
      HANDLE hFindVolumeMountPoint
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetVolumeMountPointA(
      LPCSTR lpszVolumeMountPoint,
      LPCSTR lpszVolumeName
     );
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 SetVolumeMountPointW(
      LPCWSTR lpszVolumeMountPoint,
      LPCWSTR lpszVolumeName
     );
 #ifdef UNICODE
 #define SetVolumeMountPoint  SetVolumeMountPointW
-#else
+else
 #define SetVolumeMountPoint  SetVolumeMountPointA
-#endif // !UNICODE
+end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeleteVolumeMountPointA(
      LPCSTR lpszVolumeMountPoint
     );
@@ -7821,27 +7838,27 @@ DeleteVolumeMountPointA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #ifndef UNICODE
 #define GetVolumeNameForVolumeMountPoint  GetVolumeNameForVolumeMountPointA
 #endif
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetVolumeNameForVolumeMountPointA(
      LPCSTR lpszVolumeMountPoint,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
      DWORD cchBufferLength
 );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetVolumePathNameA(
      LPCSTR lpszFileName,
     _Out_writes_(cchBufferLength) LPSTR lpszVolumePathName,
@@ -7852,30 +7869,30 @@ GetVolumePathNameA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #endif
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if(_WIN32_WINNT >= 0x0501)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetVolumePathNamesForVolumeNameA(
       LPCSTR lpszVolumeName,
     _Out_writes_to_opt_(cchBufferLength, *lpcchReturnLength) _Post_ _NullNull_terminated_ LPCH lpszVolumePathNames,
       DWORD cchBufferLength,
-    _Out_ PDWORD lpcchReturnLength
+     PDWORD lpcchReturnLength
     );
 
 #ifndef UNICODE
 #define GetVolumePathNamesForVolumeName  GetVolumePathNamesForVolumeNameA
 #endif
 
-#endif // (_WIN32_WINNT >= 0x0501)
+end  -- (_WIN32_WINNT >= 0x0501)
 
 #if (_WIN32_WINNT >= 0x0500) || (_WIN32_FUSION >= 0x0100) || ISOLATION_AWARE_ENABLED
 
@@ -7913,88 +7930,88 @@ typedef struct tagACTCTXW {
 #ifdef UNICODE
 typedef ACTCTXW ACTCTX;
 typedef PACTCTXW PACTCTX;
-#else
+else
 typedef ACTCTXA ACTCTX;
 typedef PACTCTXA PACTCTX;
-#endif // UNICODE
+end  -- UNICODE
 
 typedef const ACTCTXA *PCACTCTXA;
 typedef const ACTCTXW *PCACTCTXW;
 #ifdef UNICODE
 typedef PCACTCTXW PCACTCTX;
-#else
+else
 typedef PCACTCTXA PCACTCTX;
-#endif // UNICODE
+end  -- UNICODE
 
 
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateActCtxA(
      PCACTCTXA pActCtx
     );
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 CreateActCtxW(
      PCACTCTXW pActCtx
     );
 #ifdef UNICODE
 #define CreateActCtx  CreateActCtxW
-#else
+else
 #define CreateActCtx  CreateActCtxA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 AddRefActCtx(
-    _Inout_ HANDLE hActCtx
+     HANDLE hActCtx
     );
 
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 ReleaseActCtx(
-    _Inout_ HANDLE hActCtx
+     HANDLE hActCtx
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ZombifyActCtx(
-    _Inout_ HANDLE hActCtx
+     HANDLE hActCtx
     );
 
 
 _Success_(return)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ActivateActCtx(
-    _Inout_opt_ HANDLE hActCtx,
-    _Out_   ULONG_PTR *lpCookie
+     HANDLE hActCtx,
+       ULONG_PTR *lpCookie
     );
 
 
 #define DEACTIVATE_ACTCTX_FLAG_FORCE_EARLY_DEACTIVATION (0x00000001)
 
 _Success_(return)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 DeactivateActCtx(
      DWORD dwFlags,
      ULONG_PTR ulCookie
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetCurrentActCtx(
-    _Outptr_ HANDLE *lphActCtx);
+     HANDLE *lphActCtx);
 
 
 typedef struct tagACTCTX_SECTION_KEYED_DATA_2600 {
@@ -8044,42 +8061,42 @@ typedef const ACTCTX_SECTION_KEYED_DATA * PCACTCTX_SECTION_KEYED_DATA;
 
 
 _Success_(return)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindActCtxSectionStringA(
            DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
            ULONG ulSectionId,
            LPCSTR lpStringToFind,
-    _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
+          PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 _Success_(return)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindActCtxSectionStringW(
            DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
            ULONG ulSectionId,
            LPCWSTR lpStringToFind,
-    _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
+          PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 #ifdef UNICODE
 #define FindActCtxSectionString  FindActCtxSectionStringW
-#else
+else
 #define FindActCtxSectionString  FindActCtxSectionStringA
-#endif // !UNICODE
+end  -- !UNICODE
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 FindActCtxSectionGuid(
            DWORD dwFlags,
     _Reserved_ const GUID *lpExtensionGuid,
            ULONG ulSectionId,
        const GUID *lpGuidToFind,
-    _Out_      PACTCTX_SECTION_KEYED_DATA ReturnedData
+          PACTCTX_SECTION_KEYED_DATA ReturnedData
     );
 
 
@@ -8095,7 +8112,7 @@ typedef const struct _ACTIVATION_CONTEXT_BASIC_INFORMATION *PCACTIVATION_CONTEXT
 
 #define ACTIVATION_CONTEXT_BASIC_INFORMATION_DEFINED 1
 
-#endif // !defined(ACTIVATION_CONTEXT_BASIC_INFORMATION_DEFINED)
+end  -- !defined(ACTIVATION_CONTEXT_BASIC_INFORMATION_DEFINED)
 #endif
 
 #define QUERY_ACTCTX_FLAG_USE_ACTIVE_ACTCTX (0x00000004)
@@ -8134,9 +8151,9 @@ typedef const struct _ACTIVATION_CONTEXT_BASIC_INFORMATION *PCACTIVATION_CONTEXT
 // String are placed after the structs.
 //
 _Success_(return)
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 QueryActCtxW(
           DWORD dwFlags,
           HANDLE hActCtx,
@@ -8144,175 +8161,175 @@ QueryActCtxW(
           ULONG ulInfoClass,
     _Out_writes_bytes_to_opt_(cbBuffer, *pcbWrittenOrRequired) PVOID pvBuffer,
           SIZE_T cbBuffer,
-    _Out_opt_ SIZE_T *pcbWrittenOrRequired
+     SIZE_T *pcbWrittenOrRequired
     );
 
-typedef _Success_(return) BOOL (WINAPI * PQUERYACTCTXW_FUNC)(
+typedef _Success_(return) BOOL (__stdcall * PQUERYACTCTXW_FUNC)(
           DWORD dwFlags,
           HANDLE hActCtx,
       PVOID pvSubInstance,
           ULONG ulInfoClass,
     _Out_writes_bytes_to_opt_(cbBuffer, *pcbWrittenOrRequired) PVOID pvBuffer,
           SIZE_T cbBuffer,
-    _Out_opt_ SIZE_T *pcbWrittenOrRequired
+     SIZE_T *pcbWrittenOrRequired
     );
 
-#endif // (_WIN32_WINNT > 0x0500) || (_WIN32_FUSION >= 0x0100) || ISOLATION_AWARE_ENABLED
+end  -- (_WIN32_WINNT > 0x0500) || (_WIN32_FUSION >= 0x0100) || ISOLATION_AWARE_ENABLED
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
 #if _WIN32_WINNT >= 0x0501
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 WTSGetActiveConsoleSessionId(
     VOID
     );
 
-#endif // (_WIN32_WINNT >= 0x0501)
+end  -- (_WIN32_WINNT >= 0x0501)
 
 #if (_WIN32_WINNT >= _WIN32_WINNT_WINTHRESHOLD)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 WTSGetServiceSessionId(
     VOID
     );
 
-WINBASEAPI
+
 BOOLEAN
-WINAPI
+__stdcall
 WTSIsServerContainer(
     VOID
     );
 
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WINTHRESHOLD)
+end  -- (_WIN32_WINNT >= _WIN32_WINNT_WINTHRESHOLD)
 
 #if _WIN32_WINNT >= 0x0601
 
-WINBASEAPI
+
 WORD
-WINAPI
+__stdcall
 GetActiveProcessorGroupCount(
     VOID
     );
 
-WINBASEAPI
+
 WORD
-WINAPI
+__stdcall
 GetMaximumProcessorGroupCount(
     VOID
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetActiveProcessorCount(
      WORD GroupNumber
     );
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 GetMaximumProcessorCount(
      WORD GroupNumber
     );
 
-#endif // (_WIN32_WINNT >=0x0601)
+end  -- (_WIN32_WINNT >=0x0601)
 
 //
 // NUMA Information routines.
 //
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaProcessorNode(
       UCHAR Processor,
-    _Out_ PUCHAR NodeNumber
+     PUCHAR NodeNumber
     );
 
 #if _WIN32_WINNT >= 0x0601
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaNodeNumberFromHandle(
       HANDLE hFile,
-    _Out_ PUSHORT NodeNumber
+     PUSHORT NodeNumber
     );
 
-#endif // (_WIN32_WINNT >=0x0601)
+end  -- (_WIN32_WINNT >=0x0601)
 
 #if _WIN32_WINNT >= 0x0601
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaProcessorNodeEx(
       PPROCESSOR_NUMBER Processor,
-    _Out_ PUSHORT NodeNumber
+     PUSHORT NodeNumber
     );
 
-#endif // (_WIN32_WINNT >=0x0601)
+end  -- (_WIN32_WINNT >=0x0601)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaNodeProcessorMask(
       UCHAR Node,
-    _Out_ PULONGLONG ProcessorMask
+     PULONGLONG ProcessorMask
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaAvailableMemoryNode(
       UCHAR Node,
-    _Out_ PULONGLONG AvailableBytes
+     PULONGLONG AvailableBytes
     );
 
 #if _WIN32_WINNT >= 0x0601
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaAvailableMemoryNodeEx(
       USHORT Node,
-    _Out_ PULONGLONG AvailableBytes
+     PULONGLONG AvailableBytes
     );
 
-#endif // (_WIN32_WINNT >=0x0601)
+end  -- (_WIN32_WINNT >=0x0601)
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetNumaProximityNode(
       ULONG ProximityId,
-    _Out_ PUCHAR NodeNumber
+     PUCHAR NodeNumber
     );
 
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 //
 // Application restart and data recovery callback
 //
-typedef DWORD (WINAPI *APPLICATION_RECOVERY_CALLBACK)(PVOID pvParameter);
+typedef DWORD (__stdcall *APPLICATION_RECOVERY_CALLBACK)(PVOID pvParameter);
 
 //
 // Max length of commandline in characters (including the NULL character that can be registered for restart)
@@ -8343,16 +8360,16 @@ typedef DWORD (WINAPI *APPLICATION_RECOVERY_CALLBACK)(PVOID pvParameter);
 #define RECOVERY_MAX_PING_INTERVAL      (5 * 60 * 1000)
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 RegisterApplicationRecoveryCallback(
       APPLICATION_RECOVERY_CALLBACK pRecoveyCallback,
       PVOID pvParameter,
@@ -8360,87 +8377,87 @@ RegisterApplicationRecoveryCallback(
      DWORD dwFlags
     );
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 UnregisterApplicationRecoveryCallback(void);
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 RegisterApplicationRestart(
      PCWSTR pwzCommandline,
      DWORD dwFlags
     );
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 UnregisterApplicationRestart(void);
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 GetApplicationRecoveryCallback(
       HANDLE hProcess,
-    _Out_ APPLICATION_RECOVERY_CALLBACK* pRecoveryCallback,
+     APPLICATION_RECOVERY_CALLBACK* pRecoveryCallback,
     _Outptr_opt_result_maybenull_ PVOID* ppvParameter,
-    _Out_opt_ PDWORD pdwPingInterval,
-    _Out_opt_ PDWORD pdwFlags
+     PDWORD pdwPingInterval,
+     PDWORD pdwFlags
     );
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 GetApplicationRestartSettings(
      HANDLE hProcess,
     _Out_writes_opt_(*pcchSize) PWSTR pwzCommandline,
-    _Inout_ PDWORD pcchSize,
-    _Out_opt_ PDWORD pdwFlags
+     PDWORD pcchSize,
+     PDWORD pdwFlags
     );
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 HRESULT
-WINAPI
+__stdcall
 ApplicationRecoveryInProgress(
-    _Out_ PBOOL pbCancelled
+     PBOOL pbCancelled
     );
 
-WINBASEAPI
+
 VOID
-WINAPI
+__stdcall
 ApplicationRecoveryFinished(
      BOOL bSuccess
     );
 
-#endif // _WIN32_WINNT >= 0x0600
+end  -- _WIN32_WINNT >= 0x0600
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #if (_WIN32_WINNT >= 0x0600)
 
-#pragma region Application Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 typedef struct _FILE_BASIC_INFO {
@@ -8479,7 +8496,7 @@ typedef struct _FILE_RENAME_INFO {
         BOOLEAN ReplaceIfExists;  // FileRenameInfo
         DWORD Flags;              // FileRenameInfoEx
     } DUMMYUNIONNAME;
-#else
+else
     BOOLEAN ReplaceIfExists;
 #endif
     HANDLE RootDirectory;
@@ -8732,9 +8749,9 @@ typedef struct _FILE_REMOTE_PROTOCOL_INFO
 
 } FILE_REMOTE_PROTOCOL_INFO, *PFILE_REMOTE_PROTOCOL_INFO;
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 GetFileInformationByHandleEx(
       HANDLE hFile,
       FILE_INFO_BY_HANDLE_CLASS FileInformationClass,
@@ -8743,9 +8760,9 @@ GetFileInformationByHandleEx(
 );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 typedef enum _FILE_ID_TYPE {
@@ -8767,9 +8784,9 @@ typedef struct FILE_ID_DESCRIPTOR {
     } DUMMYUNIONNAME;
 } FILE_ID_DESCRIPTOR, *LPFILE_ID_DESCRIPTOR;
 
-WINBASEAPI
+
 HANDLE
-WINAPI
+__stdcall
 OpenFileById (
          HANDLE hVolumeHint,
          LPFILE_ID_DESCRIPTOR lpFileId,
@@ -8780,11 +8797,11 @@ OpenFileById (
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #endif
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 #if (_WIN32_WINNT >= 0x0600)
@@ -8808,7 +8825,7 @@ OpenFileById (
 #define SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE    (0x2)
 
 
-WINBASEAPI
+
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkA (
@@ -8816,7 +8833,7 @@ CreateSymbolicLinkA (
      LPCSTR lpTargetFileName,
      DWORD dwFlags
     );
-WINBASEAPI
+
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkW (
@@ -8826,17 +8843,17 @@ CreateSymbolicLinkW (
     );
 #ifdef UNICODE
 #define CreateSymbolicLink  CreateSymbolicLinkW
-#else
+else
 #define CreateSymbolicLink  CreateSymbolicLinkA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 QueryActCtxSettingsW(
           DWORD dwFlags,
           HANDLE hActCtx,
@@ -8844,20 +8861,20 @@ QueryActCtxSettingsW(
               PCWSTR settingName,
     _Out_writes_bytes_to_opt_(dwBuffer, *pdwWrittenOrRequired) PWSTR pvBuffer,
           SIZE_T dwBuffer,
-    _Out_opt_ SIZE_T *pdwWrittenOrRequired
+     SIZE_T *pdwWrittenOrRequired
     );
 
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkTransactedA (
@@ -8866,7 +8883,7 @@ CreateSymbolicLinkTransactedA (
          DWORD dwFlags,
          HANDLE hTransaction
     );
-WINBASEAPI
+
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkTransactedW (
@@ -8877,17 +8894,17 @@ CreateSymbolicLinkTransactedW (
     );
 #ifdef UNICODE
 #define CreateSymbolicLinkTransacted  CreateSymbolicLinkTransactedW
-#else
+else
 #define CreateSymbolicLinkTransacted  CreateSymbolicLinkTransactedA
-#endif // !UNICODE
+end  -- !UNICODE
 
-#endif // (_WIN32_WINNT >= 0x0600)
+end  -- (_WIN32_WINNT >= 0x0600)
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 ReplacePartitionUnit (
      PWSTR TargetPartition,
      PWSTR SparePartition,
@@ -8899,16 +8916,16 @@ ReplacePartitionUnit (
 
 #if (_WIN32_WINNT >= 0x0600)
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 AddSecureMemoryCacheCallback(
      __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
     );
 
-WINBASEAPI
+
 BOOL
-WINAPI
+__stdcall
 RemoveSecureMemoryCacheCallback(
      __callback PSECURE_MEMORY_CACHE_CALLBACK pfnCallBack
     );
@@ -8916,90 +8933,90 @@ RemoveSecureMemoryCacheCallback(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #if (NTDDI_VERSION >= NTDDI_WIN7SP1)
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-_Must_inspect_result_
-WINBASEAPI
+
+
 BOOL
-WINAPI
+__stdcall
 CopyContext(
-    _Inout_ PCONTEXT Destination,
+     PCONTEXT Destination,
      DWORD ContextFlags,
      PCONTEXT Source
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Application Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-_Success_(return != FALSE)
-WINBASEAPI
+
+
 BOOL
-WINAPI
+__stdcall
 InitializeContext(
     _Out_writes_bytes_opt_(*ContextLength) PVOID Buffer,
      DWORD ContextFlags,
-    _Out_ PCONTEXT* Context,
-    _Inout_ PDWORD ContextLength
+     PCONTEXT* Context,
+     PDWORD ContextLength
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #if defined(_AMD64_) || defined(_X86_)
 
-#pragma region Application Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 DWORD64
-WINAPI
+__stdcall
 GetEnabledXStateFeatures(
     VOID
     );
 
-_Must_inspect_result_
-WINBASEAPI
+
+
 BOOL
-WINAPI
+__stdcall
 GetXStateFeaturesMask(
      PCONTEXT Context,
-    _Out_ PDWORD64 FeatureMask
+     PDWORD64 FeatureMask
     );
 
 _Success_(return != NULL)
-WINBASEAPI
+
 PVOID
-WINAPI
+__stdcall
 LocateXStateFeature(
      PCONTEXT Context,
      DWORD FeatureId,
-    _Out_opt_ PDWORD Length
+     PDWORD Length
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop Family or OneCore Family
+
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-_Must_inspect_result_
-WINBASEAPI
+
+
 BOOL
-WINAPI
+__stdcall
 SetXStateFeaturesMask(
-    _Inout_ PCONTEXT Context,
+     PCONTEXT Context,
      DWORD64 FeatureMask
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #endif /* defined(_AMD64_) || defined(_X86_) */
 
@@ -9007,62 +9024,62 @@ SetXStateFeaturesMask(
 
 #if (_WIN32_WINNT >= 0x0601)
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
-WINBASEAPI
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+
+
 DWORD
 APIENTRY
 EnableThreadProfiling(
      HANDLE ThreadHandle,
      DWORD Flags,
      DWORD64 HardwareCounters,
-    _Out_ HANDLE *PerformanceDataHandle
+     HANDLE *PerformanceDataHandle
     );
 
-WINBASEAPI
+
 DWORD
 APIENTRY
 DisableThreadProfiling(
      HANDLE PerformanceDataHandle
     );
 
-WINBASEAPI
+
 DWORD
 APIENTRY
 QueryThreadProfiling(
      HANDLE ThreadHandle,
-    _Out_ PBOOLEAN Enabled
+     PBOOLEAN Enabled
     );
 
-WINBASEAPI
+
 DWORD
 APIENTRY
 ReadThreadProfilingData(
      HANDLE PerformanceDataHandle,
      DWORD Flags,
-    _Out_ PPERFORMANCE_DATA PerformanceData
+     PPERFORMANCE_DATA PerformanceData
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 #endif /* (_WIN32_WINNT >= 0x0601) */
 
 #if (NTDDI_VERSION >= NTDDI_WIN10_RS4)
 
-#pragma region Desktop Family or OneCore Family
+
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
-WINBASEAPI
+
 DWORD
-WINAPI
+__stdcall
 RaiseCustomSystemEventTrigger(
      PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG CustomSystemEventTriggerConfig
     );
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 #endif /* (NTDDI_VERSION >= NTDDI_WIN10_RS4) */
 
@@ -9081,7 +9098,7 @@ RaiseCustomSystemEventTrigger(
 #if defined (_MSC_VER)
 #if _MSC_VER >= 1200
 #pragma warning(pop)
-#else
+else
 #pragma warning(default:4001) /* nonstandard extension : single line comment */
 #pragma warning(default:4201) /* nonstandard extension used : nameless struct/union */
 #pragma warning(default:4214) /* nonstandard extension used : bit field types other then int */
@@ -9090,7 +9107,7 @@ RaiseCustomSystemEventTrigger(
 
 
 
-#endif // _WINBASE_
+end  -- _WINBASE_
 
 #if !defined(RC_INVOKED)
 #if !defined(NOWINBASEINTERLOCK)
@@ -9142,7 +9159,7 @@ extern "C++" {
 FORCEINLINE
 unsigned
 InterlockedIncrement(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Addend
+     _Interlocked_operand_ unsigned volatile *Addend
     )
 {
     return (unsigned) _InterlockedIncrement((volatile long*) Addend);
@@ -9151,7 +9168,7 @@ InterlockedIncrement(
 FORCEINLINE
 unsigned long
 InterlockedIncrement(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Addend
+     _Interlocked_operand_ unsigned long volatile *Addend
     )
 {
     return (unsigned long) _InterlockedIncrement((volatile long*) Addend);
@@ -9163,7 +9180,7 @@ InterlockedIncrement(
 FORCEINLINE
 unsigned __int64
 InterlockedIncrement(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend
+     _Interlocked_operand_ unsigned __int64 volatile *Addend
     )
 {
     return (unsigned __int64) (InterlockedIncrement64)((volatile __int64*) Addend);
@@ -9174,7 +9191,7 @@ InterlockedIncrement(
 FORCEINLINE
 unsigned
 InterlockedDecrement(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Addend
+     _Interlocked_operand_ unsigned volatile *Addend
     )
 {
     return (unsigned long) _InterlockedDecrement((volatile long*) Addend);
@@ -9183,7 +9200,7 @@ InterlockedDecrement(
 FORCEINLINE
 unsigned long
 InterlockedDecrement(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Addend
+     _Interlocked_operand_ unsigned long volatile *Addend
     )
 {
     return (unsigned long) _InterlockedDecrement((volatile long*) Addend);
@@ -9195,7 +9212,7 @@ InterlockedDecrement(
 FORCEINLINE
 unsigned __int64
 InterlockedDecrement(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend
+     _Interlocked_operand_ unsigned __int64 volatile *Addend
     )
 {
     return (unsigned __int64) (InterlockedDecrement64)((volatile __int64*) Addend);
@@ -9208,7 +9225,7 @@ InterlockedDecrement(
 FORCEINLINE
 unsigned
 InterlockedExchange(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Target,
+     _Interlocked_operand_ unsigned volatile *Target,
      unsigned Value
     )
 {
@@ -9218,7 +9235,7 @@ InterlockedExchange(
 FORCEINLINE
 unsigned long
 InterlockedExchange(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Target,
+     _Interlocked_operand_ unsigned long volatile *Target,
      unsigned long Value
     )
 {
@@ -9230,7 +9247,7 @@ InterlockedExchange(
 FORCEINLINE
 unsigned __int64
 InterlockedExchange(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Target,
+     _Interlocked_operand_ unsigned __int64 volatile *Target,
      unsigned __int64 Value
     )
 {
@@ -9242,7 +9259,7 @@ InterlockedExchange(
 FORCEINLINE
 unsigned
 InterlockedExchangeAdd(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Addend,
+     _Interlocked_operand_ unsigned volatile *Addend,
      unsigned Value
     )
 {
@@ -9252,7 +9269,7 @@ InterlockedExchangeAdd(
 FORCEINLINE
 unsigned
 InterlockedExchangeSubtract(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Addend,
+     _Interlocked_operand_ unsigned volatile *Addend,
      unsigned Value
     )
 {
@@ -9262,7 +9279,7 @@ InterlockedExchangeSubtract(
 FORCEINLINE
 unsigned long
 InterlockedExchangeAdd(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Addend,
+     _Interlocked_operand_ unsigned long volatile *Addend,
      unsigned long Value
     )
 {
@@ -9272,7 +9289,7 @@ InterlockedExchangeAdd(
 FORCEINLINE
 unsigned long
 InterlockedExchangeSubtract(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Addend,
+     _Interlocked_operand_ unsigned long volatile *Addend,
      unsigned long Value
     )
 {
@@ -9284,7 +9301,7 @@ InterlockedExchangeSubtract(
 FORCEINLINE
 unsigned __int64
 InterlockedExchangeAdd(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend,
+     _Interlocked_operand_ unsigned __int64 volatile *Addend,
      unsigned __int64 Value
     )
 {
@@ -9294,7 +9311,7 @@ InterlockedExchangeAdd(
 FORCEINLINE
 unsigned __int64
 InterlockedExchangeSubtract(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Addend,
+     _Interlocked_operand_ unsigned __int64 volatile *Addend,
      unsigned __int64 Value
     )
 {
@@ -9306,7 +9323,7 @@ InterlockedExchangeSubtract(
 FORCEINLINE
 unsigned
 InterlockedCompareExchange(
-    _Inout_ _Interlocked_operand_ unsigned volatile *Destination,
+     _Interlocked_operand_ unsigned volatile *Destination,
      unsigned Exchange,
      unsigned Comperand
     )
@@ -9317,7 +9334,7 @@ InterlockedCompareExchange(
 FORCEINLINE
 unsigned long
 InterlockedCompareExchange(
-    _Inout_ _Interlocked_operand_ unsigned long volatile *Destination,
+     _Interlocked_operand_ unsigned long volatile *Destination,
      unsigned long Exchange,
      unsigned long Comperand
     )
@@ -9330,7 +9347,7 @@ InterlockedCompareExchange(
 FORCEINLINE
 unsigned __int64
 InterlockedCompareExchange(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
+     _Interlocked_operand_ unsigned __int64 volatile *Destination,
      unsigned __int64 Exchange,
      unsigned __int64 Comperand
     )
@@ -9341,7 +9358,7 @@ InterlockedCompareExchange(
 FORCEINLINE
 unsigned __int64
 InterlockedAnd(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
+     _Interlocked_operand_ unsigned __int64 volatile *Destination,
      unsigned __int64 Value
     )
 {
@@ -9351,7 +9368,7 @@ InterlockedAnd(
 FORCEINLINE
 unsigned __int64
 InterlockedOr(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
+     _Interlocked_operand_ unsigned __int64 volatile *Destination,
      unsigned __int64 Value
     )
 {
@@ -9361,7 +9378,7 @@ InterlockedOr(
 FORCEINLINE
 unsigned __int64
 InterlockedXor(
-    _Inout_ _Interlocked_operand_ unsigned __int64 volatile *Destination,
+     _Interlocked_operand_ unsigned __int64 volatile *Destination,
      unsigned __int64 Value
     )
 {
