@@ -5,14 +5,17 @@ local take = take_n
 local function test_all()
     print("== test_all ==")
 
-    print(all(function(x) return x end, {true, true, true, true}))
+    print('all(function(x)  return x end, {true, true, true, true})')
+    print(all(function(x)  return x end, {true, true, true, true}))
+
+    print('all(function(x) return x end, {true, true, true, false})')
     print(all(function(x) return x end, {true, true, true, false}))
     
     print("all(function(x) return x end, 'aaaaaaaa')")
-    print(all(function(x) return x end, "aaaaaaaa"))
+    --print(all(function(x) return x end, "aaaaaaaa"))
 
     print("all(function(x) return x end, 'aaabaaaa')")
-    print(all(function(x) return x end, "aaabaaaa"))
+    --print(all(function(x) return x end, "aaabaaaa"))
 end
 
 local function test_duplicate()
@@ -26,6 +29,9 @@ local function test_duplicate()
 
 end
 
+local function test_each()
+    each(print, "hello, world!")
+end
 
 local function test_length()
     print("== test_length ==")
@@ -85,11 +91,14 @@ end
 
 
 local function test_nth()
-    print(nth(2, range(5)))
-    print(nth(10, range(5)))
+    each(print, nth(2, range(5)))
+    each(print, nth(10, range(5)))
 end
 
 local function test_take_n()
+    print("== test_take_n ==")
+
+    print('each(print, take_n(5, range(10)))')
     each(print, take_n(5, range(10)))
 end
 
@@ -114,9 +123,7 @@ end
 
 
 
-local function test_each()
-    each(print, "hello, world!")
-end
+
 
 local function test_totable()
     local tab = totable("abcdef")
@@ -130,35 +137,21 @@ local function test_zeroes()
     each(print, take(5, zeroes()))
 end
 
+local function test_table_interation()
+    local iter = table_iter({true, true, true, true})
 
---[[
-local function iterator(cnt)
-    local function visitor(arg)
-        --print("visitor: ", arg)
-        for i=1,cnt do
-            coroutine.yield(cnt, arg)
-        end
+    while true do
+        print("status: ", coroutine.status(iter))
+        if coroutine.status(iter) == "dead" then break end
+
+        local ... = coroutine.resume(iter)
+
     end
 
-    local co = coroutine.create(visitor)
 
-    return function()
-        local results = {coroutine.resume(co, cnt)}
-        print("results: ", unpack(results))
-        local status = results[1]
-        if status then
-            table.remove(results, 1)
-            return unpack(results)
-        end
-
-        return nil;
-    end
 end
 
-for value in iterator(5) do
-    print(value)
-end
---]]
+
 
 --test_all();
 --test_duplicate();
@@ -168,8 +161,9 @@ end
 --test_maximum();
 --test_minimum();
 --test_ones();
-test_nth();
+--test_nth();
 --test_range();
+--test_table_interation();
 --test_take_n();
 --test_totable();
 --test_zeroes();

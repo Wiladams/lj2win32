@@ -17,7 +17,7 @@ local function receive (prod)
     
     table.remove(results, 1)
     
-    return unpack(results)
+    return status, results
 end
   
 local  function send (...)
@@ -33,40 +33,28 @@ end
 -- convenient for when the parameters don't
 -- conform, but you MUST return a valid iterator
 function exports.nil_gen()
-    local function iterator()
+    return coroutine.create(function()
         return nil
-    end
-
-    return coroutine.wrap(iterator)
+    end)
 end
 
-function exports.string_iter(str)
-    local state = 1
-
-    local function iterator()
-        while true do
-            if state > #str then
-                return nil
-            end
-
-            local r = string.sub(str, state, state)
-            send(r)
-            state = state + 1
+local function string_iter(str)
+    return coroutine.create(function()
+        for idx=1,#str do
+            send(string.sub(str, idx, idx))
         end
-    end
+    end)
 
-    return coroutine.wrap(iterator)
 end
 
-function exports.table_iter(tbl)
-    local function iterator()
+function table_iter(tbl)
+    return coroutine.create(function ()
         for i, value in ipairs(tbl) do
             send(value)
         end
-    end
-
-    return coroutine.wrap(iterator)
+    end)
 end
+
 
 --[[
     PRODUCERS
@@ -122,37 +110,31 @@ function exports.range(start, stop, step)
         step = start <= stop and 1 or -1
     end
     
---print("start, stop, step: ", start, stop, step)
-
     assert(type(start) == "number", "start must be a number")
     assert(type(stop) == "number", "stop must be a number")
     assert(type(step) == "number", "step must be a number")
     assert(step ~= 0, "step must not be zero")
 
+    if step < 0 then
+        return coroutine.create(function ()
+            local i = start
+            while i >= stop do
+                send(i)
+                i = i + step;
+            end
+        end)
+    end
 
-    local function range_gen()
+    return coroutine.create(function ()
         local i = start
         while i <= stop do
             send(i)
             i = i + step;
         end
-    end
-
-    local function range_gen_rev()
-        local i = start
-        while i >= stop do
-            send(i)
-            i = i + step;
-        end
-    end
-
-    if step > 0 then
-        return coroutine.wrap(range_gen)
-    end
-
-    return coroutine.wrap(range_gen_rev)
+    end)
 end
 
+-- produces zeroes forever
 local function zeroes_prod()
     return coroutine.create(function()
         while true do
@@ -164,22 +146,28 @@ end
 
 exports.zeroes = zeroes_prod
 
+-- an iterator that returns single values
+local function iterator_1(prod)
 
-
+end
 --[[
     REDUCING
 ]]
-function exports.all(predicate, source)
-    local iter = source
-    if type(source) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+-- return true if all items from producer
+-- match the predicate
+function exports.all(predicate, prod)
+    local iter = prod
+    if type(prod) == "string" then
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
-    for value in iter do
-        --print (value)
-        if not predicate(value) then
+    while coroutine.status(iter) ~= "dead" do
+        local results = {receive(iter)}
+        if not #results == 0 then break end
+
+        if not predicate(unpack(results)) then
             return false
         end
     end
@@ -188,16 +176,16 @@ function exports.all(predicate, source)
 end
 exports.every = exports.all
 
-function exports.any(predicate, source)
-    local iter = source
-    if type(source) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+function exports.any(predicate, prod)
+    local iter = prod
+    if type(prod) == "string" then
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
-    for value in iter do
-        if predicate(value) then
+    while coroutine.status(iter) ~= "dead" do
+        if predicate(receive(iter)) then
             return true
         end
     end
@@ -215,16 +203,17 @@ function exports.length(prod)
     return counter;
 end
 
-function exports.maximum(source)
-    local iter = source
-    if type(source) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+function exports.maximum(prod)
+    local iter = prod
+    if type(prod) == "string" then
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
     local maxval = nil
-    for value in iter do
+    while coroutine.status(iter) ~= "dead" do
+        local value = receive(iter)
         if not maxval then maxval = value end
         if value > maxval then maxval = value end
     end
@@ -232,60 +221,60 @@ function exports.maximum(source)
     return maxval
 end
 
-function exports.minimum(source)
-    local iter = source
-    if type(source) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+function exports.minimum(prod)
+    local iter = prod
+    if type(prod) == "string" then
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
-    local minval = nil
-    for value in iter do
-        if not minval then minval = value end
-        if value < minval then minval = value end
+    local retval = nil
+    while coroutine.status(iter) ~= "dead" do
+        local value = receive(iter)
+        if not retval then retval = value end
+        if value < retval then retval = value end
     end
 
-    return minval
+    return retval
 end
 
-function exports.totable(source)
+
+
+function exports.totable(prod)
     local tbl = {}
 
-    local iter = source
-    if type(source) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+    local iter = prod
+    if type(prod) == "string" then
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
-    for value in iter do
-        table.insert(tbl, value)
+    while coroutine.status(iter) ~= "dead" do
+        table.insert(tbl, receive(iter))
     end
+
     return tbl
 end
 
 --[[
     SLICING
 ]]
+-- take_n
+-- Consumer/Producer
 local function take_n_prod(n, prod)
     return coroutine.create(function ()
         local counter = 0;
-        while true do
+        while coroutine.status(prod) ~= "dead" do
             counter = counter + 1
             --print("taken_n, counter: ", counter, n)
             if counter > n then
                 return nil
             end
 
-            local results = {receive(prod)}
-            
-            --print("take_n, receive: ", #results)
-            if #results == 0 then break end
-
-            send(unpack(results))
+            send(receive(prod))
         end
-
     end)
 end
 exports.take_n = take_n_prod
@@ -293,20 +282,20 @@ exports.take_n = take_n_prod
 
 
 -- return the 'nth' iterated value
+-- Consumer, Produce single value
 function exports.nth(n, prod)
-    local counter = 0
-
-    while true do
-        counter = counter + 1
-        local results = {receive(prod)}
-        if #results == 0 then break end
-
-        if counter == n then
-            return unpack(results)
+    return coroutine.create(function()
+        local counter = 0
+        while coroutine.status(prod) ~= "dead" do
+            counter = counter + 1
+            if counter == n then
+                send(receive(prod))
+                break
+            else
+                receive(prod)
+            end
         end
-    end
-
-    return nil
+    end)
 end
 
 function exports.head(source)
@@ -326,17 +315,22 @@ function exports.each(func, prod)
     local iter = prod
 
     if type(prod) == "string" then
-        iter = exports.string_iter(source)
-    elseif type(source) == "table" then
-        iter = exports.table_iter(source)
+        iter = string_iter(prod)
+    elseif type(prod) == "table" then
+        iter = table_iter(prod)
     end
 
-    while true do
-        local results = {receive(prod)}
-        if #results == 0 then break end
-
+    local success, results = receive(prod)
+    while success and #results > 0 do
         func(unpack(results))
+        success, results = receive(prod)
     end
+
+--[[
+    while coroutine.status(iter) ~= "dead" do
+        func(receive(prod))
+    end
+--]]
 end
 
 
