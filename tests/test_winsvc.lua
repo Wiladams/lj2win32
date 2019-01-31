@@ -10,8 +10,8 @@ require("win32.minwindef")
 require("win32.winsvc")
 
 local SCMManager = require("SCMManager")
-require("funkit")()
-
+--require("funkit")()
+require("fun")()
 
 
 local serviceTypes = {
@@ -67,4 +67,6 @@ end
 
 --each(printService, (filter(filter(sch:services(), isRunning), isFSDriver)))
 
-each(printServiceName, (filter(isRunning, filter(isFSDriver, sch:services()))))
+each(printServiceName, sch:services())
+
+--each(printServiceName, filter(isRunning, filter(isFSDriver, sch:services())))

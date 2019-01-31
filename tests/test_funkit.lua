@@ -1,6 +1,7 @@
-require("funkit")()
+--require("funkit")()
+require("fun")()
 
-local take = take_n
+--local take = take_n
 
 local function test_all()
     print("== test_all ==")
@@ -58,6 +59,7 @@ local function test_ones()
 end
 
 local function test_range()
+    print("== test_range ==")
     print("range(5)")
     each(print, range(5))
 
@@ -132,39 +134,26 @@ local function test_totable()
     each(print, tab)
 end
 
-local function test_zeroes()
-    print('each(print, take(5, zeroes()))')
-    each(print, take(5, zeroes()))
-end
-
-local function test_table_interation()
-    local iter = table_iter({true, true, true, true})
-
-    while true do
-        print("status: ", coroutine.status(iter))
-        if coroutine.status(iter) == "dead" then break end
-
-        local ... = coroutine.resume(iter)
-
-    end
-
-
+local function test_zeros()
+    print("== test_zeros ==")
+    print('each(print, take(5, zeros()))')
+    each(print, take(5, zeros()))
 end
 
 
 
---test_all();
+
+test_all();
 --test_duplicate();
---test_each();
---test_grep();
---test_length();
+test_each();
+test_grep();
+test_length();
 --test_maximum();
 --test_minimum();
 --test_ones();
 --test_nth();
---test_range();
---test_table_interation();
---test_take_n();
---test_totable();
---test_zeroes();
+test_range();
+test_take_n();
+test_totable();
+test_zeros();
 

@@ -134,17 +134,17 @@ function exports.range(start, stop, step)
     end)
 end
 
--- produces zeroes forever
-local function zeroes_prod()
+-- produces zeros forever
+local function zeros_prod()
     return coroutine.create(function()
         while true do
-            --print("zeroes, sending")
+            --print("zeros, sending")
             send(0)
         end
     end)
 end
 
-exports.zeroes = zeroes_prod
+exports.zeros = zeros_prod
 
 -- an iterator that returns single values
 local function iterator_1(prod)
