@@ -13277,23 +13277,23 @@ typedef enum _POWER_REQUEST_TYPE {
 // end_ntminiport
 ]]
 
---[==[
-#if (NTDDI_VERSION >= NTDDI_WINXP)
 
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+ffi.cdef[[
 //-----------------------------------------------------------------------------
 // Device Power Information
 // Accessable via CM_Get_DevInst_Registry_Property_Ex(CM_DRP_DEVICE_POWER_DATA)
 //-----------------------------------------------------------------------------
 
-#define PDCAP_D0_SUPPORTED              0x00000001
-#define PDCAP_D1_SUPPORTED              0x00000002
-#define PDCAP_D2_SUPPORTED              0x00000004
-#define PDCAP_D3_SUPPORTED              0x00000008
-#define PDCAP_WAKE_FROM_D0_SUPPORTED    0x00000010
-#define PDCAP_WAKE_FROM_D1_SUPPORTED    0x00000020
-#define PDCAP_WAKE_FROM_D2_SUPPORTED    0x00000040
-#define PDCAP_WAKE_FROM_D3_SUPPORTED    0x00000080
-#define PDCAP_WARM_EJECT_SUPPORTED      0x00000100
+static const int PDCAP_D0_SUPPORTED            =  0x00000001;
+static const int PDCAP_D1_SUPPORTED            =  0x00000002;
+static const int PDCAP_D2_SUPPORTED            =  0x00000004;
+static const int PDCAP_D3_SUPPORTED            =  0x00000008;
+static const int PDCAP_WAKE_FROM_D0_SUPPORTED  =  0x00000010;
+static const int PDCAP_WAKE_FROM_D1_SUPPORTED  =  0x00000020;
+static const int PDCAP_WAKE_FROM_D2_SUPPORTED  =  0x00000040;
+static const int PDCAP_WAKE_FROM_D3_SUPPORTED  =  0x00000080;
+static const int PDCAP_WARM_EJECT_SUPPORTED    =  0x00000100;
 
 typedef struct CM_Power_Data_s {
     DWORD               PD_Size;
@@ -13305,9 +13305,9 @@ typedef struct CM_Power_Data_s {
     DEVICE_POWER_STATE  PD_PowerStateMapping[POWER_SYSTEM_MAXIMUM];
     SYSTEM_POWER_STATE  PD_DeepestSystemWake;
 } CM_POWER_DATA, *PCM_POWER_DATA;
+]]
+end --// (NTDDI_VERSION >= NTDDI_WINXP)
 
-#endif // (NTDDI_VERSION >= NTDDI_WINXP)
---]==]
 
 ffi.cdef[[
 // begin_wdm
@@ -13945,7 +13945,7 @@ typedef struct {
 } PPM_THERMALCHANGE_EVENT, *PPPM_THERMALCHANGE_EVENT;
 ]]
 
---[==[
+ffi.cdef[[
 typedef struct {
     BYTE  Mode;
     DWORD64 Processors;
@@ -13962,25 +13962,25 @@ typedef struct {
 } POWER_ACTION_POLICY, *PPOWER_ACTION_POLICY;
 
 // POWER_ACTION_POLICY->Flags:
-#define POWER_ACTION_QUERY_ALLOWED      0x00000001
-#define POWER_ACTION_UI_ALLOWED         0x00000002
-#define POWER_ACTION_OVERRIDE_APPS      0x00000004
-#define POWER_ACTION_HIBERBOOT          0x00000008
-#define POWER_ACTION_USER_NOTIFY        0x00000010  // Indicate User-mode of an impending action.
-#define POWER_ACTION_PSEUDO_TRANSITION  0x08000000
-#define POWER_ACTION_LIGHTEST_FIRST     0x10000000
-#define POWER_ACTION_LOCK_CONSOLE       0x20000000
-#define POWER_ACTION_DISABLE_WAKES      0x40000000
-#define POWER_ACTION_CRITICAL           0x80000000
+static const int POWER_ACTION_QUERY_ALLOWED      = 0x00000001;
+static const int POWER_ACTION_UI_ALLOWED         = 0x00000002;
+static const int POWER_ACTION_OVERRIDE_APPS      = 0x00000004;
+static const int POWER_ACTION_HIBERBOOT          = 0x00000008;
+static const int POWER_ACTION_USER_NOTIFY        = 0x00000010;  // Indicate User-mode of an impending action.
+static const int POWER_ACTION_PSEUDO_TRANSITION  = 0x08000000;
+static const int POWER_ACTION_LIGHTEST_FIRST     = 0x10000000;
+static const int POWER_ACTION_LOCK_CONSOLE       = 0x20000000;
+static const int POWER_ACTION_DISABLE_WAKES      = 0x40000000;
+static const int POWER_ACTION_CRITICAL           = 0x80000000;
 
 // POWER_ACTION_POLICY->EventCode flags
-#define POWER_LEVEL_USER_NOTIFY_TEXT      0x00000001
-#define POWER_LEVEL_USER_NOTIFY_SOUND     0x00000002
-#define POWER_LEVEL_USER_NOTIFY_EXEC      0x00000004
-#define POWER_USER_NOTIFY_BUTTON          0x00000008
-#define POWER_USER_NOTIFY_SHUTDOWN        0x00000010 // Application and Services are intimated of shutdown.
-#define POWER_USER_NOTIFY_FORCED_SHUTDOWN 0x00000020 // Immediate shutdown - Application and Services are not intimated.
-#define POWER_FORCE_TRIGGER_RESET         0x80000000
+static const int POWER_LEVEL_USER_NOTIFY_TEXT      = 0x00000001;
+static const int POWER_LEVEL_USER_NOTIFY_SOUND     = 0x00000002;
+static const int POWER_LEVEL_USER_NOTIFY_EXEC      = 0x00000004;
+static const int POWER_USER_NOTIFY_BUTTON          = 0x00000008;
+static const int POWER_USER_NOTIFY_SHUTDOWN        = 0x00000010; // Application and Services are intimated of shutdown.
+static const int POWER_USER_NOTIFY_FORCED_SHUTDOWN = 0x00000020; // Immediate shutdown - Application and Services are not intimated.
+static const int POWER_FORCE_TRIGGER_RESET         = 0x80000000;
 
 // Note: for battery alarm EventCodes, the ID of the battery alarm << 16 is ORed
 // into the flags.  For example: DISCHARGE_POLICY_LOW << 16
@@ -13989,8 +13989,8 @@ typedef struct {
 // The GUID_BATTERY_DISCHARGE_FLAGS_x power settings use a subset of EventCode
 // flags.  The POWER_FORCE_TRIGGER_RESET flag doesn't make sense for a battery
 // alarm so it is overloaded for other purposes (gerneral enable/disable).
-#define BATTERY_DISCHARGE_FLAGS_EVENTCODE_MASK  0x00000007
-#define BATTERY_DISCHARGE_FLAGS_ENABLE  0x80000000
+static const int BATTERY_DISCHARGE_FLAGS_EVENTCODE_MASK  = 0x00000007;
+static const int BATTERY_DISCHARGE_FLAGS_ENABLE  = 0x80000000;
 
 // system battery drain policies
 typedef struct {
@@ -14002,9 +14002,9 @@ typedef struct {
 } SYSTEM_POWER_LEVEL, *PSYSTEM_POWER_LEVEL;
 
 // Discharge policy constants
-#define NUM_DISCHARGE_POLICIES      4
-#define DISCHARGE_POLICY_CRITICAL   0
-#define DISCHARGE_POLICY_LOW        1
+static const int NUM_DISCHARGE_POLICIES     = 4;
+static const int DISCHARGE_POLICY_CRITICAL  = 0;
+static const int DISCHARGE_POLICY_LOW       = 1;
 
 
 // system power policies
@@ -14058,15 +14058,16 @@ typedef struct _SYSTEM_POWER_POLICY {
     POWER_ACTION_POLICY     OverThrottled;
 
 } SYSTEM_POWER_POLICY, *PSYSTEM_POWER_POLICY;
+]]
 
-
+ffi.cdef[[
 // processor power policy state
 
 //
 // Processor Idle State Policy.
 //
 
-#define PROCESSOR_IDLESTATE_POLICY_COUNT 0x3
+static const int PROCESSOR_IDLESTATE_POLICY_COUNT = 0x3;
 
 typedef struct {
     DWORD TimeCheck;
@@ -14083,26 +14084,29 @@ typedef struct {
             WORD   AllowScaling : 1;
             WORD   Disabled : 1;
             WORD   Reserved : 14;
-        } DUMMYSTRUCTNAME;
+        } ;
     } Flags;
 
     DWORD PolicyCount;
     PROCESSOR_IDLESTATE_INFO Policy[PROCESSOR_IDLESTATE_POLICY_COUNT];
 } PROCESSOR_IDLESTATE_POLICY, *PPROCESSOR_IDLESTATE_POLICY;
+]]
 
+ffi.cdef[[
 //
 // Legacy Processor Policy.  This is only provided to allow legacy
 // applications to compile.  New applications must use
 // PROCESSOR_IDLESTATE_POLICY.
 //
 
-#define PO_THROTTLE_NONE            0
-#define PO_THROTTLE_constANT        1
-#define PO_THROTTLE_DEGRADE         2
-#define PO_THROTTLE_ADAPTIVE        3
-#define PO_THROTTLE_MAXIMUM         4   // not a policy, just a limit
+static const int PO_THROTTLE_NONE           = 0;
+static const int PO_THROTTLE_constANT       = 1;
+static const int PO_THROTTLE_DEGRADE        = 2;
+static const int PO_THROTTLE_ADAPTIVE       = 3;
+static const int PO_THROTTLE_MAXIMUM        = 4;   // not a policy, just a limit
+]]
 
-
+ffi.cdef[[
 typedef struct _PROCESSOR_POWER_POLICY_INFO {
 
     // Time based information (will be converted to kernel units)
@@ -14121,7 +14125,9 @@ typedef struct _PROCESSOR_POWER_POLICY_INFO {
     DWORD                   Reserved:30;
 
 } PROCESSOR_POWER_POLICY_INFO, *PPROCESSOR_POWER_POLICY_INFO;
+]]
 
+ffi.cdef[[
 // processor power policy
 typedef struct _PROCESSOR_POWER_POLICY {
     DWORD                       Revision;       // 1
@@ -14141,7 +14147,9 @@ typedef struct _PROCESSOR_POWER_POLICY {
     PROCESSOR_POWER_POLICY_INFO Policy[3];
 
 } PROCESSOR_POWER_POLICY, *PPROCESSOR_POWER_POLICY;
+]]
 
+ffi.cdef[[
 //
 // Processor Perf State Policy.
 //
@@ -14160,9 +14168,9 @@ typedef struct {
                 BYTE  IncreasePolicy: 2;
                 BYTE  DecreasePolicy: 2;
                 BYTE  Reserved : 3;
-            } DUMMYSTRUCTNAME;
+            } ;
         } Flags;
-    } DUMMYUNIONNAME;
+    } ;
 
     DWORD TimeCheck;
     DWORD IncreaseTime;
@@ -14170,7 +14178,7 @@ typedef struct {
     DWORD IncreasePercent;
     DWORD DecreasePercent;
 } PROCESSOR_PERFSTATE_POLICY, *PPROCESSOR_PERFSTATE_POLICY;
---]==]
+]]
 
 ffi.cdef[[
 // administrator power policy overrides
@@ -18033,7 +18041,7 @@ ffi.cdef[[
 //
 static const int RTL_CRITICAL_SECTION_DEBUG_FLAG_STATIC_INIT   =  0x00000001;
 
-//#pragma pack(push, 8)
+#pragma pack(push, 8)
 
 typedef struct _RTL_CRITICAL_SECTION {
     PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
@@ -18050,7 +18058,7 @@ typedef struct _RTL_CRITICAL_SECTION {
     ULONG_PTR SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
-//#pragma pack(pop)
+#pragma pack(pop)
 ]]
 
 ffi.cdef[[
@@ -18299,7 +18307,7 @@ typedef struct _HARDWARE_COUNTER_DATA {
     DWORD64 Value;
 } HARDWARE_COUNTER_DATA, *PHARDWARE_COUNTER_DATA;
 
-#define PERFORMANCE_DATA_VERSION 1
+static const int PERFORMANCE_DATA_VERSION = 1;
 
 typedef struct _PERFORMANCE_DATA {
     WORD   Size;

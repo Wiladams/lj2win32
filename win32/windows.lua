@@ -133,7 +133,7 @@ end
             end
 
             if not _MAC or _WIN32REG then
-                --require("win32.winreg")     -- NYI
+                require("win32.winreg")
             end
 
             if not _MAC then
