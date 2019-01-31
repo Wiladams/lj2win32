@@ -11664,7 +11664,7 @@ typedef struct _SYSTEM_PROCESSOR_CYCLE_TIME_INFORMATION {
 #define PROCESSOR_ARCHITECTURE_ARM64            12
 #define PROCESSOR_ARCHITECTURE_ARM32_ON_WIN64   13
 
-#define PROCESSOR_ARCHITECTURE_UNKNOWN 0xFFFF
+#define PROCESSOR_ARCHITECTURE_UNKNOWN = 0xFFFF;
 --]==]
 
 ffi.cdef[[
@@ -12805,7 +12805,7 @@ DEFINE_GUID( GUID_ENERGY_SAVER_POLICY, 0x5c5bb349, 0xad29, 0x4ee2, 0x9d, 0xb, 0x
 DEFINE_GUID( GUID_SYSTEM_BUTTON_SUBGROUP, 0x4F971E89, 0xEEBD, 0x4455, 0xA8, 0xDE, 0x9E, 0x59, 0x04, 0x0E, 0x73, 0x47 );
 
 
---[==[
+
 #define POWERBUTTON_ACTION_INDEX_NOTHING                0
 #define POWERBUTTON_ACTION_INDEX_SLEEP                  1
 #define POWERBUTTON_ACTION_INDEX_HIBERNATE              2
@@ -13181,7 +13181,7 @@ DEFINE_GUID(GUID_INTSTEER_LOAD_PER_PROC_TRIGGER,0x73cde64d, 0xd720, 0x4bb2, 0xa8
 DEFINE_GUID(GUID_INTSTEER_TIME_UNPARK_TRIGGER,0xd6ba4903, 0x386f, 0x4c2c, 0x8a, 0xdb, 0x5c, 0x21, 0xb3, 0x32, 0x8d, 0x25);
 --]==]
 
---[==[
+ffi.cdef[[
 typedef enum _SYSTEM_POWER_STATE {
     PowerSystemUnspecified = 0,
     PowerSystemWorking     = 1,
@@ -13193,7 +13193,7 @@ typedef enum _SYSTEM_POWER_STATE {
     PowerSystemMaximum     = 7
 } SYSTEM_POWER_STATE, *PSYSTEM_POWER_STATE;
 
-#define POWER_SYSTEM_MAXIMUM 7
+static const int POWER_SYSTEM_MAXIMUM = 7;
 
 typedef enum {
     PowerActionNone = 0,
@@ -13229,38 +13229,43 @@ typedef enum _USER_ACTIVITY_PRESENCE {
     PowerUserMaximum,
     PowerUserInvalid = PowerUserMaximum
 } USER_ACTIVITY_PRESENCE, *PUSER_ACTIVITY_PRESENCE;
+]]
 
-
-
-#define ES_SYSTEM_REQUIRED   ((DWORD)0x00000001)
-#define ES_DISPLAY_REQUIRED  ((DWORD)0x00000002)
-#define ES_USER_PRESENT      ((DWORD)0x00000004)
-#define ES_AWAYMODE_REQUIRED ((DWORD)0x00000040)
-#define ES_CONTINUOUS        ((DWORD)0x80000000)
+ffi.cdef[[
+static const int ES_SYSTEM_REQUIRED  = ((DWORD)0x00000001);
+static const int ES_DISPLAY_REQUIRED = ((DWORD)0x00000002);
+static const int ES_USER_PRESENT     = ((DWORD)0x00000004);
+static const int ES_AWAYMODE_REQUIRED =((DWORD)0x00000040);
+static const int ES_CONTINUOUS       = ((DWORD)0x80000000);
 
 typedef DWORD EXECUTION_STATE, *PEXECUTION_STATE;
+]]
 
+ffi.cdef[[
 typedef enum {
     LT_DONT_CARE,
     LT_LOWEST_LATENCY
 } LATENCY_TIME;
+]]
 
-#define DIAGNOSTIC_REASON_VERSION    0
+ffi.cdef[[
+static const int DIAGNOSTIC_REASON_VERSION   = 0;
 
-#define DIAGNOSTIC_REASON_SIMPLE_STRING             0x00000001
-#define DIAGNOSTIC_REASON_DETAILED_STRING           0x00000002
-#define DIAGNOSTIC_REASON_NOT_SPECIFIED             0x80000000
-#define DIAGNOSTIC_REASON_INVALID_FLAGS             (~0x80000007)
+static const int DIAGNOSTIC_REASON_SIMPLE_STRING           =  0x00000001;
+static const int DIAGNOSTIC_REASON_DETAILED_STRING         =  0x00000002;
+static const int DIAGNOSTIC_REASON_NOT_SPECIFIED           =  0x80000000;
+static const int DIAGNOSTIC_REASON_INVALID_FLAGS           =  (~0x80000007);
+]]
 
-
+ffi.cdef[[
 //
 // Defines for power request APIs
 //
 
-#define POWER_REQUEST_CONTEXT_VERSION               DIAGNOSTIC_REASON_VERSION
+static const int POWER_REQUEST_CONTEXT_VERSION             =  DIAGNOSTIC_REASON_VERSION;
 
-#define POWER_REQUEST_CONTEXT_SIMPLE_STRING         DIAGNOSTIC_REASON_SIMPLE_STRING
-#define POWER_REQUEST_CONTEXT_DETAILED_STRING       DIAGNOSTIC_REASON_DETAILED_STRING
+static const int POWER_REQUEST_CONTEXT_SIMPLE_STRING       =  DIAGNOSTIC_REASON_SIMPLE_STRING;
+static const int POWER_REQUEST_CONTEXT_DETAILED_STRING     =  DIAGNOSTIC_REASON_DETAILED_STRING;
 
 typedef enum _POWER_REQUEST_TYPE {
     PowerRequestDisplayRequired,
@@ -13270,7 +13275,9 @@ typedef enum _POWER_REQUEST_TYPE {
 } POWER_REQUEST_TYPE, *PPOWER_REQUEST_TYPE;
 
 // end_ntminiport
+]]
 
+--[==[
 #if (NTDDI_VERSION >= NTDDI_WINXP)
 
 //-----------------------------------------------------------------------------
@@ -13300,7 +13307,9 @@ typedef struct CM_Power_Data_s {
 } CM_POWER_DATA, *PCM_POWER_DATA;
 
 #endif // (NTDDI_VERSION >= NTDDI_WINXP)
+--]==]
 
+ffi.cdef[[
 // begin_wdm
 
 typedef enum {
@@ -13397,7 +13406,9 @@ typedef enum {
     PhysicalPowerButtonPress,
     PowerInformationLevelMaximum
 } POWER_INFORMATION_LEVEL;
+]]
 
+ffi.cdef[[
 //
 // User Presence Values
 //
@@ -13411,7 +13422,9 @@ typedef enum {
 typedef struct _POWER_USER_PRESENCE {
     POWER_USER_PRESENCE_TYPE UserPresence;
 } POWER_USER_PRESENCE, *PPOWER_USER_PRESENCE;
+]]
 
+ffi.cdef[[
 //
 // Session Connect/Disconnect
 //
@@ -13424,7 +13437,9 @@ typedef struct _POWER_SESSION_TIMEOUTS {
     DWORD InputTimeout;
     DWORD DisplayTimeout;
 } POWER_SESSION_TIMEOUTS, *PPOWER_SESSION_TIMEOUTS;
+]]
 
+ffi.cdef[[
 //
 // Session RIT State
 //
@@ -13432,7 +13447,9 @@ typedef struct _POWER_SESSION_RIT_STATE {
     BOOLEAN Active;  // TRUE - RIT input received, FALSE - RIT timeout
     DWORD LastInputTime; // last input time held for this session
 } POWER_SESSION_RIT_STATE, *PPOWER_SESSION_RIT_STATE;
+]]
 
+ffi.cdef[[
 //
 // Winlogon notifications
 //
@@ -13441,7 +13458,9 @@ typedef struct _POWER_SESSION_WINLOGON {
     BOOLEAN Console; // TRUE - for console session, FALSE - for remote session
     BOOLEAN Locked; // TRUE - lock, FALSE - unlock
 } POWER_SESSION_WINLOGON, *PPOWER_SESSION_WINLOGON;
+]]
 
+ffi.cdef[[
 //
 // Idle resiliency
 //
@@ -13449,7 +13468,9 @@ typedef struct _POWER_IDLE_RESILIENCY {
     DWORD CoalescingTimeout;
     DWORD IdleResiliencyPeriod;
 } POWER_IDLE_RESILIENCY, *PPOWER_IDLE_RESILIENCY;
+]]
 
+ffi.cdef[[
 //
 // Monitor on/off reasons
 //
@@ -13490,7 +13511,9 @@ typedef enum _POWER_MONITOR_REQUEST_TYPE {
     MonitorRequestTypeOnAndPresent,
     MonitorRequestTypeToggleOn
 } POWER_MONITOR_REQUEST_TYPE;
+]]
 
+ffi.cdef[[
 //
 // Monitor invocation
 //
@@ -13498,7 +13521,9 @@ typedef struct _POWER_MONITOR_INVOCATION {
     BOOLEAN Console;
     POWER_MONITOR_REQUEST_REASON RequestReason;
 } POWER_MONITOR_INVOCATION, *PPOWER_MONITOR_INVOCATION;
+]]
 
+ffi.cdef[[
 //
 // Last resume performance structure
 //
@@ -13508,7 +13533,9 @@ typedef struct _RESUME_PERFORMANCE {
     ULONGLONG TotalResumeTimeMs;
     ULONGLONG ResumeCompleteTimestamp;
 } RESUME_PERFORMANCE, *PRESUME_PERFORMANCE;
+]]
 
+ffi.cdef[[
 //
 // Power Setting definitions
 //
@@ -13551,13 +13578,17 @@ typedef struct {
     //
     BYTE    Data[ANYSIZE_ARRAY];
 } SET_POWER_SETTING_VALUE, *PSET_POWER_SETTING_VALUE;
+]]
 
-#define POWER_SETTING_VALUE_VERSION (0x1)
+ffi.cdef[[
+static const int POWER_SETTING_VALUE_VERSION = (0x1);
 
 typedef struct {
     GUID Guid;
 } NOTIFY_USER_POWER_SETTING, *PNOTIFY_USER_POWER_SETTING;
+]]
 
+ffi.cdef[[
 //
 // Package definition for an experience button device notification.  When
 // someone registers for GUID_EXPERIENCE_BUTTON, this is the definition of
@@ -13583,7 +13614,9 @@ typedef struct _APPLICATIONLAUNCH_SETTING_VALUE {
 
 
 } APPLICATIONLAUNCH_SETTING_VALUE, *PAPPLICATIONLAUNCH_SETTING_VALUE;
+]]
 
+ffi.cdef[[
 //
 // define platform roles
 //
@@ -13600,40 +13633,50 @@ typedef enum _POWER_PLATFORM_ROLE {
     PlatformRoleSlate,             // v2 last supported
     PlatformRoleMaximum
 } POWER_PLATFORM_ROLE, *PPOWER_PLATFORM_ROLE;
+]]
 
-#define POWER_PLATFORM_ROLE_V1     (0x00000001)
-#define POWER_PLATFORM_ROLE_V1_MAX (PlatformRolePerformanceServer + 1)
+ffi.cdef[[
+static const int POWER_PLATFORM_ROLE_V1   =  (0x00000001);
+static const int POWER_PLATFORM_ROLE_V1_MAX =(PlatformRolePerformanceServer + 1);
 
-#define POWER_PLATFORM_ROLE_V2     (0x00000002)
-#define POWER_PLATFORM_ROLE_V2_MAX (PlatformRoleSlate + 1)
+static const int POWER_PLATFORM_ROLE_V2    = (0x00000002);
+static const int POWER_PLATFORM_ROLE_V2_MAX =(PlatformRoleSlate + 1);
+]]
 
-#if (NTDDI_VERSION >= NTDDI_WIN8)
 
-#define POWER_PLATFORM_ROLE_VERSION     POWER_PLATFORM_ROLE_V2
-#define POWER_PLATFORM_ROLE_VERSION_MAX POWER_PLATFORM_ROLE_V2_MAX
+if (NTDDI_VERSION >= NTDDI_WIN8) then
+ffi.cdef[[
+static const int POWER_PLATFORM_ROLE_VERSION   =  POWER_PLATFORM_ROLE_V2;
+static const int POWER_PLATFORM_ROLE_VERSION_MAX= POWER_PLATFORM_ROLE_V2_MAX;
+]]
+else
+ffi.cdef[[
+static const int POWER_PLATFORM_ROLE_VERSION     =POWER_PLATFORM_ROLE_V1;
+static const int POWER_PLATFORM_ROLE_VERSION_MAX =POWER_PLATFORM_ROLE_V1_MAX;
+]]
+end
 
-#else
-
-#define POWER_PLATFORM_ROLE_VERSION     POWER_PLATFORM_ROLE_V1
-#define POWER_PLATFORM_ROLE_VERSION_MAX POWER_PLATFORM_ROLE_V1_MAX
-
-#endif
-
+ffi.cdef[[
 typedef struct _POWER_PLATFORM_INFORMATION {
     BOOLEAN AoAc;
 } POWER_PLATFORM_INFORMATION, *PPOWER_PLATFORM_INFORMATION;
+]]
 
-//
+
+--[[
 // System power manager capabilities
-//
+--]]
 
-#if (NTDDI_VERSION >= NTDDI_WINXP) || !defined(_BATCLASS_)
+if (NTDDI_VERSION >= NTDDI_WINXP) or not _BATCLASS_ then
+ffi.cdef[[
 typedef struct {
     DWORD       Granularity;
     DWORD       Capacity;
 } BATTERY_REPORTING_SCALE, *PBATTERY_REPORTING_SCALE;
-#endif // (NTDDI_VERSION >= NTDDI_WINXP) || !defined(_BATCLASS_)
+]]
+end --// (NTDDI_VERSION >= NTDDI_WINXP) || !defined(_BATCLASS_)
 
+ffi.cdef[[
 //
 
 typedef struct {
@@ -13738,7 +13781,9 @@ typedef struct {
     DWORD64 Reserved2;
     PPM_WMI_PERF_STATE State[ANYSIZE_ARRAY];
 } PPM_WMI_PERF_STATES_EX, *PPPM_WMI_PERF_STATES_EX;
+]]
 
+--[==[
 //
 // Legacy processor idle accounting.
 //
@@ -14125,7 +14170,9 @@ typedef struct {
     DWORD IncreasePercent;
     DWORD DecreasePercent;
 } PROCESSOR_PERFSTATE_POLICY, *PPROCESSOR_PERFSTATE_POLICY;
+--]==]
 
+ffi.cdef[[
 // administrator power policy overrides
 typedef struct _ADMINISTRATOR_POWER_POLICY {
 
@@ -14141,8 +14188,9 @@ typedef struct _ADMINISTRATOR_POWER_POLICY {
     DWORD                   MinSpindownTimeout;
     DWORD                   MaxSpindownTimeout;
 } ADMINISTRATOR_POWER_POLICY, *PADMINISTRATOR_POWER_POLICY;
+]]
 
-
+ffi.cdef[[
 typedef enum _HIBERFILE_BUCKET_SIZE {
     HiberFileBucket1GB = 0,
     HiberFileBucket2GB,
@@ -14153,17 +14201,24 @@ typedef enum _HIBERFILE_BUCKET_SIZE {
     HiberFileBucketUnlimited,
     HiberFileBucketMax
 } HIBERFILE_BUCKET_SIZE, *PHIBERFILE_BUCKET_SIZE;
+]]
 
-#define HIBERFILE_TYPE_NONE       0x00
-#define HIBERFILE_TYPE_REDUCED    0x01
-#define HIBERFILE_TYPE_FULL       0x02
-#define HIBERFILE_TYPE_MAX        0x03
+ffi.cdef[[
+static const int HIBERFILE_TYPE_NONE      = 0x00;
+static const int HIBERFILE_TYPE_REDUCED   = 0x01;
+static const int HIBERFILE_TYPE_FULL      = 0x02;
+static const int HIBERFILE_TYPE_MAX       = 0x03;
+]]
 
+ffi.cdef[[
 typedef struct _HIBERFILE_BUCKET {
     DWORD64 MaxPhysicalMemory;
     DWORD PhysicalMemoryPercent[HIBERFILE_TYPE_MAX];
 } HIBERFILE_BUCKET, *PHIBERFILE_BUCKET;
+]]
 
+if (NTDDI_VERSION < NTDDI_WINTHRESHOLD) then
+ffi.cdef[[
 typedef struct {
     // Misc supported system features
     BOOLEAN             PowerButtonPresent;
@@ -14185,28 +14240,21 @@ typedef struct {
     BOOLEAN             ProcessorThrottle;
     BYTE                ProcessorMinThrottle;
 
-#if (NTDDI_VERSION < NTDDI_WINXP)
-    BYTE                ProcessorThrottleScale;
-    BYTE                spare2[4];
-#else
+// BUGBUG - Assume systems greater than windows XP
+//#if (NTDDI_VERSION < NTDDI_WINXP)
+//    BYTE                ProcessorThrottleScale;
+//    BYTE                spare2[4];
+//#else
     BYTE                ProcessorMaxThrottle;
     BOOLEAN             FastSystemS4;
     BOOLEAN             Hiberboot;
     BOOLEAN             WakeAlarmPresent;
     BOOLEAN             AoAc;
-#endif // (NTDDI_VERSION < NTDDI_WINXP)
+//#endif // (NTDDI_VERSION < NTDDI_WINXP)
 
     // Disk
     BOOLEAN             DiskSpinDown;
-
-#if (NTDDI_VERSION < NTDDI_WINTHRESHOLD)
     BYTE                spare3[8];
-# else
-    // HiberFile
-    BYTE                HiberFileType;
-    BOOLEAN             AoAcConnectivitySupported;
-    BYTE                spare3[6];
-#endif // (NTDDI_VERSION < NTDDI_WINTHRESHOLD)
 
     // System Battery
     BOOLEAN             SystemBatteriesPresent;
@@ -14220,7 +14268,68 @@ typedef struct {
     SYSTEM_POWER_STATE  MinDeviceWakeState; // note this may change on driver load
     SYSTEM_POWER_STATE  DefaultLowLatencyWake;
 } SYSTEM_POWER_CAPABILITIES, *PSYSTEM_POWER_CAPABILITIES;
+]]
+else
+ffi.cdef[[
+typedef struct {
+            // Misc supported system features
+            BOOLEAN             PowerButtonPresent;
+            BOOLEAN             SleepButtonPresent;
+            BOOLEAN             LidPresent;
+            BOOLEAN             SystemS1;
+            BOOLEAN             SystemS2;
+            BOOLEAN             SystemS3;
+            BOOLEAN             SystemS4;           // hibernate
+            BOOLEAN             SystemS5;           // off
+            BOOLEAN             HiberFilePresent;
+            BOOLEAN             FullWake;
+            BOOLEAN             VideoDimPresent;
+            BOOLEAN             ApmPresent;
+            BOOLEAN             UpsPresent;
+        
+            // Processors
+            BOOLEAN             ThermalControl;
+            BOOLEAN             ProcessorThrottle;
+            BYTE                ProcessorMinThrottle;
+        
+        // BUGBUG - Assume systems greater than windows XP
+        //#if (NTDDI_VERSION < NTDDI_WINXP)
+        //    BYTE                ProcessorThrottleScale;
+        //    BYTE                spare2[4];
+        //#else
+            BYTE                ProcessorMaxThrottle;
+            BOOLEAN             FastSystemS4;
+            BOOLEAN             Hiberboot;
+            BOOLEAN             WakeAlarmPresent;
+            BOOLEAN             AoAc;
+        //#endif // (NTDDI_VERSION < NTDDI_WINXP)
+        
+            // Disk
+            BOOLEAN             DiskSpinDown;
+        
 
+            // HiberFile
+            BYTE                HiberFileType;
+            BOOLEAN             AoAcConnectivitySupported;
+            BYTE                spare3[6];
+        
+            // System Battery
+            BOOLEAN             SystemBatteriesPresent;
+            BOOLEAN             BatteriesAreShortTerm;
+            BATTERY_REPORTING_SCALE BatteryScale[3];
+        
+            // Wake
+            SYSTEM_POWER_STATE  AcOnLineWake;
+            SYSTEM_POWER_STATE  SoftLidWake;
+            SYSTEM_POWER_STATE  RtcWake;
+            SYSTEM_POWER_STATE  MinDeviceWakeState; // note this may change on driver load
+            SYSTEM_POWER_STATE  DefaultLowLatencyWake;
+        } SYSTEM_POWER_CAPABILITIES, *PSYSTEM_POWER_CAPABILITIES;
+]]
+end 
+
+
+ffi.cdef[[
 typedef struct {
     BOOLEAN             AcOnLine;
     BOOLEAN             BatteryPresent;
@@ -14238,9 +14347,9 @@ typedef struct {
     DWORD               DefaultAlert1;
     DWORD               DefaultAlert2;
 } SYSTEM_BATTERY_STATE, *PSYSTEM_BATTERY_STATE;
+]]
 
-
-
+--[==[
 //
 // Image Format
 //
@@ -14267,7 +14376,9 @@ typedef struct {
 #define IMAGE_OS2_SIGNATURE_LE              0x4C45      // LE
 #define IMAGE_NT_SIGNATURE                  0x50450000  // PE00
 #endif
+--]==]
 
+ffi.cdef[[
 typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
     WORD   e_magic;                     // Magic number
     WORD   e_cblp;                      // Bytes on last page of file
@@ -14289,7 +14400,9 @@ typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
     WORD   e_res2[10];                  // Reserved words
     LONG   e_lfanew;                    // File address of new exe header
   } IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
+]]
 
+ffi.cdef[[
 typedef struct _IMAGE_OS2_HEADER {      // OS/2 .EXE header
     WORD   ne_magic;                    // Magic number
     CHAR   ne_ver;                      // Version number
@@ -14322,7 +14435,9 @@ typedef struct _IMAGE_OS2_HEADER {      // OS/2 .EXE header
     WORD   ne_swaparea;                 // Minimum code swap area size
     WORD   ne_expver;                   // Expected Windows version number
   } IMAGE_OS2_HEADER, *PIMAGE_OS2_HEADER;
+]]
 
+ffi.cdef[[
 typedef struct _IMAGE_VXD_HEADER {      // Windows VXD header
     WORD   e32_magic;                   // Magic number
     BYTE   e32_border;                  // The byte ordering for the VXD
@@ -14376,11 +14491,15 @@ typedef struct _IMAGE_VXD_HEADER {      // Windows VXD header
     WORD   e32_devid;                   // Device ID for VxD
     WORD   e32_ddkver;                  // DDK version for VxD
   } IMAGE_VXD_HEADER, *PIMAGE_VXD_HEADER;
+]]
 
+--[[
 #ifndef _MAC
 #include "poppack.h"                    // Back to 4 byte packing
 #endif
+--]]
 
+ffi.cdef[[
 //
 // File header format.
 //
@@ -14394,59 +14513,64 @@ typedef struct _IMAGE_FILE_HEADER {
     WORD    SizeOfOptionalHeader;
     WORD    Characteristics;
 } IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;
+]]
 
-#define IMAGE_SIZEOF_FILE_HEADER             20
+ffi.cdef[[
+static const int IMAGE_SIZEOF_FILE_HEADER            = 20;
 
-#define IMAGE_FILE_RELOCS_STRIPPED           0x0001  // Relocation info stripped from file.
-#define IMAGE_FILE_EXECUTABLE_IMAGE          0x0002  // File is executable  (i.e. no unresolved external references).
-#define IMAGE_FILE_LINE_NUMS_STRIPPED        0x0004  // Line nunbers stripped from file.
-#define IMAGE_FILE_LOCAL_SYMS_STRIPPED       0x0008  // Local symbols stripped from file.
-#define IMAGE_FILE_AGGRESIVE_WS_TRIM         0x0010  // Aggressively trim working set
-#define IMAGE_FILE_LARGE_ADDRESS_AWARE       0x0020  // App can handle >2gb addresses
-#define IMAGE_FILE_BYTES_REVERSED_LO         0x0080  // Bytes of machine word are reversed.
-#define IMAGE_FILE_32BIT_MACHINE             0x0100  // 32 bit word machine.
-#define IMAGE_FILE_DEBUG_STRIPPED            0x0200  // Debugging info stripped from file in .DBG file
-#define IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP   0x0400  // If Image is on removable media, copy and run from the swap file.
-#define IMAGE_FILE_NET_RUN_FROM_SWAP         0x0800  // If Image is on Net, copy and run from the swap file.
-#define IMAGE_FILE_SYSTEM                    0x1000  // System File.
-#define IMAGE_FILE_DLL                       0x2000  // File is a DLL.
-#define IMAGE_FILE_UP_SYSTEM_ONLY            0x4000  // File should only be run on a UP machine
-#define IMAGE_FILE_BYTES_REVERSED_HI         0x8000  // Bytes of machine word are reversed.
+static const int IMAGE_FILE_RELOCS_STRIPPED           = 0x0001;  // Relocation info stripped from file.
+static const int IMAGE_FILE_EXECUTABLE_IMAGE          = 0x0002;  // File is executable  (i.e. no unresolved external references).
+static const int IMAGE_FILE_LINE_NUMS_STRIPPED        = 0x0004;  // Line nunbers stripped from file.
+static const int IMAGE_FILE_LOCAL_SYMS_STRIPPED       = 0x0008;  // Local symbols stripped from file.
+static const int IMAGE_FILE_AGGRESIVE_WS_TRIM         = 0x0010;  // Aggressively trim working set
+static const int IMAGE_FILE_LARGE_ADDRESS_AWARE       = 0x0020;  // App can handle >2gb addresses
+static const int IMAGE_FILE_BYTES_REVERSED_LO         = 0x0080;  // Bytes of machine word are reversed.
+static const int IMAGE_FILE_32BIT_MACHINE             = 0x0100;  // 32 bit word machine.
+static const int IMAGE_FILE_DEBUG_STRIPPED            = 0x0200;  // Debugging info stripped from file in .DBG file
+static const int IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP   = 0x0400;  // If Image is on removable media, copy and run from the swap file.
+static const int IMAGE_FILE_NET_RUN_FROM_SWAP         = 0x0800;  // If Image is on Net, copy and run from the swap file.
+static const int IMAGE_FILE_SYSTEM                    = 0x1000;  // System File.
+static const int IMAGE_FILE_DLL                       = 0x2000;  // File is a DLL.
+static const int IMAGE_FILE_UP_SYSTEM_ONLY            = 0x4000;  // File should only be run on a UP machine
+static const int IMAGE_FILE_BYTES_REVERSED_HI         = 0x8000;  // Bytes of machine word are reversed.
+]]
 
-#define IMAGE_FILE_MACHINE_UNKNOWN           0
-#define IMAGE_FILE_MACHINE_TARGET_HOST       0x0001  // Useful for indicating we want to interact with the host and not a WoW guest.
-#define IMAGE_FILE_MACHINE_I386              0x014c  // Intel 386.
-#define IMAGE_FILE_MACHINE_R3000             0x0162  // MIPS little-endian, 0x160 big-endian
-#define IMAGE_FILE_MACHINE_R4000             0x0166  // MIPS little-endian
-#define IMAGE_FILE_MACHINE_R10000            0x0168  // MIPS little-endian
-#define IMAGE_FILE_MACHINE_WCEMIPSV2         0x0169  // MIPS little-endian WCE v2
-#define IMAGE_FILE_MACHINE_ALPHA             0x0184  // Alpha_AXP
-#define IMAGE_FILE_MACHINE_SH3               0x01a2  // SH3 little-endian
-#define IMAGE_FILE_MACHINE_SH3DSP            0x01a3
-#define IMAGE_FILE_MACHINE_SH3E              0x01a4  // SH3E little-endian
-#define IMAGE_FILE_MACHINE_SH4               0x01a6  // SH4 little-endian
-#define IMAGE_FILE_MACHINE_SH5               0x01a8  // SH5
-#define IMAGE_FILE_MACHINE_ARM               0x01c0  // ARM Little-Endian
-#define IMAGE_FILE_MACHINE_THUMB             0x01c2  // ARM Thumb/Thumb-2 Little-Endian
-#define IMAGE_FILE_MACHINE_ARMNT             0x01c4  // ARM Thumb-2 Little-Endian
-#define IMAGE_FILE_MACHINE_AM33              0x01d3
-#define IMAGE_FILE_MACHINE_POWERPC           0x01F0  // IBM PowerPC Little-Endian
-#define IMAGE_FILE_MACHINE_POWERPCFP         0x01f1
-#define IMAGE_FILE_MACHINE_IA64              0x0200  // Intel 64
-#define IMAGE_FILE_MACHINE_MIPS16            0x0266  // MIPS
-#define IMAGE_FILE_MACHINE_ALPHA64           0x0284  // ALPHA64
-#define IMAGE_FILE_MACHINE_MIPSFPU           0x0366  // MIPS
-#define IMAGE_FILE_MACHINE_MIPSFPU16         0x0466  // MIPS
-#define IMAGE_FILE_MACHINE_AXP64             IMAGE_FILE_MACHINE_ALPHA64
-#define IMAGE_FILE_MACHINE_TRICORE           0x0520  // Infineon
-#define IMAGE_FILE_MACHINE_CEF               0x0CEF
-#define IMAGE_FILE_MACHINE_EBC               0x0EBC  // EFI Byte Code
-#define IMAGE_FILE_MACHINE_AMD64             0x8664  // AMD64 (K8)
-#define IMAGE_FILE_MACHINE_M32R              0x9041  // M32R little-endian
-#define IMAGE_FILE_MACHINE_ARM64             0xAA64  // ARM64 Little-Endian
-#define IMAGE_FILE_MACHINE_CEE               0xC0EE
+ffi.cdef[[
+static const int IMAGE_FILE_MACHINE_UNKNOWN           = 0;
+static const int IMAGE_FILE_MACHINE_TARGET_HOST       = 0x0001;  // Useful for indicating we want to interact with the host and not a WoW guest.
+static const int IMAGE_FILE_MACHINE_I386              = 0x014c;  // Intel 386.
+static const int IMAGE_FILE_MACHINE_R3000             = 0x0162;  // MIPS little-endian, = 0x160 big-endian
+static const int IMAGE_FILE_MACHINE_R4000             = 0x0166;  // MIPS little-endian
+static const int IMAGE_FILE_MACHINE_R10000            = 0x0168;  // MIPS little-endian
+static const int IMAGE_FILE_MACHINE_WCEMIPSV2         = 0x0169;  // MIPS little-endian WCE v2
+static const int IMAGE_FILE_MACHINE_ALPHA             = 0x0184;  // Alpha_AXP
+static const int IMAGE_FILE_MACHINE_SH3               = 0x01a2;  // SH3 little-endian
+static const int IMAGE_FILE_MACHINE_SH3DSP            = 0x01a3;
+static const int IMAGE_FILE_MACHINE_SH3E              = 0x01a4;  // SH3E little-endian
+static const int IMAGE_FILE_MACHINE_SH4               = 0x01a6;  // SH4 little-endian
+static const int IMAGE_FILE_MACHINE_SH5               = 0x01a8;  // SH5
+static const int IMAGE_FILE_MACHINE_ARM               = 0x01c0;  // ARM Little-Endian
+static const int IMAGE_FILE_MACHINE_THUMB             = 0x01c2;  // ARM Thumb/Thumb-2 Little-Endian
+static const int IMAGE_FILE_MACHINE_ARMNT             = 0x01c4;  // ARM Thumb-2 Little-Endian
+static const int IMAGE_FILE_MACHINE_AM33              = 0x01d3;
+static const int IMAGE_FILE_MACHINE_POWERPC           = 0x01F0;  // IBM PowerPC Little-Endian
+static const int IMAGE_FILE_MACHINE_POWERPCFP         = 0x01f1;
+static const int IMAGE_FILE_MACHINE_IA64              = 0x0200;  // Intel 64
+static const int IMAGE_FILE_MACHINE_MIPS16            = 0x0266;  // MIPS
+static const int IMAGE_FILE_MACHINE_ALPHA64           = 0x0284;  // ALPHA64
+static const int IMAGE_FILE_MACHINE_MIPSFPU           = 0x0366;  // MIPS
+static const int IMAGE_FILE_MACHINE_MIPSFPU16         = 0x0466;  // MIPS
+static const int IMAGE_FILE_MACHINE_AXP64             = IMAGE_FILE_MACHINE_ALPHA64;
+static const int IMAGE_FILE_MACHINE_TRICORE           = 0x0520;  // Infineon
+static const int IMAGE_FILE_MACHINE_CEF               = 0x0CEF;
+static const int IMAGE_FILE_MACHINE_EBC               = 0x0EBC;  // EFI Byte Code
+static const int IMAGE_FILE_MACHINE_AMD64             = 0x8664;  // AMD64 (K8)
+static const int IMAGE_FILE_MACHINE_M32R              = 0x9041;  // M32R little-endian
+static const int IMAGE_FILE_MACHINE_ARM64             = 0xAA64;  // ARM64 Little-Endian
+static const int IMAGE_FILE_MACHINE_CEE               = 0xC0EE;
+]]
 
- 
+ffi.cdef[[
 //
 // Directory format.
 //
@@ -14456,7 +14580,7 @@ typedef struct _IMAGE_DATA_DIRECTORY {
     DWORD   Size;
 } IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;
 
-#define IMAGE_NUMBEROF_DIRECTORY_ENTRIES    16
+static const int IMAGE_NUMBEROF_DIRECTORY_ENTRIES   = 16;
 
 //
 // Optional header format.
@@ -14553,11 +14677,15 @@ typedef struct _IMAGE_OPTIONAL_HEADER64 {
     DWORD       NumberOfRvaAndSizes;
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER64, *PIMAGE_OPTIONAL_HEADER64;
+]]
 
-#define IMAGE_NT_OPTIONAL_HDR32_MAGIC      0x10b
-#define IMAGE_NT_OPTIONAL_HDR64_MAGIC      0x20b
-#define IMAGE_ROM_OPTIONAL_HDR_MAGIC       0x107
+ffi.cdef[[
+static const int IMAGE_NT_OPTIONAL_HDR32_MAGIC    =  0x10b;
+static const int IMAGE_NT_OPTIONAL_HDR64_MAGIC    =  0x20b;
+static const int IMAGE_ROM_OPTIONAL_HDR_MAGIC     =  0x107;
+]]
 
+--[=[
 #ifdef _WIN64
 typedef IMAGE_OPTIONAL_HEADER64             IMAGE_OPTIONAL_HEADER;
 typedef PIMAGE_OPTIONAL_HEADER64            PIMAGE_OPTIONAL_HEADER;
@@ -14567,7 +14695,9 @@ typedef IMAGE_OPTIONAL_HEADER32             IMAGE_OPTIONAL_HEADER;
 typedef PIMAGE_OPTIONAL_HEADER32            PIMAGE_OPTIONAL_HEADER;
 #define IMAGE_NT_OPTIONAL_HDR_MAGIC         IMAGE_NT_OPTIONAL_HDR32_MAGIC
 #endif
+--]=]
 
+--[==[
 typedef struct _IMAGE_NT_HEADERS64 {
     DWORD Signature;
     IMAGE_FILE_HEADER FileHeader;
@@ -17884,7 +18014,7 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG {
 } RTL_CRITICAL_SECTION_DEBUG, *PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, *PRTL_RESOURCE_DEBUG;
 ]]
 
---[=[
+--[[
 //
 // These flags define the upper byte of the critical section SpinCount field
 //
@@ -17895,7 +18025,7 @@ typedef struct _RTL_CRITICAL_SECTION_DEBUG {
 #define RTL_CRITICAL_SECTION_FLAG_FORCE_DEBUG_INFO      0x10000000
 #define RTL_CRITICAL_SECTION_ALL_FLAG_BITS              0xFF000000
 #define RTL_CRITICAL_SECTION_FLAG_RESERVED              (RTL_CRITICAL_SECTION_ALL_FLAG_BITS & (~(RTL_CRITICAL_SECTION_FLAG_NO_DEBUG_INFO | RTL_CRITICAL_SECTION_FLAG_DYNAMIC_SPIN | RTL_CRITICAL_SECTION_FLAG_STATIC_INIT | RTL_CRITICAL_SECTION_FLAG_RESOURCE_TYPE | RTL_CRITICAL_SECTION_FLAG_FORCE_DEBUG_INFO)))
---]=]
+--]]
 
 ffi.cdef[[
 //
