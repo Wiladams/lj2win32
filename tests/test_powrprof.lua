@@ -15,64 +15,53 @@ local powrprof = require("win32.powrprof")
 local unicode = require("unicode_util")
 local toAnsi = unicode.toAnsi
 
-local function getDevices()
+-- convenience for iterator producers
+local  function send (...)
+    coroutine.yield(...)
+end
+
+-- an iterator for all producers
+local function co_iterator(producer)
+    return coroutine.wrap(producer)
+end
+
+-- The challenge with this implementation is that when you use
+-- DevicePowerOpen(), you must pair it with a DevicePowerClose()
+-- Since we're in an iterator which can be abandoned at any time
+-- we won't necessary get to the end of the iteration.
+-- in that case, the iterator itself should be an object with a finalizer
+-- so that in the finalizer we can do the close if it hasn't already
+-- happened by the time we get there.
+-- Another way to do it is to pull all the results into a table
+-- from the beginning, and just feed out of the table
+local function device_prod()
     local QueryIndex = 0;
     local QueryInterpretationFlags = C.DEVICEPOWER_FILTER_DEVICES_PRESENT
     local QueryFlags = 0
     local pBufferSize = ffi.new("ULONG[1]", C.MAX_PATH * ffi.sizeof("WCHAR"))  -- 
     local pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
 
-    -- should open device list
-    -- query bunch of times
-    -- otherwise, device list is opened/closed for every 
-    -- call, which is not very performant
-    while true do
-        --local pBufferSize = ffi.new("ULONG[1]", 1024*64)  -- C.MAX_PATH * ffi.sizeof("WCHAR")
-        --local pReturnBuffer = nil
 
-        local status = powrprof.DevicePowerEnumDevices(
-            QueryIndex,
-            QueryInterpretationFlags,
-            QueryFlags,
-            pReturnBuffer,
-            pBufferSize);
+    if powrprof.DevicePowerOpen(0) == 0 then
+        return nil;
+    end
 
-        --print ("getDevices(), 1: ", status)
-        if status == 0 then
-            local err = C.GetLastError()
+    while powrprof.DevicePowerEnumDevices(QueryIndex,QueryInterpretationFlags,QueryFlags,
+        pReturnBuffer, pBufferSize) ~= 0 do
 
-            if err == C.ERROR_NO_MORE_ITEMS then
-                break;
-            end
---[[
-            if err ~= C.ERROR_INSUFFICIENT_BUFFER then
-                print("ERROR: ", err)
-                break;
-                --return false, err
-            end
---]]
-        end
-
---[[
-        -- do it again with known size this time
-        pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
-        status = powrprof.DevicePowerEnumDevices(QueryIndex, QueryInterpretationFlags, QueryFlags,
-            pReturnBuffer,
-            pBufferSize);
-
-        print ("getDevices(), 2: ", status)
-        if status == 0 then
-            local err = C.GetLastError()
-
-            --if err ~= C.ERROR_INSUFFICIENT_BUFFER then
-                print("ERROR: ", err)
-                return false, err
-            --end
-        end
---]]
-        print(QueryIndex, ffi.string(toAnsi(pReturnBuffer)))
+        coroutine.yield(ffi.string(toAnsi(pReturnBuffer)))
         QueryIndex = QueryIndex+1;
         pBufferSize[0] = C.MAX_PATH * ffi.sizeof("WCHAR")
+    end
+
+    powrprof.DevicePowerClose();
+end
+
+
+
+local function getDevices()
+    for dev in co_iterator(device_prod) do
+        print(string.format("{'%s'},",dev))
     end
 end
 
