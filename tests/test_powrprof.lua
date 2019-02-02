@@ -57,13 +57,77 @@ local function device_prod()
     powrprof.DevicePowerClose();
 end
 
-
-
-local function getDevices()
+local function iterateDevices()
     for dev in co_iterator(device_prod) do
         print(string.format("{'%s'},",dev))
     end
 end
 
+local function getDeviceTable()
 
-getDevices()
+    local QueryIndex = 0;
+    local QueryInterpretationFlags = C.DEVICEPOWER_FILTER_DEVICES_PRESENT
+    local QueryFlags = 0
+    local pBufferSize = ffi.new("ULONG[1]", C.MAX_PATH * ffi.sizeof("WCHAR"))  -- 
+    local pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
+
+    local devices = {}
+
+    if powrprof.DevicePowerOpen(0) == 0 then
+        return nil;
+    end
+
+    while powrprof.DevicePowerEnumDevices(QueryIndex,QueryInterpretationFlags,QueryFlags,pReturnBuffer, pBufferSize) ~= 0 do
+        table.insert(devices, ffi.string(toAnsi(pReturnBuffer)))
+
+        QueryIndex = QueryIndex+1;
+        pBufferSize[0] = C.MAX_PATH * ffi.sizeof("WCHAR")
+    end
+
+    powrprof.DevicePowerClose();
+
+    return devices
+end
+
+local function getPowerSchemeTable()
+    local results = {}
+
+    local RootPowerKey = nil;
+    local SchemeGuid = nil;
+    local SubGroupOfPowerSettingsGuid = nil;
+    local AccessFlags = C.ACCESS_SCHEME
+    local Index = 0
+    local BufferSize = ffi.new("DWORD[1]", 1024)
+    local Buffer = ffi.new("uint8_t[?]", BufferSize[0])
+
+    while true do
+        local status = powrprof.PowerEnumerate(RootPowerKey, SchemeGuid, SubGroupOfPowerSettingsGuid,
+            AccessFlags, Index, Buffer, BufferSize)
+        
+        print("status: ", status)
+
+        if status == C.ERROR_NO_MORE_ITEMS then
+            break;
+        end
+
+        local str = ffi.string(unicode.toAnsi(Buffer))
+        --local str = ffi.string(Buffer)
+        print(str)
+        Index = Index + 1;
+        BufferSize[0] = 1024
+    end
+end
+
+local function test_deviceTable()
+    local tbl = getDeviceTable();
+
+    for i, dev in ipairs(tbl) do
+        print(dev)
+    end
+end
+
+
+
+--iterateDevices()
+--test_deviceTable()
+getPowerSchemeTable()
