@@ -25,66 +25,94 @@ local function co_iterator(producer)
     return coroutine.wrap(producer)
 end
 
--- The challenge with this implementation is that when you use
--- DevicePowerOpen(), you must pair it with a DevicePowerClose()
--- Since we're in an iterator which can be abandoned at any time
--- we won't necessary get to the end of the iteration.
--- in that case, the iterator itself should be an object with a finalizer
--- so that in the finalizer we can do the close if it hasn't already
--- happened by the time we get there.
--- Another way to do it is to pull all the results into a table
--- from the beginning, and just feed out of the table
-local function device_prod()
-    local QueryIndex = 0;
-    local QueryInterpretationFlags = C.DEVICEPOWER_FILTER_DEVICES_PRESENT
-    local QueryFlags = 0
-    local pBufferSize = ffi.new("ULONG[1]", C.MAX_PATH * ffi.sizeof("WCHAR"))  -- 
-    local pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
+--[[
+In order to iterate over the Power Devices, you can simply
+call the DevicePowerEnumDevices() function repeatedly until
+it indicates error.
 
+This will work fine, but internally, the function checks to 
+see if the device list has been opened already or not.  If it
+has not been opened (for querying), the individual enum calls
+are bracketed with DevicePowerOpen()/DevicePowerClose() calls.
 
-    if powrprof.DevicePowerOpen(0) == 0 then
-        return nil;
-    end
+This will be very slow.  The more optimal way is to call 
+DevicePowerOpen() once, before multiple calls to DevicePowerEnumDevices(),
+and then call DevicePowerClose() at the end.
 
-    while powrprof.DevicePowerEnumDevices(QueryIndex,QueryInterpretationFlags,QueryFlags,
-        pReturnBuffer, pBufferSize) ~= 0 do
+The DevicePowerQuery structure essentially wraps up all this logic.
+It is a cdata type which allows us to attach __gc finalizer, so when it
+goes out of scope, the DevicePowerClose() function will be called,
+saving us from havnig to worry about its closure in the case
+where the iterator is abandoned.
+--]]
 
-        coroutine.yield(ffi.string(toAnsi(pReturnBuffer)))
-        QueryIndex = QueryIndex+1;
-        pBufferSize[0] = C.MAX_PATH * ffi.sizeof("WCHAR")
-    end
+ffi.cdef[[
+typedef struct {
+    int Handle;
+} DevicePowerQuery;
+]]
+local DevicePowerQuery = ffi.typeof("DevicePowerQuery")
+local DevicePowerQuery_mt = {
+    __gc = function(self)
+        -- when this object goes out of scope, close
+        -- the query
+        powrprof.DevicePowerClose();
+    end;
 
-    powrprof.DevicePowerClose();
-end
+    __new = function(ct,...)
+        -- we need to open up the query to start
+        -- if the fails, don't bother creating an object
+        -- and return nil
+        if powrprof.DevicePowerOpen(0) == 0 then
+            return nil;
+        end
+
+        -- Create an instance of the type so we
+        -- have something to garbage collect
+        local obj = ffi.new(ct, ...)
+        return obj;
+    end;
+
+    __index = {
+        devices = function(self, qparams)
+            return coroutine.wrap(function()
+                local QueryInterpretationFlags = C.DEVICEPOWER_FILTER_DEVICES_PRESENT
+                local QueryFlags = 0
+                local pBufferSize = ffi.new("ULONG[1]", C.MAX_PATH * ffi.sizeof("WCHAR"))  -- 
+                local pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
+                local QueryIndex = 0;
+
+                while powrprof.DevicePowerEnumDevices(QueryIndex,QueryInterpretationFlags,QueryFlags,
+                    pReturnBuffer, pBufferSize) ~= 0 do
+    
+                    coroutine.yield(ffi.string(toAnsi(pReturnBuffer)))
+                    QueryIndex = QueryIndex+1;
+                    pBufferSize[0] = C.MAX_PATH * ffi.sizeof("WCHAR")
+                end
+            end)
+        end;
+
+    }
+}
+ffi.metatype("DevicePowerQuery", DevicePowerQuery_mt)
+
 
 local function iterateDevices()
-    for dev in co_iterator(device_prod) do
+    local query = DevicePowerQuery();
+
+    for dev in query:devices() do
         print(string.format("{'%s'},",dev))
     end
 end
 
 local function getDeviceTable()
-
-    local QueryIndex = 0;
-    local QueryInterpretationFlags = C.DEVICEPOWER_FILTER_DEVICES_PRESENT
-    local QueryFlags = 0
-    local pBufferSize = ffi.new("ULONG[1]", C.MAX_PATH * ffi.sizeof("WCHAR"))  -- 
-    local pReturnBuffer = ffi.new("uint8_t[?]", pBufferSize[0])
+    local query = DevicePowerQuery();
 
     local devices = {}
 
-    if powrprof.DevicePowerOpen(0) == 0 then
-        return nil;
+    for dev in query:devices() do
+        table.insert(devices, dev)
     end
-
-    while powrprof.DevicePowerEnumDevices(QueryIndex,QueryInterpretationFlags,QueryFlags,pReturnBuffer, pBufferSize) ~= 0 do
-        table.insert(devices, ffi.string(toAnsi(pReturnBuffer)))
-
-        QueryIndex = QueryIndex+1;
-        pBufferSize[0] = C.MAX_PATH * ffi.sizeof("WCHAR")
-    end
-
-    powrprof.DevicePowerClose();
 
     return devices
 end
@@ -129,5 +157,5 @@ end
 
 
 --iterateDevices()
---test_deviceTable()
-getPowerSchemeTable()
+test_deviceTable()
+--getPowerSchemeTable()
