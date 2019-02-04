@@ -15,16 +15,7 @@ local ffi = require "ffi"
 local C = ffi.C
 local bit = require "bit"
 
-
---require("win32.memoryapi")
---require("win32.fileapi")
---require("win32.errhandlingapi");
---require("win32.handleapi")
-
-require("win32.windows")
---local PAGE_READWRITE = 0x4
---local FILE_MAP_ALL_ACCESS = 0xf001f
-
+require("win32.winbase")
 
 local mmap = {}
 mmap.__index = mmap

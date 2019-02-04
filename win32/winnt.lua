@@ -11470,15 +11470,18 @@ typedef enum _FIRMWARE_TYPE {
 
 #define TIMER_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\
                           TIMER_QUERY_STATE|TIMER_MODIFY_STATE)
+--]==]
 
+ffi.cdef[[
 // begin_nthal
 
-#define TIME_ZONE_ID_UNKNOWN  0
-#define TIME_ZONE_ID_STANDARD 1
-#define TIME_ZONE_ID_DAYLIGHT 2
+static const int TIME_ZONE_ID_UNKNOWN  = 0;
+static const int TIME_ZONE_ID_STANDARD = 1;
+static const int TIME_ZONE_ID_DAYLIGHT = 2;
 
 // end_nthal
---]==]
+]]
+
 
 ffi.cdef[[
 typedef enum _LOGICAL_PROCESSOR_RELATIONSHIP {

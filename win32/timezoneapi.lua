@@ -1,4 +1,6 @@
 
+local ffi = require("ffi")
+
 if not _TIMEZONEAPI_H_ then
 _TIMEZONEAPI_H_ = true
 
@@ -173,7 +175,6 @@ end --/* (_WIN32_WINNT >= _WIN32_WINNT_WIN8) */
 
 if (NTDDI_VERSION >= NTDDI_WIN10_RS5) then
 
-
 ffi.cdef[[
 BOOL
 __stdcall
@@ -182,9 +183,6 @@ LocalFileTimeToLocalSystemTime(
      const FILETIME* localFileTime,
      SYSTEMTIME* localSystemTime
     );
-
-
-
 
 BOOL
 __stdcall
@@ -195,11 +193,11 @@ LocalSystemTimeToLocalFileTime(
     );
 ]]
 
-#endif /* (NTDDI_VERSION >= NTDDI_WIN10_RS5) */
+end --/* (NTDDI_VERSION >= NTDDI_WIN10_RS5) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-]]
+
 
 end --// _TIMEZONEAPI_H_
 

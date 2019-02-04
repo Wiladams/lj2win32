@@ -2,11 +2,11 @@ package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
 
+require("win32.sdkddkver")
 mmap = require("mmap")
 
-local afile = mmap("textfile.txt")
+local filemap = mmap("textfile.txt")
 
 
-local map = afile:getPointer();
 print("FILE")
-print(ffi.string(map, #afile))
+print(ffi.string(filemap:getPointer(), #filemap))

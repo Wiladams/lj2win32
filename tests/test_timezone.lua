@@ -1,9 +1,17 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local C = ffi.C
 
-local tzone = require("win32.core.timezone_l1_1_0")
-local strings = require("win32.core.string_l1_1_0")
+
+require("win32.sdkddkver")
+
+print("NTDDI_VERSION: ", NTDDI_VERSION)
+print("NTDDI_WIN10_RS5: ", NTDDI_WIN10_RS5)
+
+require("win32.timezoneapi")
+local unicode = require("unicode_util")
+
 
 --[[
     typedef struct _TIME_ZONE_INFORMATION {
@@ -19,7 +27,7 @@ local strings = require("win32.core.string_l1_1_0")
 ]]
 local function getTimeZone()
     local tzoneinfo = ffi.new ("TIME_ZONE_INFORMATION")
-    local res = tzone.GetTimeZoneInformation(tzoneinfo);
+    local res = C.GetTimeZoneInformation(tzoneinfo);
 
     if res == ffi.C.TIME_ZONE_ID_INVALID then
         return false -- getLastError
@@ -31,12 +39,12 @@ local function getTimeZone()
         DaylightBias = tzoneinfo.DaylightBias;
     }
 
-    tbl.StandardName = strings.toAnsi(tzoneinfo.StandardName);
+    tbl.StandardName = unicode.toAnsi(tzoneinfo.StandardName);
 
     if res == ffi.C.TIME_ZONE_ID_DAYLIGHT then
-        tbl.Name = strings.toAnsi(tzoneinfo.DaylightName);
+        tbl.Name = unicode.toAnsi(tzoneinfo.DaylightName);
     elseif res == ffi.C.TIME_ZONE_ID_STANDARD then
-        tbl.Name = strings.toAnsi(tzoneinfo.StandardName);
+        tbl.Name = unicode.toAnsi(tzoneinfo.StandardName);
     end
 
     return tbl
@@ -47,6 +55,8 @@ if not tzinfo then
     print("No TZ info")
     return ;
 end
+
+
 
 print("Standard Name: ", tzinfo.StandardName);
 print("         Name: ", tzinfo.Name)

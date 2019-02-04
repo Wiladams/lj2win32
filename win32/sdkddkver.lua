@@ -126,6 +126,7 @@ NTDDI_WIN10_RS1                     = 0x0A000002;
 NTDDI_WIN10_RS2                     = 0x0A000003;  
 NTDDI_WIN10_RS3                     = 0x0A000004;  
 NTDDI_WIN10_RS4                     = 0x0A000005;  
+NTDDI_WIN10_RS5                     = 0x0A000006;  --/* ABRACADABRA_WIN10_RS5 */
 
 WDK_NTDDI_VERSION                   = NTDDI_WIN10_RS4;
 

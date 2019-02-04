@@ -1,6 +1,6 @@
 local ffi = require("ffi")
 
-
+require("win32.minwindef")
 require("win32.minwinbase")
 
 -- APISET contracts
@@ -7563,16 +7563,16 @@ end  -- !UNICODE
 
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+--]=]
 
+--// DOS and OS/2 Compatible Error Code definitions returned by the Win32 Base
+--// API functions.
 
-// DOS and OS/2 Compatible Error Code definitions returned by the Win32 Base
-// API functions.
-//
 
 require("win32.winerror")
 require("win32.timezoneapi")
 
-
+--[=[
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 /* Abnormal termination codes */

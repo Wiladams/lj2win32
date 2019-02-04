@@ -5,8 +5,6 @@ if not _MSWSOCK_ then
 _MSWSOCK_ = true
 
 require("win32.winapifamily")
-
-
 require("win32.mswsockdef")
 
 
@@ -43,9 +41,9 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYS
 #define SO_MAXPATHDG              =  0x700A;
 #define SO_UPDATE_ACCEPT_CONTEXT  =  0x700B;
 #define SO_CONNECT_TIME           =  0x700C;
-#if(_WIN32_WINNT >= 0x0501)
+if(_WIN32_WINNT >= 0x0501) then
 #define SO_UPDATE_CONNECT_CONTEXT =  0x7010;
-#endif //(_WIN32_WINNT >= 0x0501)
+end //(_WIN32_WINNT >= 0x0501)
 
 /*
  * TCP options.
