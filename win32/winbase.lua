@@ -27,7 +27,7 @@ require("win32.memoryapi")
 --require("win32.jobapi2")            -- NYI
 --require("win32.wow64apiset")        -- NYI
 require("win32.libloaderapi")
---require("win32.securitybaseapi")    -- NYI, experimental
+require("win32.securitybaseapi")
 --require("win32.namespaceapi")       -- NYI
 --require("win32.systemtopologyapi")  -- NYI
 --require("win32.processtopologyapi") -- NYI

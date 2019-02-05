@@ -8286,7 +8286,7 @@ static const int GENERIC_EXECUTE                 = (0x20000000L);
 static const int GENERIC_ALL                     = (0x10000000L);
 ]]
 
---[==[
+ffi.cdef[[
 //
 //  Define the generic mapping array.  This is used to denote the
 //  mapping of each generic access right to a specific access mask.
@@ -8299,9 +8299,9 @@ typedef struct _GENERIC_MAPPING {
     ACCESS_MASK GenericAll;
 } GENERIC_MAPPING;
 typedef GENERIC_MAPPING *PGENERIC_MAPPING;
+]]
 
-
-
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                        LUID_AND_ATTRIBUTES                         //
@@ -8311,7 +8311,7 @@ typedef GENERIC_MAPPING *PGENERIC_MAPPING;
 //
 
 
-#include <pshpack4.h>
+//#include <pshpack4.h>
 
 typedef struct _LUID_AND_ATTRIBUTES {
     LUID Luid;
@@ -8320,9 +8320,10 @@ typedef struct _LUID_AND_ATTRIBUTES {
 typedef LUID_AND_ATTRIBUTES LUID_AND_ATTRIBUTES_ARRAY[ANYSIZE_ARRAY];
 typedef LUID_AND_ATTRIBUTES_ARRAY *PLUID_AND_ATTRIBUTES_ARRAY;
 
-#include <poppack.h>
+//#include <poppack.h>
+]]
 
-
+--[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //              Security Id     (SID)                                 //
@@ -8349,44 +8350,50 @@ typedef LUID_AND_ATTRIBUTES_ARRAY *PLUID_AND_ATTRIBUTES_ARRAY;
 //      +---------------------------------------------------------------+
 //
 //
+--]]
 
 
-// begin_ntifs
-
-#ifndef SID_IDENTIFIER_AUTHORITY_DEFINED
-#define SID_IDENTIFIER_AUTHORITY_DEFINED
+if not SID_IDENTIFIER_AUTHORITY_DEFINED then
+SID_IDENTIFIER_AUTHORITY_DEFINED = true
+ffi.cdef[[
 typedef struct _SID_IDENTIFIER_AUTHORITY {
     BYTE  Value[6];
 } SID_IDENTIFIER_AUTHORITY, *PSID_IDENTIFIER_AUTHORITY;
-#endif
+]]
+end
 
-
-#ifndef SID_DEFINED
-#define SID_DEFINED
+if not SID_DEFINED then
+SID_DEFINED = true
+ffi.cdef[[
 typedef struct _SID {
    BYTE  Revision;
    BYTE  SubAuthorityCount;
    SID_IDENTIFIER_AUTHORITY IdentifierAuthority;
-#ifdef MIDL_PASS
-   [size_is(SubAuthorityCount)] DWORD SubAuthority[*];
-#else // MIDL_PASS
+
    DWORD SubAuthority[ANYSIZE_ARRAY];
-#endif // MIDL_PASS
+
 } SID, *PISID;
-#endif
+]]
+end
 
-#define SID_REVISION                     (1)    // Current revision level
-#define SID_MAX_SUB_AUTHORITIES          (15)
-#define SID_RECOMMENDED_SUB_AUTHORITIES  (1)    // Will change to around 6
+ffi.cdef[[
+static const int SID_REVISION                    = (1);    // Current revision level
+static const int SID_MAX_SUB_AUTHORITIES         = (15);
+static const int SID_RECOMMENDED_SUB_AUTHORITIES = (1);    // Will change to around 6
+]]
 
-                                                // in a future release.
-#ifndef MIDL_PASS
-#define SECURITY_MAX_SID_SIZE  \
-      (sizeof(SID) - sizeof(DWORD) + (SID_MAX_SUB_AUTHORITIES * sizeof(DWORD)))
+ffi.cdef[[
+static const int SECURITY_MAX_SID_SIZE  =\
+      (sizeof(SID) - sizeof(DWORD) + (SID_MAX_SUB_AUTHORITIES * sizeof(DWORD)));
+]]
 
-#define SECURITY_SID_SIZE(SubAuthorityCount_) (sizeof(SID) - sizeof(DWORD) + \
-                                                (SubAuthorityCount_) * sizeof(DWORD))
+--[[
+local function SECURITY_SID_SIZE(SubAuthorityCount_) 
+    return (sizeof(SID) - sizeof(DWORD) + (SubAuthorityCount_) * sizeof(DWORD))
+end
+--]]
 
+ffi.cdef[[
 //
 // Union which can hold any valid sid.
 //
@@ -8395,10 +8402,10 @@ typedef union _SE_SID {
     SID Sid;
     BYTE  Buffer[SECURITY_MAX_SID_SIZE];
 } SE_SID, *PSE_SID;
+]]
 
-#endif // MIDL_PASS
 
-
+ffi.cdef[[
 typedef enum _SID_NAME_USE {
     SidTypeUser = 1,
     SidTypeGroup,
@@ -8412,20 +8419,20 @@ typedef enum _SID_NAME_USE {
     SidTypeLabel,
     SidTypeLogonSession
 } SID_NAME_USE, *PSID_NAME_USE;
+]]
 
+ffi.cdef[[
 typedef struct _SID_AND_ATTRIBUTES {
-#ifdef MIDL_PASS
-    PISID Sid;
-#else // MIDL_PASS
     PSID Sid;
-#endif // MIDL_PASS
     DWORD Attributes;
     } SID_AND_ATTRIBUTES, * PSID_AND_ATTRIBUTES;
 
 typedef SID_AND_ATTRIBUTES SID_AND_ATTRIBUTES_ARRAY[ANYSIZE_ARRAY];
 typedef SID_AND_ATTRIBUTES_ARRAY *PSID_AND_ATTRIBUTES_ARRAY;
+]]
 
-#define SID_HASH_SIZE 32
+ffi.cdef[[
+static const int SID_HASH_SIZE = 32;
 typedef ULONG_PTR SID_HASH_ENTRY, *PSID_HASH_ENTRY;
 
 typedef struct _SID_AND_ATTRIBUTES_HASH {
@@ -8433,8 +8440,9 @@ typedef struct _SID_AND_ATTRIBUTES_HASH {
     PSID_AND_ATTRIBUTES SidAttr;
     SID_HASH_ENTRY Hash[SID_HASH_SIZE];
 } SID_AND_ATTRIBUTES_HASH, *PSID_AND_ATTRIBUTES_HASH;
-
+]]
 
+--[==[
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
 // Universal well-known SIDs                                               //
@@ -8818,11 +8826,11 @@ typedef struct _SID_AND_ATTRIBUTES_HASH {
 #define SECURITY_TRUSTED_INSTALLER_RID3 1831038044
 #define SECURITY_TRUSTED_INSTALLER_RID4 1853292631
 #define SECURITY_TRUSTED_INSTALLER_RID5 2271478464
+--]==]
 
 
 
-
-
+ffi.cdef[[
 //
 // Well known SID definitions for lookup.
 //
@@ -8949,7 +8957,9 @@ typedef enum {
     WinAuthenticationKeyPropertyAttestationSid  = 117,
     WinAuthenticationFreshKeyAuthSid            = 118,
 } WELL_KNOWN_SID_TYPE;
+]]
 
+--[==[
 //
 // Allocate the System Luid.  The first 1000 LUIDs are reserved.
 // Use #999 here (0x3e7 = 999)
@@ -8993,15 +9003,11 @@ typedef enum {
                                             SE_GROUP_INTEGRITY          | \
                                             SE_GROUP_INTEGRITY_ENABLED)
 
-//
-// User attributes
-//
-
-// (None yet defined.)
+--]==]
 
 
 
-
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                         ACL  and  ACE                              //
@@ -9032,18 +9038,19 @@ typedef enum {
 // begin_wdm
 // This is the *current* ACL revision
 
-#define ACL_REVISION     (2)
-#define ACL_REVISION_DS  (4)
+static const int ACL_REVISION    = (2);
+static const int ACL_REVISION_DS = (4);
 
 // This is the history of ACL revisions.  Add a new one whenever
 // ACL_REVISION is updated
 
-#define ACL_REVISION1   (1)
-#define MIN_ACL_REVISION ACL_REVISION2
-#define ACL_REVISION2   (2)
-#define ACL_REVISION3   (3)
-#define ACL_REVISION4   (4)
-#define MAX_ACL_REVISION ACL_REVISION4
+static const int ACL_REVISION1    = (1);
+static const int ACL_REVISION2    = (2);
+static const int ACL_REVISION3    = (3);
+static const int ACL_REVISION4    = (4);
+
+static const int MIN_ACL_REVISION = ACL_REVISION2;
+static const int MAX_ACL_REVISION = ACL_REVISION4;
 
 typedef struct _ACL {
     BYTE  AclRevision;
@@ -9053,7 +9060,9 @@ typedef struct _ACL {
     WORD   Sbz2;
 } ACL;
 typedef ACL *PACL;
+]]
 
+--[==[
 // end_wdm
 // begin_ntifs
 
@@ -9087,40 +9096,40 @@ typedef ACE_HEADER *PACE_HEADER;
 //  field of an Ace header.
 //
 
-#define ACCESS_MIN_MS_ACE_TYPE                  (0x0)
-#define ACCESS_ALLOWED_ACE_TYPE                 (0x0)
-#define ACCESS_DENIED_ACE_TYPE                  (0x1)
-#define SYSTEM_AUDIT_ACE_TYPE                   (0x2)
-#define SYSTEM_ALARM_ACE_TYPE                   (0x3)
-#define ACCESS_MAX_MS_V2_ACE_TYPE               (0x3)
+#define ACCESS_MIN_MS_ACE_TYPE                  (0x0);
+#define ACCESS_ALLOWED_ACE_TYPE                 (0x0);
+#define ACCESS_DENIED_ACE_TYPE                  (0x1);
+#define SYSTEM_AUDIT_ACE_TYPE                   (0x2);
+#define SYSTEM_ALARM_ACE_TYPE                   (0x3);
+#define ACCESS_MAX_MS_V2_ACE_TYPE               (0x3);
 
-#define ACCESS_ALLOWED_COMPOUND_ACE_TYPE        (0x4)
-#define ACCESS_MAX_MS_V3_ACE_TYPE               (0x4)
+#define ACCESS_ALLOWED_COMPOUND_ACE_TYPE        (0x4);
+#define ACCESS_MAX_MS_V3_ACE_TYPE               (0x4);
 
-#define ACCESS_MIN_MS_OBJECT_ACE_TYPE           (0x5)
-#define ACCESS_ALLOWED_OBJECT_ACE_TYPE          (0x5)
-#define ACCESS_DENIED_OBJECT_ACE_TYPE           (0x6)
-#define SYSTEM_AUDIT_OBJECT_ACE_TYPE            (0x7)
-#define SYSTEM_ALARM_OBJECT_ACE_TYPE            (0x8)
-#define ACCESS_MAX_MS_OBJECT_ACE_TYPE           (0x8)
+#define ACCESS_MIN_MS_OBJECT_ACE_TYPE           (0x5);
+#define ACCESS_ALLOWED_OBJECT_ACE_TYPE          (0x5);
+#define ACCESS_DENIED_OBJECT_ACE_TYPE           (0x6);
+#define SYSTEM_AUDIT_OBJECT_ACE_TYPE            (0x7);
+#define SYSTEM_ALARM_OBJECT_ACE_TYPE            (0x8);
+#define ACCESS_MAX_MS_OBJECT_ACE_TYPE           (0x8);
 
-#define ACCESS_MAX_MS_V4_ACE_TYPE               (0x8)
-#define ACCESS_MAX_MS_ACE_TYPE                  (0x8)
+#define ACCESS_MAX_MS_V4_ACE_TYPE               (0x8);
+#define ACCESS_MAX_MS_ACE_TYPE                  (0x8);
 
-#define ACCESS_ALLOWED_CALLBACK_ACE_TYPE        (0x9)
-#define ACCESS_DENIED_CALLBACK_ACE_TYPE         (0xA)
-#define ACCESS_ALLOWED_CALLBACK_OBJECT_ACE_TYPE (0xB)
-#define ACCESS_DENIED_CALLBACK_OBJECT_ACE_TYPE  (0xC)
-#define SYSTEM_AUDIT_CALLBACK_ACE_TYPE          (0xD)
-#define SYSTEM_ALARM_CALLBACK_ACE_TYPE          (0xE)
-#define SYSTEM_AUDIT_CALLBACK_OBJECT_ACE_TYPE   (0xF)
-#define SYSTEM_ALARM_CALLBACK_OBJECT_ACE_TYPE   (0x10)
+#define ACCESS_ALLOWED_CALLBACK_ACE_TYPE        (0x9);
+#define ACCESS_DENIED_CALLBACK_ACE_TYPE         (0xA);
+#define ACCESS_ALLOWED_CALLBACK_OBJECT_ACE_TYPE (0xB);
+#define ACCESS_DENIED_CALLBACK_OBJECT_ACE_TYPE  (0xC);
+#define SYSTEM_AUDIT_CALLBACK_ACE_TYPE          (0xD);
+#define SYSTEM_ALARM_CALLBACK_ACE_TYPE          (0xE);
+#define SYSTEM_AUDIT_CALLBACK_OBJECT_ACE_TYPE   (0xF);
+#define SYSTEM_ALARM_CALLBACK_OBJECT_ACE_TYPE   (0x10);
 
-#define SYSTEM_MANDATORY_LABEL_ACE_TYPE         (0x11)
-#define SYSTEM_RESOURCE_ATTRIBUTE_ACE_TYPE      (0x12)
-#define SYSTEM_SCOPED_POLICY_ID_ACE_TYPE        (0x13)
-#define SYSTEM_PROCESS_TRUST_LABEL_ACE_TYPE     (0x14)
-#define ACCESS_MAX_MS_V5_ACE_TYPE               (0x14)
+#define SYSTEM_MANDATORY_LABEL_ACE_TYPE         (0x11);
+#define SYSTEM_RESOURCE_ATTRIBUTE_ACE_TYPE      (0x12);
+#define SYSTEM_SCOPED_POLICY_ID_ACE_TYPE        (0x13);
+#define SYSTEM_PROCESS_TRUST_LABEL_ACE_TYPE     (0x14);
+#define ACCESS_MAX_MS_V5_ACE_TYPE               (0x14);
 
 
 //
@@ -9372,8 +9381,9 @@ typedef struct _SYSTEM_ALARM_CALLBACK_OBJECT_ACE {
 
 #define ACE_OBJECT_TYPE_PRESENT           0x1
 #define ACE_INHERITED_OBJECT_TYPE_PRESENT 0x2
-
+--]==]
 
+ffi.cdef[[
 //
 //  The following declarations are used for setting and querying information
 //  about and ACL.  First are the various information classes available to
@@ -9405,8 +9415,9 @@ typedef struct _ACL_SIZE_INFORMATION {
     DWORD AclBytesFree;
 } ACL_SIZE_INFORMATION;
 typedef ACL_SIZE_INFORMATION *PACL_SIZE_INFORMATION;
+]]
 
-
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //                             SECURITY_DESCRIPTOR                    //
@@ -9422,104 +9433,33 @@ typedef ACL_SIZE_INFORMATION *PACL_SIZE_INFORMATION;
 // Current security descriptor revision value
 //
 
-#define SECURITY_DESCRIPTOR_REVISION     (1)
-#define SECURITY_DESCRIPTOR_REVISION1    (1)
+static const int SECURITY_DESCRIPTOR_REVISION    = (1);
+static const int SECURITY_DESCRIPTOR_REVISION1   = (1);
 
 // end_wdm
 // begin_ntifs
 
-#define SECURITY_DESCRIPTOR_MIN_LENGTH   (sizeof(SECURITY_DESCRIPTOR))
 
+]]
+
+ffi.cdef[[
+static const int SE_OWNER_DEFAULTED               = (0x0001);
+static const int SE_GROUP_DEFAULTED               = (0x0002);
+static const int SE_DACL_PRESENT                  = (0x0004);
+static const int SE_DACL_DEFAULTED                = (0x0008);
+static const int SE_SACL_PRESENT                  = (0x0010);
+static const int SE_SACL_DEFAULTED                = (0x0020);
+static const int SE_DACL_AUTO_INHERIT_REQ         = (0x0100);
+static const int SE_SACL_AUTO_INHERIT_REQ         = (0x0200);
+static const int SE_DACL_AUTO_INHERITED           = (0x0400);
+static const int SE_SACL_AUTO_INHERITED           = (0x0800);
+static const int SE_DACL_PROTECTED                = (0x1000);
+static const int SE_SACL_PROTECTED                = (0x2000);
+static const int SE_RM_CONTROL_VALID              = (0x4000);
+static const int SE_SELF_RELATIVE                 = (0x8000);
 
 typedef WORD   SECURITY_DESCRIPTOR_CONTROL, *PSECURITY_DESCRIPTOR_CONTROL;
 
-#define SE_OWNER_DEFAULTED               (0x0001)
-#define SE_GROUP_DEFAULTED               (0x0002)
-#define SE_DACL_PRESENT                  (0x0004)
-#define SE_DACL_DEFAULTED                (0x0008)
-#define SE_SACL_PRESENT                  (0x0010)
-#define SE_SACL_DEFAULTED                (0x0020)
-#define SE_DACL_AUTO_INHERIT_REQ         (0x0100)
-#define SE_SACL_AUTO_INHERIT_REQ         (0x0200)
-#define SE_DACL_AUTO_INHERITED           (0x0400)
-#define SE_SACL_AUTO_INHERITED           (0x0800)
-#define SE_DACL_PROTECTED                (0x1000)
-#define SE_SACL_PROTECTED                (0x2000)
-#define SE_RM_CONTROL_VALID              (0x4000)
-#define SE_SELF_RELATIVE                 (0x8000)
-
-//
-//  Where:
-//
-//      SE_OWNER_DEFAULTED - This boolean flag, when set, indicates that the
-//          SID pointed to by the Owner field was provided by a
-//          defaulting mechanism rather than explicitly provided by the
-//          original provider of the security descriptor.  This may
-//          affect the treatment of the SID with respect to inheritence
-//          of an owner.
-//
-//      SE_GROUP_DEFAULTED - This boolean flag, when set, indicates that the
-//          SID in the Group field was provided by a defaulting mechanism
-//          rather than explicitly provided by the original provider of
-//          the security descriptor.  This may affect the treatment of
-//          the SID with respect to inheritence of a primary group.
-//
-//      SE_DACL_PRESENT - This boolean flag, when set, indicates that the
-//          security descriptor contains a discretionary ACL.  If this
-//          flag is set and the Dacl field of the SECURITY_DESCRIPTOR is
-//          null, then a null ACL is explicitly being specified.
-//
-//      SE_DACL_DEFAULTED - This boolean flag, when set, indicates that the
-//          ACL pointed to by the Dacl field was provided by a defaulting
-//          mechanism rather than explicitly provided by the original
-//          provider of the security descriptor.  This may affect the
-//          treatment of the ACL with respect to inheritence of an ACL.
-//          This flag is ignored if the DaclPresent flag is not set.
-//
-//      SE_SACL_PRESENT - This boolean flag, when set,  indicates that the
-//          security descriptor contains a system ACL pointed to by the
-//          Sacl field.  If this flag is set and the Sacl field of the
-//          SECURITY_DESCRIPTOR is null, then an empty (but present)
-//          ACL is being specified.
-//
-//      SE_SACL_DEFAULTED - This boolean flag, when set, indicates that the
-//          ACL pointed to by the Sacl field was provided by a defaulting
-//          mechanism rather than explicitly provided by the original
-//          provider of the security descriptor.  This may affect the
-//          treatment of the ACL with respect to inheritence of an ACL.
-//          This flag is ignored if the SaclPresent flag is not set.
-//
-//      SE_SELF_RELATIVE - This boolean flag, when set, indicates that the
-//          security descriptor is in self-relative form.  In this form,
-//          all fields of the security descriptor are contiguous in memory
-//          and all pointer fields are expressed as offsets from the
-//          beginning of the security descriptor.  This form is useful
-//          for treating security descriptors as opaque data structures
-//          for transmission in communication protocol or for storage on
-//          secondary media.
-//
-//
-//
-// Pictorially the structure of a security descriptor is as follows:
-//
-//       3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
-//       1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-//      +---------------------------------------------------------------+
-//      |            Control            |Reserved1 (SBZ)|   Revision    |
-//      +---------------------------------------------------------------+
-//      |                            Owner                              |
-//      +---------------------------------------------------------------+
-//      |                            Group                              |
-//      +---------------------------------------------------------------+
-//      |                            Sacl                               |
-//      +---------------------------------------------------------------+
-//      |                            Dacl                               |
-//      +---------------------------------------------------------------+
-//
-// In general, this data structure should be treated opaquely to ensure future
-// compatibility.
-//
-//
 
 typedef struct _SECURITY_DESCRIPTOR_RELATIVE {
     BYTE  Revision;
@@ -9548,50 +9488,11 @@ typedef struct _SECURITY_OBJECT_AI_PARAMS {
     DWORD ConstraintMask;
 } SECURITY_OBJECT_AI_PARAMS, *PSECURITY_OBJECT_AI_PARAMS;
 
+static const int SECURITY_DESCRIPTOR_MIN_LENGTH  = (sizeof(SECURITY_DESCRIPTOR));
 
-// end_ntifs
+]]
 
-// Where:
-//
-//     Revision - Contains the revision level of the security
-//         descriptor.  This allows this structure to be passed between
-//         systems or stored on disk even though it is expected to
-//         change in the future.
-//
-//     Control - A set of flags which qualify the meaning of the
-//         security descriptor or individual fields of the security
-//         descriptor.
-//
-//     Owner - is a pointer to an SID representing an object's owner.
-//         If this field is null, then no owner SID is present in the
-//         security descriptor.  If the security descriptor is in
-//         self-relative form, then this field contains an offset to
-//         the SID, rather than a pointer.
-//
-//     Group - is a pointer to an SID representing an object's primary
-//         group.  If this field is null, then no primary group SID is
-//         present in the security descriptor.  If the security descriptor
-//         is in self-relative form, then this field contains an offset to
-//         the SID, rather than a pointer.
-//
-//     Sacl - is a pointer to a system ACL.  This field value is only
-//         valid if the DaclPresent control flag is set.  If the
-//         SaclPresent flag is set and this field is null, then a null
-//         ACL  is specified.  If the security descriptor is in
-//         self-relative form, then this field contains an offset to
-//         the ACL, rather than a pointer.
-//
-//     Dacl - is a pointer to a discretionary ACL.  This field value is
-//         only valid if the DaclPresent control flag is set.  If the
-//         DaclPresent flag is set and this field is null, then a null
-//         ACL (unconditionally granting access) is specified.  If the
-//         security descriptor is in self-relative form, then this field
-//         contains an offset to the ACL, rather than a pointer.
-//
-
-
-
-
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //               Object Type list for AccessCheckByType               //
@@ -9603,17 +9504,16 @@ typedef struct _OBJECT_TYPE_LIST {
     WORD   Sbz;
     GUID *ObjectType;
 } OBJECT_TYPE_LIST, *POBJECT_TYPE_LIST;
+]]
 
-//
-// DS values for Level
-//
+ffi.cdef[[
+static const int ACCESS_OBJECT_GUID       = 0;
+static const int ACCESS_PROPERTY_SET_GUID = 1;
+static const int ACCESS_PROPERTY_GUID     = 2;
+static const int ACCESS_MAX_LEVEL         = 4;
+]]
 
-#define ACCESS_OBJECT_GUID       0
-#define ACCESS_PROPERTY_SET_GUID 1
-#define ACCESS_PROPERTY_GUID     2
-
-#define ACCESS_MAX_LEVEL         4
-
+ffi.cdef[[
 //
 // Parameters to NtAccessCheckByTypeAndAditAlarm
 //
@@ -9623,8 +9523,10 @@ typedef enum _AUDIT_EVENT_TYPE {
     AuditEventDirectoryServiceAccess
 } AUDIT_EVENT_TYPE, *PAUDIT_EVENT_TYPE;
 
-#define AUDIT_ALLOW_NO_PRIVILEGE 0x1
+static const int AUDIT_ALLOW_NO_PRIVILEGE = 0x1;
+]]
 
+--[[
 //
 // DS values for Source and ObjectTypeName
 //
@@ -9633,7 +9535,9 @@ typedef enum _AUDIT_EVENT_TYPE {
 #define ACCESS_DS_SOURCE_W L"DS"
 #define ACCESS_DS_OBJECT_TYPE_NAME_A "Directory Service Object"
 #define ACCESS_DS_OBJECT_TYPE_NAME_W L"Directory Service Object"
+--]]
 
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //               Privilege Related Data Structures                    //
@@ -9641,57 +9545,49 @@ typedef enum _AUDIT_EVENT_TYPE {
 ////////////////////////////////////////////////////////////////////////
 
 // end_ntifs
+
 // begin_wdm
 //
 // Privilege attributes
 //
 
-#define SE_PRIVILEGE_ENABLED_BY_DEFAULT (0x00000001L)
-#define SE_PRIVILEGE_ENABLED            (0x00000002L)
-#define SE_PRIVILEGE_REMOVED            (0X00000004L)
-#define SE_PRIVILEGE_USED_FOR_ACCESS    (0x80000000L)
+static const int SE_PRIVILEGE_ENABLED_BY_DEFAULT =(0x00000001L);
+static const int SE_PRIVILEGE_ENABLED            =(0x00000002L);
+static const int SE_PRIVILEGE_REMOVED            =(0X00000004L);
+static const int SE_PRIVILEGE_USED_FOR_ACCESS    =(0x80000000L);
 
-#define SE_PRIVILEGE_VALID_ATTRIBUTES   (SE_PRIVILEGE_ENABLED_BY_DEFAULT | \
+static const int SE_PRIVILEGE_VALID_ATTRIBUTES   =(SE_PRIVILEGE_ENABLED_BY_DEFAULT | \
                                          SE_PRIVILEGE_ENABLED            | \
                                          SE_PRIVILEGE_REMOVED            | \
-                                         SE_PRIVILEGE_USED_FOR_ACCESS)
+                                         SE_PRIVILEGE_USED_FOR_ACCESS);
+]]
+
+ffi.cdef[[
+
+static const int PRIVILEGE_SET_ALL_NECESSARY   = (1);
 
 
-//
-// Privilege Set Control flags
-//
-
-#define PRIVILEGE_SET_ALL_NECESSARY    (1)
-
-//
-//  Privilege Set - This is defined for a privilege set of one.
-//                  If more than one privilege is needed, then this structure
-//                  will need to be allocated with more space.
-//
-//  Note: don't change this structure without fixing the INITIAL_PRIVILEGE_SET
-//  structure (defined in se.h)
-//
 
 typedef struct _PRIVILEGE_SET {
     DWORD PrivilegeCount;
     DWORD Control;
     LUID_AND_ATTRIBUTES Privilege[ANYSIZE_ARRAY];
-    } PRIVILEGE_SET, * PPRIVILEGE_SET;
+} PRIVILEGE_SET, * PPRIVILEGE_SET;
+]]
 
 
-
-
+ffi.cdef[[
 //
 // Values for different access granted\denied reasons:
 // AccessReasonAceN = AccessReasonAce + N.
 // AccessReasonPrivilegeN = AccessReasonPrivilege + N.
 //
 
-#define ACCESS_REASON_TYPE_MASK 0x00ff0000
-#define ACCESS_REASON_DATA_MASK 0x0000ffff
+static const int ACCESS_REASON_TYPE_MASK = 0x00ff0000;
+static const int ACCESS_REASON_DATA_MASK = 0x0000ffff;
 
-#define ACCESS_REASON_STAGING_MASK  0x80000000
-#define ACCESS_REASON_EXDATA_MASK   0x7f000000
+static const int ACCESS_REASON_STAGING_MASK = 0x80000000;
+static const int ACCESS_REASON_EXDATA_MASK  = 0x7f000000;
 
 typedef enum _ACCESS_REASON_TYPE{
 
@@ -9708,14 +9604,13 @@ typedef enum _ACCESS_REASON_TYPE{
     AccessReasonAllowedParentAce            = 0x00030000,   // Granted a permission from parent ACE
     AccessReasonDeniedParentAce             = 0x00040000,   // Denied a permission from parent ACE
 
-    AccessReasonNotGrantedByCape            = 0x00050000,   // A CAPE didn't grant the permission
+    AccessReasonNotGrantedByCape            = 0x00050000,   // A CAPE didnt grant the permission
     AccessReasonNotGrantedByParentCape      = 0x00060000,   // A CAPE from the parent's SD didn't grant the permission
 
     AccessReasonNotGrantedToAppContainer    = 0x00070000,   // This is an AppContainer and no ACE granted the permission.
 
     AccessReasonMissingPrivilege            = 0x00100000,
     AccessReasonFromPrivilege               = 0x00200000,
-
 
     AccessReasonIntegrityLevel              = 0x00300000,
 
@@ -9728,50 +9623,24 @@ typedef enum _ACCESS_REASON_TYPE{
     AccessReasonNoGrant                     = 0x00800000,   // this access bit is not granted by any ACE.
 
     AccessReasonTrustLabel                  = 0x00900000    // The trust label ACE did not grant this access.
-}
-ACCESS_REASON_TYPE;
+} ACCESS_REASON_TYPE;
 
- //
-// Structure to hold access denied\granted reason for every bit of ACCESS_MASK.
-// There are 32-bits in ACCESS_MASK and only 27-bits are actually valid on
-// return from AccessCheck because MAXIMUM_ALLOWED, GENERIC_READ,
-// GENERIC_WRITE, GENERIC_EXECUTE, and GENERIC_ALL are never returned.
-//
-// The content in Data fields depends on the Access Reason, for example,
-// if the reason is AccessReasonAce, the Data will be the ACE ID.
-// If there are more than one reason (more than one bit is set), the array size
-// of the Data is equal to the number of bits set (or number of reasons).
-// The Data could be null for a particular reason.
-//
+
 
 typedef DWORD ACCESS_REASON;
 
 typedef struct _ACCESS_REASONS{
         ACCESS_REASON Data[32];
 } ACCESS_REASONS, *PACCESS_REASONS;
+]]
+
+ffi.cdef[[
 
 
-/*
-The following data structures are defined to consolidate various falvors of
-access check functions. In particular for Windows 7, the new access check
-function will enable security attribute check, plus returning the reason
-for a access check result.
 
-The new access check function based on these data structures will
-form the foundation to reimplement other flavors of access check
-functions.
-
-*/
-
-//
-// Structure to hold pointer to security descriptor and its unique id, which
-// can be used for caching access check results.
-// (NOTE NOTE) The cache key can be constructed by SecurityDescriptorId, Token and
-// PrincipalSelfSid. Watch how GenericMapping affects the cache results.
-//
-#define SE_SECURITY_DESCRIPTOR_FLAG_NO_OWNER_ACE    0x00000001
-#define SE_SECURITY_DESCRIPTOR_FLAG_NO_LABEL_ACE    0x00000002
-#define SE_SECURITY_DESCRIPTOR_VALID_FLAGS          0x00000003
+static const int SE_SECURITY_DESCRIPTOR_FLAG_NO_OWNER_ACE  =  0x00000001;
+static const int SE_SECURITY_DESCRIPTOR_FLAG_NO_LABEL_ACE  =  0x00000002;
+static const int SE_SECURITY_DESCRIPTOR_VALID_FLAGS        =  0x00000003;
 
 typedef struct _SE_SECURITY_DESCRIPTOR
 {
@@ -9802,8 +9671,9 @@ typedef struct _SE_ACCESS_REPLY
     PACCESS_REASONS AccessReason;
     PPRIVILEGE_SET* Privileges;
 } SE_ACCESS_REPLY, *PSE_ACCESS_REPLY;
+]]
 
-
+--[[
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 //               NT Defined Privileges                                //
@@ -9854,9 +9724,9 @@ typedef struct _SE_ACCESS_REPLY
 #define SE_constRAINED_IMPERSONATION_CAPABILITY L"constrainedImpersonation"
 #define SE_SESSION_IMPERSONATION_CAPABILITY L"sessionImpersonation"
 #define SE_MUMA_CAPABILITY L"muma"
+--]]
 
-
-
+ffi.cdef[[
 ////////////////////////////////////////////////////////////////////
 //                                                                //
 //           Security Quality Of Service                          //
@@ -9879,7 +9749,9 @@ typedef enum _SECURITY_IMPERSONATION_LEVEL {
     SecurityImpersonation,
     SecurityDelegation
     } SECURITY_IMPERSONATION_LEVEL, * PSECURITY_IMPERSONATION_LEVEL;
+]]
 
+--[==[
 #define SECURITY_MAX_IMPERSONATION_LEVEL SecurityDelegation
 #define SECURITY_MIN_IMPERSONATION_LEVEL SecurityAnonymous
 #define DEFAULT_IMPERSONATION_LEVEL SecurityImpersonation
@@ -9899,17 +9771,17 @@ typedef enum _SECURITY_IMPERSONATION_LEVEL {
 // Token Specific Access Rights.
 //
 
-#define TOKEN_ASSIGN_PRIMARY    (0x0001)
-#define TOKEN_DUPLICATE         (0x0002)
-#define TOKEN_IMPERSONATE       (0x0004)
-#define TOKEN_QUERY             (0x0008)
-#define TOKEN_QUERY_SOURCE      (0x0010)
-#define TOKEN_ADJUST_PRIVILEGES (0x0020)
-#define TOKEN_ADJUST_GROUPS     (0x0040)
-#define TOKEN_ADJUST_DEFAULT    (0x0080)
-#define TOKEN_ADJUST_SESSIONID  (0x0100)
+#define TOKEN_ASSIGN_PRIMARY   = (0x0001);
+#define TOKEN_DUPLICATE        = (0x0002);
+#define TOKEN_IMPERSONATE      = (0x0004);
+#define TOKEN_QUERY            = (0x0008);
+#define TOKEN_QUERY_SOURCE     = (0x0010);
+#define TOKEN_ADJUST_PRIVILEGES= (0x0020);
+#define TOKEN_ADJUST_GROUPS    = (0x0040);
+#define TOKEN_ADJUST_DEFAULT   = (0x0080);
+#define TOKEN_ADJUST_SESSIONID = (0x0100);
 
-#define TOKEN_ALL_ACCESS_P (STANDARD_RIGHTS_REQUIRED  |\
+#define TOKEN_ALL_ACCESS_P = (STANDARD_RIGHTS_REQUIRED  |\
                           TOKEN_ASSIGN_PRIMARY      |\
                           TOKEN_DUPLICATE           |\
                           TOKEN_IMPERSONATE         |\
@@ -9917,14 +9789,14 @@ typedef enum _SECURITY_IMPERSONATION_LEVEL {
                           TOKEN_QUERY_SOURCE        |\
                           TOKEN_ADJUST_PRIVILEGES   |\
                           TOKEN_ADJUST_GROUPS       |\
-                          TOKEN_ADJUST_DEFAULT )
+                          TOKEN_ADJUST_DEFAULT );
 
-#if ((defined(_WIN32_WINNT) && (_WIN32_WINNT > 0x0400)) || (!defined(_WIN32_WINNT)))
+if ((defined(_WIN32_WINNT) and (_WIN32_WINNT > 0x0400)) or (!defined(_WIN32_WINNT))) then
 #define TOKEN_ALL_ACCESS  (TOKEN_ALL_ACCESS_P |\
                           TOKEN_ADJUST_SESSIONID )
-#else
+else
 #define TOKEN_ALL_ACCESS  (TOKEN_ALL_ACCESS_P)
-#endif
+end
 
 #define TOKEN_READ       (STANDARD_RIGHTS_READ      |\
                           TOKEN_QUERY)
@@ -9941,16 +9813,16 @@ typedef enum _SECURITY_IMPERSONATION_LEVEL {
                                        TOKEN_QUERY  |\
                                        TOKEN_QUERY_SOURCE )
 
-#if (NTDDI_VERSION >= NTDDI_WIN8)
-
+if (NTDDI_VERSION >= NTDDI_WIN8) then
 #define TOKEN_ACCESS_PSEUDO_HANDLE_WIN8 (TOKEN_QUERY | TOKEN_QUERY_SOURCE)
-
 #define TOKEN_ACCESS_PSEUDO_HANDLE TOKEN_ACCESS_PSEUDO_HANDLE_WIN8
-
-#endif
+end
 //
 // end_access
 //
+--]==]
+
+ffi.cdef[[
 //
 // Token Types
 //
@@ -10032,34 +9904,29 @@ typedef enum _TOKEN_INFORMATION_CLASS {
 typedef struct _TOKEN_USER {
     SID_AND_ATTRIBUTES User;
 } TOKEN_USER, *PTOKEN_USER;
+]]
 
-#ifndef MIDL_PASS
-
+ffi.cdef[[
 typedef struct _SE_TOKEN_USER {
     union {
         TOKEN_USER TokenUser;
         SID_AND_ATTRIBUTES User;
-    } DUMMYUNIONNAME;
+    } ;
 
     union {
         SID Sid;
         BYTE  Buffer[SECURITY_MAX_SID_SIZE];
-    } DUMMYUNIONNAME2;
+    } ;
 
 } SE_TOKEN_USER , PSE_TOKEN_USER;
 
-#define TOKEN_USER_MAX_SIZE (sizeof(TOKEN_USER) + SECURITY_MAX_SID_SIZE)
+static const int TOKEN_USER_MAX_SIZE = (sizeof(TOKEN_USER) + SECURITY_MAX_SID_SIZE);
+]]
 
-#endif
-
-
+ffi.cdef[[
 typedef struct _TOKEN_GROUPS {
     DWORD GroupCount;
-#ifdef MIDL_PASS
-    [size_is(GroupCount)] SID_AND_ATTRIBUTES Groups[*];
-#else // MIDL_PASS
     SID_AND_ATTRIBUTES Groups[ANYSIZE_ARRAY];
-#endif // MIDL_PASS
 } TOKEN_GROUPS, *PTOKEN_GROUPS;
 
 typedef struct _TOKEN_PRIVILEGES {
@@ -10071,11 +9938,13 @@ typedef struct _TOKEN_PRIVILEGES {
 typedef struct _TOKEN_OWNER {
     PSID Owner;
 } TOKEN_OWNER, *PTOKEN_OWNER;
+]]
 
-#ifndef MIDL_PASS
-#define TOKEN_OWNER_MAX_SIZE (sizeof(TOKEN_OWNER) + SECURITY_MAX_SID_SIZE)
-#endif
+ffi.cdef[[
+static const int TOKEN_OWNER_MAX_SIZE = (sizeof(TOKEN_OWNER) + SECURITY_MAX_SID_SIZE)
+]]
 
+ffi.cdef[[
 typedef struct _TOKEN_PRIMARY_GROUP {
     PSID PrimaryGroup;
 } TOKEN_PRIMARY_GROUP, *PTOKEN_PRIMARY_GROUP;
@@ -10117,10 +9986,12 @@ typedef struct _TOKEN_ELEVATION {
 typedef struct _TOKEN_MANDATORY_LABEL {
     SID_AND_ATTRIBUTES Label;
 } TOKEN_MANDATORY_LABEL, *PTOKEN_MANDATORY_LABEL;
+]]
 
-#define TOKEN_MANDATORY_POLICY_OFF             0x0
-#define TOKEN_MANDATORY_POLICY_NO_WRITE_UP     0x1
-#define TOKEN_MANDATORY_POLICY_NEW_PROCESS_MIN 0x2
+--[==[
+#define TOKEN_MANDATORY_POLICY_OFF             =0x0;
+#define TOKEN_MANDATORY_POLICY_NO_WRITE_UP     =0x1;
+#define TOKEN_MANDATORY_POLICY_NEW_PROCESS_MIN =0x2;
 
 #define TOKEN_MANDATORY_POLICY_VALID_MASK      (TOKEN_MANDATORY_POLICY_NO_WRITE_UP | \
                                                 TOKEN_MANDATORY_POLICY_NEW_PROCESS_MIN)
@@ -10213,11 +10084,15 @@ typedef struct _TOKEN_APPCONTAINER_INFORMATION {
 #ifndef MIDL_PASS
 #define TOKEN_APPCONTAINER_SID_MAX_SIZE (sizeof(TOKEN_APPCONTAINER_INFORMATION) + SECURITY_MAX_SID_SIZE)
 #endif
+--]==]
 
+ffi.cdef[[
 typedef struct _TOKEN_SID_INFORMATION {
     PSID Sid;
 } TOKEN_SID_INFORMATION, *PTOKEN_SID_INFORMATION;
+]]
 
+ffi.cdef[[
 //
 //  *** Claim Security attributes ***
 //
@@ -10230,10 +10105,10 @@ typedef struct _TOKEN_SID_INFORMATION {
 //  Security attribute data types ...
 //
 
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_INVALID   0x00
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_INVALID  = 0x00;
 
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_INT64     0x01
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_UINT64    0x02
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_INT64    = 0x01;
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_UINT64   = 0x02;
 
 //
 //  Case insensitive attribute value string by default.
@@ -10241,7 +10116,7 @@ typedef struct _TOKEN_SID_INFORMATION {
 //  is set indicating otherwise.
 //
 
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_STRING    0x03
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_STRING   = 0x03;
 
 //
 //  Fully-qualified binary name.
@@ -10252,11 +10127,9 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_FQBN_VALUE {
     PWSTR               Name;
 } CLAIM_SECURITY_ATTRIBUTE_FQBN_VALUE, *PCLAIM_SECURITY_ATTRIBUTE_FQBN_VALUE;
 
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_FQBN      0x04
-
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_SID       0x05
-
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_BOOLEAN   0x06
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_FQBN     = 0x04;
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_SID      = 0x05;
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_BOOLEAN  = 0x06;
 
 
 typedef struct _CLAIM_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE {
@@ -10265,8 +10138,10 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE {
 } CLAIM_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE,
     *PCLAIM_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE;
 
-#define CLAIM_SECURITY_ATTRIBUTE_TYPE_OCTET_STRING  0x10
+static const int CLAIM_SECURITY_ATTRIBUTE_TYPE_OCTET_STRING = 0x10;
+]]
 
+--[==[
 //
 // Attribute Flags
 //
@@ -10318,56 +10193,22 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_OCTET_STRING_VALUE {
                         CLAIM_SECURITY_ATTRIBUTE_DISABLED_BY_DEFAULT   |  \
                         CLAIM_SECURITY_ATTRIBUTE_DISABLED              |  \
                         CLAIM_SECURITY_ATTRIBUTE_MANDATORY )
+--]==]
 
-
+ffi.cdef[[
 //
 // Reserve upper 16 bits for custom flags. These should be preserved but not
 // validated as they do not affect security in any way.
 //
-#define CLAIM_SECURITY_ATTRIBUTE_CUSTOM_FLAGS   0xFFFF0000
-
-//
-//  An individual security attribute.
-//
-
+static const int CLAIM_SECURITY_ATTRIBUTE_CUSTOM_FLAGS   = 0xFFFF0000;
 
 typedef struct _CLAIM_SECURITY_ATTRIBUTE_V1 {
 
-    //
-    //  Name of the attribute.
-    //  Case insensitive Unicode string.
-    //
-
     PWSTR   Name; 
-
-    //
-    //  Data type of attribute.
-    //
-
     WORD    ValueType;
-
-    //
-    //  Pass 0 in a set operation and check for 0 in
-    //  a get operation.
-    //
-
     WORD    Reserved;
-
-    //
-    // Attribute Flags
-    //
-
     DWORD   Flags;
-
-    //
-    //  Number of values.
-    //
-
     DWORD   ValueCount;
-
-    //
-    //  The actual value itself.
-    //
 
     union {
         PLONG64                                         pInt64;
@@ -10385,41 +10226,16 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_V1 {
 
 typedef struct _CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 {
 
-    //
-    //  Name of the attribute.
-    //  Offset from beginning of structure.
-    //
+
 
     DWORD   Name;
 
-    //
-    //  Data type of attribute.
-    //
+
 
     WORD    ValueType;
-
-    //
-    //  Pass 0 in a set operation and check for 0 in
-    //  a get operation.
-    //
-
     WORD    Reserved;
-
-    //
-    // Attribute Flags
-    //
-
     DWORD   Flags;
-
-    //
-    //  Number of values.
-    //
-
     DWORD   ValueCount;
-
-    //
-    //  The actual value itself.
-    //
 
     union {
         DWORD pInt64[ANYSIZE_ARRAY];
@@ -10429,8 +10245,9 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 {
         DWORD pOctetString[ANYSIZE_ARRAY];
     } Values;
 } CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1, *PCLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1;
+]]
 
-
+ffi.cdef[[
 //
 //  Set of security attributes.
 //
@@ -10443,13 +10260,13 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 {
 //  MUST specify the version of the data structure passed in.
 //
 
-#define CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION_V1    1
+static const int CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION_V1   = 1;
 
-#define CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION       \
-    CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION_V1
+static const int CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION      = \
+    CLAIM_SECURITY_ATTRIBUTES_INFORMATION_VERSION_V1;
+]]
 
-
-
+ffi.cdef[[
 typedef struct _CLAIM_SECURITY_ATTRIBUTES_INFORMATION {
 
     //
@@ -10469,7 +10286,9 @@ typedef struct _CLAIM_SECURITY_ATTRIBUTES_INFORMATION {
         PCLAIM_SECURITY_ATTRIBUTE_V1    pAttributeV1;
     } Attribute;
 } CLAIM_SECURITY_ATTRIBUTES_INFORMATION, *PCLAIM_SECURITY_ATTRIBUTES_INFORMATION;
+]]
 
+--[==[
 //
 // Security Tracking Mode
 //
@@ -12681,7 +12500,9 @@ typedef struct _NETWORK_APP_INSTANCE_EA {
 #endif // (NTDDI_VERSION >= NTDDI_WIN10)
 
 #endif //_NETWORK_APP_INSTANCE_EA_DEFINED
+--]==]
 
+ffi.cdef[[
 // begin_access
 
 //
@@ -12690,140 +12511,86 @@ typedef struct _NETWORK_APP_INSTANCE_EA {
 
 static const int DUPLICATE_CLOSE_SOURCE    =  0x00000001;
 static const int DUPLICATE_SAME_ACCESS     =  0x00000002;
+]]
 
-
+--[==[
 DEFINE_GUID( GUID_MAX_POWER_SAVINGS, 0xA1841308, 0x3541, 0x4FAB, 0xBC, 0x81, 0xF7, 0x15, 0x56, 0xF2, 0x0B, 0x4A );
-
 DEFINE_GUID( GUID_MIN_POWER_SAVINGS, 0x8C5E7FDA, 0xE8BF, 0x4A96, 0x9A, 0x85, 0xA6, 0xE2, 0x3A, 0x8C, 0x63, 0x5C );
-
 DEFINE_GUID( GUID_TYPICAL_POWER_SAVINGS, 0x381B4222, 0xF694, 0x41F0, 0x96, 0x85, 0xFF, 0x5B, 0xB2, 0x60, 0xDF, 0x2E );
-
 DEFINE_GUID( NO_SUBGROUP_GUID, 0xFEA3413E, 0x7E05, 0x4911, 0x9A, 0x71, 0x70, 0x03, 0x31, 0xF1, 0xC2, 0x94 );
-
 DEFINE_GUID( ALL_POWERSCHEMES_GUID, 0x68A1E95E, 0x13EA, 0x41E1, 0x80, 0x11, 0x0C, 0x49, 0x6C, 0xA4, 0x90, 0xB0 );
-
 DEFINE_GUID( GUID_POWERSCHEME_PERSONALITY, 0x245D8541, 0x3943, 0x4422, 0xB0, 0x25, 0x13, 0xA7, 0x84, 0xF6, 0x79, 0xB7 );
-
 DEFINE_GUID( GUID_ACTIVE_POWERSCHEME, 0x31F9F286, 0x5084, 0x42FE, 0xB7, 0x20, 0x2B, 0x02, 0x64, 0x99, 0x37, 0x63 );
-
 DEFINE_GUID(GUID_IDLE_RESILIENCY_SUBGROUP, 0x2e601130, 0x5351, 0x4d9d, 0x8e, 0x4, 0x25, 0x29, 0x66, 0xba, 0xd0, 0x54);
-
 DEFINE_GUID(GUID_IDLE_RESILIENCY_PERIOD, 0xc42b79aa, 0xaa3a, 0x484b, 0xa9, 0x8f, 0x2c, 0xf3, 0x2a, 0xa9, 0xa, 0x28);
-
 DEFINE_GUID(GUID_DEEP_SLEEP_ENABLED, 0xd502f7ee, 0x1dc7, 0x4efd, 0xa5, 0x5d, 0xf0, 0x4b, 0x6f, 0x5c, 0x5, 0x45);
-
 DEFINE_GUID(GUID_DEEP_SLEEP_PLATFORM_STATE, 0xd23f2fb8, 0x9536, 0x4038, 0x9c, 0x94, 0x1c, 0xe0, 0x2e, 0x5c, 0x21, 0x52);
-
 DEFINE_GUID(GUID_DISK_COALESCING_POWERDOWN_TIMEOUT, 0xc36f0eb4, 0x2988, 0x4a70, 0x8e, 0xee, 0x8, 0x84, 0xfc, 0x2c, 0x24, 0x33);
-
 DEFINE_GUID(GUID_EXECUTION_REQUIRED_REQUEST_TIMEOUT, 0x3166bc41, 0x7e98, 0x4e03, 0xb3, 0x4e, 0xec, 0xf, 0x5f, 0x2b, 0x21, 0x8e);
-
 DEFINE_GUID( GUID_VIDEO_SUBGROUP, 0x7516B95F, 0xF776, 0x4464, 0x8C, 0x53, 0x06, 0x16, 0x7F, 0x40, 0xCC, 0x99 );
-
 DEFINE_GUID( GUID_VIDEO_POWERDOWN_TIMEOUT, 0x3C0BC021, 0xC8A8, 0x4E07, 0xA9, 0x73, 0x6B, 0x14, 0xCB, 0xCB, 0x2B, 0x7E );
-
 DEFINE_GUID( GUID_VIDEO_ANNOYANCE_TIMEOUT, 0x82DBCF2D, 0xCD67, 0x40C5, 0xBF, 0xDC, 0x9F, 0x1A, 0x5C, 0xCD, 0x46, 0x63 );
-
 DEFINE_GUID( GUID_VIDEO_ADAPTIVE_PERCENT_INCREASE, 0xEED904DF, 0xB142, 0x4183, 0xB1, 0x0B, 0x5A, 0x11, 0x97, 0xA3, 0x78, 0x64 );
-
 DEFINE_GUID( GUID_VIDEO_DIM_TIMEOUT, 0x17aaa29b, 0x8b43, 0x4b94, 0xaa, 0xfe, 0x35, 0xf6, 0x4d, 0xaa, 0xf1, 0xee);
 DEFINE_GUID( GUID_VIDEO_ADAPTIVE_POWERDOWN, 0x90959D22, 0xD6A1, 0x49B9, 0xAF, 0x93, 0xBC, 0xE8, 0x85, 0xAD, 0x33, 0x5B );
 DEFINE_GUID(GUID_DISK_MAX_POWER, 0x51dea550, 0xbb38, 0x4bc4, 0x99, 0x1b, 0xea, 0xcf, 0x37, 0xbe, 0x5e, 0xc8);
 DEFINE_GUID( GUID_MONITOR_POWER_ON, 0x02731015, 0x4510, 0x4526, 0x99, 0xE6, 0xE5, 0xA1, 0x7E, 0xBD, 0x1A, 0xEA );
-
 DEFINE_GUID(GUID_DEVICE_POWER_POLICY_VIDEO_BRIGHTNESS, 0xaded5e82L, 0xb909, 0x4619, 0x99, 0x49, 0xf5, 0xd7, 0x1d, 0xac, 0x0b, 0xcb);
-
 DEFINE_GUID(GUID_DEVICE_POWER_POLICY_VIDEO_DIM_BRIGHTNESS, 0xf1fbfde2, 0xa960, 0x4165, 0x9f, 0x88, 0x50, 0x66, 0x79, 0x11, 0xce, 0x96);
-
 DEFINE_GUID(GUID_VIDEO_CURRENT_MONITOR_BRIGHTNESS, 0x8ffee2c6, 0x2d01, 0x46be, 0xad, 0xb9, 0x39, 0x8a, 0xdd, 0xc5, 0xb4, 0xff);
-
 DEFINE_GUID(GUID_VIDEO_ADAPTIVE_DISPLAY_BRIGHTNESS, 0xFBD9AA66, 0x9553, 0x4097, 0xBA, 0x44, 0xED, 0x6E, 0x9D, 0x65, 0xEA, 0xB8);
-
 DEFINE_GUID(GUID_CONSOLE_DISPLAY_STATE, 0x6fe69556, 0x704a, 0x47a0, 0x8f, 0x24, 0xc2, 0x8d, 0x93, 0x6f, 0xda, 0x47);
-
 DEFINE_GUID( GUID_ALLOW_DISPLAY_REQUIRED, 0xA9CEB8DA, 0xCD46, 0x44FB, 0xA9, 0x8B, 0x02, 0xAF, 0x69, 0xDE, 0x46, 0x23 );
-
 DEFINE_GUID(GUID_VIDEO_CONSOLE_LOCK_TIMEOUT, 0x8ec4b3a5, 0x6868, 0x48c2, 0xbe, 0x75, 0x4f, 0x30, 0x44, 0xbe, 0x88, 0xa7);
-
 DEFINE_GUID(GUID_ADAPTIVE_POWER_BEHAVIOR_SUBGROUP, 0x8619b916, 0xe004, 0x4dd8, 0x9b, 0x66, 0xda, 0xe8, 0x6f, 0x80, 0x66, 0x98);
-
 DEFINE_GUID(GUID_NON_ADAPTIVE_INPUT_TIMEOUT, 0x5adbbfbc, 0x74e, 0x4da1, 0xba, 0x38, 0xdb, 0x8b, 0x36, 0xb2, 0xc8, 0xf3);
-
 DEFINE_GUID( GUID_DISK_SUBGROUP, 0x0012EE47, 0x9041, 0x4B5D, 0x9B, 0x77, 0x53, 0x5F, 0xBA, 0x8B, 0x14, 0x42 );
-
 DEFINE_GUID( GUID_DISK_POWERDOWN_TIMEOUT, 0x6738E2C4, 0xE8A5, 0x4A42, 0xB1, 0x6A, 0xE0, 0x40, 0xE7, 0x69, 0x75, 0x6E );
-
 DEFINE_GUID( GUID_DISK_IDLE_TIMEOUT, 0x58E39BA8, 0xB8E6, 0x4EF6, 0x90, 0xD0, 0x89, 0xAE, 0x32, 0xB2, 0x58, 0xD6 );
-
 DEFINE_GUID( GUID_DISK_BURST_IGNORE_THRESHOLD, 0x80e3c60e, 0xbb94, 0x4ad8, 0xbb, 0xe0, 0x0d, 0x31, 0x95, 0xef, 0xc6, 0x63 );
-
 DEFINE_GUID( GUID_DISK_ADAPTIVE_POWERDOWN, 0x396A32E1, 0x499A, 0x40B2, 0x91, 0x24, 0xA9, 0x6A, 0xFE, 0x70, 0x76, 0x67 );
-
 DEFINE_GUID( GUID_SLEEP_SUBGROUP, 0x238C9FA8, 0x0AAD, 0x41ED, 0x83, 0xF4, 0x97, 0xBE, 0x24, 0x2C, 0x8F, 0x20 );
-
 DEFINE_GUID( GUID_SLEEP_IDLE_THRESHOLD, 0x81cd32e0, 0x7833, 0x44f3, 0x87, 0x37, 0x70, 0x81, 0xf3, 0x8d, 0x1f, 0x70 );
-
 DEFINE_GUID( GUID_STANDBY_TIMEOUT, 0x29F6C1DB, 0x86DA, 0x48C5, 0x9F, 0xDB, 0xF2, 0xB6, 0x7B, 0x1F, 0x44, 0xDA );
-
 DEFINE_GUID( GUID_UNATTEND_SLEEP_TIMEOUT, 0x7bc4a2f9, 0xd8fc, 0x4469, 0xb0, 0x7b, 0x33, 0xeb, 0x78, 0x5a, 0xac, 0xa0 );
-
 DEFINE_GUID( GUID_HIBERNATE_TIMEOUT, 0x9D7815A6, 0x7EE4, 0x497E, 0x88, 0x88, 0x51, 0x5A, 0x05, 0xF0, 0x23, 0x64 );
-
 DEFINE_GUID( GUID_HIBERNATE_FASTS4_POLICY, 0x94AC6D29, 0x73CE, 0x41A6, 0x80, 0x9F, 0x63, 0x63, 0xBA, 0x21, 0xB4, 0x7E );
-
 DEFINE_GUID( GUID_CRITICAL_POWER_TRANSITION,  0xB7A27025, 0xE569, 0x46c2, 0xA5, 0x04, 0x2B, 0x96, 0xCA, 0xD2, 0x25, 0xA1);
-
 DEFINE_GUID( GUID_SYSTEM_AWAYMODE, 0x98A7F580, 0x01F7, 0x48AA, 0x9C, 0x0F, 0x44, 0x35, 0x2C, 0x29, 0xE5, 0xC0 );
-
 DEFINE_GUID( GUID_ALLOW_AWAYMODE, 0x25dfa149, 0x5dd1, 0x4736, 0xb5, 0xab, 0xe8, 0xa3, 0x7b, 0x5b, 0x81, 0x87 );
-
 DEFINE_GUID( GUID_USER_PRESENCE_PREDICTION, 0x82011705, 0xfb95, 0x4d46, 0x8d, 0x35, 0x40, 0x42, 0xb1, 0xd2, 0xd, 0xef );
-
 DEFINE_GUID( GUID_STANDBY_BUDGET_GRACE_PERIOD, 0x60c07fe1, 0x0556, 0x45cf, 0x99, 0x03, 0xd5, 0x6e, 0x32, 0x21, 0x2, 0x42 );
-
 DEFINE_GUID( GUID_STANDBY_BUDGET_PERCENT, 0x9fe527be, 0x1b70, 0x48da, 0x93, 0x0d, 0x7b, 0xcf, 0x17, 0xb4, 0x49, 0x90 );
-
 DEFINE_GUID( GUID_STANDBY_RESERVE_GRACE_PERIOD, 0xc763ee92, 0x71e8, 0x4127, 0x84, 0xeb, 0xf6, 0xed, 0x04, 0x3a, 0x3e, 0x3d );
-
 DEFINE_GUID( GUID_STANDBY_RESERVE_TIME, 0x468FE7E5, 0x1158, 0x46EC, 0x88, 0xbc, 0x5b, 0x96, 0xc9, 0xe4, 0x4f, 0xd0 );
-
-DEFINE_GUID(GUID_STANDBY_RESET_PERCENT, 0x49cb11a5, 0x56e2, 0x4afb, 0x9d, 0x38, 0x3d, 0xf4, 0x78, 0x72, 0xe2, 0x1b);
-
+DEFINE_GUID( GUID_STANDBY_RESET_PERCENT, 0x49cb11a5, 0x56e2, 0x4afb, 0x9d, 0x38, 0x3d, 0xf4, 0x78, 0x72, 0xe2, 0x1b);
 DEFINE_GUID( GUID_ALLOW_STANDBY_STATES, 0xabfc2519, 0x3608, 0x4c2a, 0x94, 0xea, 0x17, 0x1b, 0x0e, 0xd5, 0x46, 0xab );
-
 DEFINE_GUID( GUID_ALLOW_RTC_WAKE, 0xBD3B718A, 0x0680, 0x4D9D, 0x8A, 0xB2, 0xE1, 0xD2, 0xB4, 0xAC, 0x80, 0x6D );
-
 DEFINE_GUID( GUID_ALLOW_SYSTEM_REQUIRED, 0xA4B195F5, 0x8225, 0x47D8, 0x80, 0x12, 0x9D, 0x41, 0x36, 0x97, 0x86, 0xE2 );
-
 DEFINE_GUID( GUID_POWER_SAVING_STATUS, 0xe00958c0, 0xc213, 0x4ace, 0xac, 0x77, 0xfe, 0xcc, 0xed, 0x2e, 0xee, 0xa5);
-
 DEFINE_GUID( GUID_ENERGY_SAVER_SUBGROUP, 0xDE830923, 0xA562, 0x41AF, 0xA0, 0x86, 0xE3, 0xA2, 0xC6, 0xBA, 0xD2, 0xDA );
-
 DEFINE_GUID( GUID_ENERGY_SAVER_BATTERY_THRESHOLD, 0xE69653CA, 0xCF7F, 0x4F05, 0xAA, 0x73, 0xCB, 0x83, 0x3F, 0xA9, 0x0A, 0xD4 );
-
 DEFINE_GUID( GUID_ENERGY_SAVER_BRIGHTNESS, 0x13D09884, 0xF74E, 0x474A, 0xA8, 0x52, 0xB6, 0xBD, 0xE8, 0xAD, 0x03, 0xA8 );
-
 DEFINE_GUID( GUID_ENERGY_SAVER_POLICY, 0x5c5bb349, 0xad29, 0x4ee2, 0x9d, 0xb, 0x2b, 0x25, 0x27, 0xf, 0x7a, 0x81 );
-
 DEFINE_GUID( GUID_SYSTEM_BUTTON_SUBGROUP, 0x4F971E89, 0xEEBD, 0x4455, 0xA8, 0xDE, 0x9E, 0x59, 0x04, 0x0E, 0x73, 0x47 );
+--]==]
 
-
-
-#define POWERBUTTON_ACTION_INDEX_NOTHING                0
-#define POWERBUTTON_ACTION_INDEX_SLEEP                  1
-#define POWERBUTTON_ACTION_INDEX_HIBERNATE              2
-#define POWERBUTTON_ACTION_INDEX_SHUTDOWN               3
-#define POWERBUTTON_ACTION_INDEX_TURN_OFF_THE_DISPLAY   4
+--[==[
+#define POWERBUTTON_ACTION_INDEX_NOTHING                0;
+#define POWERBUTTON_ACTION_INDEX_SLEEP                  1;
+#define POWERBUTTON_ACTION_INDEX_HIBERNATE              2;
+#define POWERBUTTON_ACTION_INDEX_SHUTDOWN               3;
+#define POWERBUTTON_ACTION_INDEX_TURN_OFF_THE_DISPLAY   4;
 
 //
 // System button values which contain the PowerAction* value for each action.
 //
 
-#define POWERBUTTON_ACTION_VALUE_NOTHING                0
-#define POWERBUTTON_ACTION_VALUE_SLEEP                  2
-#define POWERBUTTON_ACTION_VALUE_HIBERNATE              3
-#define POWERBUTTON_ACTION_VALUE_SHUTDOWN               6
-#define POWERBUTTON_ACTION_VALUE_TURN_OFF_THE_DISPLAY   8
+#define POWERBUTTON_ACTION_VALUE_NOTHING                0;
+#define POWERBUTTON_ACTION_VALUE_SLEEP                  2;
+#define POWERBUTTON_ACTION_VALUE_HIBERNATE              3;
+#define POWERBUTTON_ACTION_VALUE_SHUTDOWN               6;
+#define POWERBUTTON_ACTION_VALUE_TURN_OFF_THE_DISPLAY   8;
 
 
 DEFINE_GUID( GUID_POWERBUTTON_ACTION, 0x7648EFA3, 0xDD9C, 0x4E3E, 0xB5, 0x66, 0x50, 0xF9, 0x29, 0x38, 0x62, 0x80 );
