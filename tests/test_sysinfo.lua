@@ -1,8 +1,25 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local C = ffi.C 
 
 local sysinfo = require("win32.sysinfoapi")
+
+
+local function test_systeminfo()
+    local pInfo = ffi.new("SYSTEM_INFO")
+    C.GetSystemInfo(pInfo);
+
+    --print("Processor Arch: ", string.format("0x%x", pInfo.wProcessorArchitecture))
+    print("Page Size: ", string.format("0x%x", pInfo.dwPageSize))
+    print("Alloc Granularity: ", string.format("0x%x (%d)", pInfo.dwAllocationGranularity, pInfo.dwAllocationGranularity))
+    print("Num Procs: ", string.format("0x%x", pInfo.dwNumberOfProcessors))
+    print("Proc Type: ", string.format("0x%x (%d)", pInfo.dwProcessorType, pInfo.dwProcessorType))
+    print("Proc Level: ", string.format("0x%x", pInfo.wProcessorLevel))
+    print("Proc Revis: ", string.format("0x%x", pInfo.wProcessorRevision))
+    print("Alloc Granularity: ", string.format("0x%x", pInfo.dwAllocationGranularity))
+
+end
 
 local function getComputerName()
     local nameSize = 255;
@@ -83,7 +100,8 @@ local function test_windowsDirectory()
 end
 
 
+test_systeminfo()
 --test_computername();
-test_systime();
-test_systemDirectory()
-test_windowsDirectory()
+--test_systime();
+--test_systemDirectory()
+--test_windowsDirectory()
