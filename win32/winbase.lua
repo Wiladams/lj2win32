@@ -20,7 +20,7 @@ require("win32.synchapi")
 require("win32.processthreadsapi")
 require("win32.sysinfoapi")
 require("win32.memoryapi")
---require("win32.enclaveapi")         -- NYI
+--require("win32.enclaveapi")           -- NYI, depends on SDK version
 --require("win32.threadpoollegacyapiset") -- NYI, not sure if it's needed
 --require("win32.threadpoolapiset")   -- NYI
 --require("win32.jobapi")             -- NYI

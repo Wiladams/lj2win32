@@ -1964,82 +1964,82 @@ static const int SHADEBLENDCAPS  =120;  /* Shading and blending caps            
 static const int COLORMGMTCAPS   =121;  /* Color Management caps                   */
 ]]
 
---[[
-#ifndef NOGDICAPMASKS
 
+if not NOGDICAPMASKS then
+ffi.cdef[[
 /* Device Capability Masks: */
 
 /* Device Technologies */
-#define DT_PLOTTER          0   /* Vector plotter                   */
-#define DT_RASDISPLAY       1   /* Raster display                   */
-#define DT_RASPRINTER       2   /* Raster printer                   */
-#define DT_RASCAMERA        3   /* Raster camera                    */
-#define DT_CHARSTREAM       4   /* Character-stream, PLP            */
-#define DT_METAFILE         5   /* Metafile, VDM                    */
-#define DT_DISPFILE         6   /* Display-file                     */
+static const int DT_PLOTTER         = 0;   /* Vector plotter                   */
+static const int DT_RASDISPLAY      = 1;   /* Raster display                   */
+static const int DT_RASPRINTER      = 2;   /* Raster printer                   */
+static const int DT_RASCAMERA       = 3;   /* Raster camera                    */
+static const int DT_CHARSTREAM      = 4;   /* Character-stream, PLP            */
+static const int DT_METAFILE        = 5;   /* Metafile, VDM                    */
+static const int DT_DISPFILE        = 6;   /* Display-file                     */
 
 /* Curve Capabilities */
-#define CC_NONE             0   /* Curves not supported             */
-#define CC_CIRCLES          1   /* Can do circles                   */
-#define CC_PIE              2   /* Can do pie wedges                */
-#define CC_CHORD            4   /* Can do chord arcs                */
-#define CC_ELLIPSES         8   /* Can do ellipese                  */
-#define CC_WIDE             16  /* Can do wide lines                */
-#define CC_STYLED           32  /* Can do styled lines              */
-#define CC_WIDESTYLED       64  /* Can do wide styled lines         */
-#define CC_INTERIORS        128 /* Can do interiors                 */
-#define CC_ROUNDRECT        256 /*                                  */
+static const int CC_NONE            = 0;   /* Curves not supported             */
+static const int CC_CIRCLES         = 1;   /* Can do circles                   */
+static const int CC_PIE             = 2;   /* Can do pie wedges                */
+static const int CC_CHORD           = 4;   /* Can do chord arcs                */
+static const int CC_ELLIPSES        = 8;   /* Can do ellipese                  */
+static const int CC_WIDE            = 16;  /* Can do wide lines                */
+static const int CC_STYLED          = 32;  /* Can do styled lines              */
+static const int CC_WIDESTYLED      = 64;  /* Can do wide styled lines         */
+static const int CC_INTERIORS       = 128; /* Can do interiors                 */
+static const int CC_ROUNDRECT       = 256; /*                                  */
 
 /* Line Capabilities */
-#define LC_NONE             0   /* Lines not supported              */
-#define LC_POLYLINE         2   /* Can do polylines                 */
-#define LC_MARKER           4   /* Can do markers                   */
-#define LC_POLYMARKER       8   /* Can do polymarkers               */
-#define LC_WIDE             16  /* Can do wide lines                */
-#define LC_STYLED           32  /* Can do styled lines              */
-#define LC_WIDESTYLED       64  /* Can do wide styled lines         */
-#define LC_INTERIORS        128 /* Can do interiors                 */
+static const int LC_NONE            = 0;   /* Lines not supported              */
+static const int LC_POLYLINE        = 2;   /* Can do polylines                 */
+static const int LC_MARKER          = 4;   /* Can do markers                   */
+static const int LC_POLYMARKER      = 8;   /* Can do polymarkers               */
+static const int LC_WIDE            = 16;  /* Can do wide lines                */
+static const int LC_STYLED          = 32;  /* Can do styled lines              */
+static const int LC_WIDESTYLED      = 64;  /* Can do wide styled lines         */
+static const int LC_INTERIORS       = 128; /* Can do interiors                 */
 
 /* Polygonal Capabilities */
-#define PC_NONE             0   /* Polygonals not supported         */
-#define PC_POLYGON          1   /* Can do polygons                  */
-#define PC_RECTANGLE        2   /* Can do rectangles                */
-#define PC_WINDPOLYGON      4   /* Can do winding polygons          */
-#define PC_TRAPEZOID        4   /* Can do trapezoids                */
-#define PC_SCANLINE         8   /* Can do scanlines                 */
-#define PC_WIDE             16  /* Can do wide borders              */
-#define PC_STYLED           32  /* Can do styled borders            */
-#define PC_WIDESTYLED       64  /* Can do wide styled borders       */
-#define PC_INTERIORS        128 /* Can do interiors                 */
-#define PC_POLYPOLYGON      256 /* Can do polypolygons              */
-#define PC_PATHS            512 /* Can do paths                     */
+static const int PC_NONE            = 0;   /* Polygonals not supported         */
+static const int PC_POLYGON         = 1;   /* Can do polygons                  */
+static const int PC_RECTANGLE       = 2;   /* Can do rectangles                */
+static const int PC_WINDPOLYGON     = 4;   /* Can do winding polygons          */
+static const int PC_TRAPEZOID       = 4;   /* Can do trapezoids                */
+static const int PC_SCANLINE        = 8;   /* Can do scanlines                 */
+static const int PC_WIDE            = 16;  /* Can do wide borders              */
+static const int PC_STYLED          = 32;  /* Can do styled borders            */
+static const int PC_WIDESTYLED      = 64;  /* Can do wide styled borders       */
+static const int PC_INTERIORS       = 128; /* Can do interiors                 */
+static const int PC_POLYPOLYGON     = 256; /* Can do polypolygons              */
+static const int PC_PATHS           = 512; /* Can do paths                     */
 
 /* Clipping Capabilities */
-#define CP_NONE             0   /* No clipping of output            */
-#define CP_RECTANGLE        1   /* Output clipped to rects          */
-#define CP_REGION           2   /* obsolete                         */
+static const int CP_NONE            = 0;   /* No clipping of output            */
+static const int CP_RECTANGLE       = 1;   /* Output clipped to rects          */
+static const int CP_REGION          = 2;   /* obsolete                         */
 
 /* Text Capabilities */
-#define TC_OP_CHARACTER     0x00000001  /* Can do OutputPrecision   CHARACTER      */
-#define TC_OP_STROKE        0x00000002  /* Can do OutputPrecision   STROKE         */
-#define TC_CP_STROKE        0x00000004  /* Can do ClipPrecision     STROKE         */
-#define TC_CR_90            0x00000008  /* Can do CharRotAbility    90             */
-#define TC_CR_ANY           0x00000010  /* Can do CharRotAbility    ANY            */
-#define TC_SF_X_YINDEP      0x00000020  /* Can do ScaleFreedom      X_YINDEPENDENT */
-#define TC_SA_DOUBLE        0x00000040  /* Can do ScaleAbility      DOUBLE         */
-#define TC_SA_INTEGER       0x00000080  /* Can do ScaleAbility      INTEGER        */
-#define TC_SA_CONTIN        0x00000100  /* Can do ScaleAbility      CONTINUOUS     */
-#define TC_EA_DOUBLE        0x00000200  /* Can do EmboldenAbility   DOUBLE         */
-#define TC_IA_ABLE          0x00000400  /* Can do ItalisizeAbility  ABLE           */
-#define TC_UA_ABLE          0x00000800  /* Can do UnderlineAbility  ABLE           */
-#define TC_SO_ABLE          0x00001000  /* Can do StrikeOutAbility  ABLE           */
-#define TC_RA_ABLE          0x00002000  /* Can do RasterFontAble    ABLE           */
-#define TC_VA_ABLE          0x00004000  /* Can do VectorFontAble    ABLE           */
-#define TC_RESERVED         0x00008000
-#define TC_SCROLLBLT        0x00010000  /* Don't do text scroll with blt           */
+static const int TC_OP_CHARACTER     = 0x00000001;  /* Can do OutputPrecision   CHARACTER      */
+static const int TC_OP_STROKE        = 0x00000002;  /* Can do OutputPrecision   STROKE         */
+static const int TC_CP_STROKE        = 0x00000004;  /* Can do ClipPrecision     STROKE         */
+static const int TC_CR_90            = 0x00000008;  /* Can do CharRotAbility    90             */
+static const int TC_CR_ANY           = 0x00000010;  /* Can do CharRotAbility    ANY            */
+static const int TC_SF_X_YINDEP      = 0x00000020;  /* Can do ScaleFreedom      X_YINDEPENDENT */
+static const int TC_SA_DOUBLE        = 0x00000040;  /* Can do ScaleAbility      DOUBLE         */
+static const int TC_SA_INTEGER       = 0x00000080;  /* Can do ScaleAbility      INTEGER        */
+static const int TC_SA_CONTIN        = 0x00000100;  /* Can do ScaleAbility      CONTINUOUS     */
+static const int TC_EA_DOUBLE        = 0x00000200;  /* Can do EmboldenAbility   DOUBLE         */
+static const int TC_IA_ABLE          = 0x00000400;  /* Can do ItalisizeAbility  ABLE           */
+static const int TC_UA_ABLE          = 0x00000800;  /* Can do UnderlineAbility  ABLE           */
+static const int TC_SO_ABLE          = 0x00001000;  /* Can do StrikeOutAbility  ABLE           */
+static const int TC_RA_ABLE          = 0x00002000;  /* Can do RasterFontAble    ABLE           */
+static const int TC_VA_ABLE          = 0x00004000;  /* Can do VectorFontAble    ABLE           */
+static const int TC_RESERVED         = 0x00008000;
+static const int TC_SCROLLBLT        = 0x00010000;  /* Don't do text scroll with blt           */
+]]
+end  --/* NOGDICAPMASKS */
 
-#endif /* NOGDICAPMASKS */
---]]
 
 ffi.cdef[[
 /* Raster Capabilities */

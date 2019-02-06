@@ -100,6 +100,14 @@ DeviceContext.createCompatibleBitmap = function(self, width, height)
 end
 --]]
 
+--[[
+Device Capabilities
+--]]
+function DeviceContext.capability(self, cap)
+	local res = C.GetDeviceCaps(self.Handle, cap)
+	return res
+end
+
 -- Coordinates and Transforms
 function DeviceContext.setGraphicsMode(self, mode)
 	C.SetGraphicsMode(self.Handle, mode)
