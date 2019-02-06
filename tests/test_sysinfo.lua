@@ -21,6 +21,41 @@ local function test_systeminfo()
 
 end
 
+--[[
+    typedef struct _MEMORYSTATUSEX {
+    DWORD dwLength;
+    DWORD dwMemoryLoad;
+    DWORDLONG ullTotalPhys;
+    DWORDLONG ullAvailPhys;
+    DWORDLONG ullTotalPageFile;
+    DWORDLONG ullAvailPageFile;
+    DWORDLONG ullTotalVirtual;
+    DWORDLONG ullAvailVirtual;
+    DWORDLONG ullAvailExtendedVirtual;
+} MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
+]]
+local function test_memorystatus()
+    print("== test_memorystatus ==")
+    local lpBuffer = ffi.new("MEMORYSTATUSEX")
+    lpBuffer.dwLength = ffi.sizeof("MEMORYSTATUSEX")
+    local success = C.GlobalMemoryStatusEx(lpBuffer) ~= 0;
+
+    if not success then
+        return 
+    end
+
+    print("{")
+    print(string.format("   MemoryLoad = %d;", lpBuffer.dwMemoryLoad))
+    print(string.format("    TotalPhys = 0x%x;", tonumber(lpBuffer.ullTotalPhys)))
+    print(string.format("    AvailPhys = 0x%x;", tonumber(lpBuffer.ullAvailPhys)))
+    print(string.format("TotalPageFile = 0x%x;", tonumber(lpBuffer.ullTotalPageFile)))
+    print(string.format("AvailPageFile = 0x%x;", tonumber(lpBuffer.ullAvailPageFile)))
+    print(string.format(" TotalVirtual = 0x%x;", tonumber(lpBuffer.ullTotalVirtual)))
+    print(string.format(" AvailVirtual = 0x%x;", tonumber(lpBuffer.ullAvailVirtual)))
+    print(string.format("AvailExtendedVirtual = 0x%x;", tonumber(lpBuffer.ullAvailExtendedVirtual)))
+    print("};")
+end
+
 local function getComputerName()
     local nameSize = 255;
     local nameBuffer = ffi.new("char[?]", nameSize+1)
@@ -37,6 +72,25 @@ end
 
 local function test_computername()
     print("Computer Name: ", getComputerName())
+end
+
+local function test_productinfo()
+    print("== test_productinfo ==")
+
+    local returnInfo = ffi.new("DWORD[1]")
+    dwOSMajorVersion = 0
+    dwOSMinorVersion = 0
+    dwSpMajorVersion = 0
+    dwSpMinorVersion = 0
+
+    local success = C.GetProductInfo(dwOSMajorVersion,dwOSMinorVersion, dwSpMajorVersion, dwSpMinorVersion,returnInfo) ~= 0
+
+    if not success then
+        print("ERROR")
+        return 
+    end
+
+    print("Product Info: ", string.format("0x%x", returnInfo[0]))
 end
 
 --[[
@@ -100,8 +154,10 @@ local function test_windowsDirectory()
 end
 
 
-test_systeminfo()
+--test_systeminfo()
 --test_computername();
+--test_memorystatus();
+test_productinfo()
 --test_systime();
 --test_systemDirectory()
 --test_windowsDirectory()
