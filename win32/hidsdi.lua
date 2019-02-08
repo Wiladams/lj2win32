@@ -19,7 +19,7 @@ typedef struct _HIDD_CONFIGURATION {
     PVOID    cookie;
     ULONG    size;
     ULONG    RingBufferSize;
-} HIDD_CONFIGURATION, *PHIDD_CONFIGURATION
+} HIDD_CONFIGURATION, *PHIDD_CONFIGURATION;
 
 
 
@@ -36,7 +36,7 @@ typedef struct _HIDD_ATTRIBUTES {
     //
     // Additional fields will be added to the end of this structure.
     //
-} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES
+} HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES;
 
 #pragma pack (pop)
 ]]
@@ -168,3 +168,4 @@ HidD_GetMsGenreDescriptor (
    );
 ]]
 
+return ffi.load("hid")

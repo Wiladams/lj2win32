@@ -33,6 +33,7 @@ require("win32.devpropdef")
 
 
 if _WIN64 then
+print("_WIN64")
 --#include <pshpack8.h>   // Assume 8-byte (64-bit) packing throughout
 else
 --#include <pshpack1.h>   // Assume byte packing throughout (32-bit processor)

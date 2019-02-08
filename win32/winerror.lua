@@ -10439,7 +10439,9 @@ static const int RPC_X_BYTE_COUNT_TOO_SMALL       1782L
 // The stub received bad data.
 //
 static const int RPC_X_BAD_STUB_DATA              1783L
+--]=]
 
+ffi.cdef[[
 //
 // MessageId: ERROR_INVALID_USER_BUFFER
 //
@@ -10447,8 +10449,10 @@ static const int RPC_X_BAD_STUB_DATA              1783L
 //
 // The supplied user buffer is not valid for the requested operation.
 //
-static const int ERROR_INVALID_USER_BUFFER        1784L
+static const int ERROR_INVALID_USER_BUFFER     =   1784L;
+]]
 
+--[=[
 //
 // MessageId: ERROR_UNRECOGNIZED_MEDIA
 //

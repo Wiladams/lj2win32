@@ -1,5 +1,10 @@
 -- public interface to HID parsing library
 local ffi = require("ffi")
+local C = ffi.C 
+local bit = require("bit")
+local lshift, rshift = bit.lshift, bit.rshift
+local band, bor = bit.band, bit.bor
+
 
 require("win32.winapifamily")
 local utils = require("win32.utils")
@@ -37,7 +42,7 @@ typedef struct _USAGE_AND_PAGE
 {
     USAGE Usage;
     USAGE UsagePage;
-} USAGE_AND_PAGE, *PUSAGE_AND_PAGE
+} USAGE_AND_PAGE, *PUSAGE_AND_PAGE;
 
 typedef struct _HIDP_BUTTON_CAPS
 {
@@ -72,7 +77,7 @@ typedef struct _HIDP_BUTTON_CAPS
         } NotRange;
     };
 
-} HIDP_BUTTON_CAPS, *PHIDP_BUTTON_CAPS
+} HIDP_BUTTON_CAPS, *PHIDP_BUTTON_CAPS;
 
 typedef struct _HIDP_VALUE_CAPS
 {
@@ -119,7 +124,7 @@ typedef struct _HIDP_VALUE_CAPS
             USHORT   DataIndex,        Reserved4;
         } NotRange;
     };
-} HIDP_VALUE_CAPS, *PHIDP_VALUE_CAPS
+} HIDP_VALUE_CAPS, *PHIDP_VALUE_CAPS;
 
 typedef struct _HIDP_LINK_COLLECTION_NODE
 {
@@ -133,7 +138,7 @@ typedef struct _HIDP_LINK_COLLECTION_NODE
     ULONG    IsAlias : 1; // This link node is an allias of the next link node.
     ULONG    Reserved: 23;
     PVOID    UserContext; // The user can hang his coat here.
-} HIDP_LINK_COLLECTION_NODE, *PHIDP_LINK_COLLECTION_NODE
+} HIDP_LINK_COLLECTION_NODE, *PHIDP_LINK_COLLECTION_NODE;
 
 typedef PUCHAR  PHIDP_REPORT_DESCRIPTOR;
 typedef struct _HIDP_PREPARSED_DATA * PHIDP_PREPARSED_DATA;
@@ -160,7 +165,7 @@ typedef struct _HIDP_CAPS
     USHORT   NumberFeatureButtonCaps;
     USHORT   NumberFeatureValueCaps;
     USHORT   NumberFeatureDataIndices;
-} HIDP_CAPS, *PHIDP_CAPS
+} HIDP_CAPS, *PHIDP_CAPS;
 
 typedef struct _HIDP_DATA
 {
@@ -170,14 +175,14 @@ typedef struct _HIDP_DATA
         ULONG   RawValue; // for values
         BOOLEAN On; // for buttons MUST BE TRUE for buttons.
     };
-} HIDP_DATA, *PHIDP_DATA
+} HIDP_DATA, *PHIDP_DATA;
 
 typedef struct _HIDP_UNKNOWN_TOKEN
 {
     UCHAR  Token;
     UCHAR  Reserved[3];
     ULONG  BitField;
-} HIDP_UNKNOWN_TOKEN, *PHIDP_UNKNOWN_TOKEN
+} HIDP_UNKNOWN_TOKEN, *PHIDP_UNKNOWN_TOKEN;
 
 typedef struct _HIDP_EXTENDED_ATTRIBUTES
 {
@@ -186,7 +191,8 @@ typedef struct _HIDP_EXTENDED_ATTRIBUTES
     PHIDP_UNKNOWN_TOKEN  GlobalUnknowns;
     // ... Additional attributes
     ULONG   Data [1]; // variableLength  DO NOT ACCESS THIS FIELD
-} HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES
+} HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES;
+
 #pragma pack (pop)
 ]]
 
@@ -459,7 +465,7 @@ typedef struct _HIDP_KEYBOARD_MODIFIER_STATE {
       ULONG ul;
    };
 
-} HIDP_KEYBOARD_MODIFIER_STATE, * PHIDP_KEYBOARD_MODIFIER_STATE
+} HIDP_KEYBOARD_MODIFIER_STATE, * PHIDP_KEYBOARD_MODIFIER_STATE;
 
 #pragma pack (pop)
 ]]
@@ -511,7 +517,7 @@ static const int FACILITY_HID_ERROR_CODE = 0x11;
 --end
 
 local function HIDP_ERROR_CODES(SEV, CODE) 
-    return bor( (lshift(SEV , 28) , lshift(C.FACILITY_HID_ERROR_CODE , 16) | CODE))
+    return bor( lshift(SEV , 28) , lshift(C.FACILITY_HID_ERROR_CODE , 16) , CODE)
 end
 
 makeStatic("HIDP_STATUS_SUCCESS",                  HIDP_ERROR_CODES(0x0,0))
