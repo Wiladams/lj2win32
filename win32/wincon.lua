@@ -15,6 +15,9 @@ require("win32.consoleapi2")
 require("win32.consoleapi3")
 end
 
+local CONSOLE_REAL_OUTPUT_HANDLE = ffi.cast("HANDLE", ffi.cast("LONG_PTR", -2)); -- (LongToHandle(-2))
+local CONSOLE_REAL_INPUT_HANDLE    = ffi.cast("HANDLE", ffi.cast("LONG_PTR", -3)); -- (LongToHandle(-3))
+
 --[[
 #define CONSOLE_REAL_OUTPUT_HANDLE (LongToHandle(-2))
 #define CONSOLE_REAL_INPUT_HANDLE (LongToHandle(-3))
