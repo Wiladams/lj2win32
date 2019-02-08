@@ -2467,14 +2467,14 @@ BOOL
 __stdcall
 DecryptFileA(
            LPCSTR lpFileName,
-    _Reserved_ DWORD dwReserved
+     DWORD dwReserved
     );
 
 BOOL
 __stdcall
 DecryptFileW(
            LPCWSTR lpFileName,
-    _Reserved_ DWORD dwReserved
+     DWORD dwReserved
     );
 #ifdef UNICODE
 #define DecryptFile  DecryptFileW
@@ -2544,14 +2544,14 @@ DWORD
 //  OpenRaw flag values
 //
 
-#define CREATE_FOR_IMPORT               (1)
-#define CREATE_FOR_DIR                  (2)
-#define OVERWRITE_HIDDEN                (4)
-#define EFSRPC_SECURE_ONLY              (8)
-#define EFS_DROP_ALTERNATE_STREAMS      (0x10)
+#define CREATE_FOR_IMPORT              = (1);
+#define CREATE_FOR_DIR                 = (2);
+#define OVERWRITE_HIDDEN               = (4);
+#define EFSRPC_SECURE_ONLY             = (8);
+#define EFS_DROP_ALTERNATE_STREAMS     = (0x10);
 
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 OpenEncryptedFileRawA(
@@ -2567,13 +2567,17 @@ OpenEncryptedFileRawW(
             ULONG    ulFlags,
      PVOID   *pvContext
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define OpenEncryptedFileRaw  OpenEncryptedFileRawW
 else
 #define OpenEncryptedFileRaw  OpenEncryptedFileRawA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 DWORD
 __stdcall
 ReadEncryptedFileRaw(
@@ -2597,8 +2601,9 @@ __stdcall
 CloseEncryptedFileRaw(
      PVOID           pvContext
     );
+]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 //
@@ -2606,9 +2611,9 @@ CloseEncryptedFileRaw(
 //
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
 
-
+ffi.cdef[[
 int
 __stdcall
 lstrcmpA(
@@ -2622,13 +2627,17 @@ lstrcmpW(
      LPCWSTR lpString1,
      LPCWSTR lpString2
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrcmp  lstrcmpW
 else
 #define lstrcmp  lstrcmpA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 int
 __stdcall
 lstrcmpiA(
@@ -2642,68 +2651,71 @@ lstrcmpiW(
      LPCWSTR lpString1,
      LPCWSTR lpString2
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrcmpi  lstrcmpiW
 else
 #define lstrcmpi  lstrcmpiA
 end  -- !UNICODE
-
-#if defined(DEPRECATE_SUPPORTED)
-#pragma warning(push)
-#pragma warning(disable:4995)
-#endif
+--]]
 
 
-_Check_return_
-_Success_(return != NULL)
-_Post_satisfies_(return == lpString1)
 
+ffi.cdef[[
 LPSTR
 __stdcall
 lstrcpynA(
-    _Out_writes_(iMaxLength) LPSTR lpString1,
+     LPSTR lpString1,
      LPCSTR lpString2,
      int iMaxLength
     );
+]]
 
-_Check_return_
-_Success_(return != NULL)
-_Post_satisfies_(return == lpString1)
-
+ffi.cdef[[
 LPWSTR
 __stdcall
 lstrcpynW(
-    _Out_writes_(iMaxLength) LPWSTR lpString1,
+     LPWSTR lpString1,
      LPCWSTR lpString2,
      int iMaxLength
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrcpyn  lstrcpynW
 else
 #define lstrcpyn  lstrcpynA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 LPSTR
 __stdcall
 lstrcpyA(
-    _Out_writes_(_String_length_(lpString2) + 1) LPSTR lpString1, // deprecated: annotation is as good as it gets
+     LPSTR lpString1, // deprecated: annotation is as good as it gets
       LPCSTR lpString2
     );
 
 LPWSTR
 __stdcall
 lstrcpyW(
-    _Out_writes_(_String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
+     LPWSTR lpString1, // deprecated: annotation is as good as it gets
       LPCWSTR lpString2
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrcpy  lstrcpyW
 else
 #define lstrcpy  lstrcpyA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 LPSTR
 __stdcall
 lstrcatA(
@@ -2717,17 +2729,19 @@ lstrcatW(
     _Inout_updates_z_(_String_length_(lpString1) + _String_length_(lpString2) + 1) LPWSTR lpString1, // deprecated: annotation is as good as it gets
         LPCWSTR lpString2
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrcat  lstrcatW
 else
 #define lstrcat  lstrcatA
 end  -- !UNICODE
-
-#if defined(DEPRECATE_SUPPORTED)
-#pragma warning(pop)
-#endif
+--]]
 
 
+
+ffi.cdef[[
 int
 __stdcall
 lstrlenA(
@@ -2739,19 +2753,23 @@ __stdcall
 lstrlenW(
      LPCWSTR lpString
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define lstrlen  lstrlenW
 else
 #define lstrlen  lstrlenA
 end  -- !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 HFILE
 __stdcall
 OpenFile(
@@ -2781,7 +2799,7 @@ UINT
 __stdcall
 _lread(
      HFILE hFile,
-    _Out_writes_bytes_to_(uBytes, return) LPVOID lpBuffer,
+     LPVOID lpBuffer,
      UINT uBytes
     );
 
@@ -2790,7 +2808,7 @@ UINT
 __stdcall
 _lwrite(
      HFILE hFile,
-    _In_reads_bytes_(uBytes) LPCCH lpBuffer,
+     LPCCH lpBuffer,
      UINT uBytes
     );
 
@@ -2799,7 +2817,7 @@ long
 __stdcall
 _hread(
      HFILE hFile,
-    _Out_writes_bytes_to_(lBytes, return) LPVOID lpBuffer,
+     LPVOID lpBuffer,
      long lBytes
     );
 
@@ -2808,7 +2826,7 @@ long
 __stdcall
 _hwrite(
      HFILE hFile,
-    _In_reads_bytes_(lBytes) LPCCH lpBuffer,
+     LPCCH lpBuffer,
      long lBytes
     );
 
@@ -2832,19 +2850,19 @@ _llseek(
 BOOL
 __stdcall
 IsTextUnicode(
-    _In_reads_bytes_(iSize) const VOID* lpv,
+     const VOID* lpv,
             int iSize,
      LPINT lpiResult
     );
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-#if(_WIN32_WINNT >= 0x0400)
-
+if(_WIN32_WINNT >= 0x0400) then
+ffi.cdef[[
 DWORD
 __stdcall
 SignalObjectAndWait(
@@ -2853,20 +2871,21 @@ SignalObjectAndWait(
      DWORD dwMilliseconds,
      BOOL bAlertable
     );
-#endif /* _WIN32_WINNT >= 0x0400 */
+]]
+end --/* _WIN32_WINNT >= 0x0400 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 BackupRead(
         HANDLE hFile,
-    _Out_writes_bytes_to_(nNumberOfBytesToRead, *lpNumberOfBytesRead) LPBYTE lpBuffer,
+     LPBYTE lpBuffer,
         DWORD nNumberOfBytesToRead,
        LPDWORD lpNumberOfBytesRead,
         BOOL bAbort,
@@ -2891,7 +2910,7 @@ BOOL
 __stdcall
 BackupWrite(
         HANDLE hFile,
-    _In_reads_bytes_(nNumberOfBytesToWrite) LPBYTE lpBuffer,
+     LPBYTE lpBuffer,
         DWORD nNumberOfBytesToWrite,
        LPDWORD lpNumberOfBytesWritten,
         BOOL bAbort,
@@ -2909,63 +2928,69 @@ typedef struct _WIN32_STREAM_ID {
         DWORD          dwStreamNameSize ;
         WCHAR          cStreamName[ ANYSIZE_ARRAY ] ;
 } WIN32_STREAM_ID, *LPWIN32_STREAM_ID ;
+]]
 
+ffi.cdef[[
 //
 //  Stream Ids
 //
 
-#define BACKUP_INVALID          0x00000000
-#define BACKUP_DATA             0x00000001
-#define BACKUP_EA_DATA          0x00000002
-#define BACKUP_SECURITY_DATA    0x00000003
-#define BACKUP_ALTERNATE_DATA   0x00000004
-#define BACKUP_LINK             0x00000005
-#define BACKUP_PROPERTY_DATA    0x00000006
-#define BACKUP_OBJECT_ID        0x00000007
-#define BACKUP_REPARSE_DATA     0x00000008
-#define BACKUP_SPARSE_BLOCK     0x00000009
-#define BACKUP_TXFS_DATA        0x0000000a
-#define BACKUP_GHOSTED_FILE_EXTENTS 0x0000000b
+static const int BACKUP_INVALID         = 0x00000000;
+static const int BACKUP_DATA            = 0x00000001;
+static const int BACKUP_EA_DATA         = 0x00000002;
+static const int BACKUP_SECURITY_DATA   = 0x00000003;
+static const int BACKUP_ALTERNATE_DATA  = 0x00000004;
+static const int BACKUP_LINK            = 0x00000005;
+static const int BACKUP_PROPERTY_DATA   = 0x00000006;
+static const int BACKUP_OBJECT_ID       = 0x00000007;
+static const int BACKUP_REPARSE_DATA    = 0x00000008;
+static const int BACKUP_SPARSE_BLOCK    = 0x00000009;
+static const int BACKUP_TXFS_DATA       = 0x0000000a;
+static const int BACKUP_GHOSTED_FILE_EXTENTS =0x0000000b;
 
 //
 //  Stream Attributes
 //
 
-#define STREAM_NORMAL_ATTRIBUTE         0x00000000
-#define STREAM_MODIFIED_WHEN_READ       0x00000001
-#define STREAM_CONTAINS_SECURITY        0x00000002
-#define STREAM_CONTAINS_PROPERTIES      0x00000004
-#define STREAM_SPARSE_ATTRIBUTE         0x00000008
-#define STREAM_CONTAINS_GHOSTED_FILE_EXTENTS 0x00000010
+static const int STREAM_NORMAL_ATTRIBUTE        = 0x00000000;
+static const int STREAM_MODIFIED_WHEN_READ      = 0x00000001;
+static const int STREAM_CONTAINS_SECURITY       = 0x00000002;
+static const int STREAM_CONTAINS_PROPERTIES     = 0x00000004;
+static const int STREAM_SPARSE_ATTRIBUTE        = 0x00000008;
+static const int STREAM_CONTAINS_GHOSTED_FILE_EXTENTS =0x00000010;
 
 //
 // Dual Mode API below this line. Dual Mode Structures also included.
 //
 
-#define STARTF_USESHOWWINDOW       0x00000001
-#define STARTF_USESIZE             0x00000002
-#define STARTF_USEPOSITION         0x00000004
-#define STARTF_USECOUNTCHARS       0x00000008
-#define STARTF_USEFILLATTRIBUTE    0x00000010
-#define STARTF_RUNFULLSCREEN       0x00000020  // ignored for non-x86 platforms
-#define STARTF_FORCEONFEEDBACK     0x00000040
-#define STARTF_FORCEOFFFEEDBACK    0x00000080
-#define STARTF_USESTDHANDLES       0x00000100
+static const int STARTF_USESHOWWINDOW      = 0x00000001;
+static const int STARTF_USESIZE            = 0x00000002;
+static const int STARTF_USEPOSITION        = 0x00000004;
+static const int STARTF_USECOUNTCHARS      = 0x00000008;
+static const int STARTF_USEFILLATTRIBUTE   = 0x00000010;
+static const int STARTF_RUNFULLSCREEN      = 0x00000020;  // ignored for non-x86 platforms
+static const int STARTF_FORCEONFEEDBACK    = 0x00000040;
+static const int STARTF_FORCEOFFFEEDBACK   = 0x00000080;
+static const int STARTF_USESTDHANDLES      = 0x00000100;
+]]
 
-#if(WINVER >= 0x0400)
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int STARTF_USEHOTKEY          = 0x00000200;
+static const int STARTF_TITLEISLINKNAME    = 0x00000800;
+static const int STARTF_TITLEISAPPID       = 0x00001000;
+static const int STARTF_PREVENTPINNING     = 0x00002000;
+]]
+end  --/* WINVER >= 0x0400 */
 
-#define STARTF_USEHOTKEY           0x00000200
-#define STARTF_TITLEISLINKNAME     0x00000800
-#define STARTF_TITLEISAPPID        0x00001000
-#define STARTF_PREVENTPINNING      0x00002000
-#endif /* WINVER >= 0x0400 */
+if(WINVER >= 0x0600) then
+ffi.cdef[[
+static const int STARTF_UNTRUSTEDSOURCE    = 0x00008000;
+]]
+end --/* WINVER >= 0x0600 */
 
-#if(WINVER >= 0x0600)
-#define STARTF_UNTRUSTEDSOURCE     0x00008000
-#endif /* WINVER >= 0x0600 */
-
-#if (_WIN32_WINNT >= 0x0600)
-
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
 typedef struct _STARTUPINFOEXA {
     STARTUPINFOA StartupInfo;
     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
@@ -2974,26 +2999,30 @@ typedef struct _STARTUPINFOEXW {
     STARTUPINFOW StartupInfo;
     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
 } STARTUPINFOEXW, *LPSTARTUPINFOEXW;
-#ifdef UNICODE
+]]
+
+--[[
+if UNICODE then
 typedef STARTUPINFOEXW STARTUPINFOEX;
 typedef LPSTARTUPINFOEXW LPSTARTUPINFOEX;
 else
 typedef STARTUPINFOEXA STARTUPINFOEX;
 typedef LPSTARTUPINFOEXA LPSTARTUPINFOEX;
 end  -- UNICODE
+--]]
 
 end  -- (_WIN32_WINNT >= 0x0600)
 
-#define SHUTDOWN_NORETRY                0x00000001
+static const int SHUTDOWN_NORETRY              =  0x00000001;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-
-
-
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+
+
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenMutexA(
@@ -3001,12 +3030,15 @@ OpenMutexA(
      BOOL bInheritHandle,
      LPCSTR lpName
     );
+]]
+
+--[[
 #ifndef UNICODE
 #define OpenMutex  OpenMutexA
 #endif
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateSemaphoreA(
@@ -3015,18 +3047,22 @@ CreateSemaphoreA(
          LONG lMaximumCount,
      LPCSTR lpName
     );
+]]
+
+--[[
 #ifndef UNICODE
 #define CreateSemaphore  CreateSemaphoreA
 #endif
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-
-
-
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenSemaphoreA(
@@ -3034,20 +3070,23 @@ OpenSemaphoreA(
      BOOL bInheritHandle,
      LPCSTR lpName
     );
+]]
+
+--[[
 #ifndef UNICODE
 #define OpenSemaphore  OpenSemaphoreA
 #endif
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-
-
-#if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
+--]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
+if (_WIN32_WINNT >= 0x0400) or (_WIN32_WINDOWS > 0x0400) then
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
+
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateWaitableTimerA(
@@ -3055,12 +3094,15 @@ CreateWaitableTimerA(
          BOOL bManualReset,
      LPCSTR lpTimerName
     );
+]]
+
+--[[
 #ifndef UNICODE
 #define CreateWaitableTimer  CreateWaitableTimerA
 #endif
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenWaitableTimerA(
@@ -3068,14 +3110,18 @@ OpenWaitableTimerA(
      BOOL bInheritHandle,
      LPCSTR lpTimerName
     );
+]]
+
+--[[
 #ifndef UNICODE
 #define OpenWaitableTimer  OpenWaitableTimerA
 #endif
+--]]
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
 
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateSemaphoreExA(
@@ -3083,9 +3129,11 @@ CreateSemaphoreExA(
             LONG lInitialCount,
             LONG lMaximumCount,
         LPCSTR lpName,
-    _Reserved_  DWORD dwFlags,
+      DWORD dwFlags,
             DWORD dwDesiredAccess
     );
+]]
+
 #ifndef UNICODE
 #define CreateSemaphoreEx  CreateSemaphoreExA
 #endif
@@ -3199,20 +3247,20 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 #if (_WIN32_WINNT >= 0x0602)
 
 
-
+ffi.cdef[[
 HMODULE
 __stdcall
 LoadPackagedLibrary (
            LPCWSTR lpwLibFileName,
-    _Reserved_ DWORD Reserved
+     DWORD Reserved
     );
-
+]]
 end  -- _WIN32_WINNT >= 0x0602
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
 
 //
 // Supported process protection levels.
@@ -4963,7 +5011,7 @@ CreateFileTransactedA(
        HANDLE hTemplateFile,
            HANDLE hTransaction,
        PUSHORT pusMiniVersion,
-    _Reserved_ PVOID  lpExtendedParameter
+     PVOID  lpExtendedParameter
     );
 
 HANDLE
@@ -4978,7 +5026,7 @@ CreateFileTransactedW(
        HANDLE hTemplateFile,
            HANDLE hTransaction,
        PUSHORT pusMiniVersion,
-    _Reserved_ PVOID  lpExtendedParameter
+     PVOID  lpExtendedParameter
     );
 #ifdef UNICODE
 #define CreateFileTransacted  CreateFileTransactedW
@@ -5185,7 +5233,7 @@ FindFirstFileTransactedA(
            FINDEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FIND_DATAA)) LPVOID lpFindFileData,
            FINDEX_SEARCH_OPS fSearchOp,
-    _Reserved_ LPVOID lpSearchFilter,
+     LPVOID lpSearchFilter,
            DWORD dwAdditionalFlags,
            HANDLE hTransaction
     );
@@ -5197,7 +5245,7 @@ FindFirstFileTransactedW(
            FINDEX_INFO_LEVELS fInfoLevelId,
     _Out_writes_bytes_(sizeof(WIN32_FIND_DATAW)) LPVOID lpFindFileData,
            FINDEX_SEARCH_OPS fSearchOp,
-    _Reserved_ LPVOID lpSearchFilter,
+     LPVOID lpSearchFilter,
            DWORD dwAdditionalFlags,
            HANDLE hTransaction
     );
@@ -5320,12 +5368,12 @@ end  -- !UNICODE
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
---[=[
+
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-#if _WIN32_WINNT >= 0x0600
-
+if _WIN32_WINNT >= 0x0600 then
+ffi.cdef[[
 
 BOOL
 __stdcall
@@ -5350,6 +5398,7 @@ CopyFileTransactedW(
          DWORD dwCopyFlags,
          HANDLE hTransaction
     );
+]]
 
 --[[
 #ifdef UNICODE
@@ -5361,8 +5410,8 @@ end  -- !UNICODE
 
 end  -- _WIN32_WINNT >= 0x0600
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
---]=]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
@@ -5690,8 +5739,8 @@ ReplaceFileA(
            LPCSTR lpReplacementFileName,
        LPCSTR lpBackupFileName,
            DWORD    dwReplaceFlags,
-    _Reserved_ LPVOID   lpExclude,
-    _Reserved_ LPVOID  lpReserved
+     LPVOID   lpExclude,
+     LPVOID  lpReserved
     );
 
 BOOL
@@ -5701,8 +5750,8 @@ ReplaceFileW(
            LPCWSTR lpReplacementFileName,
        LPCWSTR lpBackupFileName,
            DWORD    dwReplaceFlags,
-    _Reserved_ LPVOID   lpExclude,
-    _Reserved_ LPVOID  lpReserved
+     LPVOID   lpExclude,
+     LPVOID  lpReserved
     );
 #ifdef UNICODE
 #define ReplaceFile  ReplaceFileW
@@ -5728,7 +5777,7 @@ __stdcall
 CreateHardLinkA(
            LPCSTR lpFileName,
            LPCSTR lpExistingFileName,
-    _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 
 BOOL
@@ -5736,7 +5785,7 @@ __stdcall
 CreateHardLinkW(
            LPCWSTR lpFileName,
            LPCWSTR lpExistingFileName,
-    _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes
     );
 #ifdef UNICODE
 #define CreateHardLink  CreateHardLinkW
@@ -5763,7 +5812,7 @@ __stdcall
 CreateHardLinkTransactedA(
            LPCSTR lpFileName,
            LPCSTR lpExistingFileName,
-    _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
            HANDLE hTransaction
     );
 
@@ -5772,7 +5821,7 @@ __stdcall
 CreateHardLinkTransactedW(
            LPCWSTR lpFileName,
            LPCWSTR lpExistingFileName,
-    _Reserved_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+     LPSECURITY_ATTRIBUTES lpSecurityAttributes,
            HANDLE hTransaction
     );
 #ifdef UNICODE
@@ -5792,7 +5841,7 @@ FindFirstStreamTransactedW (
            LPCWSTR lpFileName,
            STREAM_INFO_LEVELS InfoLevel,
     _Out_writes_bytes_(sizeof(WIN32_FIND_STREAM_DATA)) LPVOID lpFindStreamData,
-    _Reserved_ DWORD dwFlags,
+     DWORD dwFlags,
            HANDLE hTransaction
     );
 
@@ -8066,7 +8115,7 @@ BOOL
 __stdcall
 FindActCtxSectionStringA(
            DWORD dwFlags,
-    _Reserved_ const GUID *lpExtensionGuid,
+     const GUID *lpExtensionGuid,
            ULONG ulSectionId,
            LPCSTR lpStringToFind,
           PACTCTX_SECTION_KEYED_DATA ReturnedData
@@ -8077,7 +8126,7 @@ BOOL
 __stdcall
 FindActCtxSectionStringW(
            DWORD dwFlags,
-    _Reserved_ const GUID *lpExtensionGuid,
+     const GUID *lpExtensionGuid,
            ULONG ulSectionId,
            LPCWSTR lpStringToFind,
           PACTCTX_SECTION_KEYED_DATA ReturnedData
@@ -8093,7 +8142,7 @@ BOOL
 __stdcall
 FindActCtxSectionGuid(
            DWORD dwFlags,
-    _Reserved_ const GUID *lpExtensionGuid,
+     const GUID *lpExtensionGuid,
            ULONG ulSectionId,
        const GUID *lpGuidToFind,
           PACTCTX_SECTION_KEYED_DATA ReturnedData
@@ -9027,7 +9076,7 @@ SetXStateFeaturesMask(
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 DWORD
 APIENTRY
 EnableThreadProfiling(
@@ -9060,28 +9109,28 @@ ReadThreadProfilingData(
      DWORD Flags,
      PPERFORMANCE_DATA PerformanceData
     );
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-
-
-#endif /* (_WIN32_WINNT >= 0x0601) */
-
-#if (NTDDI_VERSION >= NTDDI_WIN10_RS4)
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+end --/* (_WIN32_WINNT >= 0x0601) */
+
+if (NTDDI_VERSION >= NTDDI_WIN10_RS4) then
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+ffi.cdef[[
 DWORD
 __stdcall
 RaiseCustomSystemEventTrigger(
      PCUSTOM_SYSTEM_EVENT_TRIGGER_CONFIG CustomSystemEventTriggerConfig
     );
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-
-#endif /* (NTDDI_VERSION >= NTDDI_WIN10_RS4) */
+end --/* (NTDDI_VERSION >= NTDDI_WIN10_RS4) */
 
 
 
