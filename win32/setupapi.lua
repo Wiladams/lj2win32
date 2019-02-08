@@ -28,9 +28,7 @@ end
 
 
 require ("win32.spapidef")
-
 require("win32.commctrl")
-
 require("win32.devpropdef")
 
 
@@ -89,12 +87,9 @@ typedef struct _SP_INF_INFORMATION {
 
 typedef struct _SP_ALTPLATFORM_INFO_V3 {
     DWORD cbSize;
-
     DWORD Platform;
-
     DWORD MajorVersion;
     DWORD MinorVersion;
-
     WORD  ProcessorArchitecture;
 
     union {
@@ -296,13 +291,17 @@ typedef UINT (__stdcall* PSP_FILE_CALLBACK_W)(
     );
 ]]
 
---[[
-if UNICODE
-#define PSP_FILE_CALLBACK PSP_FILE_CALLBACK_W
+
+if UNICODE then
+ffi.cdef[[
+typedef  PSP_FILE_CALLBACK_W PSP_FILE_CALLBACK;
+]]
 else
-#define PSP_FILE_CALLBACK PSP_FILE_CALLBACK_A
+ffi.cdef[[
+typedef  PSP_FILE_CALLBACK_A PSP_FILE_CALLBACK;
+]]
 end
---]]
+
 
 
 ffi.cdef[[
@@ -630,31 +629,31 @@ typedef PVOID HSPFILEQ;
 typedef struct _SP_FILE_COPY_PARAMS_A {
     DWORD    cbSize;
     HSPFILEQ QueueHandle;
-    PCSTR    SourceRootPath;     OPTIONAL
-    PCSTR    SourcePath;         OPTIONAL
+    PCSTR    SourceRootPath;     
+    PCSTR    SourcePath;         
     PCSTR    SourceFilename;
-    PCSTR    SourceDescription;  OPTIONAL
-    PCSTR    SourceTagfile;      OPTIONAL
+    PCSTR    SourceDescription;  
+    PCSTR    SourceTagfile;      
     PCSTR    TargetDirectory;
-    PCSTR    TargetFilename;     OPTIONAL
+    PCSTR    TargetFilename;     
     DWORD    CopyStyle;
-    HINF     LayoutInf;          OPTIONAL
-    PCSTR    SecurityDescriptor; OPTIONAL
+    HINF     LayoutInf;          
+    PCSTR    SecurityDescriptor; 
 } SP_FILE_COPY_PARAMS_A, *PSP_FILE_COPY_PARAMS_A;
 
 typedef struct _SP_FILE_COPY_PARAMS_W {
     DWORD    cbSize;
     HSPFILEQ QueueHandle;
-    PCWSTR   SourceRootPath;     OPTIONAL
-    PCWSTR   SourcePath;         OPTIONAL
+    PCWSTR   SourceRootPath;     
+    PCWSTR   SourcePath;         
     PCWSTR   SourceFilename;
-    PCWSTR   SourceDescription;  OPTIONAL
-    PCWSTR   SourceTagfile;      OPTIONAL
+    PCWSTR   SourceDescription;  
+    PCWSTR   SourceTagfile;      
     PCWSTR   TargetDirectory;
-    PCWSTR   TargetFilename;     OPTIONAL
+    PCWSTR   TargetFilename;     
     DWORD    CopyStyle;
-    HINF     LayoutInf;          OPTIONAL
-    PCWSTR   SecurityDescriptor; OPTIONAL
+    HINF     LayoutInf;          
+    PCWSTR   SecurityDescriptor; 
 } SP_FILE_COPY_PARAMS_W, *PSP_FILE_COPY_PARAMS_W;
 ]]
 
@@ -861,7 +860,7 @@ typedef struct _SP_DEVINSTALL_PARAMS_A {
     DWORD             Flags;
     DWORD             FlagsEx;
     HWND              hwndParent;
-    PSP_FILE_CALLBACK InstallMsgHandler;
+    PSP_FILE_CALLBACK_A InstallMsgHandler;
     PVOID             InstallMsgHandlerContext;
     HSPFILEQ          FileQueue;
     ULONG_PTR         ClassInstallReserved;
@@ -874,7 +873,7 @@ typedef struct _SP_DEVINSTALL_PARAMS_W {
     DWORD             Flags;
     DWORD             FlagsEx;
     HWND              hwndParent;
-    PSP_FILE_CALLBACK InstallMsgHandler;
+    PSP_FILE_CALLBACK_W InstallMsgHandler;
     PVOID             InstallMsgHandlerContext;
     HSPFILEQ          FileQueue;
     ULONG_PTR         ClassInstallReserved;
@@ -1035,17 +1034,17 @@ static const int DI_FLAGSEX_ALTPLATFORM_DRVSEARCH    = 0x10000000L;  // Build dr
 static const int DI_FLAGSEX_RESTART_DEVICE_ONLY      = 0x20000000L;  // only restart the device drivers are being installed on as
                                                          // opposed to restarting all devices using those drivers.
 ]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end --// _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN then
 ffi.cdef[[
 static const int DI_FLAGSEX_RECURSIVESEARCH          = 0x40000000L;  // Tell SetupDiBuildDriverInfoList to do a recursive search
 static const int DI_FLAGSEX_SEARCH_PUBLISHED_INFS    = 0x80000000L;  // Tell SetupDiBuildDriverInfoList to do a "published INF" search
 ]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
---[=[
+ffi.cdef[[
 //
 // Class installation parameters header.  This must be the first field of any
 // class install parameter structure.  The InstallFunction field must be set to
@@ -1072,25 +1071,25 @@ typedef struct _SP_ENABLECLASS_PARAMS {
     DWORD                  EnableMessage;
 } SP_ENABLECLASS_PARAMS, *PSP_ENABLECLASS_PARAMS;
 
-#define ENABLECLASS_QUERY   0;
-#define ENABLECLASS_SUCCESS 1;
-#define ENABLECLASS_FAILURE 2;
+static const int ENABLECLASS_QUERY   =0;
+static const int ENABLECLASS_SUCCESS =1;
+static const int ENABLECLASS_FAILURE =2;
 
 
 //
 // Values indicating a change in a devices state
 //
-#define DICS_ENABLE      0x00000001;
-#define DICS_DISABLE     0x00000002;
-#define DICS_PROPCHANGE  0x00000003;
-#define DICS_START       0x00000004;
-#define DICS_STOP        0x00000005;
+static const int DICS_ENABLE     = 0x00000001;
+static const int DICS_DISABLE    = 0x00000002;
+static const int DICS_PROPCHANGE = 0x00000003;
+static const int DICS_START      = 0x00000004;
+static const int DICS_STOP       = 0x00000005;
 //
 // Values specifying the scope of a device property change
 //
-#define DICS_FLAG_GLOBAL         0x00000001;  // make change in all hardware profiles
-#define DICS_FLAG_CONFIGSPECIFIC 0x00000002;  // make change in specified profile only
-#define DICS_FLAG_CONFIGGENERAL  0x00000004;  // 1 or more hardware profile-specific
+static const int DICS_FLAG_GLOBAL        = 0x00000001;  // make change in all hardware profiles
+static const int DICS_FLAG_CONFIGSPECIFIC= 0x00000002;  // make change in specified profile only
+static const int DICS_FLAG_CONFIGGENERAL = 0x00000004;  // 1 or more hardware profile-specific
                                              // changes to follow.
 //
 // Structure corresponding to a DIF_PROPERTYCHANGE install function.
@@ -1112,8 +1111,8 @@ typedef struct _SP_REMOVEDEVICE_PARAMS {
     DWORD HwProfile;
 } SP_REMOVEDEVICE_PARAMS, *PSP_REMOVEDEVICE_PARAMS;
 
-#define DI_REMOVEDEVICE_GLOBAL                  0x00000001;
-#define DI_REMOVEDEVICE_CONFIGSPECIFIC          0x00000002;
+static const int DI_REMOVEDEVICE_GLOBAL                =  0x00000001;
+static const int DI_REMOVEDEVICE_CONFIGSPECIFIC        =  0x00000002;
 
 
 //
@@ -1125,7 +1124,7 @@ typedef struct _SP_UNREMOVEDEVICE_PARAMS {
     DWORD HwProfile;
 } SP_UNREMOVEDEVICE_PARAMS, *PSP_UNREMOVEDEVICE_PARAMS;
 
-#define DI_UNREMOVEDEVICE_CONFIGSPECIFIC        0x00000002;
+static const int DI_UNREMOVEDEVICE_CONFIGSPECIFIC      =  0x00000002;
 
 
 //
@@ -1147,16 +1146,21 @@ typedef struct _SP_SELECTDEVICE_PARAMS_W {
     WCHAR                  ListLabel[MAX_LABEL_LEN];
     WCHAR                  SubTitle[MAX_SUBTITLE_LEN];
 } SP_SELECTDEVICE_PARAMS_W, *PSP_SELECTDEVICE_PARAMS_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_SELECTDEVICE_PARAMS_W SP_SELECTDEVICE_PARAMS;
 typedef PSP_SELECTDEVICE_PARAMS_W PSP_SELECTDEVICE_PARAMS;
+]]
 else
+ffi.cdef[[
 typedef SP_SELECTDEVICE_PARAMS_A SP_SELECTDEVICE_PARAMS;
 typedef PSP_SELECTDEVICE_PARAMS_A PSP_SELECTDEVICE_PARAMS;
+]]
 end
 
-
+ffi.cdef[[
 //
 // Callback routine for giving progress notification during detection
 //
@@ -1182,8 +1186,9 @@ typedef struct _SP_DETECTDEVICE_PARAMS {
     PDETECT_PROGRESS_NOTIFY DetectProgressNotify;
     PVOID                   ProgressNotifyParam;
 } SP_DETECTDEVICE_PARAMS, *PSP_DETECTDEVICE_PARAMS;
+]]
 
-
+ffi.cdef[[
 //
 // 'Add New Device' installation wizard structure (backward-compatibility
 // only--respond to DIF_NEWDEVICEWIZARD_* requests instead).
@@ -1196,7 +1201,7 @@ typedef struct _SP_DETECTDEVICE_PARAMS {
 // Define maximum number of dynamic wizard pages that can be added to
 // hardware install wizard.
 //
-#define MAX_INSTALLWIZARD_DYNAPAGES            = 20;
+static const int MAX_INSTALLWIZARD_DYNAPAGES            = 20;
 
 typedef struct _SP_INSTALLWIZARD_DATA {
     SP_CLASSINSTALL_HEADER ClassInstallHeader;
@@ -1208,134 +1213,53 @@ typedef struct _SP_INSTALLWIZARD_DATA {
     LPARAM                 PrivateData;
     HWND                   hwndWizardDlg;
 } SP_INSTALLWIZARD_DATA, *PSP_INSTALLWIZARD_DATA;
+]]
 
-//
-// SP_INSTALLWIZARD_DATA.Flags values
-//
-#define NDW_INSTALLFLAG_DIDFACTDEFS         0x00000001
-#define NDW_INSTALLFLAG_HARDWAREALLREADYIN  0x00000002
-#define NDW_INSTALLFLAG_NEEDRESTART         DI_NEEDRESTART
-#define NDW_INSTALLFLAG_NEEDREBOOT          DI_NEEDREBOOT
-#define NDW_INSTALLFLAG_NEEDSHUTDOWN        0x00000200
-#define NDW_INSTALLFLAG_EXPRESSINTRO        0x00000400
-#define NDW_INSTALLFLAG_SKIPISDEVINSTALLED  0x00000800
-#define NDW_INSTALLFLAG_NODETECTEDDEVS      0x00001000
-#define NDW_INSTALLFLAG_INSTALLSPECIFIC     0x00002000
-#define NDW_INSTALLFLAG_SKIPCLASSLIST       0x00004000
-#define NDW_INSTALLFLAG_CI_PICKED_OEM       0x00008000
-#define NDW_INSTALLFLAG_PCMCIAMODE          0x00010000
-#define NDW_INSTALLFLAG_PCMCIADEVICE        0x00020000
-#define NDW_INSTALLFLAG_USERCANCEL          0x00040000
-#define NDW_INSTALLFLAG_KNOWNCLASS          0x00080000
+ffi.cdef[[
+static const int NDW_INSTALLFLAG_DIDFACTDEFS        = 0x00000001;
+static const int NDW_INSTALLFLAG_HARDWAREALLREADYIN = 0x00000002;
+static const int NDW_INSTALLFLAG_NEEDRESTART        = DI_NEEDRESTART;
+static const int NDW_INSTALLFLAG_NEEDREBOOT         = DI_NEEDREBOOT;
+static const int NDW_INSTALLFLAG_NEEDSHUTDOWN       = 0x00000200;
+static const int NDW_INSTALLFLAG_EXPRESSINTRO       = 0x00000400;
+static const int NDW_INSTALLFLAG_SKIPISDEVINSTALLED = 0x00000800;
+static const int NDW_INSTALLFLAG_NODETECTEDDEVS     = 0x00001000;
+static const int NDW_INSTALLFLAG_INSTALLSPECIFIC    = 0x00002000;
+static const int NDW_INSTALLFLAG_SKIPCLASSLIST      = 0x00004000;
+static const int NDW_INSTALLFLAG_CI_PICKED_OEM      = 0x00008000;
+static const int NDW_INSTALLFLAG_PCMCIAMODE         = 0x00010000;
+static const int NDW_INSTALLFLAG_PCMCIADEVICE       = 0x00020000;
+static const int NDW_INSTALLFLAG_USERCANCEL         = 0x00040000;
+static const int NDW_INSTALLFLAG_KNOWNCLASS         = 0x00080000;
 
+static const int DYNAWIZ_FLAG_PAGESADDED            = 0x00000001;
 
-//
-// SP_INSTALLWIZARD_DATA.DynamicPageFlags values
-//
-// This flag is set if a Class installer has added pages to the install wizard.
-//
-#define DYNAWIZ_FLAG_PAGESADDED             0x00000001
+static const int DYNAWIZ_FLAG_ANALYZE_HANDLECONFLICT =0x00000008;
 
-//
-// Set this flag if you jump to the analyze page, and want it to
-// handle conflicts for you.  NOTE.  You will not get control back
-// in the event of a conflict if you set this flag.
-//
-#define DYNAWIZ_FLAG_ANALYZE_HANDLECONFLICT 0x00000008
+static const int DYNAWIZ_FLAG_INSTALLDET_NEXT      =  0x00000002;
+static const int DYNAWIZ_FLAG_INSTALLDET_PREV      =  0x00000004;
 
-//
-// The following flags are not used by the Windows NT hardware wizard.
-//
-#define DYNAWIZ_FLAG_INSTALLDET_NEXT        0x00000002
-#define DYNAWIZ_FLAG_INSTALLDET_PREV        0x00000004
+static const int MIN_IDD_DYNAWIZ_RESOURCE_ID            = 10000;
+static const int MAX_IDD_DYNAWIZ_RESOURCE_ID            = 11000;
 
 
-//
-// Reserve a range of wizard page resource IDs for internal use.  Some of
-// these IDs are for use by class installers that respond to the obsolete
-// DIF_INSTALLWIZARD/DIF_DESTROYWIZARDDATA messages.  These IDs are listed
-// below.
-//
-#define MIN_IDD_DYNAWIZ_RESOURCE_ID             10000
-#define MAX_IDD_DYNAWIZ_RESOURCE_ID             11000
-
-//
-// Define wizard page resource IDs to be used when adding custom pages to the
-// hardware install wizard via DIF_INSTALLWIZARD.  Pages marked with
-// (CLASS INSTALLER PROVIDED) _must_ be supplied by the class installer if it
-// responds to the DIF_INSTALLWIZARD request.
-//
-
-//
-// Resource ID for the first page that the install wizard will go to after
-// adding the class installer pages.  (CLASS INSTALLER PROVIDED)
-//
-#define IDD_DYNAWIZ_FIRSTPAGE                   10000
-
-//
-// Resource ID for the page that the Select Device page will go back to.
-// (CLASS INSTALLER PROVIDED)
-//
-#define IDD_DYNAWIZ_SELECT_PREVPAGE             10001
-
-//
-// Resource ID for the page that the Select Device page will go forward to.
-// (CLASS INSTALLER PROVIDED)
-//
-#define IDD_DYNAWIZ_SELECT_NEXTPAGE             10002
-
-//
-// Resource ID for the page that the Analyze dialog should go back to
-// This will only be used in the event that there is a problem, and the user
-// selects Back from the analyze proc. (CLASS INSTALLER PROVIDED)
-//
-#define IDD_DYNAWIZ_ANALYZE_PREVPAGE            10003
-
-//
-// Resource ID for the page that the Analyze dialog should go to if it
-// continues from the analyze proc. (CLASS INSTALLER PROVIDED)
-//
-#define IDD_DYNAWIZ_ANALYZE_NEXTPAGE            10004
-
-//
-// Resource ID of the hardware install wizard's select device page.
-// This ID can be used to go directly to the hardware install wizard's select
-// device page.  (This is the resource ID of the Select Device wizard page
-// retrieved via SetupDiGetWizardPage when SPWPT_SELECTDEVICE is the requested
-// PageType.)
-//
-#define IDD_DYNAWIZ_SELECTDEV_PAGE              10009
-
-//
-// Resource ID of the hardware install wizard's device analysis page.
-// This ID can be use to go directly to the hardware install wizard's analysis
-// page.
-//
-#define IDD_DYNAWIZ_ANALYZEDEV_PAGE             10010
-
-//
-// Resource ID of the hardware install wizard's install detected devices page.
-// This ID can be use to go directly to the hardware install wizard's install
-// detected devices page.
-//
-#define IDD_DYNAWIZ_INSTALLDETECTEDDEVS_PAGE    10011
-
-//
-// Resource ID of the hardware install wizard's select class page.
-// This ID can be use to go directly to the hardware install wizard's select
-// class page.
-//
-#define IDD_DYNAWIZ_SELECTCLASS_PAGE            10012
-
-//
-// The following class installer-provided wizard page resource IDs are not used
-// by the Windows NT hardware wizard.
-//
-#define IDD_DYNAWIZ_INSTALLDETECTED_PREVPAGE    10006
-#define IDD_DYNAWIZ_INSTALLDETECTED_NEXTPAGE    10007
-#define IDD_DYNAWIZ_INSTALLDETECTED_NODEVS      10008
+static const int IDD_DYNAWIZ_FIRSTPAGE                  = 10000;
+static const int IDD_DYNAWIZ_SELECT_PREVPAGE            = 10001;
+static const int IDD_DYNAWIZ_SELECT_NEXTPAGE            = 10002;
+static const int IDD_DYNAWIZ_ANALYZE_PREVPAGE           = 10003;
+static const int IDD_DYNAWIZ_ANALYZE_NEXTPAGE           = 10004;
+static const int IDD_DYNAWIZ_SELECTDEV_PAGE             = 10009;
+static const int IDD_DYNAWIZ_ANALYZEDEV_PAGE            = 10010;
+static const int IDD_DYNAWIZ_INSTALLDETECTEDDEVS_PAGE   = 10011;
+static const int IDD_DYNAWIZ_SELECTCLASS_PAGE           = 10012;
 
 
+static const int IDD_DYNAWIZ_INSTALLDETECTED_PREVPAGE   = 10006;
+static const int IDD_DYNAWIZ_INSTALLDETECTED_NEXTPAGE   = 10007;
+static const int IDD_DYNAWIZ_INSTALLDETECTED_NODEVS     = 10008;
+]]
+
+ffi.cdef[[
 //
 // Structure corresponding to the following DIF_NEWDEVICEWIZARD_* install
 // functions:
@@ -1380,16 +1304,21 @@ typedef struct _SP_TROUBLESHOOTER_PARAMS_W {
     WCHAR                  ChmFile[MAX_PATH];
     WCHAR                  HtmlTroubleShooter[MAX_PATH];
 } SP_TROUBLESHOOTER_PARAMS_W, *PSP_TROUBLESHOOTER_PARAMS_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_TROUBLESHOOTER_PARAMS_W SP_TROUBLESHOOTER_PARAMS;
 typedef PSP_TROUBLESHOOTER_PARAMS_W PSP_TROUBLESHOOTER_PARAMS;
+]]
 else
+ffi.cdef[[
 typedef SP_TROUBLESHOOTER_PARAMS_A SP_TROUBLESHOOTER_PARAMS;
 typedef PSP_TROUBLESHOOTER_PARAMS_A PSP_TROUBLESHOOTER_PARAMS;
+]]
 end
 
-
+ffi.cdef[[
 //
 // Structure corresponding to the DIF_POWERMESSAGEWAKE install function
 //
@@ -1402,15 +1331,21 @@ typedef struct _SP_POWERMESSAGEWAKE_PARAMS_W {
     SP_CLASSINSTALL_HEADER ClassInstallHeader;
     WCHAR                  PowerMessageWake[LINE_LEN*2];
 } SP_POWERMESSAGEWAKE_PARAMS_W, *PSP_POWERMESSAGEWAKE_PARAMS_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_POWERMESSAGEWAKE_PARAMS_W SP_POWERMESSAGEWAKE_PARAMS;
 typedef PSP_POWERMESSAGEWAKE_PARAMS_W PSP_POWERMESSAGEWAKE_PARAMS;
+]]
 else
+ffi.cdef[[
 typedef SP_POWERMESSAGEWAKE_PARAMS_A SP_POWERMESSAGEWAKE_PARAMS;
 typedef PSP_POWERMESSAGEWAKE_PARAMS_A PSP_POWERMESSAGEWAKE_PARAMS;
+]]
 end
 
+ffi.cdef[[
 //
 // Driver information structure (member of a driver info list that may be associated
 // with a particular device instance, or (globally) with a device information set)
@@ -1458,39 +1393,45 @@ typedef struct _SP_DRVINFO_DATA_V1_W {
     WCHAR     MfgName[LINE_LEN];
     WCHAR     ProviderName[LINE_LEN];
 } SP_DRVINFO_DATA_V1_W, *PSP_DRVINFO_DATA_V1_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_DRVINFO_DATA_V1_W SP_DRVINFO_DATA_V1;
 typedef PSP_DRVINFO_DATA_V1_W PSP_DRVINFO_DATA_V1;
 typedef SP_DRVINFO_DATA_V2_W SP_DRVINFO_DATA_V2;
 typedef PSP_DRVINFO_DATA_V2_W PSP_DRVINFO_DATA_V2;
+]]
 else
+ffi.cdef[[
 typedef SP_DRVINFO_DATA_V1_A SP_DRVINFO_DATA_V1;
 typedef PSP_DRVINFO_DATA_V1_A PSP_DRVINFO_DATA_V1;
 typedef SP_DRVINFO_DATA_V2_A SP_DRVINFO_DATA_V2;
 typedef PSP_DRVINFO_DATA_V2_A PSP_DRVINFO_DATA_V2;
+]]
 end
 
-#if USE_SP_DRVINFO_DATA_V1 || (_SETUPAPI_VER < _WIN32_WINNT_WIN2K)  // use version 1 driver info data structure
-
+if USE_SP_DRVINFO_DATA_V1 or (_SETUPAPI_VER < _WIN32_WINNT_WIN2K)  then  --// use version 1 driver info data structure
+ffi.cdef[[
 typedef SP_DRVINFO_DATA_V1_A SP_DRVINFO_DATA_A;
 typedef PSP_DRVINFO_DATA_V1_A PSP_DRVINFO_DATA_A;
 typedef SP_DRVINFO_DATA_V1_W SP_DRVINFO_DATA_W;
 typedef PSP_DRVINFO_DATA_V1_W PSP_DRVINFO_DATA_W;
 typedef SP_DRVINFO_DATA_V1 SP_DRVINFO_DATA;
 typedef PSP_DRVINFO_DATA_V1 PSP_DRVINFO_DATA;
-
-else                       // use version 2 driver info data structure
-
+]]
+else                      -- // use version 2 driver info data structure
+ffi.cdef[[
 typedef SP_DRVINFO_DATA_V2_A SP_DRVINFO_DATA_A;
 typedef PSP_DRVINFO_DATA_V2_A PSP_DRVINFO_DATA_A;
 typedef SP_DRVINFO_DATA_V2_W SP_DRVINFO_DATA_W;
 typedef PSP_DRVINFO_DATA_V2_W PSP_DRVINFO_DATA_W;
 typedef SP_DRVINFO_DATA_V2 SP_DRVINFO_DATA;
 typedef PSP_DRVINFO_DATA_V2 PSP_DRVINFO_DATA;
+]]
+end  --// use current version of driver info data structure
 
-end  // use current version of driver info data structure
-
+ffi.cdef[[
 //
 // Driver information details structure (provides detailed information about a
 // particular driver information structure)
@@ -1518,16 +1459,21 @@ typedef struct _SP_DRVINFO_DETAIL_DATA_W {
     WCHAR    DrvDescription[LINE_LEN];
     WCHAR    HardwareID[ANYSIZE_ARRAY];
 } SP_DRVINFO_DETAIL_DATA_W, *PSP_DRVINFO_DETAIL_DATA_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_DRVINFO_DETAIL_DATA_W SP_DRVINFO_DETAIL_DATA;
 typedef PSP_DRVINFO_DETAIL_DATA_W PSP_DRVINFO_DETAIL_DATA;
+]]
 else
+ffi.cdef[[
 typedef SP_DRVINFO_DETAIL_DATA_A SP_DRVINFO_DETAIL_DATA;
 typedef PSP_DRVINFO_DETAIL_DATA_A PSP_DRVINFO_DETAIL_DATA;
+]]
 end
 
-
+ffi.cdef[[
 //
 // Driver installation parameters (associated with a particular driver
 // information element)
@@ -1539,7 +1485,9 @@ typedef struct _SP_DRVINSTALL_PARAMS {
     DWORD_PTR PrivateData;
     DWORD Reserved;
 } SP_DRVINSTALL_PARAMS, *PSP_DRVINSTALL_PARAMS;
+]]
 
+--[=[
 //
 // SP_DRVINSTALL_PARAMS.Flags values
 //
@@ -1569,36 +1517,37 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define DNF_DUPDRIVERVER          0x00008000  // Multipe drivers have the same desc, provider, and DriverVer values
 #define DNF_BASIC_DRIVER          0x00010000  // Driver provides basic functionality, but should
                                               // not be chosen if other signed drivers exist.
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WS03
 #define DNF_AUTHENTICODE_SIGNED   0x00020000  // Inf file is signed by an Authenticode(tm) catalog.
-end // _SETUPAPI_VER >= _WIN32_WINNT_WS03
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 #define DNF_INSTALLEDDRIVER       0x00040000  // This driver node is currently installed on the device.
 #define DNF_ALWAYSEXCLUDEFROMLIST 0x00080000  // If set, this driver is not even displayed in 
                                               // alternative platform either.
 #define DNF_INBOX_DRIVER          0x00100000  // This driver node came from an INF that shipped with Windows.
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 #define DNF_REQUESTADDITIONALSOFTWARE   0x00200000  // This driver is only part of a software solution needed
                                                     // by this device
-end // _SETUPAPI_VER >= _WIN32_WINNT_WIN7
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 
-#define DNF_UNUSED_22             0x00400000
-#define DNF_UNUSED_23             0x00800000
-#define DNF_UNUSED_24             0x01000000
-#define DNF_UNUSED_25             0x02000000
-#define DNF_UNUSED_26             0x04000000
-#define DNF_UNUSED_27             0x08000000
-#define DNF_UNUSED_28             0x10000000
-#define DNF_UNUSED_29             0x20000000
-#define DNF_UNUSED_30             0x40000000
-#define DNF_UNUSED_31             0x80000000
+#define DNF_UNUSED_22            = 0x00400000;
+#define DNF_UNUSED_23            = 0x00800000;
+#define DNF_UNUSED_24            = 0x01000000;
+#define DNF_UNUSED_25            = 0x02000000;
+#define DNF_UNUSED_26            = 0x04000000;
+#define DNF_UNUSED_27            = 0x08000000;
+#define DNF_UNUSED_28            = 0x10000000;
+#define DNF_UNUSED_29            = 0x20000000;
+#define DNF_UNUSED_30            = 0x40000000;
+#define DNF_UNUSED_31            = 0x80000000;
+--]=]
 
-
+--[=[
 //
 // Rank values (the lower the Rank number, the better the Rank)
 //
@@ -1670,8 +1619,10 @@ else
                                                       // is a compatible ID match suspected
                                                       // of being only for Windows 9x
                                                       // platforms.
-end // _SETUPAPI_VER < _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER < _WIN32_WINNT_LONGHORN
+--]=]
 
+ffi.cdef[[
 //
 // Setup callback routine for comparing detection signatures
 //
@@ -1679,7 +1630,7 @@ typedef DWORD (__stdcall* PSP_DETSIG_CMPPROC)(
      HDEVINFO         DeviceInfoSet,
      PSP_DEVINFO_DATA NewDeviceData,
      PSP_DEVINFO_DATA ExistingDeviceData,
-     PVOID            CompareContext      OPTIONAL
+     PVOID            CompareContext      
     );
 
 
@@ -1715,13 +1666,15 @@ typedef struct _SP_PROPSHEETPAGE_REQUEST {
     HDEVINFO         DeviceInfoSet;
     PSP_DEVINFO_DATA DeviceInfoData;
 } SP_PROPSHEETPAGE_REQUEST, *PSP_PROPSHEETPAGE_REQUEST;
+]]
 
+ffi.cdef[[
 //
 // Property sheet codes used in SP_PROPSHEETPAGE_REQUEST.PageRequested
 //
-#define SPPSR_SELECT_DEVICE_RESOURCES      1    // supplied by setupapi.dll
-#define SPPSR_ENUM_BASIC_DEVICE_PROPERTIES 2    // supplied by device's BasicProperties32 provider
-#define SPPSR_ENUM_ADV_DEVICE_PROPERTIES   3    // supplied by class and/or device's EnumPropPages32 provider
+static const int SPPSR_SELECT_DEVICE_RESOURCES      = 1;    // supplied by setupapi.dll
+static const int SPPSR_ENUM_BASIC_DEVICE_PROPERTIES = 2;    // supplied by device's BasicProperties32 provider
+static const int SPPSR_ENUM_ADV_DEVICE_PROPERTIES   = 3;    // supplied by class and/or device's EnumPropPages32 provider
 
 
 //
@@ -1730,14 +1683,14 @@ typedef struct _SP_PROPSHEETPAGE_REQUEST {
 typedef struct _SP_BACKUP_QUEUE_PARAMS_V2_A {
     DWORD    cbSize;                            // size of structure
     CHAR     FullInfPath[MAX_PATH];             // buffer to hold ANSI pathname of INF file
-    INT      FilenameOffset;                    // offset in CHAR's of filename part (after '\')
+    INT      FilenameOffset;                    // offset in CHARs of filename part (after "\"")
     CHAR     ReinstallInstance[MAX_PATH];       // Instance ID (if present)
 } SP_BACKUP_QUEUE_PARAMS_V2_A, *PSP_BACKUP_QUEUE_PARAMS_V2_A;
 
 typedef struct _SP_BACKUP_QUEUE_PARAMS_V2_W {
     DWORD    cbSize;                            // size of structure
     WCHAR    FullInfPath[MAX_PATH];             // buffer to hold UNICODE pathname of INF file
-    INT      FilenameOffset;                    // offset in WCHAR's of filename part (after '\')
+    INT      FilenameOffset;                    // offset in WCHARs of filename part (after "\"")
     WCHAR    ReinstallInstance[MAX_PATH];       // Instance ID (if present)
 } SP_BACKUP_QUEUE_PARAMS_V2_W, *PSP_BACKUP_QUEUE_PARAMS_V2_W;
 
@@ -1748,28 +1701,33 @@ typedef struct _SP_BACKUP_QUEUE_PARAMS_V2_W {
 typedef struct _SP_BACKUP_QUEUE_PARAMS_V1_A {
     DWORD    cbSize;                            // size of structure
     CHAR     FullInfPath[MAX_PATH];             // buffer to hold ANSI pathname of INF file
-    INT      FilenameOffset;                    // offset in CHAR's of filename part (after '\')
+    INT      FilenameOffset;                    // offset in CHARs of filename part (after "\"")
 } SP_BACKUP_QUEUE_PARAMS_V1_A, *PSP_BACKUP_QUEUE_PARAMS_V1_A;
 
 typedef struct _SP_BACKUP_QUEUE_PARAMS_V1_W {
     DWORD    cbSize;                            // size of structure
     WCHAR    FullInfPath[MAX_PATH];             // buffer to hold UNICODE pathname of INF file
-    INT      FilenameOffset;                    // offset in WCHAR's of filename part (after '\')
+    INT      FilenameOffset;                    // offset in WCHARs of filename part (after "\"")
 } SP_BACKUP_QUEUE_PARAMS_V1_W, *PSP_BACKUP_QUEUE_PARAMS_V1_W;
+]]
 
-if UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef SP_BACKUP_QUEUE_PARAMS_V1_W SP_BACKUP_QUEUE_PARAMS_V1;
 typedef PSP_BACKUP_QUEUE_PARAMS_V1_W PSP_BACKUP_QUEUE_PARAMS_V1;
 typedef SP_BACKUP_QUEUE_PARAMS_V2_W SP_BACKUP_QUEUE_PARAMS_V2;
 typedef PSP_BACKUP_QUEUE_PARAMS_V2_W PSP_BACKUP_QUEUE_PARAMS_V2;
+]]
 else
+ffi.cdef[[
 typedef SP_BACKUP_QUEUE_PARAMS_V1_A SP_BACKUP_QUEUE_PARAMS_V1;
 typedef PSP_BACKUP_QUEUE_PARAMS_V1_A PSP_BACKUP_QUEUE_PARAMS_V1;
 typedef SP_BACKUP_QUEUE_PARAMS_V2_A SP_BACKUP_QUEUE_PARAMS_V2;
 typedef PSP_BACKUP_QUEUE_PARAMS_V2_A PSP_BACKUP_QUEUE_PARAMS_V2;
+]]
 end
 
-
+--[=[
 #if USE_SP_BACKUP_QUEUE_PARAMS_V1 || (_SETUPAPI_VER < _WIN32_WINNT_WINXP)  // use version 1 driver info data structure
 
 typedef SP_BACKUP_QUEUE_PARAMS_V1_A SP_BACKUP_QUEUE_PARAMS_A;
@@ -1789,12 +1747,12 @@ typedef SP_BACKUP_QUEUE_PARAMS_V2 SP_BACKUP_QUEUE_PARAMS;
 typedef PSP_BACKUP_QUEUE_PARAMS_V2 PSP_BACKUP_QUEUE_PARAMS;
 
 end  // use current version of driver info data structure
+--]=]
 
 
 
 
-
-
+--[=[
 #ifndef _SPAPI_ERRORS
 #define _SPAPI_ERRORS
 
@@ -1915,16 +1873,16 @@ end  // use current version of driver info data structure
 //
 #define ERROR_NOT_INSTALLED (APPLICATION_ERROR_MASK|ERROR_SEVERITY_ERROR|0x1000)
 
-end // _SPAPI_ERRORS
+end -- _SPAPI_ERRORS
+--]=]
 
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupGetInfInformationA(
      LPCVOID InfSpec,
      DWORD SearchControl,
-    _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PSP_INF_INFORMATION ReturnBuffer, 
+     PSP_INF_INFORMATION ReturnBuffer, 
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -1936,25 +1894,23 @@ __stdcall
 SetupGetInfInformationW(
      LPCVOID InfSpec,
      DWORD SearchControl,
-    _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PSP_INF_INFORMATION ReturnBuffer,
+     PSP_INF_INFORMATION ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
+]]
 
+ffi.cdef[[
 //
 // SearchControl flags for SetupGetInfInformation
 //
-#define INFINFO_INF_SPEC_IS_HINF        1
-#define INFINFO_INF_NAME_IS_ABSOLUTE    2
-#define INFINFO_DEFAULT_SEARCH          3
-#define INFINFO_REVERSE_DEFAULT_SEARCH  4
-#define INFINFO_INF_PATH_LIST_SEARCH    5
+static const int INFINFO_INF_SPEC_IS_HINF       = 1;
+static const int INFINFO_INF_NAME_IS_ABSOLUTE   = 2;
+static const int INFINFO_DEFAULT_SEARCH         = 3;
+static const int INFINFO_REVERSE_DEFAULT_SEARCH = 4;
+static const int INFINFO_INF_PATH_LIST_SEARCH   = 5;
 
-if UNICODE
-#define SetupGetInfInformation SetupGetInfInformationW
-else
-#define SetupGetInfInformation SetupGetInfInformationA
-end
+
 
 
 
@@ -1963,7 +1919,7 @@ __stdcall
 SetupQueryInfFileInformationA(
      PSP_INF_INFORMATION InfInformation,
      UINT InfIndex,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize 
     );
@@ -1974,16 +1930,12 @@ __stdcall
 SetupQueryInfFileInformationW(
      PSP_INF_INFORMATION InfInformation,
      UINT InfIndex,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
 
-if UNICODE
-#define SetupQueryInfFileInformation SetupQueryInfFileInformationW
-else
-#define SetupQueryInfFileInformation SetupQueryInfFileInformationA
-end
+
 
 
 
@@ -2006,11 +1958,7 @@ SetupQueryInfOriginalFileInformationW(
      PSP_ORIGINAL_FILE_INFO_W OriginalFileInfo
     );
 
-if UNICODE
-#define SetupQueryInfOriginalFileInformation SetupQueryInfOriginalFileInformationW
-else
-#define SetupQueryInfOriginalFileInformation SetupQueryInfOriginalFileInformationA
-end
+
 
 
 
@@ -2020,7 +1968,7 @@ SetupQueryInfVersionInformationA(
      PSP_INF_INFORMATION InfInformation,
      UINT InfIndex,
      PCSTR Key,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2032,28 +1980,24 @@ SetupQueryInfVersionInformationW(
      PSP_INF_INFORMATION InfInformation,
      UINT InfIndex,
      PCWSTR Key,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
-
-if UNICODE
-#define SetupQueryInfVersionInformation SetupQueryInfVersionInformationW
-else
-#define SetupQueryInfVersionInformation SetupQueryInfVersionInformationA
-end
+]]
 
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
+if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN then
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetupGetInfDriverStoreLocationA(
      PCSTR FileName,
      PSP_ALTPLATFORM_INFO AlternatePlatformInfo,
      PCSTR LocaleName,
-    _Out_writes_(ReturnBufferSize) PSTR ReturnBuffer, 
+     PSTR ReturnBuffer, 
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2065,23 +2009,19 @@ SetupGetInfDriverStoreLocationW(
      PCWSTR FileName,
      PSP_ALTPLATFORM_INFO AlternatePlatformInfo,    
      PCWSTR LocaleName,
-    _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
 
-if UNICODE
-#define SetupGetInfDriverStoreLocation SetupGetInfDriverStoreLocationW
-else
-#define SetupGetInfDriverStoreLocation SetupGetInfDriverStoreLocationA
-end
+
 
 
 BOOL
 __stdcall
 SetupGetInfPublishedNameA(
      PCSTR DriverStoreLocation,
-    _Out_writes_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2091,27 +2031,23 @@ BOOL
 __stdcall
 SetupGetInfPublishedNameW(
      PCWSTR DriverStoreLocation,
-    _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
-
-if UNICODE
-#define SetupGetInfPublishedName SetupGetInfPublishedNameW
-else
-#define SetupGetInfPublishedName SetupGetInfPublishedNameA
-end
-
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+]]
 
 
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
+
+ffi.cdef[[
 BOOL
 __stdcall
 SetupGetInfFileListA(
      PCSTR DirectoryPath,
      DWORD InfStyle,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer, 
+     PSTR ReturnBuffer, 
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2122,16 +2058,11 @@ __stdcall
 SetupGetInfFileListW(
      PCWSTR DirectoryPath,
      DWORD InfStyle,
-    _Out_writes_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
 
-if UNICODE
-#define SetupGetInfFileList SetupGetInfFileListW
-else
-#define SetupGetInfFileList SetupGetInfFileListA
-end
 
 
 
@@ -2154,11 +2085,7 @@ SetupOpenInfFileA(
      PUINT ErrorLine
     );
 
-if UNICODE
-#define SetupOpenInfFile SetupOpenInfFileW
-else
-#define SetupOpenInfFile SetupOpenInfFileA
-end
+
 
 
 
@@ -2187,11 +2114,7 @@ SetupOpenAppendInfFileA(
      PUINT ErrorLine
     );
 
-if UNICODE
-#define SetupOpenAppendInfFile SetupOpenAppendInfFileW
-else
-#define SetupOpenAppendInfFile SetupOpenAppendInfFileA
-end
+
 
 
 
@@ -2222,11 +2145,7 @@ SetupFindFirstLineW(
      PINFCONTEXT Context
     );
 
-if UNICODE
-#define SetupFindFirstLine SetupFindFirstLineW
-else
-#define SetupFindFirstLine SetupFindFirstLineA
-end
+
 
 
 
@@ -2256,11 +2175,7 @@ SetupFindNextMatchLineW(
      PINFCONTEXT ContextOut
     );
 
-if UNICODE
-#define SetupFindNextMatchLine SetupFindNextMatchLineW
-else
-#define SetupFindNextMatchLine SetupFindNextMatchLineA
-end
+
 
 
 
@@ -2283,11 +2198,7 @@ SetupGetLineByIndexW(
      PINFCONTEXT Context
     );
 
-if UNICODE
-#define SetupGetLineByIndex SetupGetLineByIndexW
-else
-#define SetupGetLineByIndex SetupGetLineByIndexA
-end
+
 
 
 
@@ -2306,11 +2217,7 @@ SetupGetLineCountW(
      PCWSTR Section
     );
 
-if UNICODE
-#define SetupGetLineCount SetupGetLineCountW
-else
-#define SetupGetLineCount SetupGetLineCountA
-end
+
 
 
 
@@ -2321,7 +2228,7 @@ SetupGetLineTextA(
      HINF InfHandle,
      PCSTR Section,
      PCSTR Key,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2334,16 +2241,12 @@ SetupGetLineTextW(
      HINF InfHandle,
      PCWSTR Section,
      PCWSTR Key,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
 
-if UNICODE
-#define SetupGetLineText SetupGetLineTextW
-else
-#define SetupGetLineText SetupGetLineTextA
-end
+
 
 
 
@@ -2360,7 +2263,7 @@ __stdcall
 SetupGetStringFieldA(
      PINFCONTEXT Context,
      DWORD FieldIndex,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2371,16 +2274,12 @@ __stdcall
 SetupGetStringFieldW(
      PINFCONTEXT Context,
      DWORD FieldIndex,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
 
-if UNICODE
-#define SetupGetStringField SetupGetStringFieldW
-else
-#define SetupGetStringField SetupGetStringFieldA
-end
+
 
 
 
@@ -2399,7 +2298,7 @@ __stdcall
 SetupGetMultiSzFieldA(
      PINFCONTEXT Context,
      DWORD FieldIndex,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      LPDWORD RequiredSize 
     );
@@ -2410,16 +2309,12 @@ __stdcall
 SetupGetMultiSzFieldW(
      PINFCONTEXT Context,
      DWORD FieldIndex,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      LPDWORD RequiredSize 
     );
 
-if UNICODE
-#define SetupGetMultiSzField SetupGetMultiSzFieldW
-else
-#define SetupGetMultiSzField SetupGetMultiSzFieldA
-end
+
 
 
 
@@ -2428,11 +2323,13 @@ __stdcall
 SetupGetBinaryField(
      PINFCONTEXT Context,
      DWORD FieldIndex,
-    _Out_writes_bytes_to_opt_(ReturnBufferSize, *RequiredSize) PBYTE ReturnBuffer,
+     PBYTE ReturnBuffer,
      DWORD ReturnBufferSize,
      LPDWORD RequiredSize 
     );
+]]
 
+--[[
 //
 // SetupGetFileCompressionInfo is depreciated
 // use SetupGetFileCompressionInfoEx instead
@@ -2462,15 +2359,11 @@ SetupGetFileCompressionInfoW(
      PDWORD TargetFileSize,
      PUINT CompressionType
     );
+--]]
 
-if UNICODE
-#define SetupGetFileCompressionInfo SetupGetFileCompressionInfoW
-else
-#define SetupGetFileCompressionInfo SetupGetFileCompressionInfoA
-end
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
-
+ffi.cdef[[
 //
 // SetupGetFileCompressionInfoEx is the preferred API over
 // SetupGetFileCompressionInfo. It follows the normal
@@ -2483,7 +2376,7 @@ BOOL
 __stdcall
 SetupGetFileCompressionInfoExA(
      PCSTR SourceFileName,
-    _In_reads_opt_(ActualSourceFileNameBufferLen) PSTR ActualSourceFileNameBuffer,
+     PSTR ActualSourceFileNameBuffer,
      DWORD ActualSourceFileNameBufferLen,
      PDWORD RequiredBufferLen, 
      PDWORD SourceFileSize,
@@ -2496,22 +2389,18 @@ BOOL
 __stdcall
 SetupGetFileCompressionInfoExW(
      PCWSTR SourceFileName,
-    _In_reads_opt_(ActualSourceFileNameBufferLen) PWSTR ActualSourceFileNameBuffer,
+     PWSTR ActualSourceFileNameBuffer,
      DWORD ActualSourceFileNameBufferLen,
      PDWORD RequiredBufferLen,
      PDWORD SourceFileSize,
      PDWORD TargetFileSize,
      PUINT CompressionType
     );
+]]
 
-if UNICODE
-#define SetupGetFileCompressionInfoEx SetupGetFileCompressionInfoExW
-else
-#define SetupGetFileCompressionInfoEx SetupGetFileCompressionInfoExA
-end
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
-
+--[=[
 //
 // Compression types
 //
@@ -2554,7 +2443,7 @@ SetupGetSourceFileLocationA(
      PINFCONTEXT InfContext,
      PCSTR FileName,
      PUINT SourceId,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2567,7 +2456,7 @@ SetupGetSourceFileLocationW(
      PINFCONTEXT InfContext,
      PCWSTR FileName,
      PUINT SourceId,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2617,7 +2506,7 @@ SetupGetTargetPathA(
      HINF InfHandle,
      PINFCONTEXT InfContext,
      PCSTR Section,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2629,7 +2518,7 @@ SetupGetTargetPathW(
      HINF InfHandle,
      PINFCONTEXT InfContext,
      PCWSTR Section,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -2970,7 +2859,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define IDF_USEDISKNAMEASPROMPT         0x00002000
 #define IDF_OEMDISK                     0x80000000
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 //
 // Return values for SetupPromptForDisk, SetupCopyError,
@@ -3051,7 +2940,7 @@ SetupGetSourceInfoA(
      HINF InfHandle,
      UINT SourceId,
      UINT InfoDesired,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -3063,7 +2952,7 @@ SetupGetSourceInfoW(
      HINF InfHandle,
      UINT SourceId,
      UINT InfoDesired,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -3093,7 +2982,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 #define SRC_FLAGS_CABFILE       (0x0010) // if set, treat SRCINFO_TAGFILE as a cabfile and specify alternate tagfile
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 BOOL
@@ -3196,13 +3085,13 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 #define SP_COPY_OEM_F6_INF          0x0200000   // Used when calling SetupCopyOemInf
 
-end //_SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end --_SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 #define SP_COPY_ALREADYDECOMP       0x0400000   // similar to SP_COPY_NODECOMP
 
-end //_SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end --_SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
@@ -3211,7 +3100,7 @@ end //_SETUPAPI_VER >= _WIN32_WINNT_WINXP
 #define SP_COPY_IN_USE_TRY_RENAME   0x4000000   // If file in use, try to rename the target first
 #define SP_COPY_INBOX_INF           0x8000000   // Referred by CopyFiles of inbox inf
 
-end //_SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end --_SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 
@@ -3230,7 +3119,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define SP_BACKUP_BOOTFILE          0x00000008  // file marked with COPYFLG_REPLACE_BOOT_FILE
 
 
-end //_SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end --_SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 
@@ -3593,7 +3482,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define SPQ_SCAN_USE_CALLBACK_SIGNERINFO        0x00000040
 #define SPQ_SCAN_PRUNE_DELREN                   0x00000080 // remote Delete/Rename queue
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
@@ -3602,7 +3491,7 @@ end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 #define SPQ_SCAN_FILE_COMPARISON                0x00000200
 #define SPQ_SCAN_ACTIVATE_DRP                   0x00000400
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
 //
@@ -3717,13 +3606,13 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 //
 #define SUOI_FORCEDELETE   0x00000001
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 #define SUOI_INTERNAL1     0x00000002
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
@@ -3761,7 +3650,7 @@ SetupUninstallNewlyCopiedInfs(
      PVOID Reserved
     );
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 //
@@ -3838,7 +3727,7 @@ BOOL
 __stdcall
 SetupQueryDrivesInDiskSpaceListA(
      HDSKSPC DiskSpace,
-    _Out_writes_opt_(ReturnBufferSize) PSTR ReturnBuffer,
+     PSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -3848,7 +3737,7 @@ BOOL
 __stdcall
 SetupQueryDrivesInDiskSpaceListW(
      HDSKSPC DiskSpace,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR ReturnBuffer,
+     PWSTR ReturnBuffer,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -4225,7 +4114,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 #define FLG_ADDREG_DELREG_BIT       ( 0x00008000 ) // if set, interpret as DELREG, see below
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #define FLG_ADDREG_BINVALUETYPE     ( 0x00000001 )
 #define FLG_ADDREG_NOCLOBBER        ( 0x00000002 )
@@ -4241,7 +4130,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define FLG_ADDREG_KEYONLY_COMMON   ( 0x00002000 ) // same as FLG_ADDREG_KEYONLY but also works for DELREG
 #define FLG_ADDREG_32BITKEY         ( 0x00004000 ) // make this change in the 32 bit registry.
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 //
 // The INF may supply any arbitrary data type ordinal in the highword except
@@ -4261,7 +4150,7 @@ end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #define FLG_ADDREG_TYPE_QWORD       ( 0x000B0000 | FLG_ADDREG_BINVALUETYPE )
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WIN10
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WIN10
 
 //
 // Flags for DelReg section lines in INF.  The corresponding value
@@ -4304,13 +4193,13 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define FLG_DELREG_OPERATION_MASK   (0x000000FE)
 #define FLG_DELREG_MULTI_SZ_DELSTRING ( FLG_DELREG_TYPE_MULTI_SZ | FLG_ADDREG_DELREG_BIT | 0x00000002 ) // 0x00018002
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WIN10
 
 #define FLG_DELREG_TYPE_QWORD       FLG_ADDREG_TYPE_QWORD       // 0x000B0001
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WIN10
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WIN10
 
 //
 // Flags for BitReg section lines in INF.
@@ -4323,7 +4212,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define FLG_BITREG_64BITKEY         ( 0x00001000 )
 #define FLG_BITREG_32BITKEY         ( 0x00004000 )
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 //
 // Flags for Ini2Reg section lines in INF.
@@ -4333,7 +4222,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 #define FLG_INI2REG_64BITKEY        ( 0x00001000 )
 #define FLG_INI2REG_32BITKEY        ( 0x00004000 )
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 //
 // Flags for RegSvr section lines in INF
@@ -4432,13 +4321,13 @@ else
 
 #define SPINST_ALL                      0x000003ff
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 else
 
 #define SPINST_ALL                      0x000001ff
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #define SPINST_SINGLESECTION            0x00010000
 #define SPINST_LOGCONFIG_IS_FORCED      0x00020000
@@ -4448,13 +4337,13 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
 #define SPINST_REGISTERCALLBACKAWARE    0x00080000
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 #define SPINST_DEVICEINSTALL            0x00100000
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
 BOOL
@@ -4552,7 +4441,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 //
 #define SPSVCINST_CLOBBER_SECURITY             (0x00000400)
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 //
@@ -4560,7 +4449,7 @@ end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 //
 #define SPSVCINST_STARTSERVICE                 (0x00000800)
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 //
@@ -4568,7 +4457,7 @@ end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 //
 #define SPSVCINST_NOCLOBBER_REQUIREDPRIVILEGES (0x00001000)
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WIN7
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 
 #if _SETUPAPI_VER >= _WIN32_WINNT_WIN10
 //
@@ -4576,7 +4465,7 @@ end // _SETUPAPI_VER >= _WIN32_WINNT_WIN7
 //
 #define SPSVCINST_NOCLOBBER_TRIGGERS (0x00002000)
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WIN10
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WIN10
 
 
 BOOL
@@ -4804,7 +4693,7 @@ SetupQueryFileLogA(
      PCSTR LogSectionName,
      PCSTR TargetFilename,
      SetupFileLogInfo DesiredInfo,
-    _Out_writes_opt_(ReturnBufferSize) PSTR DataOut,
+     PSTR DataOut,
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -4817,7 +4706,7 @@ SetupQueryFileLogW(
      PCWSTR LogSectionName, 
      PCWSTR TargetFilename,
      SetupFileLogInfo DesiredInfo,
-    _Out_writes_opt_(ReturnBufferSize) PWSTR DataOut, 
+     PWSTR DataOut, 
      DWORD ReturnBufferSize,
      PDWORD RequiredSize
     );
@@ -4929,7 +4818,7 @@ SetupWriteTextLogInfLine(
      PINFCONTEXT Context
     );
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 
 //
@@ -4984,7 +4873,7 @@ else
 #define SetupPrepareQueueForRestore SetupPrepareQueueForRestoreA
 end
 --]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
@@ -5007,39 +4896,39 @@ SetupGetNonInteractiveMode(
     VOID
     );
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 //
 // Device Installer APIs
 //
 
-_Check_return_
+
 
 HDEVINFO
 __stdcall
 SetupDiCreateDeviceInfoList(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      HWND hwndParent
     );
 
 
-_Check_return_
+
 
 HDEVINFO
 __stdcall
 SetupDiCreateDeviceInfoListExA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      HWND hwndParent,
      PCSTR MachineName,
      PVOID Reserved
     );
 
-_Check_return_
+
 
 HDEVINFO
 __stdcall
 SetupDiCreateDeviceInfoListExW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      HWND hwndParent, 
      PCWSTR MachineName, 
      PVOID Reserved
@@ -5095,7 +4984,7 @@ __stdcall
 SetupDiCreateDeviceInfoA(
      HDEVINFO DeviceInfoSet,
      PCSTR DeviceName,
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCSTR DeviceDescription,
      HWND hwndParent,
      DWORD CreationFlags,
@@ -5108,7 +4997,7 @@ __stdcall
 SetupDiCreateDeviceInfoW(
      HDEVINFO DeviceInfoSet,
      PCWSTR DeviceName,
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCWSTR DeviceDescription,
      HWND hwndParent,
      DWORD CreationFlags,
@@ -5178,15 +5067,18 @@ SetupDiGetDeviceInstanceIdW(
      DWORD DeviceInstanceIdSize,
      PDWORD RequiredSize
     );
+]]
 
+--[[
 if UNICODE
 #define SetupDiGetDeviceInstanceId SetupDiGetDeviceInstanceIdW
 else
 #define SetupDiGetDeviceInstanceId SetupDiGetDeviceInstanceIdA
 end
 --]]
+--]=]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiDeleteDeviceInfo(
@@ -5219,24 +5111,21 @@ __stdcall
 SetupDiEnumDeviceInterfaces(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
-     CONST GUID *InterfaceClassGuid,
+     const GUID *InterfaceClassGuid,
      DWORD MemberIndex,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
-
-//
-// Backward compatibility--do not use
-//
-#define SetupDiEnumInterfaceDevice SetupDiEnumDeviceInterfaces
+]]
 
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiCreateDeviceInterfaceA(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
-     CONST GUID *InterfaceClassGuid,
+     const GUID *InterfaceClassGuid,
      PCSTR ReferenceString,
      DWORD CreationFlags,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
@@ -5248,18 +5137,19 @@ __stdcall
 SetupDiCreateDeviceInterfaceW(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
-     CONST GUID *InterfaceClassGuid,
+     const GUID *InterfaceClassGuid,
      PCWSTR ReferenceString,
      DWORD CreationFlags,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData 
     );
+]]
 
-if UNICODE
-#define SetupDiCreateDeviceInterface SetupDiCreateDeviceInterfaceW
-else
-#define SetupDiCreateDeviceInterface SetupDiCreateDeviceInterfaceA
-end
---]]
+
+
+--[[
+
+#define SetupDiEnumInterfaceDevice SetupDiEnumDeviceInterfaces
+
 //
 // Backward compatibility--do not use.
 //
@@ -5270,14 +5160,16 @@ if UNICODE
 else
 #define SetupDiCreateInterfaceDevice SetupDiCreateDeviceInterfaceA
 end
+--]]
 
-
+ffi.cdef[[
 //
 // Flags for SetupDiOpenDeviceInterface
 //
-#define DIODI_NO_ADD    0x00000001
+static const int DIODI_NO_ADD   = 0x00000001;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiOpenDeviceInterfaceA(
@@ -5286,7 +5178,6 @@ SetupDiOpenDeviceInterfaceA(
      DWORD OpenFlags,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
-
 
 BOOL
 __stdcall
@@ -5297,40 +5188,14 @@ SetupDiOpenDeviceInterfaceW(
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
-if UNICODE
-#define SetupDiOpenDeviceInterface SetupDiOpenDeviceInterfaceW
-else
-#define SetupDiOpenDeviceInterface SetupDiOpenDeviceInterfaceA
-end
---]]
-//
-// Backward compatibility--do not use
-//
-#define SetupDiOpenInterfaceDeviceW SetupDiOpenDeviceInterfaceW
-#define SetupDiOpenInterfaceDeviceA SetupDiOpenDeviceInterfaceA
-if UNICODE
-#define SetupDiOpenInterfaceDevice SetupDiOpenDeviceInterfaceW
-else
-#define SetupDiOpenInterfaceDevice SetupDiOpenDeviceInterfaceA
-end
---]]
-
-
 BOOL
 __stdcall
 SetupDiGetDeviceInterfaceAlias(
      HDEVINFO DeviceInfoSet,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-     CONST GUID *AliasInterfaceClassGuid,
+     const GUID *AliasInterfaceClassGuid,
      PSP_DEVICE_INTERFACE_DATA AliasDeviceInterfaceData
     );
-
-//
-// Backward compatibility--do not use.
-//
-#define SetupDiGetInterfaceDeviceAlias SetupDiGetDeviceInterfaceAlias
-
-
 
 BOOL
 __stdcall
@@ -5339,13 +5204,6 @@ SetupDiDeleteDeviceInterfaceData(
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
-//
-// Backward compatibility--do not use.
-//
-#define SetupDiDeleteInterfaceDeviceData SetupDiDeleteDeviceInterfaceData
-
-
-
 BOOL
 __stdcall
 SetupDiRemoveDeviceInterface(
@@ -5353,74 +5211,42 @@ SetupDiRemoveDeviceInterface(
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData
     );
 
-//
-// Backward compatibility--do not use.
-//
-#define SetupDiRemoveInterfaceDevice SetupDiRemoveDeviceInterface
-
-
 BOOL
 __stdcall
 SetupDiGetDeviceInterfaceDetailA(
      HDEVINFO DeviceInfoSet,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _Inout_updates_bytes_to_opt_(DeviceInterfaceDetailDataSize, *RequiredSize) PSP_DEVICE_INTERFACE_DETAIL_DATA_A DeviceInterfaceDetailData, 
+     PSP_DEVICE_INTERFACE_DETAIL_DATA_A DeviceInterfaceDetailData, 
      DWORD DeviceInterfaceDetailDataSize,
-     _Out_range_(>=, sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_A)) PDWORD RequiredSize,
+      PDWORD RequiredSize,
      PSP_DEVINFO_DATA DeviceInfoData
     );
-
-
 
 BOOL
 __stdcall
 SetupDiGetDeviceInterfaceDetailW(
      HDEVINFO DeviceInfoSet,
      PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _Out_writes_bytes_to_opt_(DeviceInterfaceDetailDataSize, *RequiredSize) PSP_DEVICE_INTERFACE_DETAIL_DATA_W DeviceInterfaceDetailData,
+     PSP_DEVICE_INTERFACE_DETAIL_DATA_W DeviceInterfaceDetailData,
      DWORD DeviceInterfaceDetailDataSize,
-     _Out_range_(>=, sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W)) PDWORD RequiredSize,
+      PDWORD RequiredSize,
      PSP_DEVINFO_DATA DeviceInfoData
     );
+]]
 
-if UNICODE
-#define SetupDiGetDeviceInterfaceDetail SetupDiGetDeviceInterfaceDetailW
-else
-#define SetupDiGetDeviceInterfaceDetail SetupDiGetDeviceInterfaceDetailA
-end
---]]
-//
-// Backward compatibility--do not use.
-//
-#define SetupDiGetInterfaceDeviceDetailW SetupDiGetDeviceInterfaceDetailW
-#define SetupDiGetInterfaceDeviceDetailA SetupDiGetDeviceInterfaceDetailA
-if UNICODE
-#define SetupDiGetInterfaceDeviceDetail SetupDiGetDeviceInterfaceDetailW
-else
-#define SetupDiGetInterfaceDeviceDetail SetupDiGetDeviceInterfaceDetailA
-end
---]]
-
-//
-// Default install handler for DIF_INSTALLINTERFACES.
-//
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiInstallDeviceInterfaces(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
-
-//
-// Backward compatibility--do not use.
-//
-#define SetupDiInstallInterfaceDevices SetupDiInstallDeviceInterfaces
+]]
 
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiSetDeviceInterfaceDefault(
@@ -5429,18 +5255,12 @@ SetupDiSetDeviceInterfaceDefault(
      DWORD Flags,
      PVOID Reserved
     );
+]]
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
-
-//
-// Default install handler for DIF_REGISTERDEVICE
-//
-
-//
-// Flags for SetupDiRegisterDeviceInfo
-//
-#define SPRDI_FIND_DUPS        0x00000001
+ffi.cdef[[
+static const int SPRDI_FIND_DUPS      =  0x00000001;
 
 
 BOOL
@@ -5453,23 +5273,45 @@ SetupDiRegisterDeviceInfo(
      PVOID CompareContext,
      PSP_DEVINFO_DATA DupDeviceInfoData
     );
+]]
+
+--[[
+//
+// Backward compatibility--do not use.
+//
+#define SetupDiOpenInterfaceDeviceW SetupDiOpenDeviceInterfaceW
+#define SetupDiOpenInterfaceDeviceA SetupDiOpenDeviceInterfaceA
+
+#define SetupDiGetInterfaceDeviceAlias SetupDiGetDeviceInterfaceAlias
+
+#define SetupDiDeleteInterfaceDeviceData SetupDiDeleteDeviceInterfaceData
+#define SetupDiRemoveInterfaceDevice SetupDiRemoveDeviceInterface
 
 
+#define SetupDiGetInterfaceDeviceDetailW SetupDiGetDeviceInterfaceDetailW
+#define SetupDiGetInterfaceDeviceDetailA SetupDiGetDeviceInterfaceDetailA
+
+#define SetupDiInstallInterfaceDevices SetupDiInstallDeviceInterfaces
+
+--]]
+
+ffi.cdef[[
 //
 // Ordinal values distinguishing between class drivers and
 // device drivers.
 // (Passed in 'DriverType' parameter of driver information list APIs)
 //
-#define SPDIT_NODRIVER           0x00000000
-#define SPDIT_CLASSDRIVER        0x00000001
-#define SPDIT_COMPATDRIVER       0x00000002
+static const int SPDIT_NODRIVER         =  0x00000000;
+static const int SPDIT_CLASSDRIVER      =  0x00000001;
+static const int SPDIT_COMPATDRIVER     =  0x00000002;
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiBuildDriverInfoList(
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DEVINFO_DATA DeviceInfoData,
      DWORD DriverType
     );
 
@@ -5503,15 +5345,11 @@ SetupDiEnumDriverInfoW(
      DWORD MemberIndex,
      PSP_DRVINFO_DATA_W DriverInfoData
     );
-
-if UNICODE
-#define SetupDiEnumDriverInfo SetupDiEnumDriverInfoW
-else
-#define SetupDiEnumDriverInfo SetupDiEnumDriverInfoA
-end
---]]
+]]
 
 
+
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiGetSelectedDriverA(
@@ -5530,21 +5368,15 @@ SetupDiGetSelectedDriverW(
     );
 ]]
 
---[[
-if UNICODE
-#define SetupDiGetSelectedDriver SetupDiGetSelectedDriverW
-else
-#define SetupDiGetSelectedDriver SetupDiGetSelectedDriverA
-end
---]]
 
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiSetSelectedDriverA(
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _Inout_opt_ PSP_DRVINFO_DATA_A DriverInfoData
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_A DriverInfoData
     );
 
 
@@ -5552,24 +5384,21 @@ BOOL
 __stdcall
 SetupDiSetSelectedDriverW(
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData,
-    _Inout_opt_ PSP_DRVINFO_DATA_W DriverInfoData
+     PSP_DEVINFO_DATA DeviceInfoData,
+     PSP_DRVINFO_DATA_W DriverInfoData
     );
+]]
 
-if UNICODE
-#define SetupDiSetSelectedDriver SetupDiSetSelectedDriverW
-else
-#define SetupDiSetSelectedDriver SetupDiSetSelectedDriverA
-end
---]]
 
+
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiGetDriverInfoDetailA(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
      PSP_DRVINFO_DATA_A DriverInfoData,
-    _Inout_updates_bytes_opt_(DriverInfoDetailDataSize) PSP_DRVINFO_DETAIL_DATA_A DriverInfoDetailData, 
+     PSP_DRVINFO_DETAIL_DATA_A DriverInfoDetailData, 
      DWORD DriverInfoDetailDataSize,
      PDWORD RequiredSize
     );
@@ -5581,19 +5410,15 @@ SetupDiGetDriverInfoDetailW(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
      PSP_DRVINFO_DATA_W DriverInfoData,
-    _Inout_updates_bytes_opt_(DriverInfoDetailDataSize) PSP_DRVINFO_DETAIL_DATA_W DriverInfoDetailData,
+     PSP_DRVINFO_DETAIL_DATA_W DriverInfoDetailData,
      DWORD DriverInfoDetailDataSize,
      PDWORD RequiredSize
     );
-
-if UNICODE
-#define SetupDiGetDriverInfoDetail SetupDiGetDriverInfoDetailW
-else
-#define SetupDiGetDriverInfoDetail SetupDiGetDriverInfoDetailA
-end
---]]
+]]
 
 
+
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiDestroyDriverInfoList(
@@ -5601,46 +5426,49 @@ SetupDiDestroyDriverInfoList(
      PSP_DEVINFO_DATA DeviceInfoData,
      DWORD DriverType
     );
+]]
 
-
+ffi.cdef[[
 //
 // Flags controlling what is included in the device information set built
 // by SetupDiGetClassDevs
 //
-#define DIGCF_DEFAULT           0x00000001  // only valid with DIGCF_DEVICEINTERFACE
-#define DIGCF_PRESENT           0x00000002
-#define DIGCF_ALLCLASSES        0x00000004
-#define DIGCF_PROFILE           0x00000008
-#define DIGCF_DEVICEINTERFACE   0x00000010
+static const int DIGCF_DEFAULT         =  0x00000001;  // only valid with DIGCF_DEVICEINTERFACE
+static const int DIGCF_PRESENT         =  0x00000002;
+static const int DIGCF_ALLCLASSES      =  0x00000004;
+static const int DIGCF_PROFILE         =  0x00000008;
+static const int DIGCF_DEVICEINTERFACE =  0x00000010;
 
 //
 // Backward compatibility--do not use.
 //
-#define DIGCF_INTERFACEDEVICE DIGCF_DEVICEINTERFACE
+static const int DIGCF_INTERFACEDEVICE = DIGCF_DEVICEINTERFACE;
+]]
 
 
-_Check_return_
-
+ffi.cdef[[
 HDEVINFO
 __stdcall
 SetupDiGetClassDevsA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCSTR Enumerator,
      HWND hwndParent,
      DWORD Flags
     );
 
-_Check_return_
+
 
 HDEVINFO
 __stdcall
 SetupDiGetClassDevsW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCWSTR Enumerator,
      HWND hwndParent,
      DWORD Flags
     );
+]]
 
+--[[
 if UNICODE
 #define SetupDiGetClassDevs SetupDiGetClassDevsW
 else
@@ -5648,11 +5476,11 @@ else
 end
 --]]
 
-
+ffi.cdef[[
 HDEVINFO
 __stdcall
 SetupDiGetClassDevsExA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCSTR Enumerator,
      HWND hwndParent,
      DWORD Flags,
@@ -5666,7 +5494,7 @@ SetupDiGetClassDevsExA(
 HDEVINFO
 __stdcall
 SetupDiGetClassDevsExW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PCWSTR Enumerator,
      HWND hwndParent,
      DWORD Flags,
@@ -5674,7 +5502,9 @@ SetupDiGetClassDevsExW(
      PCWSTR MachineName,
      PVOID Reserved
     );
+]]
 
+--[[
 if UNICODE
 #define SetupDiGetClassDevsEx SetupDiGetClassDevsExW
 else
@@ -5682,7 +5512,7 @@ else
 end
 --]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiGetINFClassA(
@@ -5703,20 +5533,16 @@ SetupDiGetINFClassW(
      DWORD ClassNameSize,
      PDWORD RequiredSize
     );
-
-if UNICODE
-#define SetupDiGetINFClass SetupDiGetINFClassW
-else
-#define SetupDiGetINFClass SetupDiGetINFClassA
-end
+]]
 
 
+ffi.cdef[[
 //
 // Flags controlling exclusion from the class information list built
 // by SetupDiBuildClassInfoList(Ex)
 //
-#define DIBCI_NOINSTALLCLASS   0x00000001
-#define DIBCI_NODISPLAYCLASS   0x00000002
+static const int DIBCI_NOINSTALLCLASS  = 0x00000001;
+static const int DIBCI_NODISPLAYCLASS  = 0x00000002;
 
 
 
@@ -5724,7 +5550,7 @@ BOOL
 __stdcall
 SetupDiBuildClassInfoList(
      DWORD Flags,
-    _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
+     LPGUID ClassGuidList,
      DWORD ClassGuidListSize,
      PDWORD RequiredSize
     );
@@ -5735,7 +5561,7 @@ BOOL
 __stdcall
 SetupDiBuildClassInfoListExA(
      DWORD Flags,
-    _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
+     LPGUID ClassGuidList,
      DWORD ClassGuidListSize,
      PDWORD RequiredSize,
      PCSTR MachineName,
@@ -5748,26 +5574,20 @@ BOOL
 __stdcall
 SetupDiBuildClassInfoListExW(
      DWORD Flags,
-    _Out_writes_to_opt_(ClassGuidListSize, *RequiredSize) LPGUID ClassGuidList,
+     LPGUID ClassGuidList,
      DWORD ClassGuidListSize,
      PDWORD RequiredSize,
      PCWSTR MachineName,
      PVOID Reserved
     );
 
-if UNICODE
-#define SetupDiBuildClassInfoListEx SetupDiBuildClassInfoListExW
-else
-#define SetupDiBuildClassInfoListEx SetupDiBuildClassInfoListExA
-end
-
 
 
 BOOL
 __stdcall
 SetupDiGetClassDescriptionA(
-     CONST GUID *ClassGuid,
-    _Out_writes_(ClassDescriptionSize) PSTR ClassDescription,
+     const GUID *ClassGuid,
+     PSTR ClassDescription,
      DWORD ClassDescriptionSize,
      PDWORD RequiredSize
     );
@@ -5776,25 +5596,19 @@ SetupDiGetClassDescriptionA(
 BOOL
 __stdcall
 SetupDiGetClassDescriptionW(
-     CONST GUID *ClassGuid,
-    _Out_writes_(ClassDescriptionSize) PWSTR ClassDescription,
+     const GUID *ClassGuid,
+     PWSTR ClassDescription,
      DWORD ClassDescriptionSize,
      PDWORD RequiredSize
     );
-
-if UNICODE
-#define SetupDiGetClassDescription SetupDiGetClassDescriptionW
-else
-#define SetupDiGetClassDescription SetupDiGetClassDescriptionA
-end
 
 
 
 BOOL
 __stdcall
 SetupDiGetClassDescriptionExA(
-     CONST GUID *ClassGuid,
-    _Out_writes_(ClassDescriptionSize) PSTR ClassDescription,
+     const GUID *ClassGuid,
+     PSTR ClassDescription,
      DWORD ClassDescriptionSize,
      PDWORD RequiredSize,
      PCSTR MachineName,
@@ -5805,19 +5619,15 @@ SetupDiGetClassDescriptionExA(
 BOOL
 __stdcall
 SetupDiGetClassDescriptionExW(
-     CONST GUID *ClassGuid,
-    _Out_writes_(ClassDescriptionSize) PWSTR ClassDescription,
+     const GUID *ClassGuid,
+     PWSTR ClassDescription,
      DWORD ClassDescriptionSize,
      PDWORD RequiredSize,
      PCWSTR MachineName,
      PVOID Reserved
     );
 
-if UNICODE
-#define SetupDiGetClassDescriptionEx SetupDiGetClassDescriptionExW
-else
-#define SetupDiGetClassDescriptionEx SetupDiGetClassDescriptionExA
-end
+
 
 
 
@@ -5828,35 +5638,25 @@ SetupDiCallClassInstaller(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
+]]
 
 
-//
-// Default install handler for DIF_SELECTDEVICE
-//
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiSelectDevice(
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
-
-//
-// Default install handler for DIF_SELECTBESTCOMPATDRV
-//
 
 BOOL
 __stdcall
 SetupDiSelectBestCompatDrv(
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
-
-//
-// Default install handler for DIF_INSTALLDEVICE
-//
 
 BOOL
 __stdcall
@@ -5864,11 +5664,6 @@ SetupDiInstallDevice(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
-
-
-//
-// Default install handler for DIF_INSTALLDEVICEFILES
-//
 
 BOOL
 __stdcall
@@ -5878,21 +5673,12 @@ SetupDiInstallDriverFiles(
     );
 
 
-//
-// Default install handler for DIF_REGISTER_COINSTALLERS
-//
-
 BOOL
 __stdcall
 SetupDiRegisterCoDeviceInstallers(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
-
-
-//
-// Default install handler for DIF_REMOVE
-//
 
 BOOL
 __stdcall
@@ -5902,9 +5688,7 @@ SetupDiRemoveDevice(
     );
 
 
-//
-// Default install handler for DIF_UNREMOVE
-//
+
 
 BOOL
 __stdcall
@@ -5912,22 +5696,22 @@ SetupDiUnremoveDevice(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
+]]
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
+if _SETUPAPI_VER >= _WIN32_WINNT_WS03 then
 
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiRestartDevices(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData
     );
+]]
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WS03
-
-//
-// Default install handler for DIF_PROPERTYCHANGE
-//
+ffi.cdef[[
 
 BOOL
 __stdcall
@@ -5957,11 +5741,7 @@ SetupDiInstallClassW(
      HSPFILEQ FileQueue
     );
 
-if UNICODE
-#define SetupDiInstallClass SetupDiInstallClassW
-else
-#define SetupDiInstallClass SetupDiInstallClassA
-end
+
 
 
 
@@ -5972,7 +5752,7 @@ SetupDiInstallClassExA(
      PCSTR InfFileName,
      DWORD Flags,
      HSPFILEQ FileQueue,
-     CONST GUID *InterfaceClassGuid,
+     const GUID *InterfaceClassGuid,
      PVOID Reserved1,
      PVOID Reserved2
     );
@@ -5985,66 +5765,52 @@ SetupDiInstallClassExW(
      PCWSTR InfFileName,
      DWORD Flags,
      HSPFILEQ FileQueue,
-     CONST GUID *InterfaceClassGuid,
+     const GUID *InterfaceClassGuid,
      PVOID Reserved1,
      PVOID Reserved2
     );
 
-if UNICODE
-#define SetupDiInstallClassEx SetupDiInstallClassExW
-else
-#define SetupDiInstallClassEx SetupDiInstallClassExA
-end
 
 
-_Check_return_
 
 HKEY
 __stdcall
 SetupDiOpenClassRegKey(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      REGSAM samDesired
     );
+]]
 
-
+ffi.cdef[[
 //
 // Flags for SetupDiOpenClassRegKeyEx
 //
-#define DIOCR_INSTALLER   0x00000001    // class installer registry branch
-#define DIOCR_INTERFACE   0x00000002    // interface class registry branch
+static const int DIOCR_INSTALLER  = 0x00000001;    // class installer registry branch
+static const int DIOCR_INTERFACE  = 0x00000002;    // interface class registry branch
 
-_Check_return_
+
 
 HKEY
 __stdcall
 SetupDiOpenClassRegKeyExA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      REGSAM samDesired,
      DWORD Flags,
      PCSTR MachineName,
      PVOID Reserved
     );
 
-_Check_return_
+
 
 HKEY
 __stdcall
 SetupDiOpenClassRegKeyExW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      REGSAM samDesired,
      DWORD Flags,
      PCWSTR MachineName,
      PVOID Reserved
     );
-
-if UNICODE
-#define SetupDiOpenClassRegKeyEx SetupDiOpenClassRegKeyExW
-else
-#define SetupDiOpenClassRegKeyEx SetupDiOpenClassRegKeyExA
-end
-
-
-_Check_return_
 
 HKEY
 __stdcall
@@ -6057,7 +5823,7 @@ SetupDiCreateDeviceInterfaceRegKeyA(
      PCSTR InfSectionName
     );
 
-_Check_return_
+
 
 HKEY
 __stdcall
@@ -6070,12 +5836,25 @@ SetupDiCreateDeviceInterfaceRegKeyW(
      PCWSTR InfSectionName
     );
 
-if UNICODE
-#define SetupDiCreateDeviceInterfaceRegKey SetupDiCreateDeviceInterfaceRegKeyW
-else
-#define SetupDiCreateDeviceInterfaceRegKey SetupDiCreateDeviceInterfaceRegKeyA
-end
+HKEY
+__stdcall
+SetupDiOpenDeviceInterfaceRegKey(
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     DWORD Reserved,
+     REGSAM samDesired
+    );
 
+BOOL
+__stdcall
+SetupDiDeleteDeviceInterfaceRegKey(
+     HDEVINFO DeviceInfoSet,
+     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+     DWORD Reserved
+    );
+]]
+
+--[[
 //
 // Backward compatibility--do not use.
 //
@@ -6086,49 +5865,21 @@ if UNICODE
 else
 #define SetupDiCreateInterfaceDeviceRegKey SetupDiCreateDeviceInterfaceRegKeyA
 end
-
-
-_Check_return_
-
-HKEY
-__stdcall
-SetupDiOpenDeviceInterfaceRegKey(
-     HDEVINFO DeviceInfoSet,
-     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-     DWORD Reserved,
-     REGSAM samDesired
-    );
-
-//
-// Backward compatibility--do not use.
-//
 #define SetupDiOpenInterfaceDeviceRegKey SetupDiOpenDeviceInterfaceRegKey
 
-
-
-BOOL
-__stdcall
-SetupDiDeleteDeviceInterfaceRegKey(
-     HDEVINFO DeviceInfoSet,
-     PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-     DWORD Reserved
-    );
-
-//
-// Backward compatibility--do not use.
-//
 #define SetupDiDeleteInterfaceDeviceRegKey SetupDiDeleteDeviceInterfaceRegKey
+--]]
 
-
+ffi.cdef[[
 //
 // KeyType values for SetupDiCreateDevRegKey, SetupDiOpenDevRegKey, and
 // SetupDiDeleteDevRegKey.
 //
-#define DIREG_DEV       0x00000001          // Open/Create/Delete device key
-#define DIREG_DRV       0x00000002          // Open/Create/Delete driver key
-#define DIREG_BOTH      0x00000004          // Delete both driver and Device key
+static const int DIREG_DEV     =  0x00000001;          // Open/Create/Delete device key
+static const int DIREG_DRV     =  0x00000002;          // Open/Create/Delete driver key
+static const int DIREG_BOTH    =  0x00000004;          // Delete both driver and Device key
 
-_Check_return_
+
 
 HKEY
 __stdcall
@@ -6142,7 +5893,7 @@ SetupDiCreateDevRegKeyA(
      PCSTR InfSectionName
     );
 
-_Check_return_
+
 
 HKEY
 __stdcall
@@ -6156,14 +5907,9 @@ SetupDiCreateDevRegKeyW(
      PCWSTR InfSectionName
     );
 
-if UNICODE
-#define SetupDiCreateDevRegKey SetupDiCreateDevRegKeyW
-else
-#define SetupDiCreateDevRegKey SetupDiCreateDevRegKeyA
-end
 
 
-_Check_return_
+
 
 HKEY
 __stdcall
@@ -6193,7 +5939,7 @@ SetupDiDeleteDevRegKey(
 BOOL
 __stdcall
 SetupDiGetHwProfileList(
-    _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
+     PDWORD HwProfileList,
      DWORD HwProfileListSize,
      PDWORD RequiredSize,
      PDWORD CurrentlyActiveIndex
@@ -6204,7 +5950,7 @@ SetupDiGetHwProfileList(
 BOOL
 __stdcall
 SetupDiGetHwProfileListExA(
-    _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
+     PDWORD HwProfileList,
      DWORD HwProfileListSize,
      PDWORD RequiredSize,
      PDWORD CurrentlyActiveIndex,
@@ -6217,7 +5963,7 @@ SetupDiGetHwProfileListExA(
 BOOL
 __stdcall
 SetupDiGetHwProfileListExW(
-    _Out_writes_to_(HwProfileListSize, *RequiredSize) PDWORD HwProfileList,
+     PDWORD HwProfileList,
      DWORD HwProfileListSize,
      PDWORD RequiredSize,
      PDWORD CurrentlyActiveIndex,
@@ -6225,47 +5971,38 @@ SetupDiGetHwProfileListExW(
      PVOID Reserved
     );
 
-if UNICODE
-#define SetupDiGetHwProfileListEx SetupDiGetHwProfileListExW
-else
-#define SetupDiGetHwProfileListEx SetupDiGetHwProfileListExA
-end
+]]
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+if _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN then
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetupDiGetDevicePropertyKeys(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVINFO_DATA DeviceInfoData,
-    _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
+     DEVPROPKEY *PropertyKeyArray,
              DWORD            PropertyKeyCount,
         PDWORD           RequiredPropertyKeyCount,
              DWORD            Flags
     );
 
 
-_When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
 __stdcall
 SetupDiGetDevicePropertyW(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVINFO_DATA DeviceInfoData,
-       CONST DEVPROPKEY      *PropertyKey,
+       const DEVPROPKEY      *PropertyKey,
             DEVPROPTYPE     *PropertyType,
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
         PDWORD           RequiredSize,
              DWORD            Flags
     );
 
-if UNICODE
-#define SetupDiGetDeviceProperty SetupDiGetDevicePropertyW
-end
+
 
 
 BOOL
@@ -6273,16 +6010,14 @@ __stdcall
 SetupDiSetDevicePropertyW(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVINFO_DATA DeviceInfoData,
-       CONST DEVPROPKEY      *PropertyKey,
+       const DEVPROPKEY      *PropertyKey,
              DEVPROPTYPE      PropertyType,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
+     const PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
              DWORD            Flags
     );
 
-if UNICODE
-#define SetupDiSetDeviceProperty SetupDiSetDevicePropertyW
-end
+
 
 
 BOOL
@@ -6290,33 +6025,28 @@ __stdcall
 SetupDiGetDeviceInterfacePropertyKeys(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-    _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
+     DEVPROPKEY *PropertyKeyArray,
              DWORD            PropertyKeyCount,
         PDWORD           RequiredPropertyKeyCount,
              DWORD            Flags
     );
 
 
-_When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
 __stdcall
 SetupDiGetDeviceInterfacePropertyW(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-       CONST DEVPROPKEY      *PropertyKey,
+       const DEVPROPKEY      *PropertyKey,
             DEVPROPTYPE     *PropertyType,
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
         PDWORD           RequiredSize,
              DWORD            Flags
     );
 
-if UNICODE
-#define SetupDiGetDeviceInterfaceProperty SetupDiGetDeviceInterfacePropertyW
-end
+
 
 
 BOOL
@@ -6324,30 +6054,29 @@ __stdcall
 SetupDiSetDeviceInterfacePropertyW(
              HDEVINFO         DeviceInfoSet,
              PSP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
-       CONST DEVPROPKEY      *PropertyKey,
+       const DEVPROPKEY      *PropertyKey,
              DEVPROPTYPE      PropertyType,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
+     const PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
              DWORD            Flags
     );
+]]
 
-if UNICODE
-#define SetupDiSetDeviceInterfaceProperty SetupDiSetDeviceInterfacePropertyW
-end
 
+ffi.cdef[[
 //
 // Flags for SetupDiGetClassPropertyKeys, SetupDiGetClassProperty, and
 // SetupDiSetClassProperty.
 //
-#define DICLASSPROP_INSTALLER   0x00000001    // device setup class property
-#define DICLASSPROP_INTERFACE   0x00000002    // device interface class property
+static const int DICLASSPROP_INSTALLER  = 0x00000001;    // device setup class property
+static const int DICLASSPROP_INTERFACE  = 0x00000002;    // device interface class property
 
 
 BOOL
 __stdcall
 SetupDiGetClassPropertyKeys(
-       CONST GUID            *ClassGuid,
-    _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
+       const GUID            *ClassGuid,
+     DEVPROPKEY *PropertyKeyArray,
              DWORD            PropertyKeyCount,
         PDWORD           RequiredPropertyKeyCount,
              DWORD            Flags
@@ -6357,8 +6086,8 @@ SetupDiGetClassPropertyKeys(
 BOOL
 __stdcall
 SetupDiGetClassPropertyKeysExW(
-       CONST GUID            *ClassGuid,
-    _Out_writes_opt_(PropertyKeyCount) DEVPROPKEY *PropertyKeyArray,
+       const GUID            *ClassGuid,
+     DEVPROPKEY *PropertyKeyArray,
              DWORD            PropertyKeyCount,
         PDWORD           RequiredPropertyKeyCount,
              DWORD            Flags,
@@ -6366,43 +6095,32 @@ SetupDiGetClassPropertyKeysExW(
        PVOID            Reserved
     );
 
-if UNICODE
-#define SetupDiGetClassPropertyKeysEx SetupDiGetClassPropertyKeysExW
-end
 
 
-_When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
 
 BOOL
 __stdcall
 SetupDiGetClassPropertyW(
-       CONST GUID            *ClassGuid,
-       CONST DEVPROPKEY      *PropertyKey,
+       const GUID            *ClassGuid,
+       const DEVPROPKEY      *PropertyKey,
             DEVPROPTYPE     *PropertyType,
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
         PDWORD           RequiredSize,
              DWORD            Flags
     );
 
-if UNICODE
-#define SetupDiGetClassProperty SetupDiGetClassPropertyW
-end
 
 
-_When_(*PropertyType == DEVPROP_TYPE_STRING, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_INDIRECT, _At_((PWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
-_When_(*PropertyType == DEVPROP_TYPE_STRING_LIST, _At_((PZZWSTR) PropertyBuffer, _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize)))
+
 
 BOOL
 __stdcall
 SetupDiGetClassPropertyExW(
-       CONST GUID            *ClassGuid,
-       CONST DEVPROPKEY      *PropertyKey,
+       const GUID            *ClassGuid,
+       const DEVPROPKEY      *PropertyKey,
             DEVPROPTYPE     *PropertyType,
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
         PDWORD           RequiredSize,
              DWORD            Flags,
@@ -6410,46 +6128,39 @@ SetupDiGetClassPropertyExW(
        PVOID            Reserved
     );
 
-if UNICODE
-#define SetupDiGetClassPropertyEx SetupDiGetClassPropertyExW
-end
+
 
 
 BOOL
 __stdcall
 SetupDiSetClassPropertyW(
-       CONST GUID            *ClassGuid,
-       CONST DEVPROPKEY      *PropertyKey,
+       const GUID            *ClassGuid,
+       const DEVPROPKEY      *PropertyKey,
              DEVPROPTYPE      PropertyType,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
+     const PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
              DWORD            Flags
     );
 
-if UNICODE
-#define SetupDiSetClassProperty SetupDiSetClassPropertyW
-end
+
 
 
 BOOL
 __stdcall
 SetupDiSetClassPropertyExW(
-       CONST GUID            *ClassGuid,
-       CONST DEVPROPKEY      *PropertyKey,
+       const GUID            *ClassGuid,
+       const DEVPROPKEY      *PropertyKey,
              DEVPROPTYPE      PropertyType,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST PBYTE PropertyBuffer,
+     const PBYTE PropertyBuffer,
              DWORD            PropertyBufferSize,
              DWORD            Flags,
          PCWSTR           MachineName,
        PVOID            Reserved
     );
+]]
 
-if UNICODE
-#define SetupDiSetClassPropertyEx SetupDiSetClassPropertyExW
-end
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
---]=]
 
 ffi.cdef[[
 //
@@ -6533,7 +6244,7 @@ SetupDiGetDeviceRegistryPropertyA(
      PSP_DEVINFO_DATA DeviceInfoData,
      DWORD Property,
      PDWORD PropertyRegDataType, 
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize 
     );
@@ -6546,7 +6257,7 @@ SetupDiGetDeviceRegistryPropertyW(
      PSP_DEVINFO_DATA DeviceInfoData,
      DWORD Property,
      PDWORD PropertyRegDataType,
-    _Out_writes_bytes_to_opt_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize
     );
@@ -6566,7 +6277,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 BOOL
 __stdcall
 SetupDiGetClassRegistryPropertyA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      DWORD Property,
      PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
@@ -6581,7 +6292,7 @@ SetupDiGetClassRegistryPropertyA(
 BOOL
 __stdcall
 SetupDiGetClassRegistryPropertyW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      DWORD Property,
      PDWORD PropertyRegDataType,
     _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
@@ -6599,7 +6310,7 @@ else
 end
 --]]
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 BOOL
@@ -6608,7 +6319,7 @@ SetupDiSetDeviceRegistryPropertyA(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
      DWORD Property,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
+     const BYTE *PropertyBuffer,
      DWORD PropertyBufferSize
     );
 
@@ -6619,7 +6330,7 @@ SetupDiSetDeviceRegistryPropertyW(
      HDEVINFO DeviceInfoSet,
      PSP_DEVINFO_DATA DeviceInfoData,
      DWORD Property,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
+     const BYTE *PropertyBuffer,
      DWORD PropertyBufferSize
     );
 
@@ -6637,9 +6348,9 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 BOOL
 __stdcall
 SetupDiSetClassRegistryPropertyA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      DWORD Property,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer, 
+     const BYTE *PropertyBuffer, 
      DWORD PropertyBufferSize,
      PCSTR MachineName,
      PVOID Reserved
@@ -6649,9 +6360,9 @@ SetupDiSetClassRegistryPropertyA(
 BOOL
 __stdcall
 SetupDiSetClassRegistryPropertyW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      DWORD Property,
-    _In_reads_bytes_opt_(PropertyBufferSize) CONST BYTE *PropertyBuffer,
+     const BYTE *PropertyBuffer,
      DWORD PropertyBufferSize,
      PCWSTR MachineName,
      PVOID Reserved
@@ -6664,7 +6375,7 @@ else
 #define SetupDiSetClassRegistryProperty SetupDiSetClassRegistryPropertyA
 end
 --]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 ffi.cdef[[
 BOOL
@@ -6836,7 +6547,7 @@ ffi.cdef[[
 BOOL
 __stdcall
 SetupDiLoadClassIcon(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      HICON *LargeIcon,
      PINT MiniIconIndex 
     );
@@ -6857,7 +6568,7 @@ SetupDiLoadDeviceIcon(
     );
 ]]
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
 
 ffi.cdef[[
 //
@@ -6883,7 +6594,7 @@ SetupDiDrawMiniIcon(
 BOOL
 __stdcall
 SetupDiGetClassBitmapIndex(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PINT MiniIconIndex
     );
 
@@ -6928,7 +6639,7 @@ BOOL
 __stdcall
 SetupDiGetClassImageIndex(
      PSP_CLASSIMAGELIST_DATA ClassImageListData,
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PINT ImageIndex
     );
 
@@ -6954,7 +6665,7 @@ if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 static const int DIGCDP_FLAG_REMOTE_BASIC    = 0x00000003;  // not presently implemented
 static const int DIGCDP_FLAG_REMOTE_ADVANCED = 0x00000004;
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 ffi.cdef[[
 BOOL
@@ -7021,7 +6732,7 @@ __stdcall
 SetupDiSelectOEMDrv(
      HWND hwndParent,
      HDEVINFO DeviceInfoSet,
-    _Inout_opt_ PSP_DEVINFO_DATA DeviceInfoData
+     PSP_DEVINFO_DATA DeviceInfoData
     );
 
 
@@ -7029,7 +6740,7 @@ SetupDiSelectOEMDrv(
 BOOL
 __stdcall
 SetupDiClassNameFromGuidA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PSTR ClassName,
      DWORD ClassNameSize,
      PDWORD RequiredSize
@@ -7039,7 +6750,7 @@ SetupDiClassNameFromGuidA(
 BOOL
 __stdcall
 SetupDiClassNameFromGuidW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PWSTR ClassName,
      DWORD ClassNameSize,
      PDWORD RequiredSize
@@ -7058,7 +6769,7 @@ ffi.cdef[[
 BOOL
 __stdcall
 SetupDiClassNameFromGuidExA(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PSTR ClassName,
      DWORD ClassNameSize,
      PDWORD RequiredSize,
@@ -7070,7 +6781,7 @@ SetupDiClassNameFromGuidExA(
 BOOL
 __stdcall
 SetupDiClassNameFromGuidExW(
-     CONST GUID *ClassGuid,
+     const GUID *ClassGuid,
      PWSTR ClassName,
      DWORD ClassNameSize,
      PDWORD RequiredSize,
@@ -7291,7 +7002,7 @@ else
 end
 --]]
 
-end // _SETUPAPI_VER >= _WIN32_WINNT_WS03
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 
 ffi.cdef[[
@@ -7365,7 +7076,7 @@ else
 #define SetupDiGetActualSectionToInstallEx SetupDiGetActualSectionToInstallExA
 end
 --]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
@@ -7404,7 +7115,7 @@ else
 #define SetupEnumInfSections SetupEnumInfSectionsA
 end
 --]]
-end // _SETUPAPI_VER >= _WIN32_WINNT_WINXP
+end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 ffi.cdef[[
@@ -7621,7 +7332,7 @@ end --// _SETUPAPI_VER >= _WIN32_WINNT_WS03
 end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-end // _INC_SETUPAPI
+end -- _INC_SETUPAPI
 --]=]
 
 return ffi.load("setupapi")

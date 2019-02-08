@@ -12,9 +12,10 @@ typedef long HRESULT;
 ]]
 end
 
---[[
-#include <prsht.h>
 
+require("win32.prsht")
+
+--[[
 #ifndef SNDMSG
 #ifdef __cplusplus
 #ifndef _MAC
@@ -423,21 +424,25 @@ typedef struct tagNMCUSTOMSPLITRECTINFO
 } NMCUSTOMSPLITRECTINFO, *LPNMCUSTOMSPLITRECTINFO;
 
 #define NM_GETCUSTOMSPLITRECT       (BCN_FIRST + 0x0003)
+--]=]
 
 
-//====== IMAGE APIS ===========================================================
+--====== IMAGE APIS ===========================================================
 
-#ifndef NOIMAGEAPIS
+if not NOIMAGEAPIS then
+ffi.cdef[[
+static const int  CLR_NONE            =    0xFFFFFFFFL;
+static const int  CLR_DEFAULT           =  0xFF000000L;
+]]
 
-#define CLR_NONE                0xFFFFFFFFL
-#define CLR_DEFAULT             0xFF000000L
-
-
-#ifndef HIMAGELIST
+if not HIMAGELIST then
+ffi.cdef[[
 struct _IMAGELIST;
 typedef struct _IMAGELIST* HIMAGELIST;
-#endif
+]]
+end
 
+--[=[
 #ifndef IMAGELISTDRAWPARAMS
 typedef struct _IMAGELISTDRAWPARAMS
 {
@@ -621,11 +626,11 @@ FORCEINLINE HIMAGELIST IImageListToHIMAGELIST(struct IImageList *himl)
 #endif
 
 #endif
+--]=]
 
+end  -- NOIMAGEAPIS
 
-#endif
-
-
+--[=[
 //====== HEADER CONTROL =======================================================
 
 #ifndef NOHEADER
