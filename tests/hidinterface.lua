@@ -10,21 +10,24 @@ local lshift, rshift = bit.lshift, bit.rshift
 require("win32.winreg")
 require("win32.wingdi")
 require("win32.winuser")
+require("win32.errhandlingapi")
+require("win32.winerror")
+
 local setupapi = require("win32.setupapi")
 local hidsdi = require("win32.hidsdi")
 local hidclass = require("win32.hidclass")
 
-require("win32.errhandlingapi")
-require("win32.winerror")
+local HID_OUT_CTL_CODE = hidclass.HID_OUT_CTL_CODE
+local IOCTL_HID_GET_FEATURE = C.IOCTL_HID_GET_FEATURE
 
-local USBClassHID = {}
-setmetatable(USBClassHID, {
+local HIDInterface = {}
+setmetatable(HIDInterface, {
     __call = function(self, ...)
         return self:new(...)
     end
 })
-local USBClassHID_mt = {
-    __index = USBClassHID;
+local HIDInterface_mt = {
+    __index = HIDInterface;
 
     -- this should actually wrap a 'safehandle'
     __gc = function(self)
@@ -32,17 +35,17 @@ local USBClassHID_mt = {
     end;
 }
 
-function USBClassHID.init(self, classguid, deviceInfoSet)
+function HIDInterface.init(self, classguid, deviceInfoSet)
     local obj = {
         guid = classguid;
         deviceInfoSet = deviceInfoSet;
     }
-    setmetatable(obj, USBClassHID_mt)
+    setmetatable(obj, HIDInterface_mt)
 
     return obj
 end
 
-function USBClassHID.new(self,...)
+function HIDInterface.new(self,...)
     -- GUID_DEVINTERFACE_HID, from hidclass.lua
     local HIDGuid = ffi.new("GUID")
     hidsdi.HidD_GetHidGuid(HIDGuid)
@@ -54,7 +57,7 @@ function USBClassHID.new(self,...)
     local Flags = bor(C.DIGCF_PRESENT, C.DIGCF_DEVICEINTERFACE);
 
     local deviceInfoSet = setupapi.SetupDiGetClassDevsA(HIDGuid, Enumerator, hwndParent, Flags);
-    print("hdevinfo: ", deviceInfoSet)
+    --print("hdevinfo: ", deviceInfoSet)
 
     if not deviceInfoSet then
         return nil, "could not get class devs"
@@ -72,7 +75,8 @@ local function getDevicePath(deviceInfoSet, DeviceInterfaceData)
     local DeviceInterfaceDetailData = nil   --      PSP_DEVICE_INTERFACE_DETAIL_DATA_A 
     local DeviceInterfaceDetailDataSize = 0
     local pRequiredSize = ffi.new("DWORD[1]")
-    local DeviceInfoData = nil              -- PSP_DEVINFO_DATA
+    local DeviceInfoData = ffi.new("SP_DEVINFO_DATA")              -- PSP_DEVINFO_DATA
+    DeviceInfoData.cbSize = ffi.sizeof("SP_DEVINFO_DATA")
 
     -- call once to get size requirement
     local status = setupapi.SetupDiGetDeviceInterfaceDetailA(deviceInfoSet,
@@ -122,7 +126,7 @@ local function getDevicePath(deviceInfoSet, DeviceInterfaceData)
     return ffi.string(DeviceInterfaceDetailData.DevicePath)
 end
 
-function USBClassHID.devicePaths(self)
+function HIDInterface.devicePaths(self)
 
     
     local function iterator()
@@ -150,5 +154,5 @@ function USBClassHID.devicePaths(self)
 end
 
 
-return USBClassHID
+return HIDInterface
 

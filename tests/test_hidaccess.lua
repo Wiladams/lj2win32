@@ -6,10 +6,10 @@ local C = ffi.C
 require("win32.sdkddkver")
 
 
-local hidclass = require("hidaccess")
+local HIDInterface = require("hidinterface")
 
 
-local hider = hidclass();
+local hider = HIDInterface();
 
 for path in hider:devicePaths() do
     print("path: ", path)
