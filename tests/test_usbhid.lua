@@ -13,6 +13,8 @@ require("win32.wingdi")
 require("win32.winuser")
 local setupapi = require("win32.setupapi")
 local hidsdi = require("win32.hidsdi")
+local hidclass = require("win32.hidclass")
+
 require("win32.errhandlingapi")
 require("win32.winerror")
 

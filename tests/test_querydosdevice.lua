@@ -1,8 +1,10 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
-local fileio = require("win32.core.file_l1_2_0")
-local core_string = require("experimental.apiset.string_l1_1_0");
+local C = ffi.C 
+
+require("win32.fileapi")
+local core_string = require("unicode_util");
 local binstream = require("binstream")
 
 local L = core_string.toUnicode;
@@ -51,7 +53,7 @@ local function getDevicePath(deviceName)
     local ucchMax = 1024*64;
     local lpTargetPath = ffi.new("wchar_t[?]", ucchMax);
 
-    local res = fileio.QueryDosDeviceW(deviceName, lpTargetPath,ucchMax);
+    local res = C.QueryDosDeviceW(deviceName, lpTargetPath,ucchMax);
 
     if res == 0 then
         return false, ffi.errno();

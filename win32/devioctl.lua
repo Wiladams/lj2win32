@@ -3,7 +3,7 @@ local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift;
 local bor, band = bit.bor, bit.band;
 
-require("win32.intsafe")
+--require("win32.intsafe")
 
 local exports = {}
 
