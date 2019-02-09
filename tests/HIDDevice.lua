@@ -19,6 +19,7 @@ require("win32.winerror")
 local setupapi = require("win32.setupapi")
 local hidsdi = require("win32.hidsdi")
 local hidclass = require("win32.hidclass")
+local unicode = require("unicode_util")
 
 local HID_OUT_CTL_CODE = hidclass.HID_OUT_CTL_CODE
 local IOCTL_HID_GET_FEATURE = C.IOCTL_HID_GET_FEATURE
@@ -66,11 +67,7 @@ function HIDDevice.init(self, path)
         return nil, err;
     end
 
-    -- usage
-    -- serial number
-    -- manufacturer
-    -- product string
-    -- interface number
+
     
     return obj;
 end
@@ -82,16 +79,14 @@ function HIDDevice.new(self, path)
 end
 
 function HIDDevice.initAttributes(self)
-    print("== initAttributes ==")
+    --print("== initAttributes ==")
 
-    local rawhandle = openDevice(self.path, true)
+    local iohandle = openDevice(self.path, true)
     
     local attrib = ffi.new("HIDD_ATTRIBUTES")
     attrib.Size = ffi.sizeof("HIDD_ATTRIBUTES")
-    local status = hidsdi.HidD_GetAttributes(rawhandle, attrib)
+    local status = hidsdi.HidD_GetAttributes(iohandle, attrib)
 
-    -- close the file handle
-    C.CloseHandle(rawhandle)
 
     if status == 0 then
         local err = C.GetLastError()
@@ -102,6 +97,41 @@ function HIDDevice.initAttributes(self)
     self.VendorID = tonumber(attrib.VendorID);
     self.ProductID = tonumber(attrib.ProductID);
     self.VersionNumber = tonumber(attrib.VersionNumber);
+
+
+    -- usage
+    local ppdata = ffi.new("PHIDP_PREPARSED_DATA[1]")
+    local status = hidsdi.HidD_GetPreparsedData(iohandle, ppdata)
+    if status == 0 then
+        return nil, C.GetLastError();
+    end
+    
+    local caps = ffi.new("HIDP_CAPS")
+    status = hidsdi.HidP_GetCaps(ppdata[0], caps)
+    self.UsagePage = caps.UsagePage;
+    self.Usage = caps.Usage;
+
+    hidsdi.HidD_FreePreparsedData(ppdata[0])
+
+    -- serial number
+    local wstr = ffi.new("wchar_t[?]", 128)
+    local wstrLen = ffi.sizeof(wstr)
+
+    status = hidsdi.HidD_GetSerialNumberString(iohandle, wstr, wstrLen)
+    self.SerialNumber = unicode.toAnsi(wstr)
+
+    -- manufacturer
+    status = hidsdi.HidD_GetManufacturerString(iohandle, wstr, wstrLen)
+    self.Manufacturer = unicode.toAnsi(wstr)
+
+    -- product string
+    status = hidsdi.HidD_GetProductString(iohandle, wstr, wstrLen)
+    self.Product = unicode.toAnsi(wstr)
+
+    -- interface number
+
+    -- close the file handle
+    C.CloseHandle(iohandle)
 
     return self
 end
