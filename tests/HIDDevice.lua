@@ -105,11 +105,24 @@ function HIDDevice.initAttributes(self)
     if status == 0 then
         return nil, C.GetLastError();
     end
-    
+
     local caps = ffi.new("HIDP_CAPS")
     status = hidsdi.HidP_GetCaps(ppdata[0], caps)
     self.UsagePage = caps.UsagePage;
     self.Usage = caps.Usage;
+    self.InputReportByteLength = caps.InputReportByteLength
+    self.OutputReportByteLength = caps.OutputReportByteLength
+    self.FeatureReportByteLength = caps.FeatureReportByteLength
+    self.NumberLinkCollectionNodes = caps.NumberLinkCollectionNodes     -- HidP_GetLinkCollectionNodes
+    self.NumberInputButtonCaps = caps.NumberInputButtonCaps             -- HidP_GetButtonCaps
+    self.NumberInputValueCaps = caps.NumberInputValueCaps               -- HidP_GetValueCaps
+    self.NumberInputDataIndices = caps.NumberInputDataIndices
+    self.NumberOutputButtonCaps = caps.NumberOutputButtonCaps           -- HidP_GetButtonCaps 
+    self.NumberOutputValueCaps = caps.NumberOutputValueCaps             -- HidP_GetValueCaps 
+    self.NumberOutputDataIndices = caps.NumberOutputDataIndices
+    self.NumberFeatureButtonCaps = caps.NumberFeatureButtonCaps         -- HidP_GetButtonCaps
+    self.NumberFeatureValueCaps = caps.NumberFeatureValueCaps           -- HidP_GetValueCaps 
+    self.NumberFeatureDataIndices = caps.NumberFeatureDataIndices
 
     hidsdi.HidD_FreePreparsedData(ppdata[0])
 

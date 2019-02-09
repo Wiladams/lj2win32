@@ -8,6 +8,8 @@ require("win32.sdkddkver")
 
 local HIDInterface = require("hidinterface")
 local HIDDevice = require("HIDDevice")
+local spairs = require("spairs")
+
 
 local hider = HIDInterface();
 
@@ -15,7 +17,7 @@ local hider = HIDInterface();
 local function printDict(dict, name)
     name = name or "Dictionary"
     print("==", name, "==")
-    for k,v in pairs(dict) do
+    for k,v in spairs(dict) do
         print(string.format("%15s: %s", k,tostring(v)))
     end
     print("---------------------")
