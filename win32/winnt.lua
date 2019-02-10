@@ -11266,31 +11266,33 @@ typedef enum _FIRMWARE_TYPE {
     FirmwareTypeUefi,
     FirmwareTypeMax
 } FIRMWARE_TYPE, *PFIRMWARE_TYPE;
+--]==]
 
-#define EVENT_MODIFY_STATE      0x0002  
-#define EVENT_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3) 
+ffi.cdef[[
+static const int EVENT_MODIFY_STATE    =  0x0002;
+static const int EVENT_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3);
 
 //
 // Mutant Specific Access Rights
 //
-#define MUTANT_QUERY_STATE      0x0001
+static const int MUTANT_QUERY_STATE    =  0x0001;
 
-#define MUTANT_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\
-                          MUTANT_QUERY_STATE)
+static const int MUTANT_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\
+                          MUTANT_QUERY_STATE);
 
-#define SEMAPHORE_MODIFY_STATE      0x0002  
-#define SEMAPHORE_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3) 
+static const int SEMAPHORE_MODIFY_STATE     = 0x0002;
+static const int SEMAPHORE_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3);
 
 //
 // Timer Specific Access Rights.
 //
 
-#define TIMER_QUERY_STATE       0x0001
-#define TIMER_MODIFY_STATE      0x0002
+static const int TIMER_QUERY_STATE     =  0x0001;
+static const int TIMER_MODIFY_STATE    =  0x0002;
 
-#define TIMER_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\
-                          TIMER_QUERY_STATE|TIMER_MODIFY_STATE)
---]==]
+static const int TIMER_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|\
+                          TIMER_QUERY_STATE|TIMER_MODIFY_STATE);
+]]
 
 ffi.cdef[[
 // begin_nthal
@@ -17180,15 +17182,17 @@ RtlQueryDepthSList (
 //
 
 #define RTL_RUN_ONCE_INIT {0}   // Static initializer
+--]==]
 
+ffi.cdef[[
 //
 // Run once flags
 //
 
-#define RTL_RUN_ONCE_CHECK_ONLY     0x00000001UL
-#define RTL_RUN_ONCE_ASYNC          0x00000002UL
-#define RTL_RUN_ONCE_INIT_FAILED    0x00000004UL
---]==]
+static const int RTL_RUN_ONCE_CHECK_ONLY    = 0x00000001;
+static const int RTL_RUN_ONCE_ASYNC         = 0x00000002;
+static const int RTL_RUN_ONCE_INIT_FAILED   = 0x00000004;
+]]
 
 ffi.cdef[[
 //
@@ -17204,7 +17208,7 @@ typedef union _RTL_RUN_ONCE {
 ]]
 
 
---[==[
+ffi.cdef[[
 typedef struct _RTL_BARRIER {                       
             DWORD Reserved1;                        
             DWORD Reserved2;                        
@@ -17212,6 +17216,9 @@ typedef struct _RTL_BARRIER {
             DWORD Reserved4;                        
             DWORD Reserved5;                        
 } RTL_BARRIER, *PRTL_BARRIER;                       
+]]
+
+--[==[
 // begin_ntoshvp
 
 // Include the more obscure SAL annotations (like __drv_aliasesMem) instead of assuming the crtdefs.h will include them.

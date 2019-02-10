@@ -4,6 +4,7 @@
 
 local ffi = require("ffi")
 
+require("win32.winapifamily")
 require("win32.minwindef")
 require("win32.minwinbase")
 
@@ -114,7 +115,7 @@ DeleteCriticalSection(
     );
 ]]
 
---[=[
+ffi.cdef[[
 //
 // Define one-time initialization primitive
 //
@@ -122,35 +123,40 @@ DeleteCriticalSection(
 typedef RTL_RUN_ONCE INIT_ONCE;
 typedef PRTL_RUN_ONCE PINIT_ONCE;
 typedef PRTL_RUN_ONCE LPINIT_ONCE;
+]]
 
-#define INIT_ONCE_STATIC_INIT   RTL_RUN_ONCE_INIT
+--#define INIT_ONCE_STATIC_INIT   RTL_RUN_ONCE_INIT
 
+ffi.cdef[[
 //
 // Run once flags
 //
 
-#define INIT_ONCE_CHECK_ONLY        RTL_RUN_ONCE_CHECK_ONLY
-#define INIT_ONCE_ASYNC             RTL_RUN_ONCE_ASYNC
-#define INIT_ONCE_INIT_FAILED       RTL_RUN_ONCE_INIT_FAILED
+static const int INIT_ONCE_CHECK_ONLY      =  RTL_RUN_ONCE_CHECK_ONLY;
+static const int INIT_ONCE_ASYNC           =  RTL_RUN_ONCE_ASYNC;
+static const int INIT_ONCE_INIT_FAILED     =  RTL_RUN_ONCE_INIT_FAILED;
+]]
 
+ffi.cdef[[
 //
 // The context stored in the run once structure must leave the following number
 // of low order bits unused.
 //
 
-#define INIT_ONCE_CTX_RESERVED_BITS RTL_RUN_ONCE_CTX_RESERVED_BITS
+//static const int INIT_ONCE_CTXBITS = RTL_RUN_ONCE_CTXBITS;
 
 typedef
 BOOL
 (__stdcall *PINIT_ONCE_FN) (
      PINIT_ONCE InitOnce,
-    _Inout_opt_ PVOID Parameter,
-    _Outptr_opt_result_maybenull_ PVOID *Context
+     PVOID Parameter,
+     PVOID *Context
     );
+]]
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
 
-
+ffi.cdef[[
 VOID
 __stdcall
 InitOnceInitialize(
@@ -162,13 +168,10 @@ InitOnceInitialize(
 BOOL
 __stdcall
 InitOnceExecuteOnce(
-     PINIT_ONCE InitOnce,
-     __callback PINIT_ONCE_FN InitFn,
-    _Inout_opt_ PVOID Parameter,
-    _Outptr_opt_result_maybenull_ LPVOID* Context
-    );
-
-
+    PINIT_ONCE InitOnce,
+    PINIT_ONCE_FN InitFn,
+    PVOID Parameter,
+    LPVOID* Context);
 
 BOOL
 __stdcall
@@ -176,10 +179,8 @@ InitOnceBeginInitialize(
      LPINIT_ONCE lpInitOnce,
      DWORD dwFlags,
      PBOOL fPending,
-    _Outptr_opt_result_maybenull_ LPVOID* lpContext
+     LPVOID* lpContext
     );
-
-
 
 BOOL
 __stdcall
@@ -188,10 +189,12 @@ InitOnceComplete(
      DWORD dwFlags,
      LPVOID lpContext
     );
+]]
+
+end -- (_WIN32_WINNT >= 0x0600)
 
 
-#endif // (_WIN32_WINNT >= 0x0600)
-
+ffi.cdef[[
 //
 // Define condition variable
 //
@@ -202,17 +205,18 @@ typedef RTL_CONDITION_VARIABLE CONDITION_VARIABLE, *PCONDITION_VARIABLE;
 // Static initializer for the condition variable
 //
 
-#define CONDITION_VARIABLE_INIT RTL_CONDITION_VARIABLE_INIT
+//#define CONDITION_VARIABLE_INIT = RTL_CONDITION_VARIABLE_INIT;
 
 //
 // Flags for condition variables
 //
 
-#define CONDITION_VARIABLE_LOCKMODE_SHARED RTL_CONDITION_VARIABLE_LOCKMODE_SHARED
+static const int CONDITION_VARIABLE_LOCKMODE_SHARED = RTL_CONDITION_VARIABLE_LOCKMODE_SHARED;
+]]
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
 
-
+ffi.cdef[[
 VOID
 __stdcall
 InitializeConditionVariable(
@@ -255,11 +259,12 @@ SleepConditionVariableSRW(
      DWORD dwMilliseconds,
      ULONG Flags
     );
+]]
+
+end --// (_WIN32_WINNT >= 0x0600)
 
 
-#endif // (_WIN32_WINNT >= 0x0600)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetEvent(
@@ -281,7 +286,7 @@ __stdcall
 ReleaseSemaphore(
      HANDLE hSemaphore,
      LONG lReleaseCount,
-    _Out_opt_ LPLONG lpPreviousCount
+     LPLONG lpPreviousCount
     );
 
 
@@ -331,17 +336,18 @@ WaitForMultipleObjectsEx(
      DWORD dwMilliseconds,
      BOOL bAlertable
     );
+]]
 
-
+ffi.cdef[[
 //
 // Synchronization APIs
 //
 
-#define MUTEX_MODIFY_STATE  MUTANT_QUERY_STATE
-#define MUTEX_ALL_ACCESS    MUTANT_ALL_ACCESS
+static const int MUTEX_MODIFY_STATE = MUTANT_QUERY_STATE;
+static const int MUTEX_ALL_ACCESS   = MUTANT_ALL_ACCESS;
+]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateMutexA(
@@ -359,15 +365,17 @@ CreateMutexW(
      BOOL bInitialOwner,
      LPCWSTR lpName
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define CreateMutex  CreateMutexW
 #else
 #define CreateMutex  CreateMutexA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenMutexW(
@@ -375,14 +383,15 @@ OpenMutexW(
      BOOL bInheritHandle,
      LPCWSTR lpName
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define OpenMutex  OpenMutexW
 #endif
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateEventA(
@@ -402,15 +411,17 @@ CreateEventW(
      BOOL bInitialState,
      LPCWSTR lpName
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define CreateEvent  CreateEventW
 #else
 #define CreateEvent  CreateEventA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenEventA(
@@ -428,15 +439,17 @@ OpenEventW(
      BOOL bInheritHandle,
      LPCWSTR lpName
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define OpenEvent  OpenEventW
 #else
 #define OpenEvent  OpenEventA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 OpenSemaphoreW(
@@ -444,17 +457,20 @@ OpenSemaphoreW(
      BOOL bInheritHandle,
      LPCWSTR lpName
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define OpenSemaphore  OpenSemaphoreW
 #endif
+--]]
 
-#if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 
+--if (_WIN32_WINNT >= 0x0400) or (_WIN32_WINDOWS > 0x0400) then
+ffi.cdef[[
 typedef
 VOID
-(APIENTRY *PTIMERAPCROUTINE)(
+(__stdcall *PTIMERAPCROUTINE)(
      LPVOID lpArgToCompletionRoutine,
          DWORD dwTimerLowValue,
          DWORD dwTimerHighValue
@@ -469,14 +485,16 @@ OpenWaitableTimerW(
      BOOL bInheritHandle,
      LPCWSTR lpTimerName
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define OpenWaitableTimer  OpenWaitableTimerW
 #endif
+--]]
 
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
-
+if (_WIN32_WINNT >= _WIN32_WINNT_WIN7) then
+ffi.cdef[[
 BOOL
 __stdcall
 SetWaitableTimerEx(
@@ -488,11 +506,11 @@ SetWaitableTimerEx(
      PREASON_CONTEXT WakeContext,
      ULONG TolerableDelay
     );
+]]
 
+end -- (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
 
-#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
-
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetWaitableTimer(
@@ -511,11 +529,11 @@ __stdcall
 CancelWaitableTimer(
      HANDLE hTimer
     );
+]]
 
-
-#if (_WIN32_WINNT >= 0x0600)
-
-#define CREATE_MUTEX_INITIAL_OWNER  0x00000001
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
+static const int CREATE_MUTEX_INITIAL_OWNER  = 0x00000001;
 
 
 
@@ -538,15 +556,19 @@ CreateMutexExW(
      DWORD dwFlags,
      DWORD dwDesiredAccess
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define CreateMutexEx  CreateMutexExW
 #else
 #define CreateMutexEx  CreateMutexExA
 #endif // !UNICODE
+--]]
 
-#define CREATE_EVENT_MANUAL_RESET   0x00000001
-#define CREATE_EVENT_INITIAL_SET    0x00000002
+ffi.cdef[[
+static const int CREATE_EVENT_MANUAL_RESET =  0x00000001;
+static const int CREATE_EVENT_INITIAL_SET  =  0x00000002;
 
 
 
@@ -569,15 +591,17 @@ CreateEventExW(
      DWORD dwFlags,
      DWORD dwDesiredAccess
     );
+]]
 
+--[[
 #ifdef UNICODE
 #define CreateEventEx  CreateEventExW
 #else
 #define CreateEventEx  CreateEventExA
 #endif // !UNICODE
+--]]
 
-
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateSemaphoreExW(
@@ -585,22 +609,29 @@ CreateSemaphoreExW(
      LONG lInitialCount,
      LONG lMaximumCount,
      LPCWSTR lpName,
-    _Reserved_ DWORD dwFlags,
+     DWORD dwFlags,
      DWORD dwDesiredAccess
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define CreateSemaphoreEx  CreateSemaphoreExW
 #endif
+--]]
 
-#define CREATE_WAITABLE_TIMER_MANUAL_RESET  0x00000001
-#if (_WIN32_WINNT >= _NT_TARGET_VERSION_WIN10_RS4)
-#define CREATE_WAITABLE_TIMER_HIGH_RESOLUTION 0x00000002
-#endif
+ffi.cdef[[
+static const int  CREATE_WAITABLE_TIMER_MANUAL_RESET = 0x00000001;
+]]
+
+--if (_WIN32_WINNT >= _NT_TARGET_VERSION_WIN10_RS4) then
+ffi.cdef[[
+static const int CREATE_WAITABLE_TIMER_HIGH_RESOLUTION = 0x00000002;
+]]
+--end
 
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 CreateWaitableTimerExW(
@@ -609,29 +640,32 @@ CreateWaitableTimerExW(
      DWORD dwFlags,
      DWORD dwDesiredAccess
     );
+]]
 
-
+--[[
 #ifdef UNICODE
 #define CreateWaitableTimerEx  CreateWaitableTimerExW
 #endif
+--]]
+end -- (_WIN32_WINNT >= 0x0600)
 
-#endif // (_WIN32_WINNT >= 0x0600)
+--end -- (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 
-#endif // (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
+--end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-#pragma region Desktop or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
+--if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef RTL_BARRIER SYNCHRONIZATION_BARRIER;
 typedef PRTL_BARRIER PSYNCHRONIZATION_BARRIER;
 typedef PRTL_BARRIER LPSYNCHRONIZATION_BARRIER;
+]]
 
-#define SYNCHRONIZATION_BARRIER_FLAGS_SPIN_ONLY  0x01
-#define SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY 0x02
-#define SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE  0x04
+ffi.cdef[[
+static const int SYNCHRONIZATION_BARRIER_FLAGS_SPIN_ONLY  = 0x01;
+static const int SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY = 0x02;
+static const int SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE  = 0x04;
 
 BOOL
 __stdcall
@@ -655,7 +689,7 @@ __stdcall
 DeleteSynchronizationBarrier(
      LPSYNCHRONIZATION_BARRIER lpBarrier
     );
---]=]
+]]
 
 ffi.cdef[[
 VOID

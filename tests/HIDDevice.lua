@@ -13,6 +13,7 @@ require("win32.fileapi")
 require("win32.winreg")
 require("win32.wingdi")
 require("win32.winuser")
+require("win32.ioapiset")
 require("win32.errhandlingapi")
 require("win32.winerror")
 
@@ -20,9 +21,11 @@ local setupapi = require("win32.setupapi")
 local hidsdi = require("win32.hidsdi")
 local hidclass = require("win32.hidclass")
 local unicode = require("unicode_util")
+local FileHandle = require("filehandle")
 
 local HID_OUT_CTL_CODE = hidclass.HID_OUT_CTL_CODE
 local IOCTL_HID_GET_FEATURE = C.IOCTL_HID_GET_FEATURE
+
 
 local function openDevice(path, enumerate)
     local desiredAccess = 0    
@@ -67,8 +70,6 @@ function HIDDevice.init(self, path)
         return nil, err;
     end
 
-
-    
     return obj;
 end
 
@@ -81,11 +82,11 @@ end
 function HIDDevice.initAttributes(self)
     --print("== initAttributes ==")
 
-    local iohandle = openDevice(self.path, true)
+    local iohandle = FileHandle(openDevice(self.path, true))
     
     local attrib = ffi.new("HIDD_ATTRIBUTES")
     attrib.Size = ffi.sizeof("HIDD_ATTRIBUTES")
-    local status = hidsdi.HidD_GetAttributes(iohandle, attrib)
+    local status = hidsdi.HidD_GetAttributes(iohandle.Handle, attrib)
 
 
     if status == 0 then
@@ -101,7 +102,7 @@ function HIDDevice.initAttributes(self)
 
     -- usage
     local ppdata = ffi.new("PHIDP_PREPARSED_DATA[1]")
-    local status = hidsdi.HidD_GetPreparsedData(iohandle, ppdata)
+    local status = hidsdi.HidD_GetPreparsedData(iohandle.Handle, ppdata)
     if status == 0 then
         return nil, C.GetLastError();
     end
@@ -130,25 +131,72 @@ function HIDDevice.initAttributes(self)
     local wstr = ffi.new("wchar_t[?]", 128)
     local wstrLen = ffi.sizeof(wstr)
 
-    status = hidsdi.HidD_GetSerialNumberString(iohandle, wstr, wstrLen)
+    status = hidsdi.HidD_GetSerialNumberString(iohandle.Handle, wstr, wstrLen)
     self.SerialNumber = unicode.toAnsi(wstr)
 
     -- manufacturer
-    status = hidsdi.HidD_GetManufacturerString(iohandle, wstr, wstrLen)
+    status = hidsdi.HidD_GetManufacturerString(iohandle.Handle, wstr, wstrLen)
     self.Manufacturer = unicode.toAnsi(wstr)
 
     -- product string
-    status = hidsdi.HidD_GetProductString(iohandle, wstr, wstrLen)
+    status = hidsdi.HidD_GetProductString(iohandle.Handle, wstr, wstrLen)
     self.Product = unicode.toAnsi(wstr)
 
     -- interface number
 
     -- close the file handle
-    C.CloseHandle(iohandle)
+    iohandle:close()
+    -- let file handle go out of scope
+    --C.CloseHandle(iohandle)
 
     return self
 end
 
+function HIDDevice.open(self)
+    -- get a handle we can use for reading and writing
+    self.Handle = FileHandle(openDevice(self.path, false))
+
+    -- Set the Input Report buffer size to 64 reports.
+    local res = hidsdi.HidD_SetNumInputBuffers(self.Handle.Handle, 64);
+    --if (!res) {
+    --register_error(dev, "HidD_SetNumInputBuffers");
+    --goto err;
+    --}
+    
+    -- Create a buffer we can read/write
+    self.InputReportBuffer = ffi.new("uint8_t[?]", self.InputReportByteLength)
+end
+
+function HIDDevice.write(self, data, len)
+    local ol = ffi.new("OVERLAPPED")
+    local buf = data
+
+    res = C.WriteFile(self.Handle.Handle, buf, len, nil, ol)
+
+    -- wait for the write to be finished
+    local bytesWritten = ffi.new("DWORD[1]")
+    res = C.GetOverlappedResult(self.Handle.Handle, ol, bytesWritten, 1)
+
+    if res == 0 then
+        return false, "WriteFile"
+    end
+
+    return bytesWritten
+end
+
+function HIDDevice.read(self, data, len )
+    return self:readTimeout(data, len)
+end
+
+-- Send a feature report to the device
+function HIDDevice.sendFeatureReport(self, data, len)
+    local res = hidsdi.HidD_SetFeature(self.Handle.Handle, data, len)
+    if res == 0 then
+        return false, "HidD_SetFeature"
+    end
+
+    return len
+end
 
 return HIDDevice
 
