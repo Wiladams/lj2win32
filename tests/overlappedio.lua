@@ -8,6 +8,8 @@
 
     If a path is passed in, the file is opened
     for read and write.
+    https://docs.microsoft.com/en-us/windows/desktop/FileIO/testing-for-the-end-of-a-file
+
 ]]
 
 local ffi = require("ffi")
@@ -35,8 +37,12 @@ local OverlappedIO_mt = {
 }
 
 function OverlappedIO.init(self, rawhandle)
-    --    local dwFileSize        = C.GetFileSize(rawhandle, nil);
-    --print("File Size: ", dwFileSize)
+    if not rawhandle or rawhandle == C.INVALID_HANDLE_VALUE then
+        return nil, "invalid handle specified"
+    end
+
+    --local fileSize = C.GetFileSize(rawhandle, nil);
+    --print("File Size: ", fileSize)
 
     local obj = {
         File = FileHandle(rawhandle);
@@ -90,43 +96,62 @@ end
     event to signal, before returning.
 ]]
 function OverlappedIO.read(self, buff, len, async)
-    local dwBytesRead       = ffi.new("DWORD[1]");
+    local dwBytesRead = ffi.new("DWORD[1]");
     local bytesRead = 0
 
     -- Attempt an asynchronous read operation.
-    local bResult = C.ReadFile(self.File.Handle,
+    local success = C.ReadFile(self.File.Handle,
             buff,
             len,
             dwBytesRead,
-            self.ReadingOL);
+            self.ReadingOL) ~= 0;
     
     local err = C.GetLastError()
 
-    --print("READ result: ", bResult, err)
+    --print("READ result: ", success, err)
+    --[[
+        Errors can occur a few ways.  At this ReadFile()
+        we expect to either see no error, bResult ~= 0
+        or, bResult and there's an error
 
-    if bResult == 0 then
+        The error will typically be ERROR_IO_PENDING
+        if it's not, then we should drop out and 
+        return the error.
+
+        If it is ERROR_IO_PENDING, then we need to do
+        the GetOverlappedResult(), which itself has
+        error conditions.
+
+        That can either return no error (bResult ~= 0),
+        or continue pending
+    ]]
+    if not success then
         if err == C.ERROR_IO_PENDING then
             -- Check the result of the asynchronous read
-            bResult = C.GetOverlappedResult(self.File.Handle,
+            success = C.GetOverlappedResult(self.File.Handle,
                 self.ReadingOL,
                 dwBytesRead,
-                1);
+                1) ~= 0;
             
-            --print("AFTER RESULT: ", bResult, dwBytesRead[0])
+            err = C.GetLastError()
+            
+            --print("AFTER RESULT: ", success, dwBytesRead[0])
             -- reset the event as it is manual
             self.ReadingEvent:reset()
-            
 
-            if bResult == 0 then
+            if not success then
+                if err == C.ERROR_HANDLE_EOF then
+                    return false, "EOF"
+                end
                 -- some error occured while waiting
-                return false, "waiting for Overlapped Result"
+                return false, "GetOverlappedResult(): "..tostring(err)
             end
 
-            -- update the offset in the overlapped structure
-            -- to advance
+            -- the offset in the overlapped structure must be advanced
+            -- or the next time we read, we'll be in the same position
             self.ReadingOL.Offset = self.ReadingOL.Offset + dwBytesRead[0]
-        elseif err == ERROR_HANDLE_EOF then
-            return 0, "EOF"
+        elseif err == C.ERROR_HANDLE_EOF then
+            return false, "EOF"
         end
     else
         -- no pending, so we're done
