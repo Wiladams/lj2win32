@@ -96,7 +96,7 @@ end
     event to signal, before returning.
 ]]
 function OverlappedIO.read(self, buff, len, async)
-    local dwBytesRead = ffi.new("DWORD[1]");
+    local dwBytesTransferred = ffi.new("DWORD[1]");
     local bytesRead = 0
 
 --[[
@@ -108,7 +108,7 @@ function OverlappedIO.read(self, buff, len, async)
     local success = C.ReadFile(self.File.Handle,
             buff,
             len,
-            dwBytesRead,
+            dwBytesTransferred,
             self.ReadingOL) ~= 0;
     
     local err = C.GetLastError()
@@ -120,18 +120,18 @@ function OverlappedIO.read(self, buff, len, async)
             -- Wait for the async read to complete
             success = C.GetOverlappedResult(self.File.Handle,
                 self.ReadingOL,
-                dwBytesRead,
+                dwBytesTransferred,
                 1) ~= 0;
             
             err = C.GetLastError()
             
-            --print("AFTER RESULT: ", success, dwBytesRead[0])
+            --print("AFTER RESULT: ", success, dwBytesTransferred[0])
             -- reset the event as it is manual
             self.ReadingEvent:reset()
 
             if not success then
                 if err == C.ERROR_HANDLE_EOF then
-                    return false,  string.format("EOF (%d)", dwBytesRead[0])
+                    return false,  string.format("EOF (%d)", dwBytesTransferred[0])
                 end
                 -- some error occured while waiting
                 return false, "GetOverlappedResult(): "..tostring(err)
@@ -139,7 +139,7 @@ function OverlappedIO.read(self, buff, len, async)
 
             -- the offset in the overlapped structure must be advanced
             -- or the next time we read, we'll be in the same position
-            self.ReadingOL.Offset = self.ReadingOL.Offset + dwBytesRead[0]
+            self.ReadingOL.Offset = self.ReadingOL.Offset + dwBytesTransferred[0]
         elseif err == C.ERROR_HANDLE_EOF then
             -- reached end of file
             return false, string.format("EOF (%d)", dwBytesRead[0])
@@ -149,7 +149,7 @@ function OverlappedIO.read(self, buff, len, async)
         end
     end
 
-    bytesRead = dwBytesRead[0]
+    bytesRead = dwBytesTransferred[0]
 
     return bytesRead
 end
