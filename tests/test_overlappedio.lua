@@ -22,11 +22,12 @@ end
 end
 
 local function test_readfile()
-    local buffLen = 80
+    local buffLen = 1024
     local buff = ffi.new("uint8_t[?]", buffLen)
 
     while true do
         local bytesRead, err = f1:read(buff, buffLen)
+        --print(bytesRead, err)
         if bytesRead then
             io.write(ffi.string(buff, bytesRead))
         else

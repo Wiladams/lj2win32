@@ -99,7 +99,12 @@ function OverlappedIO.read(self, buff, len, async)
     local dwBytesRead = ffi.new("DWORD[1]");
     local bytesRead = 0
 
-    -- Attempt an asynchronous read operation.
+--[[
+    Attempt an asynchronous read operation.
+    in some cases, this migh succeed (file cached)
+    without returning ERROR_IO_PENDING, so 
+    we must handle both cases.
+--]]
     local success = C.ReadFile(self.File.Handle,
             buff,
             len,
@@ -109,25 +114,10 @@ function OverlappedIO.read(self, buff, len, async)
     local err = C.GetLastError()
 
     --print("READ result: ", success, err)
-    --[[
-        Errors can occur a few ways.  At this ReadFile()
-        we expect to either see no error, bResult ~= 0
-        or, bResult and there's an error
 
-        The error will typically be ERROR_IO_PENDING
-        if it's not, then we should drop out and 
-        return the error.
-
-        If it is ERROR_IO_PENDING, then we need to do
-        the GetOverlappedResult(), which itself has
-        error conditions.
-
-        That can either return no error (bResult ~= 0),
-        or continue pending
-    ]]
     if not success then
         if err == C.ERROR_IO_PENDING then
-            -- Check the result of the asynchronous read
+            -- Wait for the async read to complete
             success = C.GetOverlappedResult(self.File.Handle,
                 self.ReadingOL,
                 dwBytesRead,
@@ -141,7 +131,7 @@ function OverlappedIO.read(self, buff, len, async)
 
             if not success then
                 if err == C.ERROR_HANDLE_EOF then
-                    return false, "EOF"
+                    return false,  string.format("EOF (%d)", dwBytesRead[0])
                 end
                 -- some error occured while waiting
                 return false, "GetOverlappedResult(): "..tostring(err)
@@ -151,13 +141,14 @@ function OverlappedIO.read(self, buff, len, async)
             -- or the next time we read, we'll be in the same position
             self.ReadingOL.Offset = self.ReadingOL.Offset + dwBytesRead[0]
         elseif err == C.ERROR_HANDLE_EOF then
-            return false, "EOF"
+            -- reached end of file
+            return false, string.format("EOF (%d)", dwBytesRead[0])
+        else
+            -- some other error occured
+            return false, "ReadFile(): "..tostring(err)
         end
-    else
-        -- no pending, so we're done
-
     end
-    
+
     bytesRead = dwBytesRead[0]
 
     return bytesRead
