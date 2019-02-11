@@ -1,9 +1,14 @@
 local ffi = require("ffi")
 local C = ffi.C 
 
+require("win32.minwindef")
+require("win32.minwinbase")
+
 require("win32.handleapi")
+require("win32.synchapi")
 require("win32.errhandlingapi")
-require("win32.winbase")
+
+
 ffi.cdef[[
 typedef struct _EventHandle {
     HANDLE Handle;
@@ -54,6 +59,12 @@ function EventHandle.reset(self)
 end
 
 function EventHandle.set(self)
+    local success = C.SetEvent(self.Handle) ~= 0
+    if not success then
+        return false, C.GetLastError();
+    end
+
+    return true
 end
 
 return ffi.typeof("EventHandle")

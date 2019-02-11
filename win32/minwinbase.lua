@@ -32,7 +32,7 @@ typedef struct _OVERLAPPED {
         struct {
             DWORD Offset;
             DWORD OffsetHigh;
-        } DUMMYSTRUCTNAME;
+        } ;
         PVOID Pointer;
     } ;
 

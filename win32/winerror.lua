@@ -437,43 +437,16 @@ static const int ERROR_LOCK_VIOLATION             33L;
 // Insert %2 (Volume Serial Number: %3) into drive %1.
 //
 static const int ERROR_WRONG_DISK                 34L;
+--]=]
 
-//
-// MessageId: ERROR_SHARING_BUFFER_EXCEEDED
-//
-// MessageText:
-//
-// Too many files opened for sharing.
-//
-static const int ERROR_SHARING_BUFFER_EXCEEDED    36L;
+ffi.cdef[[
+static const int ERROR_SHARING_BUFFER_EXCEEDED  =  36L;
+static const int ERROR_HANDLE_EOF             =    38L;
+static const int ERROR_HANDLE_DISK_FULL        =   39L;
+static const int ERROR_NOT_SUPPORTED           =   50L;
+]]
 
-//
-// MessageId: ERROR_HANDLE_EOF
-//
-// MessageText:
-//
-// Reached the end of the file.
-//
-static const int ERROR_HANDLE_EOF                 38L;
-
-//
-// MessageId: ERROR_HANDLE_DISK_FULL
-//
-// MessageText:
-//
-// The disk is full.
-//
-static const int ERROR_HANDLE_DISK_FULL           39L;
-
-//
-// MessageId: ERROR_NOT_SUPPORTED
-//
-// MessageText:
-//
-// The request is not supported.
-//
-static const int ERROR_NOT_SUPPORTED              50L;
-
+--[=[
 //
 // MessageId: ERROR_REM_NOT_LIST
 //
