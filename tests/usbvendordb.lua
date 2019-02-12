@@ -21372,7 +21372,7 @@ return {
 	[0x0ecd] = { 
 		name = "Lite-On IT Corp.",
 		products = {
-			[0x1400] = "CD\RW 40X",
+			[0x1400] = "CD/RW 40X",
 			[0xa100] = "LDW-411SX DVD/CD Rewritable Drive",
 		}
 	},

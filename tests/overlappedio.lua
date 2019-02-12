@@ -19,7 +19,6 @@ local band, bor = bit.band, bit.bor
 local lshift, rshift = bit.lshift, bit.rshift
 
 
-
 local EventHandle = require("eventhandle")
 local FileHandle = require("filehandle")
 require("win32.winbase")
@@ -40,9 +39,6 @@ function OverlappedIO.init(self, rawhandle)
     if not rawhandle or rawhandle == C.INVALID_HANDLE_VALUE then
         return nil, "invalid handle specified"
     end
-
-    --local fileSize = C.GetFileSize(rawhandle, nil);
-    --print("File Size: ", fileSize)
 
     local obj = {
         File = FileHandle(rawhandle);
@@ -100,25 +96,19 @@ function OverlappedIO.read(self, buff, len, async)
     local bytesRead = 0
 
 --[[
-    Attempt an asynchronous read operation.
-    in some cases, this migh succeed (file cached)
-    without returning ERROR_IO_PENDING, so 
-    we must handle both cases.
+    Attempt a read operation.  In some cases, 
+    this might succeed (file cached) without 
+    going through a ERROR_IO_PENDING state.
+    So, handle both cases.
 --]]
-    local success = C.ReadFile(self.File.Handle,
-            buff,
-            len,
-            dwBytesTransferred,
-            self.ReadingOL) ~= 0;
-    
-    local err = C.GetLastError()
+    local result, err = self.File:read(buff, len, self.ReadingOL)
 
-    --print("READ result: ", success, err)
+    --print("READ result: ", result, err)
 
-    if not success then
+    if not result then
         if err == C.ERROR_IO_PENDING then
             -- Wait for the async read to complete
-            success = C.GetOverlappedResult(self.File.Handle,
+            local success = C.GetOverlappedResult(self.File.Handle,
                 self.ReadingOL,
                 dwBytesTransferred,
                 1) ~= 0;
@@ -139,7 +129,8 @@ function OverlappedIO.read(self, buff, len, async)
 
             -- the offset in the overlapped structure must be advanced
             -- or the next time we read, we'll be in the same position
-            self.ReadingOL.Offset = self.ReadingOL.Offset + dwBytesTransferred[0]
+            result = dwBytesTransferred[0]
+            self.ReadingOL.Offset = self.ReadingOL.Offset + result
         elseif err == C.ERROR_HANDLE_EOF then
             -- reached end of file
             return false, string.format("EOF (%d)", dwBytesRead[0])
@@ -149,9 +140,7 @@ function OverlappedIO.read(self, buff, len, async)
         end
     end
 
-    bytesRead = dwBytesTransferred[0]
-
-    return bytesRead
+    return result
 end
 
 function OverlappedIO.write(self, buff, len, asyn)

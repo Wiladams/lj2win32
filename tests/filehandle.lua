@@ -1,6 +1,9 @@
 local ffi = require("ffi")
 local C = ffi.C 
 local fileapi = require("win32.fileapi")
+require("win32.handleapi")
+require("win32.errhandlingapi")
+
 
 ffi.cdef[[
 typedef struct {
@@ -24,6 +27,8 @@ local FsHandle_mt = {
 ffi.metatype("FsHandle", FsHandle_mt);
 
 function FileHandle.init(self, params)
+    print("rawhandle: ", params.RawFileHandle)
+    
     if not params.RawFileHandle then
         return nil;
     end
@@ -34,10 +39,10 @@ end
 
 function FileHandle.new(self, params)
     params = params or {}
-    
+--print("FileHandle.new: ", params.Path)
     if not params.RawFileHandle then
         if not params.Path then
-            return nil, "No File Path Specified"
+            return false, "No File Path Specified"
         end
 
         -- Need to open up a file because a raw handle
@@ -45,7 +50,7 @@ function FileHandle.new(self, params)
         local desiredAccess = params.DesiredAccess or bor(C.GENERIC_WRITE , C.GENERIC_READ)
         local shareMode = params.ShareMode or bor(C.FILE_SHARE_READ, C.FILE_SHARE_WRITE)
         local creationDisposition = params.CreationDisposition or C.OPEN_EXISTING
-        local flagsAndAttributes = params.FlagsAndAttributes or C.FILE_FLAG_OVERLAPPED
+        local flagsAndAttributes = params.FlagsAndAttributes or 0
 
         params.RawFileHandle = C.CreateFileA(params.Path, 
             desiredAccess, 
@@ -77,5 +82,22 @@ function FileHandle.size(self)
     return fileSize
 end
 
+function FileHandle.read(self, buff, len, ol)
+    local bytesTransferred = ffi.new("DWORD[1]")
+    local success = C.ReadFile(self.Handle,
+            buff,
+            len,
+            bytesTransferred,
+            ol) ~= 0;
+    
+    local err = C.GetLastError()
 
-return ffi.typeof("FsHandle")
+    if success then
+        return bytesTransferred[0], err
+    end
+
+    
+    return false, err
+end
+
+return FileHandle

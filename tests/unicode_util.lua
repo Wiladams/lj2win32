@@ -36,7 +36,6 @@ function exports.toUnicode(in_Src, nsrcBytes)
 		return nil;
 	end
 
-
 	local buff = ffi.new("uint16_t[?]", charsneeded+1)
 
 	local charswritten = C.MultiByteToWideChar(ffi.C.CP_ACP, 0, in_Src, nsrcBytes, buff, charsneeded)
