@@ -61,6 +61,35 @@ function Volume.getInfo(self)
 end
 --]]
 
+local function volumeMountPoints(volumeName)
+    local function visitor()
+        local cchBufferLength = C.MAX_PATH+1
+        local lpszVolumeMountPoint = ffi.new("char[?]", C.MAX_PATH+1)
+        local queryhandle = C.FindFirstVolumeMountPointA(volumeName,
+            lpszVolumeMountPoint, cchBufferLength);
+
+        if queryhandle == C.INVALID_HANDLE_VALUE then
+            return nil  
+        end
+
+        ffi.gc(queryhandle, C.FindVolumeMountPointClose)
+
+        coroutine.yield(ffi.string(lpszVolumeMountPoint))
+
+        while C.FindNextVolumeMountPointA(queryhandle, lpszVolumeMountPoint, cchBufferLength) ~= 0 do
+            coroutine.yield(ffi.string(lpszVolumeMountPoint))
+        end
+
+        C.FindVolumeMountPointClose(queryhandle)
+    end
+    
+    return coroutine.wrap(visitor)
+end
+
+function Volume.mountPoints(self)
+    return volumeMountPoints(self.Name)
+end
+
 function Volume.paths(self)
     local lpszVolumeName = unicode.toUnicode(self.Name)
     local cchBufferLength = 0

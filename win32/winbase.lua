@@ -7774,7 +7774,7 @@ CreateJobSet (
 HANDLE
 __stdcall
 FindFirstVolumeA(
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
+     LPSTR lpszVolumeName,
      DWORD cchBufferLength
     );
 #ifndef UNICODE
@@ -7786,7 +7786,7 @@ BOOL
 __stdcall
 FindNextVolumeA(
      HANDLE hFindVolume,
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
+     LPSTR lpszVolumeName,
         DWORD cchBufferLength
     );
 #ifndef UNICODE
@@ -7794,17 +7794,17 @@ FindNextVolumeA(
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-
+--]=]
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
+ffi.cdef[[
 HANDLE
 __stdcall
 FindFirstVolumeMountPointA(
      LPCSTR lpszRootPathName,
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
+     LPSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
 
@@ -7812,21 +7812,25 @@ HANDLE
 __stdcall
 FindFirstVolumeMountPointW(
      LPCWSTR lpszRootPathName,
-    _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
+     LPWSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define FindFirstVolumeMountPoint FindFirstVolumeMountPointW
 else
 #define FindFirstVolumeMountPoint FindFirstVolumeMountPointA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 FindNextVolumeMountPointA(
      HANDLE hFindVolumeMountPoint,
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumeMountPoint,
+     LPSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
 
@@ -7834,23 +7838,28 @@ BOOL
 __stdcall
 FindNextVolumeMountPointW(
      HANDLE hFindVolumeMountPoint,
-    _Out_writes_(cchBufferLength) LPWSTR lpszVolumeMountPoint,
+     LPWSTR lpszVolumeMountPoint,
      DWORD cchBufferLength
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define FindNextVolumeMountPoint FindNextVolumeMountPointW
 else
 #define FindNextVolumeMountPoint FindNextVolumeMountPointA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 FindVolumeMountPointClose(
      HANDLE hFindVolumeMountPoint
     );
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 SetVolumeMountPointA(
@@ -7864,16 +7873,20 @@ SetVolumeMountPointW(
      LPCWSTR lpszVolumeMountPoint,
      LPCWSTR lpszVolumeName
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define SetVolumeMountPoint  SetVolumeMountPointW
 else
 #define SetVolumeMountPoint  SetVolumeMountPointA
 end  -- !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-
+--[=[
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 
@@ -7901,7 +7914,7 @@ BOOL
 __stdcall
 GetVolumeNameForVolumeMountPointA(
      LPCSTR lpszVolumeMountPoint,
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumeName,
+     LPSTR lpszVolumeName,
      DWORD cchBufferLength
 );
 
@@ -7910,7 +7923,7 @@ BOOL
 __stdcall
 GetVolumePathNameA(
      LPCSTR lpszFileName,
-    _Out_writes_(cchBufferLength) LPSTR lpszVolumePathName,
+     LPSTR lpszVolumePathName,
      DWORD cchBufferLength
     );
 #ifndef UNICODE
