@@ -6,11 +6,11 @@ require("win32.minwinbase")
 -- APISET contracts
 require("win32.processenv")
 require("win32.fileapi")
-require("win32.debugapi")           -- dbghelp
+require("win32.debugapi")
 require("win32.utilapiset")
 require("win32.handleapi")
 require("win32.errhandlingapi")
-require("win32.fibersapi")          -- NYI
+require("win32.fibersapi")
 require("win32.namedpipeapi")
 require("win32.profileapi")
 require("win32.heapapi")
@@ -28,7 +28,7 @@ require("win32.memoryapi")
 --require("win32.wow64apiset")        -- NYI
 require("win32.libloaderapi")
 require("win32.securitybaseapi")
---require("win32.namespaceapi")       -- NYI
+require("win32.namespaceapi")
 --require("win32.systemtopologyapi")  -- NYI
 --require("win32.processtopologyapi") -- NYI
 --require("win32.securityappcontainer")   -- NYI
