@@ -10,7 +10,7 @@ require("win32.debugapi")           -- dbghelp
 require("win32.utilapiset")
 require("win32.handleapi")
 require("win32.errhandlingapi")
---require("win32.fibersapi")          -- NYI
+require("win32.fibersapi")          -- NYI
 require("win32.namedpipeapi")
 require("win32.profileapi")
 require("win32.heapapi")
