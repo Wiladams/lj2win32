@@ -5,6 +5,9 @@ require("win32.fileapi")
 local unicode = require("unicode_util")
 local strdelim = require("strdelim")
 
+local NAMEBUFFER = ffi.typeof("char [$]", C.MAX_PATH+1)
+local PDWORD = ffi.typeof("DWORD[1]")
+
 local Volume = {}
 setmetatable(Volume, {
     __call = function(self, ...)
@@ -35,12 +38,12 @@ end
 --[[
 function Volume.getInfo(self)
     local lpRootPathName = nil
-    local lpVolumeNameBuffer = ffi.new("char [?]", C.MAX_PATH+1)
+    local lpVolumeNameBuffer = ffi.new(NAMEBUFFER)
     local nVolumeNameSize = C.MAX_PATH+1
     local lpVolumeSerialNumber = ffi.new("DWORD[1]")
     local lpMaximumComponentLength = ffi.new("DWORD[1]")
     local lpFileSystemFlags = ffi.new("DWORD[1]")
-    local lpFileSystemNameBuffer = ffi.new("char [?]", C.MAX_PATH+1)
+    local lpFileSystemNameBuffer = ffi.new(NAMEBUFFER)
     local nFileSystemNameSize = C.MAX_PATH+1
 
     local success =  GetVolumeInformationA(
@@ -64,7 +67,7 @@ end
 local function volumeMountPoints(volumeName)
     local function visitor()
         local cchBufferLength = C.MAX_PATH+1
-        local lpszVolumeMountPoint = ffi.new("char[?]", C.MAX_PATH+1)
+        local lpszVolumeMountPoint = ffi.new(NAMEBUFFER)
         local queryhandle = C.FindFirstVolumeMountPointA(volumeName,
             lpszVolumeMountPoint, cchBufferLength);
 
