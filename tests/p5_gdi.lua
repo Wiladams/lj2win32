@@ -572,7 +572,6 @@ function loadFont()
 end
 
 function text(txt, x, y)
-	print("text: ", txt)
 	surface.DC:Text(txt, x, y);
 	--surface.DC:ExtTextOutA(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect,  LPCSTR lpString,  UINT c,  const INT * lpDx)
 end
@@ -580,8 +579,8 @@ end
 -- Attributes
 
 function textAlign(halign, valign)
-	TextHAlignment = halign
-	TextVAlignment = valign
+	TextHAlignment = halign or LEFT
+	TextVAlignment = valign or TOP
 
 end
 
