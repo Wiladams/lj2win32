@@ -41,6 +41,7 @@ function Sudoku.init(self, N, K)
     obj.SRN = math.floor(obj.SRNd)
 
     setmetatable(obj, Sudoku_mt)
+	obj:fillValues();
 
     return obj
 end

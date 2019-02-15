@@ -572,6 +572,7 @@ function loadFont()
 end
 
 function text(txt, x, y)
+	print("text: ", txt)
 	surface.DC:Text(txt, x, y);
 	--surface.DC:ExtTextOutA(  HDC hdc,  int x,  int y,  UINT options,  const RECT * lprect,  LPCSTR lpString,  UINT c,  const INT * lpDx)
 end
@@ -688,20 +689,16 @@ function filter()
 end
 
 function get(x, y)
-	return Processing.Renderer:get(x,y)
 end
 
 function set(x, y, acolor)
-	Processing.Renderer:set(x, y, acolor)
 end
 
 function loadPixels()
-	Processing.Renderer:loadPixels()
 end
 
 function pixels()
 end
 
 function updatePixels()
-	Processing.Renderer:updatePixels();
 end

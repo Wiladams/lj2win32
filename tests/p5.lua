@@ -21,10 +21,13 @@ local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
 
-local sched = require("scheduler")
-local stopwatch = require("stopwatch")
+require("win32.sdkddkver")
+
 local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
+
+local sched = require("scheduler")
+local stopwatch = require("stopwatch")
 local WindowKind = require("WindowKind")
 local NativeWindow = require("nativewindow")
 local wmmsgs = require("wm_reserved")
