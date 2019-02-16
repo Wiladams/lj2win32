@@ -6281,7 +6281,7 @@ SetupDiGetClassRegistryPropertyA(
      const GUID *ClassGuid,
      DWORD Property,
      PDWORD PropertyRegDataType,
-    _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize,
      PCSTR MachineName,
@@ -6296,7 +6296,7 @@ SetupDiGetClassRegistryPropertyW(
      const GUID *ClassGuid,
      DWORD Property,
      PDWORD PropertyRegDataType,
-    _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize,
      PCWSTR MachineName, 
@@ -6570,6 +6570,7 @@ SetupDiLoadDeviceIcon(
 ]]
 
 end -- _SETUPAPI_VER >= _WIN32_WINNT_LONGHORN
+--]=]
 
 ffi.cdef[[
 //
@@ -6661,11 +6662,12 @@ static const int DIGCDP_FLAG_BASIC         =  0x00000001;
 static const int DIGCDP_FLAG_ADVANCED      =  0x00000002;
 ]]
 
-if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
 
+if _SETUPAPI_VER >= _WIN32_WINNT_WINXP then
+ffi.cdef[[
 static const int DIGCDP_FLAG_REMOTE_BASIC    = 0x00000003;  // not presently implemented
 static const int DIGCDP_FLAG_REMOTE_ADVANCED = 0x00000004;
-
+]]
 end -- _SETUPAPI_VER >= _WIN32_WINNT_WINXP
 
 ffi.cdef[[
@@ -6701,22 +6703,23 @@ else
 end
 --]]
 
+ffi.cdef[[
 //
 // Define ICON IDs publicly exposed from setupapi.
 //
-#define IDI_RESOURCEFIRST           159
-#define IDI_RESOURCE                159
-#define IDI_RESOURCELAST            161
-#define IDI_RESOURCEOVERLAYFIRST    161
-#define IDI_RESOURCEOVERLAYLAST     161
-#define IDI_CONFLICT                161
+static const int IDI_RESOURCEFIRST          = 159;
+static const int IDI_RESOURCE               = 159;
+static const int IDI_RESOURCELAST           = 161;
+static const int IDI_RESOURCEOVERLAYFIRST   = 161;
+static const int IDI_RESOURCEOVERLAYLAST    = 161;
+static const int IDI_CONFLICT               = 161;
 
-#define IDI_CLASSICON_OVERLAYFIRST  500
-#define IDI_CLASSICON_OVERLAYLAST   502
-#define IDI_PROBLEM_OVL             500
-#define IDI_DISABLED_OVL            501
-#define IDI_FORCED_OVL              502
-
+static const int IDI_CLASSICON_OVERLAYFIRST = 500;
+static const int IDI_CLASSICON_OVERLAYLAST  = 502;
+static const int IDI_PROBLEM_OVL            = 500;
+static const int IDI_DISABLED_OVL           = 501;
+static const int IDI_FORCED_OVL             = 502;
+]]
 
 ffi.cdef[[
 BOOL
@@ -6930,12 +6933,12 @@ ffi.cdef[[
 //
 // PageType values for SetupDiGetWizardPage API
 //
-static const int SPWPT_SELECTDEVICE      0x00000001;
+static const int SPWPT_SELECTDEVICE    =  0x00000001;
 
 //
 // Flags for SetupDiGetWizardPage API
 //
-static const int SPWP_USE_DEVINFO_DATA   0x00000001;
+static const int SPWP_USE_DEVINFO_DATA =  0x00000001;
 ]]
 
 ffi.cdef[[
@@ -6968,7 +6971,7 @@ SetupDiSetSelectedDevice(
     );
 ]]
 
-#if _SETUPAPI_VER >= _WIN32_WINNT_WS03
+if _SETUPAPI_VER >= _WIN32_WINNT_WS03 then
 
 ffi.cdef[[
 BOOL
@@ -7260,7 +7263,7 @@ SetupDiGetCustomDevicePropertyA(
      PCSTR CustomPropertyName,
      DWORD Flags,
      PDWORD PropertyRegDataType,
-    _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize
     );
@@ -7275,7 +7278,7 @@ SetupDiGetCustomDevicePropertyW(
      PCWSTR CustomPropertyName,
      DWORD Flags,
      PDWORD PropertyRegDataType,
-    _Out_writes_bytes_to_(PropertyBufferSize, *RequiredSize) PBYTE PropertyBuffer,
+     PBYTE PropertyBuffer,
      DWORD PropertyBufferSize,
      PDWORD RequiredSize
     );
@@ -7330,10 +7333,7 @@ end --// _SETUPAPI_VER >= _WIN32_WINNT_WS03
 
 
 
-end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+--end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-
-end -- _INC_SETUPAPI
---]=]
 
 return ffi.load("setupapi")

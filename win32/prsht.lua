@@ -17,26 +17,7 @@ require("win32.winapifamily")
 #endif
 #endif // WINCOMMCTRLAPI
 --]]
---[[
-//
-// For compilers that don't support nameless unions
-//
-#ifndef 
-#ifdef NONAMELESSUNION
-#define    u
-#define   u2
-#define   u3
-#define   u4
-#define   u5
-#else
-#define 
-#define 
-#define 
-#define 
-#define 
-#endif
-#endif // 
---]]
+
 
 --[[
 #ifdef _WIN64
@@ -136,13 +117,18 @@ static const int PSPCB_RELEASE         =  1;
 static const int PSPCB_CREATE          =  2;
 ]]
 
---[=[
-#ifdef _WIN32
-typedef LPCDLGTEMPLATE PROPSHEETPAGE_RESOURCE;
-#else
-typedef const VOID* PROPSHEETPAGE_RESOURCE;
-#endif
 
+if _WIN32 then
+ffi.cdef[[
+typedef LPCDLGTEMPLATE PROPSHEETPAGE_RESOURCE;
+]]
+else
+ffi.cdef[[
+typedef const VOID* PROPSHEETPAGE_RESOURCE;
+]]
+end
+
+--[=[
 #define PROPSHEETPAGEA_V1_FIELDS   \
     DWORD           dwSize;        \
     DWORD           dwFlags;       \
@@ -861,30 +847,31 @@ typedef struct _PSHNOTIFY
 
 
 end -- 0x0600
-
-
-#define ID_PSRESTARTWINDOWS     =0x2;
-#define ID_PSREBOOTSYSTEM       =(ID_PSRESTARTWINDOWS | 0x1);
-
-
-#define WIZ_CXDLG               =276;
-#define WIZ_CYDLG               =140;
-
-#define WIZ_CXBMP               =80;
-
-#define WIZ_BODYX               =92;
-#define WIZ_BODYCX              =184;
-
-#define PROP_SM_CXDLG           =212;
-#define PROP_SM_CYDLG           =188;
-
-#define PROP_MED_CXDLG          =227;
-#define PROP_MED_CYDLG          =215;
-
-#define PROP_LG_CXDLG           =252;
-#define PROP_LG_CYDLG           =218;
-]]
 --]=]
+
+ffi.cdef[[
+static const int ID_PSRESTARTWINDOWS     =0x2;
+static const int ID_PSREBOOTSYSTEM       =(ID_PSRESTARTWINDOWS | 0x1);
+
+
+static const int WIZ_CXDLG               =276;
+static const int WIZ_CYDLG               =140;
+
+static const int WIZ_CXBMP               =80;
+
+static const int WIZ_BODYX               =92;
+static const int WIZ_BODYCX              =184;
+
+static const int PROP_SM_CXDLG           =212;
+static const int PROP_SM_CYDLG           =188;
+
+static const int PROP_MED_CXDLG          =227;
+static const int PROP_MED_CYDLG          =215;
+
+static const int PROP_LG_CXDLG           =252;
+static const int PROP_LG_CYDLG           =218;
+]]
+
 --end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 

@@ -290,11 +290,15 @@ function exports.getSystemInformation(infoClass)
 
     --print("first status, length: ", string.format("0x%x",status), pReturnLength[0])
     if status ~= C.STATUS_INFO_LENGTH_MISMATCH then
-        return nil;
+        return false, status;
     end
 
     -- now we know length, so call again with a properly sized buffer
     SystemInformationLength = pReturnLength[0]
+    print("InformationLength: ", string.format("0x%x", SystemInformationLength))
+    if SystemInformationLength < 0 then
+        return false, "Size Negative"
+    end
     SystemInformation = ffi.new("uint8_t[?]", SystemInformationLength)
     status = ntdll.NtQuerySystemInformation (infoClass,
         SystemInformation, SystemInformationLength,
@@ -302,10 +306,13 @@ function exports.getSystemInformation(infoClass)
 
     --print("second status, length: ", string.format("0x%x",status), pReturnLength[0])
     if status ~= C.STATUS_SUCCESS then
-        return nil;
+        return false, status;
     end
 
     return SystemInformation, pReturnLength[0]
 end
+
+exports.SYSTEM_INFORMATION_CLASS = SYSTEM_INFORMATION_CLASS
+
 
 return exports

@@ -579,8 +579,8 @@ end
 -- Attributes
 
 function textAlign(halign, valign)
-	TextHAlignment = halign
-	TextVAlignment = valign
+	TextHAlignment = halign or LEFT
+	TextVAlignment = valign or TOP
 
 end
 
@@ -688,20 +688,16 @@ function filter()
 end
 
 function get(x, y)
-	return Processing.Renderer:get(x,y)
 end
 
 function set(x, y, acolor)
-	Processing.Renderer:set(x, y, acolor)
 end
 
 function loadPixels()
-	Processing.Renderer:loadPixels()
 end
 
 function pixels()
 end
 
 function updatePixels()
-	Processing.Renderer:updatePixels();
 end
