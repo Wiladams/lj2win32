@@ -78,14 +78,14 @@ typedef union DECLSPEC_ALIGN(16) _SLIST_HEADER {
         ULONGLONG HeaderType:1; // 0: 8-byte; 1: 16-byte
         ULONGLONG Init:1;       // 0: uninitialized; 1: initialized
         ULONGLONG Reserved:2;
-        ULONGLONG NextEntry:60; // last 4 bits are always 0's
+        ULONGLONG NextEntry:60; // last 4 bits are always 0s
     } Header16;
     struct {  // x64 16-byte header
         ULONGLONG Depth:16;
         ULONGLONG Sequence:48;
         ULONGLONG HeaderType:1; // 0: 8-byte; 1: 16-byte
         ULONGLONG Reserved:3;
-        ULONGLONG NextEntry:60; // last 4 bits are always 0's
+        ULONGLONG NextEntry:60; // last 4 bits are always 0s
     } HeaderX64;
 } SLIST_HEADER, *PSLIST_HEADER;
 
