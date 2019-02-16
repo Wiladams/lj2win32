@@ -8,6 +8,8 @@ local C = ffi.C
 require("win32.sdkddkver")
 require("win32.sysinfoapi")
 
-local pInches = ffi.new("double[1]")
-local res = C.GetIntegratedDisplaySize(pInches);
-print("Diagonal: ", pInches[0])
+local function test_integrateddisplay()
+    local pInches = ffi.new("double[1]")
+    local res = C.GetIntegratedDisplaySize(pInches);
+    print("Diagonal: ", pInches[0])
+end

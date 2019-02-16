@@ -11,13 +11,12 @@ local function test_systeminfo()
     C.GetSystemInfo(pInfo);
 
     --print("Processor Arch: ", string.format("0x%x", pInfo.wProcessorArchitecture))
-    print("Page Size: ", string.format("0x%x", pInfo.dwPageSize))
+    print("Page Size: ", string.format("0x%x (%d)", pInfo.dwPageSize, pInfo.dwPageSize))
     print("Alloc Granularity: ", string.format("0x%x (%d)", pInfo.dwAllocationGranularity, pInfo.dwAllocationGranularity))
     print("Num Procs: ", string.format("0x%x", pInfo.dwNumberOfProcessors))
     print("Proc Type: ", string.format("0x%x (%d)", pInfo.dwProcessorType, pInfo.dwProcessorType))
     print("Proc Level: ", string.format("0x%x", pInfo.wProcessorLevel))
     print("Proc Revis: ", string.format("0x%x", pInfo.wProcessorRevision))
-    print("Alloc Granularity: ", string.format("0x%x", pInfo.dwAllocationGranularity))
 
 end
 
@@ -142,10 +141,10 @@ local function test_windowsDirectory()
 end
 
 
---test_systeminfo()
+test_systeminfo()
 --test_computername();
 --test_memorystatus();
-test_productinfo()
+--test_productinfo()
 --test_systime();
 --test_systemDirectory()
 --test_windowsDirectory()

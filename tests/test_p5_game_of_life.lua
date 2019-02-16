@@ -1,7 +1,9 @@
 package.path = "../?.lua;"..package.path;
 
-local ffi = require("ffi")
 require("p5")
+
+local ffi = require("ffi")
+local sysmetrics = require("systemmetrics");
 
 --[[
     https://p5js.org/examples/simulate-game-of-life.html
@@ -11,11 +13,11 @@ require("p5")
 
 local floor = math.floor
 
-local w=8;     -- size of a cell
+local w=10;     -- size of a cell
 local columns=0;    -- will be calculated
 local rows = 0;     -- will be calculated
 local board = nil;  -- will be generated
-local next = nil;
+local next = nil;   -- will be generated
 
 -- just for debugging
 local function printArray(arr, cols, rows)
@@ -72,26 +74,18 @@ local function generate()
             --neighborHood[x-1][y-1] = neighbors
 
             -- Rules of Life
-            if      ((board[x][y] == 1) and (neighbors <  2)) then 
-                --print("lonely")
+            if ((board[x][y] == 1) and (neighbors <  2)) then 
                 next[x][y] = 0;           -- Loneliness
             elseif ((board[x][y] == 1) and (neighbors >  3)) then 
-                --print("over")
                 next[x][y] = 0;           -- Overpopulation
             elseif ((board[x][y] == 0) and (neighbors == 3)) then 
-                --print("repro")
                 next[x][y] = 1;           -- Reproduction
-            else            
-                --print("stasis")                                 
+            else                                           
                 next[x][y] = board[x][y]; -- Stasis
             end
         end
     end
 
-    --print("BOARD")
-    --printArray(board, columns, rows)
-    --print("NEIGHBORHOOD")
-    --printArray(neighborHood, columns-2,rows-2)
     -- Swap!
     local temp = board;
     board = next;
@@ -140,5 +134,8 @@ function mousePressed()
   init();
 end
 
-
-go {width = 1024, height=768, title = "Game Of Life"}
+--go {width = 640, height=480, title = "Game Of Life"}
+go {
+    width = sysmetrics.SM_CXSCREEN, 
+    height=sysmetrics.SM_CYSCREEN, 
+    title = "Game Of Life"}
