@@ -118,7 +118,7 @@ end
 function draw()
     background(255);
     generate();
-
+    noStroke();
 
     for i = 0, columns-1 do
         for j = 0, rows-1 do
@@ -129,8 +129,8 @@ function draw()
             end
 
             --print("rect: ", row, column)
-            stroke(0);
-            rect(i*w, j*w, w-1, w-1);
+            --stroke(0);
+            rect(i*w, j*w, w, w);
         end
     end
 end

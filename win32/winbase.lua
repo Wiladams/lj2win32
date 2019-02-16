@@ -29,9 +29,9 @@ require("win32.memoryapi")
 require("win32.libloaderapi")
 require("win32.securitybaseapi")
 require("win32.namespaceapi")
---require("win32.systemtopologyapi")  -- NYI
---require("win32.processtopologyapi") -- NYI
---require("win32.securityappcontainer")   -- NYI
+require("win32.systemtopologyapi")
+require("win32.processtopologyapi")
+require("win32.securityappcontainer")
 require("win32.realtimeapiset")
 
 
