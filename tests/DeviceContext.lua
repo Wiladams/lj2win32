@@ -194,6 +194,10 @@ end
 
 
 -- Drawing routines
+function DeviceContext.GetPixel(self, x, y)
+	return C.GetPixel(self.Handle, x, y)
+end
+
 function DeviceContext.SetPixel(self, x, y, cref)
 	return C.SetPixel(self.Handle, x, y, cref);
 end

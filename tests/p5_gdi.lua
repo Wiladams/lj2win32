@@ -180,9 +180,7 @@ function stroke(...)
 	return true;
 end
 
-function set(x,y,c)
-	surface.DC:SetPixel(x, y, c.cref)
-end
+
 
 function point(x,y,z)
 	--print("point(), x,y,z: ", x, y, z, StrokeColor.cref)
@@ -688,9 +686,15 @@ function filter()
 end
 
 function get(x, y)
+	local cref = surface.DC:GetPixel(x,y)
+	local r = wingdi.GetRValue(cref)
+	local g = wingdi.GetGValue(cref)
+	local b = wingdi.GetBValue(cref)
+	return color(r,g,b)
 end
 
-function set(x, y, acolor)
+function set(x,y,c)
+	surface.DC:SetPixel(x, y, c.cref)
 end
 
 function loadPixels()

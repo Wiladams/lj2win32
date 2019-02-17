@@ -17,6 +17,8 @@
     graphicApp.run();
 ]]
 local ffi = require("ffi")
+local C = ffi.C 
+
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
@@ -134,7 +136,7 @@ keyCode = false;
 -- keyPressed()
 -- keyReleased()
 -- keyTyped()
--- keyIsDown()
+
 
 -- Touch events
 touches = false;
@@ -333,40 +335,6 @@ function rectMode(newMode)
     RectMode = newMode;
 end
 
---[[
-	Scene
---]]
-function addactor(actor)
-	if not actor then return end
-
-	if actor.Update then
-		table.insert(Processing.Actors, actor)
-	end
-
-	if actor.Render then
-		addgraphic(actor)
-	end
-
-	addinteractor(actor)
-end
-
-function addgraphic(agraphic)
-	if not agraphic then return end
-
-	table.insert(Processing.Graphics, agraphic)
-end
-
-function addinteractor(interactor)
-	if not interactor then return end
-
-	if interactor.MouseActivity then
-		table.insert(Processing.MouseInteractors, interactor)
-	end
-
-	if interactor.KeyboardActivity then
-		table.insert(Processing.KeyboardInteractors, interactor)
-	end
-end
 
 -- timing
 function millis()
@@ -416,10 +384,11 @@ function redraw()
     return true;
 end
 
+--[[
 function createCanvas(width, height)
     return false;
 end
-
+--]]
 
 
 
@@ -502,11 +471,57 @@ function MouseActivity(hwnd, msg, wparam, lparam)
     return res;
 end
 
+-- encapsulate a keyboard event
+local function wm_keyboard_event(hwnd, msg, wparam, lparam)
+
+    local event = {
+        keyCode = wparam;
+        repeatCount = band(lparam, 0xffff);  -- 0 - 15
+        scanCode = rshift(band(lparam, 0xff0000),16);      -- 16 - 23
+        isExtended = band(lparam, 0x1000000) ~= 0;    -- 24
+        wasDown = band(lparam, 0x40000000) ~= 0; -- 30
+    }
+
+    return event;
+end
+
+--[[
+    --WM_KEYDOWN			= 0x0100;
+	--WM_KEYUP			= 0x0101;
+	--WM_CHAR				= 0x0102;
+	WM_DEADCHAR			= 0x0103;
+	--WM_SYSKEYDOWN		= 0x0104;
+	--WM_SYSKEYUP			= 0x0105;
+	WM_SYSCHAR			= 0x0106;
+	WM_SYSDEADCHAR		= 0x0107;
+	WM_COMMAND			= 0x0111;
+	WM_SYSCOMMAND		= 0x0112;
+
+]]
 function KeyboardActivity(hwnd, msg, wparam, lparam)
     --print("onKeyboardActivity")
     local res = 1;
 
-    res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
+    local event = wm_keyboard_event(hwnd, msg, wparam, lparam)
+
+    if msg == C.WM_KEYDOWN or 
+        msg == C.WM_SYSKEYDOWN then
+        event.activity = "keydown"
+        keyCode = event.keyCode
+        signalAll('gap_keydown', event)
+    elseif msg == C.WM_KEYUP or
+        msg == C.WM_SYSKEYUP then
+        event.activity = "keyup"
+        keyCode = event.keyCode
+        signalAll("gap_keyup", event)
+    elseif msg == C.WM_CHAR or
+        msg == C.WM_SYSCHAR then
+        event.activity = "keytyped"
+        keyChar = wparam
+        signalAll("gap_keytyped", event) 
+    else 
+        res = ffi.C.DefWindowProcA(hwnd, msg, wparam, lparam);
+    end
 
     return res;
 end
@@ -628,11 +643,11 @@ local function createWindow(params)
     appWindow:show();
 end
 
-
-
 -- Register UI event handler global functions
 -- These are the functions that the user should implement
 -- in their code
+-- the user implements a global function with the name
+-- listed on the 'response' side.
 local function setupUIHandlers()
     local handlers = {
         {activity = 'gap_mousemove', response = "mouseMoved"};
@@ -642,10 +657,13 @@ local function setupUIHandlers()
         {activity = 'gap_mousewheel', response = "mouseWheel"};
         {activity = 'gap_mouseclick', response = "mouseClicked"};
 
-        {activity = 'gap_keydown', response = "onKeyboardActivity"};
-        {activity = 'gap_keyup', response = "onKeyboardActivity"};
-        {activity = 'gap_syskeydown', response = "onKeyboardActivity"};
-        {activity = 'gap_syskeyup', response = "onKeyboardActivity"};
+        {activity = 'gap_keydown', response = "keyPressed"};
+        {activity = 'gap_keyup', response = "keyReleased"};
+        {activity = 'gap_keytyped', response = "keyTyped"};
+
+        {activity = 'gap_syskeydown', response = "sysKeyPressed"};
+        {activity = 'gap_syskeyup', response = "sysKeyReleased"};
+        {activity = 'gap_syskeytyped', response = "sysKeyTyped"};
 
         {activity = 'gap_idle', response = "onIdle"};
         --{activity = 'gap_frame', response = "draw"};

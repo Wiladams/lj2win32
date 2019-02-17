@@ -134,8 +134,20 @@ function mousePressed()
   init();
 end
 
+function keyTyped()
+    -- place random new elements
+    -- to inject new life
+    for i=1, 100 do
+        local x = random (1,columns-2)
+        local y = random(1,rows-2)
+        board[x][y] = 1
+    end
+end
+
 --go {width = 640, height=480, title = "Game Of Life"}
+---[[
 go {
     width = sysmetrics.SM_CXSCREEN, 
     height=sysmetrics.SM_CYSCREEN, 
     title = "Game Of Life"}
+--]]
