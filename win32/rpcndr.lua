@@ -121,7 +121,7 @@ static const int NDR_EBCDIC_CHAR              =   0X00000001;
 //#if defined(__RPC_MAC__)
 //static const int NDR_LOCAL_DATA_REPRESENTATION =  0X00000000L
 //static const int NDR_LOCAL_ENDIAN              =  NDR_BIG_ENDIAN
-//#else
+//else
 static const int NDR_LOCAL_DATA_REPRESENTATION   = 0X00000010;
 static const int NDR_LOCAL_ENDIAN                = NDR_LITTLE_ENDIAN;
 //#endif
@@ -132,55 +132,55 @@ static const int NDR_LOCAL_ENDIAN                = NDR_LITTLE_ENDIAN;
 --[[
 #if (0x0A00 <= _WIN32_WINNT)
 #define TARGET_IS_NT100_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT100_OR_LATER                   0
 #endif
 
 #if (0x603 <= _WIN32_WINNT)
 #define TARGET_IS_NT63_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT63_OR_LATER                   0
 #endif
 
 #if (0x602 <= _WIN32_WINNT)
 #define TARGET_IS_NT62_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT62_OR_LATER                   0
 #endif
 
 #if (0x601 <= _WIN32_WINNT)
 #define TARGET_IS_NT61_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT61_OR_LATER                   0
 #endif
 
 #if (0x600 <= _WIN32_WINNT)
 #define TARGET_IS_NT60_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT60_OR_LATER                   0
 #endif
 
 #if (0x501 <= _WIN32_WINNT)
 #define TARGET_IS_NT51_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT51_OR_LATER                   0
 #endif
 
 #if (0x500 <= _WIN32_WINNT)
 #define TARGET_IS_NT50_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT50_OR_LATER                   0
 #endif
 
-#if (defined(_WIN32_DCOM) || 0x400 <= _WIN32_WINNT)
+#if (defined(_WIN32_DCOM) or 0x400 <= _WIN32_WINNT)
 #define TARGET_IS_NT40_OR_LATER                   1
-#else
+else
 #define TARGET_IS_NT40_OR_LATER                   0
 #endif
 
 #if (0x400 <= WINVER)
 #define TARGET_IS_NT351_OR_WIN95_OR_LATER         1
-#else
+else
 #define TARGET_IS_NT351_OR_WIN95_OR_LATER         0
 #endif
 --]]
@@ -200,10 +200,10 @@ typedef unsigned char boolean;
 #ifndef _HYPER_DEFINED
 #define _HYPER_DEFINED
 
-#if (!defined(_M_IX86) || (defined(_INTEGRAL_MAX_BITS) && _INTEGRAL_MAX_BITS >= 64))
+#if (!defined(_M_IX86) or (defined(_INTEGRAL_MAX_BITS) and _INTEGRAL_MAX_BITS >= 64))
 #define  hyper           __int64
 #define MIDL_uhyper  unsigned __int64
-#else
+else
 typedef double  hyper;
 typedef double MIDL_uhyper;
 #endif
@@ -221,9 +221,9 @@ end
 
 --[[
 #ifndef _SIZE_T_DEFINED
-#if defined(__RPC_WIN64__) || defined(__RPC_ARM64__)
+#if defined(__RPC_WIN64__) or defined(__RPC_ARM64__)
 typedef unsigned __int64 size_t;
-#else
+else
 typedef unsigned int     size_t;
 #endif
 #define _SIZE_T_DEFINED
@@ -232,9 +232,9 @@ typedef unsigned int     size_t;
 
 --[=[
 #ifdef __RPC_WIN32__
-#if   (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
+#if   (_MSC_VER >= 800) or defined(_STDCALL_SUPPORTED)
 #define __RPC_CALLEE       __stdcall
-#else
+else
 #define __RPC_CALLEE
 #endif
 #endif
@@ -245,9 +245,9 @@ typedef unsigned int     size_t;
 #define __MIDL_USER_DEFINED
 #endif
 
-_Must_inspect_result_
+
 _Ret_maybenull_ _Post_writable_byte_size_(size)
-void  * __RPC_USER MIDL_user_allocate( _In_ size_t size);
+void  * __RPC_USER MIDL_user_allocate(  size_t size);
 void        __RPC_USER MIDL_user_free( _Pre_maybenull_ _Post_invalid_ void  * );
 
 
@@ -264,10 +264,10 @@ void __RPC_USER I_RpcDefaultFree(
 
 
 /* winnt only */
-#if defined(_M_IX86) || defined(_M_AMD64) || defined(_M_IA64)
+#if defined(_M_IX86) or defined(_M_AMD64) or defined(_M_IA64)
 #define __MIDL_DECLSPEC_DLLIMPORT   __declspec(dllimport)
 #define __MIDL_DECLSPEC_DLLEXPORT   __declspec(dllexport)
-#else
+else
 #define __MIDL_DECLSPEC_DLLIMPORT
 #define __MIDL_DECLSPEC_DLLEXPORT
 #endif
@@ -305,14 +305,14 @@ typedef struct _SCONTEXT_QUEUE {
     NDR_SCONTEXT  * ArrayOfObjects;
     } SCONTEXT_QUEUE,  * PSCONTEXT_QUEUE;
 
-RPCRTAPI
+
 RPC_BINDING_HANDLE
 RPC_ENTRY
 NDRCContextBinding (
-    _In_ NDR_CCONTEXT     CContext
+     NDR_CCONTEXT     CContext
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRCContextMarshall (
@@ -320,90 +320,90 @@ NDRCContextMarshall (
     _Out_ void  *pBuff
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRCContextUnmarshall (
     _Inout_opt_ NDR_CCONTEXT        *   pCContext,
-    _In_  RPC_BINDING_HANDLE      hBinding,
-    _In_  void                *   pBuff,
-    _In_  unsigned long           DataRepresentation
+      RPC_BINDING_HANDLE      hBinding,
+      void                *   pBuff,
+      unsigned long           DataRepresentation
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRCContextUnmarshall2 (
     _Inout_opt_ NDR_CCONTEXT        *   pCContext,
-    _In_  RPC_BINDING_HANDLE      hBinding,
-    _In_  void                *   pBuff,
-    _In_  unsigned long           DataRepresentation
+      RPC_BINDING_HANDLE      hBinding,
+      void                *   pBuff,
+      unsigned long           DataRepresentation
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRSContextMarshall (
-    _In_  NDR_SCONTEXT    CContext,
+      NDR_SCONTEXT    CContext,
     _Out_ void          * pBuff,
-    _In_  NDR_RUNDOWN     userRunDownIn
+      NDR_RUNDOWN     userRunDownIn
     );
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NDRSContextUnmarshall (
-    _In_  void          * pBuff,
-    _In_  unsigned long   DataRepresentation
+      void          * pBuff,
+      unsigned long   DataRepresentation
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRSContextMarshallEx (
-    _In_  RPC_BINDING_HANDLE  BindingHandle,
-    _In_  NDR_SCONTEXT        CContext,
+      RPC_BINDING_HANDLE  BindingHandle,
+      NDR_SCONTEXT        CContext,
     _Out_ void              * pBuff,
-    _In_  NDR_RUNDOWN         userRunDownIn
+      NDR_RUNDOWN         userRunDownIn
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NDRSContextMarshall2 (
-    _In_  RPC_BINDING_HANDLE  BindingHandle,
-    _In_  NDR_SCONTEXT        CContext,
+      RPC_BINDING_HANDLE  BindingHandle,
+      NDR_SCONTEXT        CContext,
     _Out_ void              * pBuff,
-    _In_  NDR_RUNDOWN         userRunDownIn,
+      NDR_RUNDOWN         userRunDownIn,
     _In_opt_  void              * CtxGuard,
-    _In_ unsigned long        Flags
+     unsigned long        Flags
     );
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NDRSContextUnmarshallEx (
-    _In_  RPC_BINDING_HANDLE  BindingHandle,
-    _In_  void              * pBuff,
-    _In_  unsigned long       DataRepresentation
+      RPC_BINDING_HANDLE  BindingHandle,
+      void              * pBuff,
+      unsigned long       DataRepresentation
     );
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NDRSContextUnmarshall2(
-    _In_  RPC_BINDING_HANDLE  BindingHandle,
+      RPC_BINDING_HANDLE  BindingHandle,
     _In_opt_  void              * pBuff,
-    _In_  unsigned long       DataRepresentation,
+      unsigned long       DataRepresentation,
     _In_opt_  void              * CtxGuard,
-    _In_ unsigned long        Flags
+     unsigned long        Flags
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsDestroyClientContext (
-    _In_ void  *  * ContextHandle
+     void  *  * ContextHandle
     );
 
 
@@ -462,7 +462,7 @@ RpcSsDestroyClientContext (
     Platform specific mapping of c-runtime functions.
  ****************************************************************************/
 
-#if defined(__RPC_WIN32__) || defined(__RPC_WIN64__) || defined(__RPC_ARM32__) || defined(__RPC_ARM64__)
+#if defined(__RPC_WIN32__) or defined(__RPC_WIN64__) or defined(__RPC_ARM32__) or defined(__RPC_ARM64__)
 #define MIDL_ascii_strlen(string) \
     strlen(string)
 #define MIDL_ascii_strcpy(target,source) \
@@ -545,9 +545,9 @@ typedef unsigned long error_status_t;
 //
 
 #define RPC_BAD_STUB_DATA_EXCEPTION_FILTER  \
-                 ( (RpcExceptionCode() == STATUS_ACCESS_VIOLATION)  || \
-                   (RpcExceptionCode() == STATUS_DATATYPE_MISALIGNMENT) || \
-                   (RpcExceptionCode() == RPC_X_BAD_STUB_DATA) || \
+                 ( (RpcExceptionCode() == STATUS_ACCESS_VIOLATION)  or \
+                   (RpcExceptionCode() == STATUS_DATATYPE_MISALIGNMENT) or \
+                   (RpcExceptionCode() == RPC_X_BAD_STUB_DATA) or \
                    (RpcExceptionCode() == RPC_S_INVALID_BOUND) )
 
 /////////////////////////////////////////////////////////////////////////////
@@ -847,10 +847,10 @@ typedef struct __GENERIC_BINDING_INFO
 // typedef EXPR_EVAL - see above
 // typedefs for xmit_as
 
-#if (defined(_MSC_VER)) && !defined(MIDL_PASS)
+#if (defined(_MSC_VER)) and !defined(MIDL_PASS)
 // a Microsoft C++ compiler
 #define NDR_SHAREABLE __inline
-#else
+else
 #define NDR_SHAREABLE static
 #endif
 
@@ -1104,11 +1104,11 @@ typedef struct _MIDL_FORMAT_STRING
 #if !defined( RC_INVOKED )
 #if _MSC_VER >= 1200
 #pragma warning(pop)
-#else
+else
 #pragma warning( default:4200 )
 #endif
 #endif
-#endif /* _MSC_EXTENSIONS */
+end  -- _MSC_EXTENSIONS */
 
 /*
  * Stub thunk used for some interpreted server stubs.
@@ -1117,7 +1117,7 @@ typedef void ( __RPC_API * STUB_THUNK)( PMIDL_STUB_MESSAGE );
 
 #ifndef _MANAGED
 typedef long ( __RPC_API * SERVER_ROUTINE)();
-#else
+else
 typedef long ( __RPC_API * SERVER_ROUTINE)(void);
 #endif
 
@@ -1277,14 +1277,14 @@ typedef struct _MIDL_WINRT_TYPE_SERIALIZATION_INFO
 
 RPC_STATUS RPC_ENTRY
 NdrClientGetSupportedSyntaxes(
-    _In_ RPC_CLIENT_INTERFACE * pInf,
+     RPC_CLIENT_INTERFACE * pInf,
     _Out_ unsigned long       * pCount,
     _Out_ MIDL_SYNTAX_INFO   ** pArr );
 
 
 RPC_STATUS RPC_ENTRY
 NdrServerGetSupportedSyntaxes(
-    _In_ RPC_SERVER_INTERFACE * pInf,
+     RPC_SERVER_INTERFACE * pInf,
     _Out_ unsigned long       * pCount,
     _Out_ MIDL_SYNTAX_INFO   ** pArr,
     _Out_ unsigned long       * pPreferSyntaxIndex);
@@ -1296,7 +1296,7 @@ NdrServerGetSupportedSyntaxes(
     // SAL can't adequately express buffer sizes from rpc format strings
 #pragma warning(disable:28740)
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrSimpleTypeMarshall(
@@ -1305,7 +1305,7 @@ NdrSimpleTypeMarshall(
     unsigned char           FormatChar
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrPointerMarshall(
@@ -1314,7 +1314,7 @@ NdrPointerMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrCsArrayMarshall(
@@ -1323,7 +1323,7 @@ NdrCsArrayMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrCsTagMarshall(
@@ -1334,7 +1334,7 @@ NdrCsTagMarshall(
 
 /* Structures */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrSimpleStructMarshall(
@@ -1343,7 +1343,7 @@ NdrSimpleStructMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantStructMarshall(
@@ -1352,7 +1352,7 @@ NdrConformantStructMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantVaryingStructMarshall(
@@ -1361,7 +1361,7 @@ NdrConformantVaryingStructMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrComplexStructMarshall(
@@ -1372,7 +1372,7 @@ NdrComplexStructMarshall(
 
 /* Arrays */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrFixedArrayMarshall(
@@ -1381,7 +1381,7 @@ NdrFixedArrayMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantArrayMarshall(
@@ -1390,7 +1390,7 @@ NdrConformantArrayMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantVaryingArrayMarshall(
@@ -1399,7 +1399,7 @@ NdrConformantVaryingArrayMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrVaryingArrayMarshall(
@@ -1408,7 +1408,7 @@ NdrVaryingArrayMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrComplexArrayMarshall(
@@ -1419,7 +1419,7 @@ NdrComplexArrayMarshall(
 
 /* Strings */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNonConformantStringMarshall(
@@ -1428,7 +1428,7 @@ NdrNonConformantStringMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantStringMarshall(
@@ -1439,7 +1439,7 @@ NdrConformantStringMarshall(
 
 /* Unions */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrEncapsulatedUnionMarshall(
@@ -1448,7 +1448,7 @@ NdrEncapsulatedUnionMarshall(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNonEncapsulatedUnionMarshall(
@@ -1459,7 +1459,7 @@ NdrNonEncapsulatedUnionMarshall(
 
 /* Byte count pointer */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrByteCountPointerMarshall(
@@ -1470,7 +1470,7 @@ NdrByteCountPointerMarshall(
 
 /* Transmit as and represent as*/
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrXmitOrRepAsMarshall(
@@ -1481,7 +1481,7 @@ NdrXmitOrRepAsMarshall(
 
 /* User_marshal */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrUserMarshalMarshall(
@@ -1492,7 +1492,7 @@ NdrUserMarshalMarshall(
 
 /* Interface pointer */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrInterfacePointerMarshall(
@@ -1503,7 +1503,7 @@ NdrInterfacePointerMarshall(
 
 /* Context handles */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrClientContextMarshall(
@@ -1512,7 +1512,7 @@ NdrClientContextMarshall(
     int                     fCheck
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerContextMarshall(
@@ -1521,7 +1521,7 @@ NdrServerContextMarshall(
     NDR_RUNDOWN             RundownRoutine
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerContextNewMarshall(
@@ -1535,7 +1535,7 @@ NdrServerContextNewMarshall(
  * Unmarshall routines
  */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrSimpleTypeUnmarshall(
@@ -1544,7 +1544,7 @@ NdrSimpleTypeUnmarshall(
     unsigned char           FormatChar
     );
 
-RPCRTAPI
+
 unsigned char *
 RPC_ENTRY
 NdrCsArrayUnmarshall(
@@ -1554,7 +1554,7 @@ NdrCsArrayUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char *
 RPC_ENTRY
 NdrCsTagUnmarshall(
@@ -1564,7 +1564,7 @@ NdrCsTagUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char *
 RPC_ENTRY
 NdrRangeUnmarshall(
@@ -1574,7 +1574,7 @@ NdrRangeUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCorrelationInitialize(
@@ -1584,21 +1584,21 @@ NdrCorrelationInitialize(
     unsigned long           flags
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCorrelationPass(
     PMIDL_STUB_MESSAGE      pStubMsg
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCorrelationFree(
     PMIDL_STUB_MESSAGE      pStubMsg
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrPointerUnmarshall(
@@ -1610,7 +1610,7 @@ NdrPointerUnmarshall(
 
 /* Structures */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrSimpleStructUnmarshall(
@@ -1620,7 +1620,7 @@ NdrSimpleStructUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantStructUnmarshall(
@@ -1630,7 +1630,7 @@ NdrConformantStructUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantVaryingStructUnmarshall(
@@ -1640,7 +1640,7 @@ NdrConformantVaryingStructUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrComplexStructUnmarshall(
@@ -1652,7 +1652,7 @@ NdrComplexStructUnmarshall(
 
 /* Arrays */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrFixedArrayUnmarshall(
@@ -1662,7 +1662,7 @@ NdrFixedArrayUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantArrayUnmarshall(
@@ -1672,7 +1672,7 @@ NdrConformantArrayUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantVaryingArrayUnmarshall(
@@ -1682,7 +1682,7 @@ NdrConformantVaryingArrayUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrVaryingArrayUnmarshall(
@@ -1692,7 +1692,7 @@ NdrVaryingArrayUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrComplexArrayUnmarshall(
@@ -1704,7 +1704,7 @@ NdrComplexArrayUnmarshall(
 
 /* Strings */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNonConformantStringUnmarshall(
@@ -1714,7 +1714,7 @@ NdrNonConformantStringUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrConformantStringUnmarshall(
@@ -1726,7 +1726,7 @@ NdrConformantStringUnmarshall(
 
 /* Unions */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrEncapsulatedUnionUnmarshall(
@@ -1736,7 +1736,7 @@ NdrEncapsulatedUnionUnmarshall(
     unsigned char           fMustAlloc
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNonEncapsulatedUnionUnmarshall(
@@ -1748,7 +1748,7 @@ NdrNonEncapsulatedUnionUnmarshall(
 
 /* Byte count pointer */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrByteCountPointerUnmarshall(
@@ -1760,7 +1760,7 @@ NdrByteCountPointerUnmarshall(
 
 /* Transmit as and represent as*/
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrXmitOrRepAsUnmarshall(
@@ -1772,7 +1772,7 @@ NdrXmitOrRepAsUnmarshall(
 
 /* User_marshal */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrUserMarshalUnmarshall(
@@ -1784,7 +1784,7 @@ NdrUserMarshalUnmarshall(
 
 /* Interface pointer */
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrInterfacePointerUnmarshall(
@@ -1796,7 +1796,7 @@ NdrInterfacePointerUnmarshall(
 
 /* Context handles */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrClientContextUnmarshall(
@@ -1805,7 +1805,7 @@ NdrClientContextUnmarshall(
     RPC_BINDING_HANDLE      BindHandle
     );
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NdrServerContextUnmarshall(
@@ -1814,19 +1814,19 @@ NdrServerContextUnmarshall(
 
 /* New context handle flavors */
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NdrContextHandleInitialize(
-    _In_  PMIDL_STUB_MESSAGE            pStubMsg,
+      PMIDL_STUB_MESSAGE            pStubMsg,
     _In_reads_(_Inexpressible_(2)) PFORMAT_STRING      pFormat
     );
 
-RPCRTAPI
+
 NDR_SCONTEXT
 RPC_ENTRY
 NdrServerContextNewUnmarshall(
-    _In_  PMIDL_STUB_MESSAGE            pStubMsg,
+      PMIDL_STUB_MESSAGE            pStubMsg,
     _In_reads_(_Inexpressible_(2)) PFORMAT_STRING       pFormat
     );
 
@@ -1834,7 +1834,7 @@ NdrServerContextNewUnmarshall(
  * Buffer sizing routines
  */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPointerBufferSize(
@@ -1843,7 +1843,7 @@ NdrPointerBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCsArrayBufferSize(
@@ -1852,7 +1852,7 @@ NdrCsArrayBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCsTagBufferSize(
@@ -1863,7 +1863,7 @@ NdrCsTagBufferSize(
 
 /* Structures */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrSimpleStructBufferSize(
@@ -1872,7 +1872,7 @@ NdrSimpleStructBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantStructBufferSize(
@@ -1881,7 +1881,7 @@ NdrConformantStructBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantVaryingStructBufferSize(
@@ -1890,7 +1890,7 @@ NdrConformantVaryingStructBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrComplexStructBufferSize(
@@ -1901,7 +1901,7 @@ NdrComplexStructBufferSize(
 
 /* Arrays */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrFixedArrayBufferSize(
@@ -1910,7 +1910,7 @@ NdrFixedArrayBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantArrayBufferSize(
@@ -1919,7 +1919,7 @@ NdrConformantArrayBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantVaryingArrayBufferSize(
@@ -1928,7 +1928,7 @@ NdrConformantVaryingArrayBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrVaryingArrayBufferSize(
@@ -1937,7 +1937,7 @@ NdrVaryingArrayBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrComplexArrayBufferSize(
@@ -1948,7 +1948,7 @@ NdrComplexArrayBufferSize(
 
 /* Strings */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantStringBufferSize(
@@ -1957,7 +1957,7 @@ NdrConformantStringBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrNonConformantStringBufferSize(
@@ -1968,7 +1968,7 @@ NdrNonConformantStringBufferSize(
 
 /* Unions */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrEncapsulatedUnionBufferSize(
@@ -1977,7 +1977,7 @@ NdrEncapsulatedUnionBufferSize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrNonEncapsulatedUnionBufferSize(
@@ -1988,7 +1988,7 @@ NdrNonEncapsulatedUnionBufferSize(
 
 /* Byte count pointer */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrByteCountPointerBufferSize(
@@ -1999,7 +1999,7 @@ NdrByteCountPointerBufferSize(
 
 /* Transmit as and represent as*/
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrXmitOrRepAsBufferSize(
@@ -2010,7 +2010,7 @@ NdrXmitOrRepAsBufferSize(
 
 /* User_marshal */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrUserMarshalBufferSize(
@@ -2021,7 +2021,7 @@ NdrUserMarshalBufferSize(
 
 /* Interface pointer */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrInterfacePointerBufferSize(
@@ -2032,7 +2032,7 @@ NdrInterfacePointerBufferSize(
 
 // Context Handle size
 //
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrContextHandleSize(
@@ -2045,7 +2045,7 @@ NdrContextHandleSize(
  * Memory sizing routines
  */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrPointerMemorySize(
@@ -2053,7 +2053,7 @@ NdrPointerMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrContextHandleMemorySize(
@@ -2064,7 +2064,7 @@ NdrContextHandleMemorySize(
 
 /* cs_char things */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrCsArrayMemorySize(
@@ -2072,7 +2072,7 @@ NdrCsArrayMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrCsTagMemorySize(
@@ -2082,7 +2082,7 @@ NdrCsTagMemorySize(
 
 /* Structures */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrSimpleStructMemorySize(
@@ -2090,7 +2090,7 @@ NdrSimpleStructMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrConformantStructMemorySize(
@@ -2098,7 +2098,7 @@ NdrConformantStructMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrConformantVaryingStructMemorySize(
@@ -2106,7 +2106,7 @@ NdrConformantVaryingStructMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrComplexStructMemorySize(
@@ -2116,7 +2116,7 @@ NdrComplexStructMemorySize(
 
 /* Arrays */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrFixedArrayMemorySize(
@@ -2124,7 +2124,7 @@ NdrFixedArrayMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrConformantArrayMemorySize(
@@ -2132,7 +2132,7 @@ NdrConformantArrayMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrConformantVaryingArrayMemorySize(
@@ -2140,7 +2140,7 @@ NdrConformantVaryingArrayMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrVaryingArrayMemorySize(
@@ -2148,7 +2148,7 @@ NdrVaryingArrayMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrComplexArrayMemorySize(
@@ -2158,7 +2158,7 @@ NdrComplexArrayMemorySize(
 
 /* Strings */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrConformantStringMemorySize(
@@ -2166,7 +2166,7 @@ NdrConformantStringMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrNonConformantStringMemorySize(
@@ -2176,7 +2176,7 @@ NdrNonConformantStringMemorySize(
 
 /* Unions */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrEncapsulatedUnionMemorySize(
@@ -2184,7 +2184,7 @@ NdrEncapsulatedUnionMemorySize(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrNonEncapsulatedUnionMemorySize(
@@ -2194,7 +2194,7 @@ NdrNonEncapsulatedUnionMemorySize(
 
 /* Transmit as and represent as*/
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrXmitOrRepAsMemorySize(
@@ -2204,7 +2204,7 @@ NdrXmitOrRepAsMemorySize(
 
 /* User_marshal */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrUserMarshalMemorySize(
@@ -2214,7 +2214,7 @@ NdrUserMarshalMemorySize(
 
 /* Interface pointer */
 
-RPCRTAPI
+
 unsigned long
 RPC_ENTRY
 NdrInterfacePointerMemorySize(
@@ -2226,7 +2226,7 @@ NdrInterfacePointerMemorySize(
  * Freeing routines
  */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPointerFree(
@@ -2235,7 +2235,7 @@ NdrPointerFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrCsArrayFree(
@@ -2246,7 +2246,7 @@ NdrCsArrayFree(
 
 /* Structures */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrSimpleStructFree(
@@ -2255,7 +2255,7 @@ NdrSimpleStructFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantStructFree(
@@ -2264,7 +2264,7 @@ NdrConformantStructFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantVaryingStructFree(
@@ -2273,7 +2273,7 @@ NdrConformantVaryingStructFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrComplexStructFree(
@@ -2284,7 +2284,7 @@ NdrComplexStructFree(
 
 /* Arrays */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrFixedArrayFree(
@@ -2293,7 +2293,7 @@ NdrFixedArrayFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantArrayFree(
@@ -2302,7 +2302,7 @@ NdrConformantArrayFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConformantVaryingArrayFree(
@@ -2311,7 +2311,7 @@ NdrConformantVaryingArrayFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrVaryingArrayFree(
@@ -2320,7 +2320,7 @@ NdrVaryingArrayFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrComplexArrayFree(
@@ -2331,7 +2331,7 @@ NdrComplexArrayFree(
 
 /* Unions */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrEncapsulatedUnionFree(
@@ -2340,7 +2340,7 @@ NdrEncapsulatedUnionFree(
     PFORMAT_STRING          pFormat
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrNonEncapsulatedUnionFree(
@@ -2351,7 +2351,7 @@ NdrNonEncapsulatedUnionFree(
 
 /* Byte count */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrByteCountPointerFree(
@@ -2362,7 +2362,7 @@ NdrByteCountPointerFree(
 
 /* Transmit as and represent as*/
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrXmitOrRepAsFree(
@@ -2373,7 +2373,7 @@ NdrXmitOrRepAsFree(
 
 /* User_marshal */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrUserMarshalFree(
@@ -2384,7 +2384,7 @@ NdrUserMarshalFree(
 
 /* Interface pointer */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrInterfacePointerFree(
@@ -2397,7 +2397,7 @@ NdrInterfacePointerFree(
  * Endian conversion routine.
  */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConvert2(
@@ -2406,7 +2406,7 @@ NdrConvert2(
     long                    NumberParams
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrConvert(
@@ -2427,7 +2427,7 @@ NdrConvert(
 #define USER_MARSHAL_FC_HYPER       11
 #define USER_MARSHAL_FC_DOUBLE      12
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrUserMarshalSimpleTypeConvert(
@@ -2440,7 +2440,7 @@ NdrUserMarshalSimpleTypeConvert(
  * Auxilary routines
  */
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrClientInitializeNew(
@@ -2450,7 +2450,7 @@ NdrClientInitializeNew(
     unsigned int            ProcNum
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrServerInitializeNew(
@@ -2459,7 +2459,7 @@ NdrServerInitializeNew(
     PMIDL_STUB_DESC         pStubDescriptor
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerInitializePartial(
@@ -2469,7 +2469,7 @@ NdrServerInitializePartial(
     unsigned long           RequestedBufferSize
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrClientInitialize(
@@ -2479,7 +2479,7 @@ NdrClientInitialize(
     unsigned int            ProcNum
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrServerInitialize(
@@ -2488,7 +2488,7 @@ NdrServerInitialize(
     PMIDL_STUB_DESC         pStubDescriptor
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrServerInitializeUnmarshall (
@@ -2497,7 +2497,7 @@ NdrServerInitializeUnmarshall (
     PRPC_MESSAGE            pRpcMsg
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerInitializeMarshall (
@@ -2505,7 +2505,7 @@ NdrServerInitializeMarshall (
     PMIDL_STUB_MESSAGE      pStubMsg
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrGetBuffer(
@@ -2514,7 +2514,7 @@ NdrGetBuffer(
     RPC_BINDING_HANDLE      Handle
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNsGetBuffer(
@@ -2523,7 +2523,7 @@ NdrNsGetBuffer(
     RPC_BINDING_HANDLE      Handle
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrSendReceive(
@@ -2531,7 +2531,7 @@ NdrSendReceive(
     unsigned char *         pBufferEnd
     );
 
-RPCRTAPI
+
 unsigned char  *
 RPC_ENTRY
 NdrNsSendReceive(
@@ -2540,14 +2540,14 @@ NdrNsSendReceive(
     RPC_BINDING_HANDLE  *   pAutoHandle
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrFreeBuffer(
     PMIDL_STUB_MESSAGE      pStubMsg
     );
 
-RPCRTAPI
+
 HRESULT
 RPC_ENTRY
 NdrGetDcomProtocolVersion(
@@ -2583,7 +2583,7 @@ NdrAsyncClientCall(
     ...
     );
 
-#if ( !defined(_WIN64) && !defined(_ARM_) )
+#if ( !defined(_WIN64) and !defined(_ARM_) )
 
 CLIENT_CALL_RETURN RPC_VAR_ENTRY
 NdrClientCall4(
@@ -2622,7 +2622,7 @@ NdrDcomAsyncClientCall(
     ...
     );
 
-if ( !defined(_WIN64) && !defined(_ARM_) ) then
+if ( !defined(_WIN64) and !defined(_ARM_) ) then
 
 CLIENT_CALL_RETURN  RPC_VAR_ENTRY
 NdrDcomAsyncClientCall2(
@@ -2658,7 +2658,7 @@ struct IRpcStubBuffer;      // Forward declaration
 
 
 // Raw RPC only
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrAsyncServerCall(
@@ -2666,7 +2666,7 @@ NdrAsyncServerCall(
     );
 
 // old dcom async scheme
-RPCRTAPI
+
 long
 RPC_ENTRY
 NdrAsyncStubCall(
@@ -2683,7 +2683,7 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP, WINAPI_PARTITION_SYSTEM) then
 
 // async uuid
-RPCRTAPI
+
 long
 RPC_ENTRY
 NdrDcomAsyncStubCall(
@@ -2699,7 +2699,7 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYS
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-RPCRTAPI
+
 long
 RPC_ENTRY
 NdrStubCall2(
@@ -2709,14 +2709,14 @@ NdrStubCall2(
     unsigned long  *            pdwStubPhase
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerCall2(
     PRPC_MESSAGE                pRpcMsg
     );
 
-RPCRTAPI
+
 long
 RPC_ENTRY
 NdrStubCall (
@@ -2726,14 +2726,14 @@ NdrStubCall (
     unsigned long  *            pdwStubPhase
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerCall(
     PRPC_MESSAGE                pRpcMsg
     );
 
-RPCRTAPI
+
 int
 RPC_ENTRY
 NdrServerUnmarshall(
@@ -2745,7 +2745,7 @@ NdrServerUnmarshall(
     void  *                     pParamList
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerMarshall(
@@ -2757,7 +2757,7 @@ NdrServerMarshall(
 
 /* Comm and Fault status */
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 NdrMapCommAndFaultStatus(
@@ -2777,74 +2777,74 @@ typedef void  * RPC_SS_THREAD_HANDLE;
 
 typedef void  * __RPC_API
 RPC_CLIENT_ALLOC (
-    _In_ size_t Size
+     size_t Size
     );
 
 typedef void __RPC_API
 RPC_CLIENT_FREE (
-    _In_ void  * Ptr
+     void  * Ptr
     );
 
 /*++
      RpcSs* package
 --*/
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 RpcSsAllocate (
-    _In_ size_t Size
+     size_t Size
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsDisableAllocate (
     void
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsEnableAllocate (
     void
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsFree (
-    _In_ void  * NodeToFree
+     void  * NodeToFree
     );
 
-RPCRTAPI
+
 RPC_SS_THREAD_HANDLE
 RPC_ENTRY
 RpcSsGetThreadHandle (
     void
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsSetClientAllocFree (
-    _In_ RPC_CLIENT_ALLOC  * ClientAlloc,
-    _In_ RPC_CLIENT_FREE   * ClientFree
+     RPC_CLIENT_ALLOC  * ClientAlloc,
+     RPC_CLIENT_FREE   * ClientFree
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsSetThreadHandle (
-    _In_ RPC_SS_THREAD_HANDLE Id
+     RPC_SS_THREAD_HANDLE Id
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 RpcSsSwapClientAllocFree (
-    _In_ RPC_CLIENT_ALLOC     * ClientAlloc,
-    _In_ RPC_CLIENT_FREE      * ClientFree,
+     RPC_CLIENT_ALLOC     * ClientAlloc,
+     RPC_CLIENT_FREE      * ClientFree,
     _Out_ RPC_CLIENT_ALLOC *  * OldClientAlloc,
     _Out_ RPC_CLIENT_FREE  *  * OldClientFree
     );
@@ -2853,77 +2853,77 @@ RpcSsSwapClientAllocFree (
      RpcSm* package
 --*/
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 RpcSmAllocate (
-    _In_  size_t          Size,
+      size_t          Size,
     _Out_ RPC_STATUS  *   pStatus
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmClientFree (
-    _In_  void        *   pNodeToFree
+      void        *   pNodeToFree
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmDestroyClientContext (
-    _In_ void         * * ContextHandle
+     void         * * ContextHandle
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmDisableAllocate (
     void
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmEnableAllocate (
     void
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmFree (
-    _In_ void         *   NodeToFree
+     void         *   NodeToFree
     );
 
-RPCRTAPI
+
 RPC_SS_THREAD_HANDLE
 RPC_ENTRY
 RpcSmGetThreadHandle (
     _Out_ RPC_STATUS  *   pStatus
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmSetClientAllocFree (
-    _In_ RPC_CLIENT_ALLOC * ClientAlloc,
-    _In_ RPC_CLIENT_FREE  * ClientFree
+     RPC_CLIENT_ALLOC * ClientAlloc,
+     RPC_CLIENT_FREE  * ClientFree
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmSetThreadHandle (
-    _In_ RPC_SS_THREAD_HANDLE Id
+     RPC_SS_THREAD_HANDLE Id
     );
 
-RPCRTAPI
+
 RPC_STATUS
 RPC_ENTRY
 RpcSmSwapClientAllocFree (
-    _In_ RPC_CLIENT_ALLOC     *   ClientAlloc,
-    _In_ RPC_CLIENT_FREE      *   ClientFree,
+     RPC_CLIENT_ALLOC     *   ClientAlloc,
+     RPC_CLIENT_FREE      *   ClientFree,
     _Out_ RPC_CLIENT_ALLOC    * * OldClientAlloc,
     _Out_ RPC_CLIENT_FREE     * * OldClientFree
     );
@@ -2932,50 +2932,50 @@ RpcSmSwapClientAllocFree (
      Ndr stub entry points
 --*/
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrRpcSsEnableAllocate(
     PMIDL_STUB_MESSAGE      pMessage );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrRpcSsDisableAllocate(
     PMIDL_STUB_MESSAGE      pMessage );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrRpcSmSetClientToOsf(
     PMIDL_STUB_MESSAGE      pMessage );
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 NdrRpcSmClientAllocate (
-    _In_ size_t Size
+     size_t Size
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrRpcSmClientFree (
-    _In_ void  * NodeToFree
+     void  * NodeToFree
     );
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 NdrRpcSsDefaultAllocate (
-    _In_ size_t Size
+     size_t Size
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrRpcSsDefaultFree (
-    _In_ void  * NodeToFree
+     void  * NodeToFree
     );
 
 /****************************************************************************
@@ -2986,7 +2986,7 @@ NdrRpcSsDefaultFree (
  * Full Pointer APIs
  ****************************************************************************/
 
-RPCRTAPI
+
 PFULL_PTR_XLAT_TABLES
 RPC_ENTRY
 NdrFullPointerXlatInit(
@@ -2994,7 +2994,7 @@ NdrFullPointerXlatInit(
     XLAT_SIDE               XlatSide
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrFullPointerXlatFree(
@@ -3002,7 +3002,7 @@ NdrFullPointerXlatFree(
     );
 
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 NdrAllocate(
@@ -3010,7 +3010,7 @@ NdrAllocate(
     size_t                  Len
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrClearOutParameters(
@@ -3024,23 +3024,23 @@ NdrClearOutParameters(
  * Proxy APIs
  ****************************************************************************/
 
-RPCRTAPI
+
 void  *
 RPC_ENTRY
 NdrOleAllocate (
-    _In_ size_t Size
+     size_t Size
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrOleFree (
-    _In_ void  * NodeToFree
+     void  * NodeToFree
     );
 
 #ifdef CONST_VTABLE
 #define CONST_VTBL const
-#else
+else
 #define CONST_VTBL
 #endif
 
@@ -3051,23 +3051,23 @@ NdrOleFree (
 #ifndef DECLSPEC_SELECTANY
 #if (_MSC_VER >= 1100)
 #define DECLSPEC_SELECTANY __declspec(selectany)
-#else
+else
 #define DECLSPEC_SELECTANY
 #endif
 #endif
 
 #ifndef DECLSPEC_NOVTABLE
-#if (_MSC_VER >= 1100) && defined(__cplusplus)
+#if (_MSC_VER >= 1100) and defined(__cplusplus)
 #define DECLSPEC_NOVTABLE __declspec(novtable)
-#else
+else
 #define DECLSPEC_NOVTABLE
 #endif
 #endif
 
 #ifndef DECLSPEC_UUID
-#if (_MSC_VER >= 1100) && defined(__cplusplus)
+#if (_MSC_VER >= 1100) and defined(__cplusplus)
 #define DECLSPEC_UUID(x) __declspec(uuid(x))
-#else
+else
 #define DECLSPEC_UUID(x)
 #endif
 #endif
@@ -3077,7 +3077,7 @@ NdrOleFree (
 #if _MSC_VER >= 1100
 #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8)  \
   EXTERN_C const IID DECLSPEC_SELECTANY itf = {l1,s1,s2,{c1,c2,c3,c4,c5,c6,c7,c8}}
-#else
+else
 #define EXTERN_GUID(itf,l1,s1,s2,c1,c2,c3,c4,c5,c6,c7,c8) EXTERN_C const IID itf
 #endif
 
@@ -3113,7 +3113,7 @@ typedef struct _NDR_USER_MARSHAL_INFO
 #if !defined( RC_INVOKED )
 #if _MSC_VER >= 1200
 #pragma warning(pop)
-#else
+else
 #pragma warning(default:4201)
 #endif
 #endif
@@ -3122,8 +3122,8 @@ typedef struct _NDR_USER_MARSHAL_INFO
 RPC_STATUS
 RPC_ENTRY
 NdrGetUserMarshalInfo (
-    _In_ unsigned long * pFlags,
-    _In_ unsigned long            InformationLevel,
+     unsigned long * pFlags,
+     unsigned long            InformationLevel,
     _Out_ NDR_USER_MARSHAL_INFO * pMarshalInfo
     );
 
@@ -3132,7 +3132,7 @@ NdrGetUserMarshalInfo (
  ****************************************************************************/
 RPC_STATUS RPC_ENTRY
 NdrCreateServerInterfaceFromStub(
-            _In_ struct IRpcStubBuffer* pStub,
+             struct IRpcStubBuffer* pStub,
             _Inout_ RPC_SERVER_INTERFACE *pServerIf );
 
 /*
@@ -3154,8 +3154,8 @@ Ndr64AsyncClientCall(
     ...
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+
 
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
@@ -3168,36 +3168,36 @@ Ndr64DcomAsyncClientCall(
     ...
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 Ndr64AsyncServerCall(
     PRPC_MESSAGE                pRpcMsg
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+
 
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
 struct IRpcStubBuffer;      // Forward declaration
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 Ndr64AsyncServerCall64(
     PRPC_MESSAGE                pRpcMsg
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 Ndr64AsyncServerCallAll(
     PRPC_MESSAGE                pRpcMsg
     );
 
-RPCRTAPI
+
 long
 RPC_ENTRY
 Ndr64AsyncStubCall(
@@ -3207,14 +3207,14 @@ Ndr64AsyncStubCall(
     unsigned long *             pdwStubPhase
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+
 
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 
 /* async uuid */
-RPCRTAPI
+
 long
 RPC_ENTRY
 Ndr64DcomAsyncStubCall(
@@ -3224,13 +3224,13 @@ Ndr64DcomAsyncStubCall(
     unsigned long            *  pdwStubPhase
     );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+
 
 #pragma region Application Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
-RPCRTAPI
+
 long
 RPC_ENTRY
 NdrStubCall3 (
@@ -3240,14 +3240,14 @@ NdrStubCall3 (
     unsigned long  *            pdwStubPhase
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerCallAll(
     PRPC_MESSAGE                pRpcMsg
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerCallNdr64(
@@ -3255,7 +3255,7 @@ NdrServerCallNdr64(
     );
 
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrServerCall3(
@@ -3264,7 +3264,7 @@ NdrServerCall3(
 
 
 /* [partial_ignore] functions*/
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPartialIgnoreClientMarshall(
@@ -3272,7 +3272,7 @@ NdrPartialIgnoreClientMarshall(
     void *                      pMemory
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPartialIgnoreServerUnmarshall(
@@ -3280,7 +3280,7 @@ NdrPartialIgnoreServerUnmarshall(
     void **                     ppMemory
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPartialIgnoreClientBufferSize(
@@ -3288,7 +3288,7 @@ NdrPartialIgnoreClientBufferSize(
     void *                      pMemory
     );
 
-RPCRTAPI
+
 void
 RPC_ENTRY
 NdrPartialIgnoreServerInitialize(
@@ -3301,18 +3301,14 @@ NdrPartialIgnoreServerInitialize(
 void RPC_ENTRY
 RpcUserFree( handle_t AsyncHandle, void * pBuffer );
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#ifdef __cplusplus
-}
-#endif
+
+
 
 #include <poppack.h>
 
-#endif /* __RPCNDR_H__ */
+end  -- __RPCNDR_H__ */
 
-#if _MSC_VER >= 1200
-#pragma warning(pop)
-#endif
+
 --]=]

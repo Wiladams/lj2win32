@@ -58,7 +58,7 @@ local OSModule_mt = {
         -- see if the key is the name of a function
         local proc = ffi.C.GetProcAddress(self.Handle, key);
         
-        print("OSModule.__index, getProcAddress: ", proc)
+        --print("OSModule.__index, getProcAddress: ", proc)
         if proc ~= nil then
             -- We assume the function prototype already exists
             rawset(self, key, proc)

@@ -60,15 +60,19 @@ typedef struct _STARTUPINFOW {
 } STARTUPINFOW, *LPSTARTUPINFOW;
 ]]
 
---[[
-#ifdef UNICODE
+
+if UNICODE then
+ffi.cdef[[
 typedef STARTUPINFOW STARTUPINFO;
 typedef LPSTARTUPINFOW LPSTARTUPINFO;
-#else
+]]
+else
+ffi.cdef[[
 typedef STARTUPINFOA STARTUPINFO;
 typedef LPSTARTUPINFOA LPSTARTUPINFO;
-#endif // UNICODE
---]]
+]]
+end --// UNICODE
+
 
 
 ffi.cdef[[
@@ -94,20 +98,8 @@ GetProcessTimes(
 ]]
 
 ffi.cdef[[
-
-HANDLE
-__stdcall
-GetCurrentProcess(
-    VOID
-    );
-
-
-
-DWORD
-__stdcall
-GetCurrentProcessId(
-    VOID
-    );
+HANDLE __stdcall GetCurrentProcess(VOID);
+DWORD __stdcall GetCurrentProcessId(VOID);
 ]]
 
 ffi.cdef[[
@@ -163,11 +155,7 @@ CreateRemoteThread(
      LPDWORD lpThreadId
     );
 
-HANDLE
-__stdcall
-GetCurrentThread(
-    VOID
-    );
+HANDLE __stdcall GetCurrentThread(VOID);
 
 DWORD
 __stdcall
@@ -180,15 +168,9 @@ __stdcall
 OpenThread(
      DWORD dwDesiredAccess,
      BOOL bInheritHandle,
-     DWORD dwThreadId
-    );
+     DWORD dwThreadId);
 
-BOOL
-__stdcall
-SetThreadPriority(
-     HANDLE hThread,
-     int nPriority
-    );
+BOOL __stdcall SetThreadPriority(HANDLE hThread, int nPriority);
 
 
 

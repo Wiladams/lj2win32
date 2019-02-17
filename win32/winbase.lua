@@ -480,11 +480,15 @@ typedef struct _COMMCONFIG {
 #define GlobalLRUNewest( h )    ((HANDLE)(h))
 #define GlobalLRUOldest( h )    ((HANDLE)(h))
 #define GlobalDiscard( h )      GlobalReAlloc( (h), 0, GMEM_MOVEABLE )
+--]=]
 
+ffi.cdef[[
 /* Flags returned by GlobalFlags (in addition to GMEM_DISCARDABLE) */
-#define GMEM_DISCARDED      0x4000
-#define GMEM_LOCKCOUNT      0x00FF
+static const int GMEM_DISCARDED    =  0x4000;
+static const int GMEM_LOCKCOUNT    =  0x00FF;
+]]
 
+ffi.cdef[[
 typedef struct _MEMORYSTATUS {
     DWORD dwLength;
     DWORD dwMemoryLoad;
@@ -500,45 +504,47 @@ typedef struct _MEMORYSTATUS {
 // Process dwCreationFlag values
 //
 
-#define DEBUG_PROCESS                     0x00000001
-#define DEBUG_ONLY_THIS_PROCESS           0x00000002
-#define CREATE_SUSPENDED                  0x00000004
-#define DETACHED_PROCESS                  0x00000008
+static const int DEBUG_PROCESS                     = 0x00000001;
+static const int DEBUG_ONLY_THIS_PROCESS           = 0x00000002;
+static const int CREATE_SUSPENDED                  = 0x00000004;
+static const int DETACHED_PROCESS                  = 0x00000008;
 
-#define CREATE_NEW_CONSOLE                0x00000010
-#define NORMAL_PRIORITY_CLASS             0x00000020
-#define IDLE_PRIORITY_CLASS               0x00000040
-#define HIGH_PRIORITY_CLASS               0x00000080
+static const int CREATE_NEW_CONSOLE                = 0x00000010;
+static const int NORMAL_PRIORITY_CLASS             = 0x00000020;
+static const int IDLE_PRIORITY_CLASS               = 0x00000040;
+static const int HIGH_PRIORITY_CLASS               = 0x00000080;
 
-#define REALTIME_PRIORITY_CLASS           0x00000100
-#define CREATE_NEW_PROCESS_GROUP          0x00000200
-#define CREATE_UNICODE_ENVIRONMENT        0x00000400
-#define CREATE_SEPARATE_WOW_VDM           0x00000800
+static const int REALTIME_PRIORITY_CLASS           = 0x00000100;
+static const int CREATE_NEW_PROCESS_GROUP          = 0x00000200;
+static const int CREATE_UNICODE_ENVIRONMENT        = 0x00000400;
+static const int CREATE_SEPARATE_WOW_VDM           = 0x00000800;
 
-#define CREATE_SHARED_WOW_VDM             0x00001000
-#define CREATE_FORCEDOS                   0x00002000
-#define BELOW_NORMAL_PRIORITY_CLASS       0x00004000
-#define ABOVE_NORMAL_PRIORITY_CLASS       0x00008000
+static const int CREATE_SHARED_WOW_VDM             = 0x00001000;
+static const int CREATE_FORCEDOS                   = 0x00002000;
+static const int BELOW_NORMAL_PRIORITY_CLASS       = 0x00004000;
+static const int ABOVE_NORMAL_PRIORITY_CLASS       = 0x00008000;
 
-#define INHERIT_PARENT_AFFINITY           0x00010000
-#define INHERIT_CALLER_PRIORITY           0x00020000    // Deprecated
-#define CREATE_PROTECTED_PROCESS          0x00040000
-#define EXTENDED_STARTUPINFO_PRESENT      0x00080000
+static const int INHERIT_PARENT_AFFINITY           = 0x00010000;
+static const int INHERIT_CALLER_PRIORITY           = 0x00020000;    // Deprecated
+static const int CREATE_PROTECTED_PROCESS          = 0x00040000;
+static const int EXTENDED_STARTUPINFO_PRESENT      = 0x00080000;
 
-#define PROCESS_MODE_BACKGROUND_BEGIN     0x00100000
-#define PROCESS_MODE_BACKGROUND_END       0x00200000
-#define CREATE_SECURE_PROCESS             0x00400000
+static const int PROCESS_MODE_BACKGROUND_BEGIN     = 0x00100000;
+static const int PROCESS_MODE_BACKGROUND_END       = 0x00200000;
+static const int CREATE_SECURE_PROCESS             = 0x00400000;
 
-#define CREATE_BREAKAWAY_FROM_JOB         0x01000000
-#define CREATE_PRESERVE_CODE_AUTHZ_LEVEL  0x02000000
-#define CREATE_DEFAULT_ERROR_MODE         0x04000000
-#define CREATE_NO_WINDOW                  0x08000000
+static const int CREATE_BREAKAWAY_FROM_JOB         = 0x01000000;
+static const int CREATE_PRESERVE_CODE_AUTHZ_LEVEL  = 0x02000000;
+static const int CREATE_DEFAULT_ERROR_MODE         = 0x04000000;
+static const int CREATE_NO_WINDOW                  = 0x08000000;
 
-#define PROFILE_USER                      0x10000000
-#define PROFILE_KERNEL                    0x20000000
-#define PROFILE_SERVER                    0x40000000
-#define CREATE_IGNORE_SYSTEM_DEFAULT      0x80000000
+static const int PROFILE_USER                      = 0x10000000;
+static const int PROFILE_KERNEL                    = 0x20000000;
+static const int PROFILE_SERVER                    = 0x40000000;
+static const int CREATE_IGNORE_SYSTEM_DEFAULT      = 0x80000000;
+]]
 
+--[=[
 //
 // Thread dwCreationFlag values
 //

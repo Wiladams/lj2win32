@@ -168,11 +168,13 @@ end
     LPARAM           lParam;       \
     LPFNPSPCALLBACKW pfnCallback;  \
     UINT             *pcRefParent; \
+--]=]
 
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+--[=[
+if (NTDDI_VERSION >= NTDDI_VISTA) then
 #define  _PROPSHEETPAGEA_V4 _PROPSHEETPAGEA
 #define  _PROPSHEETPAGEW_V4 _PROPSHEETPAGEW
-#elif (NTDDI_VERSION >= NTDDI_WINXP) || ISOLATION_AWARE_ENABLED
+#elif (NTDDI_VERSION >= NTDDI_WINXP) or ISOLATION_AWARE_ENABLED
 #define  _PROPSHEETPAGEA_V3 _PROPSHEETPAGEA
 #define  _PROPSHEETPAGEW_V3 _PROPSHEETPAGEW
 #else
@@ -577,6 +579,7 @@ WINCOMMCTRLAPI INT_PTR        WINAPI PropertySheetA(LPCPROPSHEETHEADERA);
 
 WINCOMMCTRLAPI INT_PTR        WINAPI PropertySheetW(LPCPROPSHEETHEADERW);
 
+--[[
 #ifdef UNICODE
 #define CreatePropertySheetPage  CreatePropertySheetPageW
 #define PropertySheet            PropertySheetW
@@ -584,9 +587,9 @@ WINCOMMCTRLAPI INT_PTR        WINAPI PropertySheetW(LPCPROPSHEETHEADERW);
 #define CreatePropertySheetPage  CreatePropertySheetPageA
 #define PropertySheet            PropertySheetA
 #endif
+--]]
 
-
-
+ffi.cdef[[
 typedef BOOL (__stdcall *LPFNADDPROPSHEETPAGE)(HPROPSHEETPAGE, LPARAM);
 typedef BOOL (__stdcall *LPFNADDPROPSHEETPAGES)(LPVOID, LPFNADDPROPSHEETPAGE, LPARAM);
 
@@ -596,29 +599,32 @@ typedef struct _PSHNOTIFY
     NMHDR hdr;
     LPARAM lParam;
 } PSHNOTIFY, *LPPSHNOTIFY;
+]]
 
-#define PSN_FIRST               (0U-200U)
-#define PSN_LAST                (0U-299U)
+ffi.cdef[[
+#define PSN_FIRST               (0U-200U);
+#define PSN_LAST                (0U-299U);
 
 
-#define PSN_SETACTIVE           (PSN_FIRST-0)
-#define PSN_KILLACTIVE          (PSN_FIRST-1)
-// #define PSN_VALIDATE            (PSN_FIRST-1)
-#define PSN_APPLY               (PSN_FIRST-2)
-#define PSN_RESET               (PSN_FIRST-3)
-// #define PSN_CANCEL              (PSN_FIRST-3)
-#define PSN_HELP                (PSN_FIRST-5)
-#define PSN_WIZBACK             (PSN_FIRST-6)
-#define PSN_WIZNEXT             (PSN_FIRST-7)
-#define PSN_WIZFINISH           (PSN_FIRST-8)
-#define PSN_QUERYCANCEL         (PSN_FIRST-9)
-#define PSN_GETOBJECT           (PSN_FIRST-10)
-#define PSN_TRANSLATEACCELERATOR (PSN_FIRST-12)
-#define PSN_QUERYINITIALFOCUS   (PSN_FIRST-13)
-#define PSNRET_NOERROR              0
-#define PSNRET_INVALID              1
-#define PSNRET_INVALID_NOCHANGEPAGE 2
-#define PSNRET_MESSAGEHANDLED       3
+#define PSN_SETACTIVE           (PSN_FIRST-0);
+#define PSN_KILLACTIVE          (PSN_FIRST-1);
+// #define PSN_VALIDATE            (PSN_FIRST-1);
+#define PSN_APPLY               (PSN_FIRST-2);
+#define PSN_RESET               (PSN_FIRST-3);
+// #define PSN_CANCEL              (PSN_FIRST-3);
+#define PSN_HELP                (PSN_FIRST-5);
+#define PSN_WIZBACK             (PSN_FIRST-6);
+#define PSN_WIZNEXT             (PSN_FIRST-7);
+#define PSN_WIZFINISH           (PSN_FIRST-8);
+#define PSN_QUERYCANCEL         (PSN_FIRST-9);
+#define PSN_GETOBJECT           (PSN_FIRST-10);
+#define PSN_TRANSLATEACCELERATOR (PSN_FIRST-12);
+#define PSN_QUERYINITIALFOCUS   (PSN_FIRST-13);
+#define PSNRET_NOERROR              0;
+#define PSNRET_INVALID              1;
+#define PSNRET_INVALID_NOCHANGEPAGE 2;
+#define PSNRET_MESSAGEHANDLED       3;
+]]
 
 #define PSM_SETCURSEL           (WM_USER + 101)
 #define PropSheet_SetCurSel(hDlg, hpage, index) \
@@ -660,77 +666,83 @@ typedef struct _PSHNOTIFY
         SNDMSG(hDlg, PSM_QUERYSIBLINGS, wParam, lParam)
 
 
-#define PSM_UNCHANGED           (WM_USER + 109)
+#define PSM_UNCHANGED         =  (WM_USER + 109);
 #define PropSheet_UnChanged(hDlg, hwnd) \
         SNDMSG(hDlg, PSM_UNCHANGED, (WPARAM)(hwnd), 0L)
 
 
-#define PSM_APPLY               (WM_USER + 110)
+#define PSM_APPLY             =  (WM_USER + 110);
 #define PropSheet_Apply(hDlg) \
         SNDMSG(hDlg, PSM_APPLY, 0, 0L)
 
 
-#define PSM_SETTITLEA           (WM_USER + 111)
-#define PSM_SETTITLEW           (WM_USER + 120)
+#define PSM_SETTITLEA         =  (WM_USER + 111);
+#define PSM_SETTITLEW         =  (WM_USER + 120);
 
-
+--[[
 #ifdef UNICODE
 #define PSM_SETTITLE            PSM_SETTITLEW
 #else
 #define PSM_SETTITLE            PSM_SETTITLEA
 #endif
+--]]
 
 #define PropSheet_SetTitle(hDlg, wStyle, lpszText)\
         SNDMSG(hDlg, PSM_SETTITLE, wStyle, (LPARAM)(LPCTSTR)(lpszText))
 
 
-#define PSM_SETWIZBUTTONS       (WM_USER + 112)
+#define PSM_SETWIZBUTTONS     =  (WM_USER + 112);
 #define PropSheet_SetWizButtons(hDlg, dwFlags) \
         PostMessage(hDlg, PSM_SETWIZBUTTONS, 0, (LPARAM)(dwFlags))
 
+ffi.cdef[[
+static const int PSWIZB_BACK           =  0x00000001;
+static const int PSWIZB_NEXT            = 0x00000002;
+static const int PSWIZB_FINISH          = 0x00000004;
+static const int PSWIZB_DISABLEDFINISH  = 0x00000008;
 
-#define PSWIZB_BACK             0x00000001
-#define PSWIZB_NEXT             0x00000002
-#define PSWIZB_FINISH           0x00000004
-#define PSWIZB_DISABLEDFINISH   0x00000008
+static const int PSWIZBF_ELEVATIONREQUIRED   0x00000001;
+]]
 
-#define PSWIZBF_ELEVATIONREQUIRED   0x00000001
-
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+if (NTDDI_VERSION >= NTDDI_VISTA) then
+ffi.cdef[[
 // Only for PSH_AEROWIZARD - used in PSM_SHOWWIZBUTTONS
-#define PSWIZB_CANCEL           0x00000010
-#endif // 0x0605
+static const int PSWIZB_CANCEL        =   0x00000010;
+]]
+end --// 0x0605
 
 
-#define PSM_PRESSBUTTON         (WM_USER + 113)
+#define PSM_PRESSBUTTON        = (WM_USER + 113);
 #define PropSheet_PressButton(hDlg, iButton) \
         PostMessage(hDlg, PSM_PRESSBUTTON, (WPARAM)(iButton), 0)
 
 
-#define PSBTN_BACK              0
-#define PSBTN_NEXT              1
-#define PSBTN_FINISH            2
-#define PSBTN_OK                3
-#define PSBTN_APPLYNOW          4
-#define PSBTN_CANCEL            5
-#define PSBTN_HELP              6
-#define PSBTN_MAX               6
+static const int PSBTN_BACK            =  0;
+static const int PSBTN_NEXT            =  1;
+static const int PSBTN_FINISH          =  2;
+static const int PSBTN_OK              =  3;
+static const int PSBTN_APPLYNOW        =  4;
+static const int PSBTN_CANCEL          =  5;
+static const int PSBTN_HELP            =  6;
+static const int PSBTN_MAX             =  6;
 
 
 
-#define PSM_SETCURSELID         (WM_USER + 114)
+#define PSM_SETCURSELID       =  (WM_USER + 114);
 #define PropSheet_SetCurSelByID(hDlg, id) \
         SNDMSG(hDlg, PSM_SETCURSELID, 0, (LPARAM)(id))
 
 
-#define PSM_SETFINISHTEXTA      (WM_USER + 115)
-#define PSM_SETFINISHTEXTW      (WM_USER + 121)
+#define PSM_SETFINISHTEXTA    =  (WM_USER + 115);
+#define PSM_SETFINISHTEXTW    =  (WM_USER + 121);
 
+--[[
 #ifdef UNICODE
 #define PSM_SETFINISHTEXT       PSM_SETFINISHTEXTW
 #else
 #define PSM_SETFINISHTEXT       PSM_SETFINISHTEXTA
 #endif
+--]]
 
 #define PropSheet_SetFinishText(hDlg, lpszText) \
         SNDMSG(hDlg, PSM_SETFINISHTEXT, 0, (LPARAM)(lpszText))
@@ -748,23 +760,25 @@ typedef struct _PSHNOTIFY
 #define PropSheet_GetCurrentPageHwnd(hDlg) \
         (HWND)SNDMSG(hDlg, PSM_GETCURRENTPAGEHWND, 0, 0L)
 
-#define PSM_INSERTPAGE          (WM_USER + 119)
+static const int  PSM_INSERTPAGE       =   (WM_USER + 119);
 #define PropSheet_InsertPage(hDlg, index, hpage) \
         SNDMSG(hDlg, PSM_INSERTPAGE, (WPARAM)(index), (LPARAM)(hpage))
 
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+if (NTDDI_VERSION >= NTDDI_VISTA) then
 // Only for PSH_AEROWIZARD - used in PSM_SETHEADERTITLE
-#define PSWIZF_SETCOLOR         ((UINT)(-1))
-#endif
+static const int PSWIZF_SETCOLOR       =  ((UINT)(-1));
+end
 
 #define PSM_SETHEADERTITLEA     (WM_USER + 125)
 #define PSM_SETHEADERTITLEW     (WM_USER + 126)
 
+--[[
 #ifdef UNICODE
 #define PSM_SETHEADERTITLE      PSM_SETHEADERTITLEW
 #else
 #define PSM_SETHEADERTITLE      PSM_SETHEADERTITLEA
 #endif
+--]]
 
 #define PropSheet_SetHeaderTitle(hDlg, index, lpszText) \
         SNDMSG(hDlg, PSM_SETHEADERTITLE, (WPARAM)(index), (LPARAM)(lpszText))
@@ -773,11 +787,13 @@ typedef struct _PSHNOTIFY
 #define PSM_SETHEADERSUBTITLEA     (WM_USER + 127)
 #define PSM_SETHEADERSUBTITLEW     (WM_USER + 128)
 
+--[[
 #ifdef UNICODE
 #define PSM_SETHEADERSUBTITLE      PSM_SETHEADERSUBTITLEW
 #else
 #define PSM_SETHEADERSUBTITLE      PSM_SETHEADERSUBTITLEA
 #endif
+--]]
 
 #define PropSheet_SetHeaderSubTitle(hDlg, index, lpszText) \
         SNDMSG(hDlg, PSM_SETHEADERSUBTITLE, (WPARAM)(index), (LPARAM)(lpszText))
@@ -882,7 +898,6 @@ static const int PROP_LG_CYDLG           =218;
 #include "prsht.inl"
 #endif /* ISOLATION_AWARE_ENABLED */
 #endif /* RC */
-
 
 
 #include <poppack.h>

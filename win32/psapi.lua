@@ -522,6 +522,7 @@ K32EnumPageFilesA (
 #endif // !UNICODE
 --]]
 
+-- These are located in psapi.dll
 ffi.cdef[[
 DWORD
 __stdcall
