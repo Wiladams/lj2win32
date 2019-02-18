@@ -193,6 +193,9 @@ function map(x, olow, ohigh, rlow, rhigh)
     return rlow + (x-olow)*((rhigh-rlow)/(ohigh-olow))
 end
 
+function noise(x,y,z)
+end
+
 function sq(x)
     return x*x
 end
