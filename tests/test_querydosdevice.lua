@@ -5,7 +5,6 @@ local C = ffi.C
 
 require("win32.fileapi")
 local core_string = require("unicode_util");
-local binstream = require("binstream")
 
 local L = core_string.toUnicode;
 

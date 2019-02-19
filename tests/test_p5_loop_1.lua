@@ -5,14 +5,13 @@ require("p5")
 local x = 0;
 
 function setup()
-    createCanvas(100, 100);
     noLoop();
 end
 
 function draw()
     --print("Frame Count: ", frameCount)
     background(204);
-    x = x + 0.5;
+    x = x + 1.0;
     if (x > width) then
         x = 0;
     end
@@ -29,4 +28,4 @@ end
 
 
 
-go({title="test_p5_loop_1"});
+go({frameRate=30, title="test_p5_loop_1"});

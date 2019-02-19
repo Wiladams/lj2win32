@@ -5,7 +5,6 @@ local C = ffi.C
 
 require("win32.winreg")
 local strdelim = require("strdelim")
-local binstream = require("binstream")
 
 
 --[[
