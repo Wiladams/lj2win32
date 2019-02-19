@@ -164,7 +164,7 @@ Return a PixelBuffer if we can read the file successfully
 
 local function readFooter(bs, rs)
     rs = rs or {}
-
+    print("targa.readFooter, BEGIN")
     rs.ExtensionAreaOffset = bs:readUInt32()
     rs.DeveloperDirectoryOffset = bs:readUInt32()
     rs.Signature = bs:readBytes(16)
@@ -177,17 +177,23 @@ local function readFooter(bs, rs)
     if not rs.isExtended then
         return false;
     end
-    
+
+    print("targa.readFooter, END")
+
     return rs
 end
 
 local function readBody(bs, header)
+    print("targa.readBody, BEGIN")
     -- create a pixelbuffer of the right size
+    print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel)
+    local bpp = header.BytesPerPixel
     local pb = PixelBuffer(header.Width, header.Height)
-
+ 
     -- create a type to represent the pixel data
     local pixtype = ffi.typeof("uint8_t[$]", header.BytesPerPixel)
-    local pixtype_ptr = ffi.typeof("$*", pixtype)
+    local pixtype_ptr = ffi.typeof("$ *", pixtype)
+    print("targa.readBody, 2.0", pixtype, pixtype_ptr)
 
     -- create an instance of a single pixel we'll use to stuff the 
     -- PixelBuffer
@@ -197,17 +203,25 @@ local function readBody(bs, header)
     -- and cast it to our pixtype_ptr
     local data = ffi.cast(pixtype_ptr, bs:getPositionPointer())
     local dataOffset = 0
+    local databuff = pixtype()
 
-    for y=0,header.Width-1 do 
-        for x=0,header.Height-1 do
-            pix.Red = data[dataOffset][0]
-            pix.Green = data[dataOffset][1]
-            pix.Blue = data[dataOffset][2]
-            pb:set(x,y, pix)
+    print("targa.readBody, 3.0: ", data, bs:remaining())
 
-            dataOffset = dataOffset + 1
+    for y=0,header.Height-1 do 
+    print("y: ", y)
+        for x=0,header.Width-1 do
+            print(bs:readBytes(bpp, databuff))
+            --local datum = data[dataOffset]
+            --print(datum, datum[0], datum[1], datum[2])
+            --pix.Red = data[dataOffset][0]
+            --pix.Green = data[dataOffset][1]
+            --pix.Blue = data[dataOffset][2]
+            --pb:set(x,y, pix)
+            --dataOffset = dataOffset + 1
         end
     end
+    
+    print("targa.readBody, END")
 
     return pb
 end

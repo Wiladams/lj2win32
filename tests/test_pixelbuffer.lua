@@ -1,6 +1,9 @@
+package.path = "../?.lua;"..package.path;
+
 local ffi = require("ffi")
 
 local PixelBuffer = require("PixelBuffer")
+local targa = require("targareader")
 
 
 function lerp(low, high, x)
@@ -117,6 +120,38 @@ local function test_srcover()
     printPixelBuffer(frameBuffer)
 end
 
+local function test_Pixel32()
+    local Pixel32 = ffi.typeof("Pixel32")
+    local pix1 = Pixel32()
+    print(string.format("cref: 0x%x", pix1.cref))
 
-test_srcover()
+    pix1.Red = 0xff
+    print(string.format("  Red: 0x%x", pix1.Red))
+
+    pix1.Green = 0xCC
+    print(string.format("Green: 0x%x", pix1.Green))
+   
+    pix1.Blue = 0xBB
+    print(string.format(" Blue: 0x%x", pix1.Blue))
+
+    print(string.format(" cref: 0x%08x", pix1.cref))
+
+end
+
+local function test_load()
+    print("==== test_load ====")
+    local img, err = targa.readFromFile("images\\rgb_UL.tga")
+    print("loaded...", img, err)
+    if not img then
+        print(err)
+        return 
+    end
+
+    printPixelBuffer(img)
+end
+
+
+test_load()
+--test_Pixel32()
+--test_srcover()
 --createOpacityTable()

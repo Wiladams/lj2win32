@@ -44,8 +44,8 @@ function binstream.init(self, data, size, position, littleendian)
     local obj = {
         bigend = not littleendian;
         data = ffi.cast("uint8_t *", data);
-        size = size;
-        cursor = position;
+        size = tonumber(size);
+        cursor = tonumber(position);
     }
  
     setmetatable(obj, binstream_mt)
@@ -94,7 +94,7 @@ function binstream.seek(self, pos)
         self.cursor = self.size
         return false, self.cursor;
     else
-        self.cursor = pos;
+        self.cursor = tonumber(pos);
     end
  
     return true;
@@ -187,23 +187,30 @@ end
 
 -- BUGBUG, do error checking against end of stream
 function binstream.readBytes(self, n, bytes)
+    print("readBytes, BEGIN: ", n, bytes)
     if n < 1 then 
         return false, "must specify more then 0 bytes" 
     end
+    print("readBytes, 1.0: ")
 
     -- see how many bytes are remaining to be read
     local nActual = min(n, self:remaining())
-
+    print("readBytes, 2.0: ")
     -- read the minimum between remaining and 'n'
     bytes = bytes or ffi.new("uint8_t[?]", nActual)
-    ffi.copy(bytes, self.data+self.cursor, nActual)
+    local ptr = self.data+self.cursor
+    print("readBytes, 3.0: ", ptr, nActual)
+    ffi.copy(bytes, ptr, nActual)
+    print("readBytes, 4.0: ")
     self:skip(nActual)
+    print("readBytes, 4.0: ")
 
     -- if minimum is less than n, return false, and the number
     -- actually read
     if nActual < n then
         return false, nActual;
     end
+    print("readBytes, END")
 
     return bytes, nActual;
 end

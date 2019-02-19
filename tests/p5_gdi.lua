@@ -648,23 +648,37 @@ function createImage(awidth, aheight, dtype)
 end
 
 -- Loading and Displaying
---(img, offsetx, offsety, awidth, aheight)
-function image(img, x, y, awidth, aheight)
-	if img == nil then return end
-	awidth = awidth or 0
-	aheight = aheight or 0
 
-	Processing.Renderer:DrawImage(img, x, y, awidth, aheight)
+--[[
+    copy one pixel buffer to another
+    without any blending operation
+
+    need to do clipping
+]]
+function image(src, dstX, dstY, awidth, aheight)
+	if not src then
+		return false, 'no image specified'
+	end
+
+	-- need to do some clipping
+	dstX = dstX or 0
+	dstY = dstY or 0
+
+	print("image: ", src.Width, src.Height)
+--[[
+    for y=0,src.Height-1 do
+		for x=0,src.Width-1 do
+			local c = src:get(x,y)
+			print(c)
+            --set(dstX+x, dstY+y, c.cref)
+        end
+	end
+--]]
 end
 
 function imageMode()
 end
 
-function loadImage(filename)
-	local pm = PImage({Filename = filename})
-
-	return pm
-end
 
 function requestImage()
 end
@@ -676,6 +690,8 @@ function noTint()
 end
 
 -- Pixels
+
+
 function blend()
 end
 

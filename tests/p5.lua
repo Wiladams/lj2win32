@@ -36,7 +36,7 @@ local wmmsgs = require("wm_reserved")
 local DeviceContext = require("DeviceContext")
 local GDISurface = require("GDISurface")
 local PixelBuffer = require("PixelBuffer")
-
+local targa = require("targareader")
 
 local exports = {}
 local lonMessage = false;
@@ -338,6 +338,15 @@ function rectMode(newMode)
     RectMode = newMode;
 end
 
+-- Image handling
+function loadImage(filename)
+    local img, err = targa.readFromFile(filename)
+    if img then
+        return img.PixelBuffer
+    end
+
+    return false, err.Error
+end
 
 -- timing
 function millis()
@@ -733,12 +742,12 @@ end
 
 function go(params)
     params = params or {
-        width = 320;
-        height = 240;
+        width = 640;
+        height = 480;
         title = "p5"
     }
-    params.width = params.width or 320;
-    params.height = params.height or 240;
+    params.width = params.width or 640;
+    params.height = params.height or 480;
     params.title = params.title or "p5";
     params.frameRate = params.frameRate or 15;
 
