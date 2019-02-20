@@ -1,4 +1,9 @@
--- http://www.fileformat.info/format/tga/egff.htm#TGA-DMYID.2
+--[[
+    References
+    
+    http://www.fileformat.info/format/tga/egff.htm#TGA-DMYID.2
+    http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf
+--]]
 
 local ffi = require("ffi")
 local bit = require("bit")
@@ -22,16 +27,6 @@ local ColorMapType = enum {
     [0] = "NoPalette",
     [1] = "Palette"
 }
-
-local ImageOrigin = enum {
-
-    [0x00] = "BottomLeft",
-    [0x10] = "BottomRight",
-    [0x20] = "TopLeft",
-    [0x30] = "TopRight"
-}
-
-local OriginMask = 0x30;
 
 local HorizontalOrientation = enum {
     [0] = "LeftToRight",
@@ -226,20 +221,21 @@ local function readBody(bs, header)
         yStart = header.Height-1
         yEnd = 0
     end
+
     for y=yStart,yEnd, dy do 
         for x=xStart,xEnd, dx do
             local nRead = bs:readByteBuffer(bpp, databuff)
-            pix.Red = databuff[2]
-            pix.Green = databuff[1]
-            pix.Blue = databuff[0]
 
-            --print(x, nRead, databuff, bs:remaining())
-            --local datum = data[dataOffset]
-            --print(datum, datum[0], datum[1], datum[2])
-            --pix.Red = data[dataOffset][0]
-            --pix.Green = data[dataOffset][1]
-            --pix.Blue = data[dataOffset][2]
-            --dataOffset = dataOffset + 1
+            if header.ImageType == ImageType.TrueColor then
+                pix.Red = databuff[2]
+                pix.Green = databuff[1]
+                pix.Blue = databuff[0]
+            elseif header.ImageType == ImageType.Monochrome then
+                pix.Red = databuff[0]
+                pix.Green = databuff[0]
+                pix.Blue = databuff[0]
+            end
+
             pb:set(x,y, pix)
         end
     end
@@ -275,7 +271,7 @@ local function readFromStream(bs, res)
     local trueColor = tonumber(ImageType.TrueColor)
     --print("ImageType.TrueColor:", header.ImageType, trueColor)
 
----[[
+--[[
     --print("header.ImageType == ImageType.TrueColor ", header.ImageType == ImageType.TrueColor)
     if header.ImageType ~= trueColor then
         res.Error = "can only read uncompressed TrueType"
@@ -292,7 +288,7 @@ local function readFromStream(bs, res)
         return false, res
     end
 
-    return pixbuff
+    return pixbuff, header, footer
 end
 
 local function readFromFile(filename)
@@ -307,18 +303,7 @@ local function readFromFile(filename)
         return false, err
     end
 
-    local pixbuff, err = readFromStream(bs)
-    if not pixbuff then
-        print("ERROR: ", err.Error)
-    end
-
-    -- BUGBUG
-    -- This is down here to anchor the filemap object
-    -- from being garbage collected while we're reading
-    -- from it.
-    --print("readFromFile: ", filemap)
-
-    return pixbuff, err
+    return readFromStream(bs)
 end
 
 
