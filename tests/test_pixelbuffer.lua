@@ -121,7 +121,7 @@ local function test_srcover()
 end
 
 local function test_Pixel32()
-    local Pixel32 = ffi.typeof("Pixel32")
+    local Pixel32 = ffi.typeof("struct Pixel32")
     local pix1 = Pixel32()
     print(string.format("cref: 0x%x", pix1.cref))
 

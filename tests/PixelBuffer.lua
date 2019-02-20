@@ -6,7 +6,25 @@ local band, bor = bit.band, bit.bor
 -- Store the matrix kinds so we don't create a new
 -- type declaration for every pixel buffer
 local matrix_kinds = {}
-
+--[[
+    Some words on fast pixel blending
+http://stereopsis.com/doubleblend.html
+--]]
+if ffi.abi("le") then
+ffi.cdef[[
+struct Pixel32 {
+    union {
+        struct {
+            uint8_t Blue;            
+            uint8_t Green;
+            uint8_t Red;
+            uint8_t Alpha;
+        };
+        uint32_t cref;
+    };
+} ;
+]]
+else
 ffi.cdef[[
 typedef union Pixel32_t {
     struct {
@@ -18,7 +36,7 @@ typedef union Pixel32_t {
     uint32_t cref;
 } Pixel32;
 ]]
-
+end
 
 
 local PixelBuffer = {}
@@ -44,7 +62,7 @@ function PixelBuffer.new(self, width, height)
     local typemoniker = string.format("Pixel32:[%d,%d]", height, width);
     local matrixType = matrix_kinds[typemoniker]
     if not matrixType then
-        matrixType = ffi.typeof("Pixel32[$][$]", height, width)
+        matrixType = ffi.typeof("struct Pixel32[$][$]", height, width)
         matrix_kinds[typemoniker] = matrixType
     end
 
@@ -54,15 +72,15 @@ function PixelBuffer.new(self, width, height)
         Pixels = pixels, 
         Width=width, 
         Height=height, 
-        Kind="Pixel32"})
+        Kind="struct Pixel32"})
 end
 
 function PixelBuffer.RGB(self, r,g,b)
-    return ffi.new("Pixel32", {r,g,b,0})
+    return ffi.new("struct Pixel32", {r,g,b,0})
 end
 
 function PixelBuffer.RGBA(self, r,g,b,a)
-    return  ffi.new("Pixel32",{r,g,b,a})
+    return  ffi.new("struct Pixel32",{r,g,b,a})
 end
 
 
