@@ -36,7 +36,7 @@ local wmmsgs = require("wm_reserved")
 local DeviceContext = require("DeviceContext")
 local GDISurface = require("GDISurface")
 local PixelBuffer = require("PixelBuffer")
-local targa = require("targareader")
+local targa = require("targa")
 
 local exports = {}
 local lonMessage = false;

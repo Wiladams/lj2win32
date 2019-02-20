@@ -215,7 +215,33 @@ function binstream.readBytes(self, n, bytes)
     return bytes, nActual;
 end
 
+function binstream.readByteBuffer(self, n, buff)
+    print("readByteBuffer, BEGIN: ", n, buff)
+    if not buff or n < 1 then 
+        return false, "must specify more then 0 bytes" 
+    end
+    print("readByteBuffer, 1.0: ")
 
+    -- see how many bytes are remaining to be read
+    local nActual = min(n, self:remaining())
+    print("readByteBuffer, 2.0: ")
+    -- read the minimum between remaining and 'n'
+    local ptr = self.data+self.cursor
+    print("readByteBuffer, 3.0: ", ptr, nActual)
+    ffi.copy(buff, ptr, nActual)
+    print("readByteBuffer, 4.0: ")
+    self:skip(nActual)
+    print("readByteBuffer, 4.0: ")
+
+    -- if nActual is less than n, return nActual
+    if nActual < 1 then
+        return false, "EOF"
+    end
+
+    print("readByteBuffer, END")
+
+    return nActual
+end
 
 
 -- Read bytes and turn into a Lua string

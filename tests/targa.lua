@@ -210,7 +210,7 @@ local function readBody(bs, header)
     for y=0,header.Height-1 do 
     print("y: ", y)
         for x=0,header.Width-1 do
-            print(bs:readBytes(bpp, databuff))
+            print(bs:readByteBuffer(bpp, databuff))
             --local datum = data[dataOffset]
             --print(datum, datum[0], datum[1], datum[2])
             --pix.Red = data[dataOffset][0]

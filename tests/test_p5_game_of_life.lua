@@ -144,8 +144,8 @@ function keyTyped()
     end
 end
 
---go {width = 640, height=480, title = "Game Of Life"}
----[[
+go {width = 640, height=480, title = "Game Of Life"}
+--[[
 go {
     width = sysmetrics.SM_CXSCREEN, 
     height=sysmetrics.SM_CYSCREEN, 

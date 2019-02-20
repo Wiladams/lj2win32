@@ -54,7 +54,7 @@ function PixelBuffer.new(self, width, height)
         Pixels = pixels, 
         Width=width, 
         Height=height, 
-        Kind="uint32_t"})
+        Kind="Pixel32"})
 end
 
 function PixelBuffer.RGB(self, r,g,b)

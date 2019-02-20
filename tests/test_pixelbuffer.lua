@@ -3,7 +3,7 @@ package.path = "../?.lua;"..package.path;
 local ffi = require("ffi")
 
 local PixelBuffer = require("PixelBuffer")
-local targa = require("targareader")
+local targa = require("targa")
 
 
 function lerp(low, high, x)
