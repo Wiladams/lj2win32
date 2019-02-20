@@ -177,9 +177,8 @@ local function readFooter(bs, rs)
     if not rs.isExtended then
         return false;
     end
-
     --print("targa.readFooter, END")
-
+    
     return rs
 end
 
@@ -207,8 +206,28 @@ local function readBody(bs, header)
 
     --print("targa.readBody, 3.0: ", data, bs:remaining())
 
-    for y=0,header.Height-1 do 
-        for x=0,header.Width-1 do
+    --  Start with left to right orientation
+    local dx = 1;
+    local xStart = 0
+    local xEnd = header.Width-1
+    -- switch thing up for right to left
+    if header.HorizontalOrientation == HorizontalOrientation.RightToLeft then
+        dx = -1
+        xStart = header.Width-1
+        xEnd = 0
+    end
+
+    -- start top to bottom vertical orientation
+    local dy = 1
+    local yStart = 0
+    local yEnd = header.Height-1
+    if header.VerticalOrientation == VerticalOrientation.BottomToTop then
+        dy = -1
+        yStart = header.Height-1
+        yEnd = 0
+    end
+    for y=yStart,yEnd, dy do 
+        for x=xStart,xEnd, dx do
             local nRead = bs:readByteBuffer(bpp, databuff)
             pix.Red = databuff[2]
             pix.Green = databuff[1]
@@ -309,6 +328,10 @@ return {
     VerticalOrientation = VerticalOrientation;
     Interleave = Interleave;
     ImageType = ImageType;
+
+    readHeader = readHeader;
+    readFooter = readFooter;
+    readBody = readBody;
 
     readFromFile = readFromFile;
     readFromStream = readFromStream;
