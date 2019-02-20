@@ -11,6 +11,8 @@ local matrix_kinds = {}
 http://stereopsis.com/doubleblend.html
 --]]
 if ffi.abi("le") then
+-- assuming typical x86, which
+-- can deal with byte aligned access efficiently
 ffi.cdef[[
 struct Pixel32 {
     union {
@@ -25,16 +27,20 @@ struct Pixel32 {
 } ;
 ]]
 else
+    -- assuming bigendian systems do better 
+    -- with 32-bit, and bit-fields
 ffi.cdef[[
-typedef union Pixel32_t {
-    struct {
-        uint8_t Red;
-        uint8_t Green;
-        uint8_t Blue;
-        uint8_t Alpha;
-    };
-    uint32_t cref;
-} Pixel32;
+    struct Pixel32 {
+        union {
+            struct {
+                uint32_t Alpha: 8;
+                uint32_t Red: 8;
+                uint32_t Green: 8;
+                uint32_t Blue: 8;
+            };
+            uint32_t cref;
+        };
+    } ;
 ]]
 end
 
