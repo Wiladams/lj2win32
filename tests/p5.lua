@@ -341,11 +341,10 @@ end
 -- Image handling
 function loadImage(filename)
     local img, err = targa.readFromFile(filename)
-    if img then
-        return img.PixelBuffer
+    if not img then 
+        return false, err
     end
-
-    return false, err.Error
+    return img
 end
 
 -- timing

@@ -58,7 +58,7 @@ end
 local function printPixelBuffer(pb)
     for y =0, pb.Height-1 do
         for x = 0, pb.Width-1 do
-            io.write(string.format('%2d ',pb.Pixels[y][x].cref))
+            io.write(string.format('%8x ',pb.Pixels[y][x].cref))
         end
         print()
     end
@@ -143,7 +143,7 @@ local function test_load()
     local img, err = targa.readFromFile("images\\rgb_UL.tga")
     print("loaded...", img, err)
     if not img then
-        print(err)
+        print(err.Error)
         return 
     end
 

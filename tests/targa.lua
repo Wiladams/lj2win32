@@ -164,7 +164,7 @@ Return a PixelBuffer if we can read the file successfully
 
 local function readFooter(bs, rs)
     rs = rs or {}
-    print("targa.readFooter, BEGIN")
+    --print("targa.readFooter, BEGIN")
     rs.ExtensionAreaOffset = bs:readUInt32()
     rs.DeveloperDirectoryOffset = bs:readUInt32()
     rs.Signature = bs:readBytes(16)
@@ -178,22 +178,22 @@ local function readFooter(bs, rs)
         return false;
     end
 
-    print("targa.readFooter, END")
+    --print("targa.readFooter, END")
 
     return rs
 end
 
 local function readBody(bs, header)
-    print("targa.readBody, BEGIN")
+    --print("targa.readBody, BEGIN")
     -- create a pixelbuffer of the right size
-    print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel)
+    --print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel)
     local bpp = header.BytesPerPixel
     local pb = PixelBuffer(header.Width, header.Height)
  
     -- create a type to represent the pixel data
     local pixtype = ffi.typeof("uint8_t[$]", header.BytesPerPixel)
     local pixtype_ptr = ffi.typeof("$ *", pixtype)
-    print("targa.readBody, 2.0", pixtype, pixtype_ptr)
+    --print("targa.readBody, 2.0", pixtype, pixtype_ptr)
 
     -- create an instance of a single pixel we'll use to stuff the 
     -- PixelBuffer
@@ -201,27 +201,31 @@ local function readBody(bs, header)
 
     -- get a pointer on the current position within the binstream
     -- and cast it to our pixtype_ptr
-    local data = ffi.cast(pixtype_ptr, bs:getPositionPointer())
-    local dataOffset = 0
+    --local data = ffi.cast(pixtype_ptr, bs:getPositionPointer())
+    --local dataOffset = 0
     local databuff = pixtype()
 
-    print("targa.readBody, 3.0: ", data, bs:remaining())
+    --print("targa.readBody, 3.0: ", data, bs:remaining())
 
     for y=0,header.Height-1 do 
-    print("y: ", y)
         for x=0,header.Width-1 do
-            print(bs:readByteBuffer(bpp, databuff))
+            local nRead = bs:readByteBuffer(bpp, databuff)
+            pix.Red = databuff[2]
+            pix.Green = databuff[1]
+            pix.Blue = databuff[0]
+
+            --print(x, nRead, databuff, bs:remaining())
             --local datum = data[dataOffset]
             --print(datum, datum[0], datum[1], datum[2])
             --pix.Red = data[dataOffset][0]
             --pix.Green = data[dataOffset][1]
             --pix.Blue = data[dataOffset][2]
-            --pb:set(x,y, pix)
             --dataOffset = dataOffset + 1
+            pb:set(x,y, pix)
         end
     end
     
-    print("targa.readBody, END")
+    --print("targa.readBody, END")
 
     return pb
 end
@@ -234,40 +238,42 @@ local function readFromStream(bs, res)
     -- to read the footer
     bs:seek(bs.size-footerSize)
     local footer, err = readFooter(bs)
-    if footer then
-        res.Footer = footer
-    end
+    res.Footer = footer
 
     -- if footer == false, then it's not an extended
     -- format file.  Otherwise, the footer is returned
     -- In either case, time to read the header
     bs:seek(0)
     local header, err = readHeader(bs)
+    res.Header = header
 
     if not header then
+        res.Error = "error reading targa headder: "..tostring(err)
         return false, res
     end
 
-    res.Header = header
 
-    --print("ImageType.TrueColor:", type(header.ImageType), type(ImageType.TrueColor))
---[[
-    if header.Imagetype ~= ImageType.TrueColor then
+    local trueColor = tonumber(ImageType.TrueColor)
+    --print("ImageType.TrueColor:", header.ImageType, trueColor)
+
+---[[
+    --print("header.ImageType == ImageType.TrueColor ", header.ImageType == ImageType.TrueColor)
+    if header.ImageType ~= trueColor then
         res.Error = "can only read uncompressed TrueType"
         return false, res
     end
 --]]
     -- Read the body
-    buff, err = readBody(bs, header)
+    pixbuff, err = readBody(bs, header)
 
-    res.PixelBuffer = buff
+    res.PixelBuffer = pixbuff
     res.Error = err
 
-    if not buff then
+    if not pixbuff then
         return false, res
     end
 
-    return res
+    return pixbuff
 end
 
 local function readFromFile(filename)
@@ -276,13 +282,24 @@ local function readFromFile(filename)
         return false, "file not mapped ()"..tostring(err)
     end
 
-    local bs, err = binstream(filemap:getPointer(), #filemap, 0, true )
+    local bs, err = binstream(filemap:getPointer(), filemap:length(), 0, true )
 
     if not bs then
         return false, err
     end
 
-    return readFromStream(bs)
+    local pixbuff, err = readFromStream(bs)
+    if not pixbuff then
+        print("ERROR: ", err.Error)
+    end
+
+    -- BUGBUG
+    -- This is down here to anchor the filemap object
+    -- from being garbage collected while we're reading
+    -- from it.
+    --print("readFromFile: ", filemap)
+
+    return pixbuff, err
 end
 
 

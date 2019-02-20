@@ -47,7 +47,6 @@ local new_map
 
 function mmap.new(self, filename, newsize)
 	newsize = newsize or 0
-	local m = ffi.new(self, #filename+1)
 	local obj = {}
 
 	-- Open file
@@ -62,6 +61,9 @@ function mmap.new(self, filename, newsize)
 		error("Could not create/open file for mmap: "..tostring(C.GetLastError()))
 	end
 	
+	-- properly close handle if it goes out of scope
+	ffi.gc(obj.filehandle, C.CloseHandle)
+
 	-- Set file size if new
 	local exists = C.GetLastError() == ffi.C.ERROR_ALREADY_EXISTS
 
@@ -84,16 +86,15 @@ function mmap.new(self, filename, newsize)
 	if obj.maphandle == nil then
 		error("Could not create file map: "..tostring(C.GetLastError()))
 	end
-	
+	ffi.gc(obj.maphandle, C.CloseHandle)
+
 	-- Open view
-	obj.map = C.MapViewOfFile(obj.maphandle, C.FILE_MAP_ALL_ACCESS, 0, 0, 0)
+	obj.map = ffi.cast("uint8_t *", C.MapViewOfFile(obj.maphandle, C.FILE_MAP_ALL_ACCESS, 0, 0, 0))
 	if obj.map == nil then
 		error("Could not map: "..tostring(errorhandling.GetLastError()))
 	end
-	
-	-- Copy filename (for delete)
-	ffi.copy(m.filename, filename)
-	obj.filename = filename
+	ffi.gc(obj.map, C.UnmapViewOfFile)
+
 	setmetatable(obj, mmap_mt)
 
 	return obj
@@ -122,32 +123,7 @@ function mmap.close(self, no_ungc)
 		C.CloseHandle(self.filehandle)
 		self.filehandle = nil
 	end
-	
-	if not no_ungc then ffi.gc(self, nil) end
 end
 
-function mmap:__gc()
-	self:close(true)
-end
-
---[[
-function mmap:delete()
-	self:close()
-	C.DeleteFileA(self.filename)
-end
---]]
-
---[=[
-local new_map = ffi.metatype([[struct {
-	short existed;
-	void* filehandle;
-	void* maphandle;
-	void* map;
-	int size;
-	char filename[?];
-}]], mmap)
-
-return new_map
---]=]
 
 return mmap

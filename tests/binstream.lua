@@ -43,7 +43,7 @@ function binstream.init(self, data, size, position, littleendian)
 
     local obj = {
         bigend = not littleendian;
-        data = ffi.cast("uint8_t *", data);
+        data = data;
         size = tonumber(size);
         cursor = tonumber(position);
     }
@@ -187,58 +187,51 @@ end
 
 -- BUGBUG, do error checking against end of stream
 function binstream.readBytes(self, n, bytes)
-    print("readBytes, BEGIN: ", n, bytes)
     if n < 1 then 
         return false, "must specify more then 0 bytes" 
     end
-    print("readBytes, 1.0: ")
 
     -- see how many bytes are remaining to be read
     local nActual = min(n, self:remaining())
-    print("readBytes, 2.0: ")
     -- read the minimum between remaining and 'n'
     bytes = bytes or ffi.new("uint8_t[?]", nActual)
     local ptr = self.data+self.cursor
-    print("readBytes, 3.0: ", ptr, nActual)
     ffi.copy(bytes, ptr, nActual)
-    print("readBytes, 4.0: ")
     self:skip(nActual)
-    print("readBytes, 4.0: ")
 
     -- if minimum is less than n, return false, and the number
     -- actually read
     if nActual < n then
         return false, nActual;
     end
-    print("readBytes, END")
 
     return bytes, nActual;
 end
 
 function binstream.readByteBuffer(self, n, buff)
-    print("readByteBuffer, BEGIN: ", n, buff)
+    --print("readByteBuffer, BEGIN: ", n, buff)
     if not buff or n < 1 then 
         return false, "must specify more then 0 bytes" 
     end
-    print("readByteBuffer, 1.0: ")
+    --print("readByteBuffer, 1.0: ")
 
     -- see how many bytes are remaining to be read
     local nActual = min(n, self:remaining())
-    print("readByteBuffer, 2.0: ")
+    --print("readByteBuffer, 2.0: ")
     -- read the minimum between remaining and 'n'
     local ptr = self.data+self.cursor
-    print("readByteBuffer, 3.0: ", ptr, nActual)
+    --print("readByteBuffer, 3.0: ", ptr, nActual)
     ffi.copy(buff, ptr, nActual)
-    print("readByteBuffer, 4.0: ")
+    --print("readByteBuffer, 4.0: ")
     self:skip(nActual)
-    print("readByteBuffer, 4.0: ")
+    --print("readByteBuffer, 4.0: ")
 
     -- if nActual is less than n, return nActual
     if nActual < 1 then
         return false, "EOF"
     end
 
-    print("readByteBuffer, END")
+    --print("readByteBuffer, END")
 
     return nActual
 end
