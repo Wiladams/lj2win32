@@ -4,7 +4,7 @@ local ffi = require("ffi")
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 
-local psapi = require("win32.psapi")
+require("win32.psapi")
 require("win32.processthreadsapi")
 require("win32.handleapi")
 

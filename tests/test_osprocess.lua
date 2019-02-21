@@ -1,5 +1,8 @@
 package.path = "../?.lua;"..package.path;
 
+require("win32.sdkddkver")
+
+
 local OSProcess = require("OSProcess")
 local OSModule = require("OSModule")
 
@@ -8,6 +11,10 @@ local function test_myproc()
 
     print("ID: ", myProc.ProcessId)
     print("Image: ", myProc:getImageFileName())
+    print("== MODULES ==")
+    for modname in myProc:moduleNames() do
+        print(modname)
+    end
 end
 
 local function test_createproc()
@@ -43,6 +50,6 @@ local function test_osmodule()
 
 end
 
---test_myproc()
+test_myproc()
 --test_createproc()
-test_osmodule()
+--test_osmodule()
