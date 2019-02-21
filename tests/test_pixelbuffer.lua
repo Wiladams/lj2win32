@@ -1,6 +1,8 @@
 package.path = "../?.lua;"..package.path;
 
 local ffi = require("ffi")
+local bit = require("bit")
+local lshift, rshift = bit.lshift, bit.rshift
 
 local PixelBuffer = require("PixelBuffer")
 local targa = require("targa")
@@ -150,8 +152,25 @@ local function test_load()
     printPixelBuffer(img)
 end
 
+local function test_mul255()
+    local uint32=ffi.typeof("uint32_t")
 
-test_load()
+    local function Mul255(a255, c255)
+        --print("Mul255: ", ffi.typeof(a255), ffi.typeof(c255))
+        return uint32(rshift(((a255 + 1) * c255) , 8));
+    end
+
+    local a255 = uint32(1)
+    local c255 = uint32(255)
+
+    local b255 = Mul255(a255, c255)
+    print("b255: ", b255)
+
+    
+end
+
+test_mul255()
+--test_load()
 --test_Pixel32()
 --test_srcover()
 --createOpacityTable()
