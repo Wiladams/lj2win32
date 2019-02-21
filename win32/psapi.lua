@@ -7,7 +7,6 @@
 
 local ffi = require("ffi")
 
-
 require("win32.minwindef")
 
 
@@ -100,8 +99,9 @@ K32EnumProcessModules(
      DWORD cb,
      LPDWORD lpcbNeeded
     );
+]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 K32EnumProcessModulesEx(
@@ -548,5 +548,4 @@ K32GetProcessImageFileNameW (
 #define GetProcessImageFileName  K32GetProcessImageFileNameA
 #endif // !UNICODE
 --]]
-
 
