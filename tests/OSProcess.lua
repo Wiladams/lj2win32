@@ -1,5 +1,12 @@
 print("OSProcess - BEGIN")
 
+--[[
+    FlushInstructionCache
+    GetProcessHandleCount
+    IsProcessCritical
+    GetProcessInformation
+    GetProcessShutdownParameters
+]]
 
 local ffi = require("ffi")
 local C = ffi.C 
@@ -61,6 +68,12 @@ function OSProcess.new(self, ...)
         -- current process
         return self:init()
     end
+
+    -- if nargs == 1, it's either a processId
+    -- or a processHandle
+    -- use OpenProcess
+
+
 
     local params = select(1,...)
     if type(params) ~= "table" then
