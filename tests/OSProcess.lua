@@ -69,6 +69,12 @@ function OSProcess.new(self, ...)
         return self:init()
     end
 
+    -- if nargs == 1, it's either a processId
+    -- or a processHandle
+    -- use OpenProcess
+
+
+
     local params = select(1,...)
     if type(params) ~= "table" then
         return false, "no parameters specified"

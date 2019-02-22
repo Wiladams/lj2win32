@@ -6697,12 +6697,12 @@ else
 end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+--]=]
 
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-
+ffi.cdef[[
  BOOL
 __stdcall
 LookupAccountSidA(
@@ -6726,13 +6726,17 @@ LookupAccountSidW(
      LPDWORD cchReferencedDomainName,
      PSID_NAME_USE peUse
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define LookupAccountSid  LookupAccountSidW
 else
 #define LookupAccountSid  LookupAccountSidA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
  BOOL
 __stdcall
 LookupAccountNameA(
@@ -6756,19 +6760,22 @@ LookupAccountNameW(
       LPDWORD cchReferencedDomainName,
         PSID_NAME_USE peUse
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define LookupAccountName  LookupAccountNameW
 else
 #define LookupAccountName  LookupAccountNameA
 end  -- !UNICODE
+--]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
-
-
+--[=[
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-#if _WIN32_WINNT >= 0x0601
+if _WIN32_WINNT >= 0x0601 then
 
 
  BOOL
