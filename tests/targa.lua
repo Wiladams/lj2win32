@@ -3,6 +3,13 @@
     
     http://www.fileformat.info/format/tga/egff.htm#TGA-DMYID.2
     http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf
+    
+-- library of congress
+    https://www.loc.gov/preservation/digital/formats/fdd/fdd000180.shtml
+
+-- other implementations
+    https://unix4lyfe.org/targa/
+    https://github.com/ftrvxmtrx/tga
 --]]
 
 local ffi = require("ffi")
@@ -14,6 +21,9 @@ local binstream = require("binstream")
 local enum = require("enum")
 local mmap = require("mmap")
 local PixelBuffer = require("PixelBuffer")
+local bitbang = require("bitbang")
+
+local BITSVALUE = bitbang.BITSVALUE
 
 
 
@@ -82,18 +92,11 @@ local function readHeader(bs, res)
     res.Width = bs:readUInt16()             -- 0Ch  Width of image - Maximum 512
     res.Height = bs:readUInt16()            -- 0Eh  Height of image - Maximum 482
     res.PixelDepth = bs:readOctet()         -- 10h  Number of bits per pixel
+    res.BytesPerPixel = res.PixelDepth / 8
     res.ImageDescriptor = bs:readOctet()    -- 11h  Image descriptor byte
 
-    res.BytesPerPixel = res.PixelDepth / 8
 
-    -- If there's an identification section, read that next
-    if res.IDLength > 0 then
-        header.ImageIdentification = bs:readBytes(header.IDLength)
-    end
-
-    -- If there's a color map, read that next
-
---[[
+    --[[
                   Image Descriptor Byte.                        |
       Bits 3-0 - number of attribute bits associated with each  |
                    pixel.  For the Targa 16, this would be 0 or |
@@ -124,6 +127,16 @@ local function readHeader(bs, res)
     res.HorizontalOrientation = rshift(band(res.ImageDescriptor, 0x10),4)
     res.VerticalOrientation = rshift(band(res.ImageDescriptor, 0x20), 5)
     res.Interleave = rshift(band(res.ImageDescriptor, 0xC0), 6)
+
+
+-- If there's an identification section, read that next
+    if res.IDLength > 0 then
+        res.ImageIdentification = bs:readBytes(res.IDLength)
+    end
+
+    -- If there's a color map, read that next
+
+
 
     return res
 end
@@ -163,10 +176,50 @@ local function readFooter(bs, rs)
     return rs
 end
 
+local TrueColor = ImageType.TrueColor
+local Monochrome = ImageType.Monochrome
+
+
+local function decodeSinglePixel(pix, databuff, bpp, imtype)
+    --print(pix, databuff, bpp, imtype)
+    if imtype == TrueColor then
+        if bpp == 24 then
+            pix.Red = databuff[0]
+            pix.Green = databuff[1]
+            pix.Blue = databuff[2]
+            pix.Alpha = 0
+            return true
+        elseif bpp == 32 then
+            pix.Red = databuff[0]
+            pix.Green = databuff[1]
+            pix.Blue = databuff[2]
+            --pix.Alpha = databuff[3]   -- We should pre-multiply the alpha?
+            return true
+        elseif bpp == 16 then
+            local src16 = bor(lshift(databuff[1],8), databuff[0])
+            pix.Red = lshift(BITSVALUE(src16,0,4),3)
+            pix.Green = lshift(BITSVALUE(src16,5,9),3)
+            pix.Blue = lshift(BITSVALUE(src16,10,14),3)
+            pix.Alpha = 0
+            if BITSVALUE(src16,15,15) >= 1 then
+                pix.Alpha = 0;  -- 255
+            end 
+        end
+    elseif imtype == Monochrome then
+        pix.Red = databuff[0]
+        pix.Green = databuff[0]
+        pix.Blue = databuff[0]
+        pix.Alpha = 0
+        return true
+    end
+
+    return false
+end
+
 local function readBody(bs, header)
     --print("targa.readBody, BEGIN")
     -- create a pixelbuffer of the right size
-    --print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel)
+    --print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel, header.ImageType)
     local bpp = header.BytesPerPixel
     local pb = PixelBuffer(header.Width, header.Height)
  
@@ -212,6 +265,8 @@ local function readBody(bs, header)
         for x=xStart,xEnd, dx do
             local nRead = bs:readByteBuffer(bpp, databuff)
 
+            decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType)
+--[[
             if header.ImageType == ImageType.TrueColor then
                 pix.Red = databuff[0]
                 pix.Green = databuff[1]
@@ -221,7 +276,7 @@ local function readBody(bs, header)
                 pix.Green = databuff[0]
                 pix.Blue = databuff[0]
             end
-
+--]]
             pb:set(x,y, pix)
         end
     end

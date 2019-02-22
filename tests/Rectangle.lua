@@ -21,8 +21,15 @@ setmetatable(Rect, {
 local Rectangle_mt = {
     __index = Rect,
 
+    __eq = function(self, rhs)
+        return self.Left == rhs.Left and
+            self.Top == rhs.Top and
+            self.Right == rhs.Right and
+            self.Bottom == rhs.Bottom
+    end,
+
     __tostring = function(self)
-        return string.format("Rect(%d,%d,%d,%d)", self.Left, self.Top, self.Right, self.Bottom)
+        return string.format("Rect(%d,%d,%d,%d)", self.Left, self.Top, self.Right-self.Left, self.Bottom-self.Top)
     end,
 }
 ffi.metatype(ffi.typeof("struct Rectangle_t"), Rectangle_mt)
@@ -52,6 +59,16 @@ function Rect.height(self)
     return self.Bottom - self.Top
 end
 
+function Rect.contains(self, x, y)
+    return not (x < self.Left or x > self.Right or
+        y < self.Top or y > self.Bottom)
+end
+
+function Rect.union(self, rhs)
+    local x1 = math.min(self.Left, rhs.Left)
+    local x2 = math.max(self.Right, rhs.Right)
+    local y1 = math.min(self)
+end
 
 
 local r1 = Rect(10,10,100,100)

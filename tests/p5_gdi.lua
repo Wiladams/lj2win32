@@ -664,12 +664,11 @@ function image(src, dstX, dstY, awidth, aheight)
 	dstX = dstX or 0
 	dstY = dstY or 0
 
-	print("image: ", src.Width, src.Height)
+	--print("image: ", src.Width, src.Height)
 ---[[
     for y=0,src.Height-1 do
 		for x=0,src.Width-1 do
 			local c = src:get(x,y)
-			--print(c)
             set(dstX+x, dstY+y, c)
         end
 	end
