@@ -1,5 +1,12 @@
 print("OSProcess - BEGIN")
 
+--[[
+    FlushInstructionCache
+    GetProcessHandleCount
+    IsProcessCritical
+    GetProcessInformation
+    GetProcessShutdownParameters
+]]
 
 local ffi = require("ffi")
 local C = ffi.C 

@@ -1,3 +1,4 @@
+--[[
 -- From processthreadapi
 -- Create the OSThread object
 -- threadid
@@ -6,4 +7,13 @@
 -- exit
 -- suspend
 -- result
+
+-- GetThreadTimes
 -- ThreadLocalStorage
+
+-- GetThreadContext
+GetThreadIdealProcessorEx
+GetThreadInformation
+SetThreadIdealProcessor
+GetThreadDescription
+--]]
