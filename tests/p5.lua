@@ -37,6 +37,7 @@ local DeviceContext = require("DeviceContext")
 local GDISurface = require("GDISurface")
 local PixelBuffer = require("PixelBuffer")
 local targa = require("targa")
+local simplex = require("simplexnoise")
 
 local exports = {}
 local lonMessage = false;
@@ -194,6 +195,19 @@ function map(x, olow, ohigh, rlow, rhigh)
 end
 
 function noise(x,y,z)
+    if z ~= nil then
+        return simplex.Noise3(x,y,z)
+    end
+
+    if y and z ~= nil then
+        return simplex.Noise2(x,y)
+    end
+
+    if x ~= 0 then 
+        return simplex.Noise1(x)
+    end
+
+    return 0
 end
 
 function sq(x)
