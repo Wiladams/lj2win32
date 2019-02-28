@@ -4,7 +4,7 @@
 
 	require("scheduler")
 
-	It will automatically polute your global
+	It will automatically pollute your global
 	namespace with new keywords:
 	Kernel
 	halt, run, coop, spawn, suspend, yield

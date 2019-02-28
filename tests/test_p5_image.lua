@@ -16,6 +16,11 @@ local gray_img_ur = loadImage("images\\grayscale_UR.tga")
 local gray_img_ll = loadImage("images\\grayscale_LL.tga")
 local gray_img_lr = loadImage("images\\grayscale_LR.tga")
 
+local indexed_ul = loadImage("images\\indexed_UL.tga")
+local indexed_ur = loadImage("images\\indexed_UR.tga")
+local indexed_ll = loadImage("images\\indexed_LL.tga")
+local indexed_lr = loadImage("images\\indexed_LR.tga")
+
 local ctc24 = loadImage("images\\ctc24.tga")
 local ctc32 = loadImage("images\\ctc32.tga")
 
@@ -70,6 +75,11 @@ local function drawRandomImage()
 end
 
 local playlist = {
+    indexed_ul,
+    indexed_ur,
+    indexed_ll,
+    indexed_lr,
+--[[
     MARBLES,
     FLAG_B16,
     FLAG_B24,
@@ -81,6 +91,7 @@ local playlist = {
     XING_B32,
     XING_T16,
     XING_T24,
+    --]]
     XING_T32
 }
 local nItems = #playlist

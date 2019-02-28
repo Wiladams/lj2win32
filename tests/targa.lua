@@ -76,6 +76,51 @@ local ImageType = enum {
 local footerSize = 26
 local targaXFileID = "TRUEVISION-XFILE";
 
+--res.CMapStart = bs:readUInt16()         -- 03h  Color map origin
+--res.CMapLength = bs:readUInt16()        -- 05h  Color map length
+--res.CMapDepth = bs:readOctet()          -- 07h  Depth of color map entries
+
+local function readColorMap(bs, header)
+--print("readColorMap - BEGIN: ", header.CMapStart, header.CMapLength, string.format("0x%x",bs:tell()))
+    local bytespe = header.CMapDepth / 8;
+--print("    bytes Per Entry: ", bytespe, string.format("0x%x",bs:tell()+header.CMapLength*bytespe))
+    local pixtype = ffi.typeof("uint8_t[$]", bytespe)
+--print("pixtype: ", ffi.typeof(pixtype))
+    local databuff = pixtype()
+
+    local cMap = ffi.new("struct Pixel32[?]", header.CMapLength)
+
+    for i=header.CMapStart,header.CMapLength-1 do
+        local nRead = bs:readByteBuffer(bytespe, databuff)
+        
+        if bytespe == 2 then
+            local src16 = bor(lshift(databuff[1],8), databuff[0])
+            cMap[i].Red = lshift(BITSVALUE(src16,0,4),3)
+            cMap[i].Green = lshift(BITSVALUE(src16,5,9),3)
+            cMap[i].Blue = lshift(BITSVALUE(src16,10,14),3)
+            cMap[i].Alpha = 0
+            if BITSVALUE(src16,15,15) >= 1 then
+                cMap[i].Alpha = 0;  -- 255
+            end 
+        elseif bytespe == 3 then
+            cMap[i].Red = databuff[0]
+            cMap[i].Green = databuff[1]
+            cMap[i].Blue = databuff[2]
+            cMap[i].Alpha = 0
+
+        elseif bytespe == 4 then
+            cMap[i].Red = databuff[0]
+            cMap[i].Green = databuff[1]
+            cMap[i].Blue = databuff[2]
+            --pix.Alpha = databuff[3]   -- We should pre-multiply the alpha?
+        end
+
+--        print(i, cMap[i].Red, cMap[i].Green, cMap[i].Blue)
+    end
+--print("readColorMap - END: ", string.format("0x%x", bs:tell()))
+    return cMap
+end
+
 local function readHeader(bs, res)
     res = res or {}
 
@@ -130,13 +175,16 @@ local function readHeader(bs, res)
 
 
 -- If there's an identification section, read that next
+--print("ImageIdentification: ", res.IDLength, string.format("0x%x",bs:tell()))
     if res.IDLength > 0 then
         res.ImageIdentification = bs:readBytes(res.IDLength)
     end
 
+
     -- If there's a color map, read that next
-
-
+    if res.ColorMapType == ColorMapType.Palette then
+        res.ColorMap = readColorMap(bs, res)
+    end
 
     return res
 end
@@ -178,24 +226,25 @@ end
 
 local TrueColor = ImageType.TrueColor
 local Monochrome = ImageType.Monochrome
+local ColorMapped = ImageType.ColorMapped
 
 
-local function decodeSinglePixel(pix, databuff, bpp, imtype)
+local function decodeSinglePixel(pix, databuff, pixelDepth, imtype, colorMap)
     --print(pix, databuff, bpp, imtype)
     if imtype == TrueColor then
-        if bpp == 24 then
+        if pixelDepth == 24 then
             pix.Red = databuff[0]
             pix.Green = databuff[1]
             pix.Blue = databuff[2]
             pix.Alpha = 0
             return true
-        elseif bpp == 32 then
+        elseif pixelDepth == 32 then
             pix.Red = databuff[0]
             pix.Green = databuff[1]
             pix.Blue = databuff[2]
             --pix.Alpha = databuff[3]   -- We should pre-multiply the alpha?
             return true
-        elseif bpp == 16 then
+        elseif pixelDepth == 16 then
             local src16 = bor(lshift(databuff[1],8), databuff[0])
             pix.Red = lshift(BITSVALUE(src16,0,4),3)
             pix.Green = lshift(BITSVALUE(src16,5,9),3)
@@ -205,12 +254,20 @@ local function decodeSinglePixel(pix, databuff, bpp, imtype)
                 pix.Alpha = 0;  -- 255
             end 
         end
+        return true;
     elseif imtype == Monochrome then
         pix.Red = databuff[0]
         pix.Green = databuff[0]
         pix.Blue = databuff[0]
         pix.Alpha = 0
         return true
+    elseif imtype == ColorMapped then
+        -- lookup the color using databuff[0] as index
+        local cpix = colorMap[databuff[0]]
+        pix.Red = cpix.Red;
+        pix.Green = cpix.Green;
+        pix.Blue = cpix.Blue;
+        return true;
     end
 
     return false
@@ -265,7 +322,7 @@ local function readBody(bs, header)
         for x=xStart,xEnd, dx do
             local nRead = bs:readByteBuffer(bpp, databuff)
 
-            decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType)
+            decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType, header.ColorMap)
 --[[
             if header.ImageType == ImageType.TrueColor then
                 pix.Red = databuff[0]

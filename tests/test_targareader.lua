@@ -41,6 +41,7 @@ print()
     print(string.format("%30s %d", "BytesPerPixel", res.BytesPerPixel))
     print(string.format("%30s %s", "Type", ImageType[res.ImageType]))
 print()
+    print(string.format("%30s 0x%x", "Identification", res.IDLength))
     print(string.format("%30s %s", "ColorMapType", ColorMapType[res.ColorMapType]))
     print(string.format("%30s %d", "CMapStart", res.CMapStart))
     print(string.format("%30s %d", "CMapLength", res.CMapLength))
@@ -77,7 +78,8 @@ utc32.tga
 --local pixbuff, header, footer = targa.readFromFile("images\\XING_B24.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\XING_T16.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\MARBLES.tga")
-local pixbuff, header, footer = targa.readFromFile("images\\ccm8.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\ccm8.tga")
+local pixbuff, header, footer = targa.readFromFile("images\\indexed_ul.tga")
 
 
 if not pixbuff then
