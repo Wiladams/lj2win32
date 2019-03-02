@@ -227,6 +227,7 @@ end
 local TrueColor = ImageType.TrueColor
 local Monochrome = ImageType.Monochrome
 local ColorMapped = ImageType.ColorMapped
+local TrueColorCompressed = ImageType.TrueColorCompressed
 
 
 local function decodeSinglePixel(pix, databuff, pixelDepth, imtype, colorMap)
@@ -323,17 +324,6 @@ local function readBody(bs, header)
             local nRead = bs:readByteBuffer(bpp, databuff)
 
             decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType, header.ColorMap)
---[[
-            if header.ImageType == ImageType.TrueColor then
-                pix.Red = databuff[0]
-                pix.Green = databuff[1]
-                pix.Blue = databuff[2]
-            elseif header.ImageType == ImageType.Monochrome then
-                pix.Red = databuff[0]
-                pix.Green = databuff[0]
-                pix.Blue = databuff[0]
-            end
---]]
             pb:set(x,y, pix)
         end
     end

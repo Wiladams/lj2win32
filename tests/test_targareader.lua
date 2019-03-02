@@ -73,13 +73,13 @@ utc32.tga
 --local pixbuff, header, footer = targa.readFromFile("images\\grayscale_UL.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\indexed_UL.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\utc24.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\ctc24.tga")
+local pixbuff, header, footer = targa.readFromFile("images\\ctc24.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\xing_t32.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\XING_B24.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\XING_T16.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\MARBLES.tga")
 --local pixbuff, header, footer = targa.readFromFile("images\\ccm8.tga")
-local pixbuff, header, footer = targa.readFromFile("images\\indexed_ul.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\indexed_ul.tga")
 
 
 if not pixbuff then

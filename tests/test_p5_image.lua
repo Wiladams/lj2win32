@@ -5,44 +5,51 @@ require("p5")
 local ffi = require("ffi")
 local C = ffi.C 
 
--- load images
-local img_ul = loadImage("images\\rgb_a_UL.tga")
-local img_ur = loadImage("images\\rgb_a_UR.tga")
-local img_ll = loadImage("images\\rgb_a_LL.tga")
-local img_lr = loadImage("images\\rgb_a_LR.tga")
+local function loadImages(imageList)
+    for _, name in ipairs(imageList) do 
+        _G[name] = loadImage(string.format("images\\%s.tga", name))
+    end
 
-local gray_img_ul = loadImage("images\\grayscale_UL.tga")
-local gray_img_ur = loadImage("images\\grayscale_UR.tga")
-local gray_img_ll = loadImage("images\\grayscale_LL.tga")
-local gray_img_lr = loadImage("images\\grayscale_LR.tga")
+    return true;
+end
 
-local indexed_ul = loadImage("images\\indexed_UL.tga")
-local indexed_ur = loadImage("images\\indexed_UR.tga")
-local indexed_ll = loadImage("images\\indexed_LL.tga")
-local indexed_lr = loadImage("images\\indexed_LR.tga")
+local imageList = {
+    "rgba_UL",
+    "rgba_UR",
+    "rgba_LL",
+    "rgba_LR",
 
-local ctc24 = loadImage("images\\ctc24.tga")
-local ctc32 = loadImage("images\\ctc32.tga")
+    "grayscale_UL",
+    "grayscale_UR",
+    "grayscale_LL",
+    "grayscale_LR",
 
-local utc24 = loadImage("images\\utc24.tga")
-local utc32 = loadImage("images\\utc32.tga")
-local ubw8 = loadImage("images\\ubw8.tga")
+    "indexed_UL",
+    "indexed_UR",
+    "indexed_LL",
+    "indexed_LR",
 
-local FLAG_B16 = loadImage("images\\FLAG_B16.tga")
-local FLAG_B24 = loadImage("images\\FLAG_B24.tga")
-local FLAG_B32 = loadImage("images\\FLAG_B32.tga")
-local FLAG_T16 = loadImage("images\\FLAG_T16.tga")
-local FLAG_T32 = loadImage("images\\FLAG_T32.tga")
+    "ctc24",
+    "ctc32",
+    "utc24",
+    "utc32",
+    "ubw8",
 
-local XING_B16 = loadImage("images\\XING_B16.tga")
-local XING_B24 = loadImage("images\\XING_B24.tga")
-local XING_B32 = loadImage("images\\XING_B32.tga")
-local XING_T16 = loadImage("images\\XING_T16.tga")
-local XING_T24 = loadImage("images\\XING_T24.tga")
-local XING_T32 = loadImage("images\\XING_T32.tga")
+    "FLAG_B16",
+    "FLAG_B24",
+    "FLAG_B32",
+    "FLAG_T16",
+    "FLAG_T32",
 
-local MARBLES = loadImage("images\\MARBLES.tga")
+    "XING_B16",
+    "XING_B24",
+    "XING_B32",
+    "XING_T16",
+    "XING_T24",
+    "XING_T32",
 
+    "MARBLES"
+}
 
 
 local function drawOrientation()
@@ -59,27 +66,21 @@ local function drawGrays()
     image(gray_img_lr, 256,256)
 end
 
-local randomimages = {
-    ubw8,
-    
-    utc24,
-    utc32,
 
+local playlist = {
+    --ubw8,
+    
+    --utc24,
+    --utc32,
+    
     ctc24,
     ctc32,
 
-}
-local function drawRandomImage()
-    local num = math.random(1,#randomimages)
-    image(randomimages[num], 0,0)
-end
-
-local playlist = {
     indexed_ul,
     indexed_ur,
     indexed_ll,
     indexed_lr,
---[[
+---[[
     MARBLES,
     FLAG_B16,
     FLAG_B24,
@@ -103,9 +104,8 @@ local function drawPlaylist()
 end
 
 local drawRoutines = {
-    --drawOrientation,
-    --drawGrays,
-    --drawRandomImage,
+--    drawOrientation,
+--    drawGrays,
     drawPlaylist,
 }
 
