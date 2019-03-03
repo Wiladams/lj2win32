@@ -24,7 +24,7 @@ local PixelBuffer = require("PixelBuffer")
 local bitbang = require("bitbang")
 
 local BITSVALUE = bitbang.BITSVALUE
-
+local isset = bitbang.isset
 
 
 
@@ -73,19 +73,14 @@ local ImageType = enum {
     MonochromeCompressed = 11,
 }
 
+
 local footerSize = 26
 local targaXFileID = "TRUEVISION-XFILE";
 
---res.CMapStart = bs:readUInt16()         -- 03h  Color map origin
---res.CMapLength = bs:readUInt16()        -- 05h  Color map length
---res.CMapDepth = bs:readOctet()          -- 07h  Depth of color map entries
 
 local function readColorMap(bs, header)
---print("readColorMap - BEGIN: ", header.CMapStart, header.CMapLength, string.format("0x%x",bs:tell()))
     local bytespe = header.CMapDepth / 8;
---print("    bytes Per Entry: ", bytespe, string.format("0x%x",bs:tell()+header.CMapLength*bytespe))
     local pixtype = ffi.typeof("uint8_t[$]", bytespe)
---print("pixtype: ", ffi.typeof(pixtype))
     local databuff = pixtype()
 
     local cMap = ffi.new("struct Pixel32[?]", header.CMapLength)
@@ -115,10 +110,15 @@ local function readColorMap(bs, header)
             --pix.Alpha = databuff[3]   -- We should pre-multiply the alpha?
         end
 
---        print(i, cMap[i].Red, cMap[i].Green, cMap[i].Blue)
     end
---print("readColorMap - END: ", string.format("0x%x", bs:tell()))
+
     return cMap
+end
+
+local function isCompressed(header)
+    return header.ImageType == ImageType.ColorMappedCompressed or
+        header.ImageType == ImageType.TrueColorCompressed or
+        header.ImageType == ImageType.MonochromeCompressed
 end
 
 local function readHeader(bs, res)
@@ -130,6 +130,7 @@ local function readHeader(bs, res)
     res.CMapStart = bs:readUInt16()         -- 03h  Color map origin
     res.CMapLength = bs:readUInt16()        -- 05h  Color map length
     res.CMapDepth = bs:readOctet()          -- 07h  Depth of color map entries
+    res.Compressed = isCompressed(res)
 
     -- Image Description
     res.XOffset = bs:readUInt16()           -- 08h  X origin of image
@@ -228,11 +229,12 @@ local TrueColor = ImageType.TrueColor
 local Monochrome = ImageType.Monochrome
 local ColorMapped = ImageType.ColorMapped
 local TrueColorCompressed = ImageType.TrueColorCompressed
-
+local ColorMappedCompressed = ImageType.ColorMappedCompressed
+local MonochromeCompressed = ImageType.MonochromeCompressed
 
 local function decodeSinglePixel(pix, databuff, pixelDepth, imtype, colorMap)
     --print(pix, databuff, bpp, imtype)
-    if imtype == TrueColor then
+    if imtype == TrueColor or imtype == TrueColorCompressed then
         if pixelDepth == 24 then
             pix.Red = databuff[0]
             pix.Green = databuff[1]
@@ -256,13 +258,13 @@ local function decodeSinglePixel(pix, databuff, pixelDepth, imtype, colorMap)
             end 
         end
         return true;
-    elseif imtype == Monochrome then
+    elseif imtype == Monochrome or imtype == MonochromeCompressed then
         pix.Red = databuff[0]
         pix.Green = databuff[0]
         pix.Blue = databuff[0]
         pix.Alpha = 0
         return true
-    elseif imtype == ColorMapped then
+    elseif imtype == ColorMapped or imtype == ColorMappedCompressed then
         -- lookup the color using databuff[0] as index
         local cpix = colorMap[databuff[0]]
         pix.Red = cpix.Red;
@@ -274,66 +276,118 @@ local function decodeSinglePixel(pix, databuff, pixelDepth, imtype, colorMap)
     return false
 end
 
-local function readBody(bs, header)
-    --print("targa.readBody, BEGIN")
-    -- create a pixelbuffer of the right size
-    --print("targa.readBody, 1.0", header.Width, header.Height, header.BytesPerPixel, header.ImageType)
-    local bpp = header.BytesPerPixel
-    local pb = PixelBuffer(header.Width, header.Height)
- 
-    -- create a type to represent the pixel data
-    local pixtype = ffi.typeof("uint8_t[$]", header.BytesPerPixel)
-    local pixtype_ptr = ffi.typeof("$ *", pixtype)
-    --print("targa.readBody, 2.0", pixtype, pixtype_ptr)
-
-    -- create an instance of a single pixel we'll use to stuff the 
-    -- PixelBuffer
-    local pix = ffi.new("struct Pixel32")
-
-    -- get a pointer on the current position within the binstream
-    -- and cast it to our pixtype_ptr
-    --local data = ffi.cast(pixtype_ptr, bs:getPositionPointer())
-    --local dataOffset = 0
-    local databuff = pixtype()
-
-    --print("targa.readBody, 3.0: ", data, bs:remaining())
-
-    --  Start with left to right orientation
-    local dx = 1;
-    local xStart = 0
-    local xEnd = header.Width-1
-    -- switch thing up for right to left
-    if header.HorizontalOrientation == HorizontalOrientation.RightToLeft then
-        dx = -1
-        xStart = header.Width-1
-        xEnd = 0
-    end
-
-    -- start top to bottom vertical orientation
-    local dy = 1
-    local yStart = 0
-    local yEnd = header.Height-1
-    if header.VerticalOrientation == VerticalOrientation.BottomToTop then
-        dy = -1
-        yStart = header.Height-1
-        yEnd = 0
-    end
-
-    for y=yStart,yEnd, dy do 
-        for x=xStart,xEnd, dx do
-            local nRead = bs:readByteBuffer(bpp, databuff)
-
-            decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType, header.ColorMap)
-            pb:set(x,y, pix)
+-- We want to figure out the mapping between positions as we
+-- read them and their locations in our pixel buffer in one place
+-- This iterator figures that out, return x,y pairs for the positions
+-- according to the horizontal and vertical orientation.  Ideally this
+-- would do interleaving as well, but we don't have an image to test
+-- with
+local function locations(header)
+    local function iterator()
+        --  Start with left to right orientation
+        local dx = 1;
+        local xStart = 0
+        local xEnd = header.Width-1
+        
+        -- switch to right to left of horizontal orientation indicates
+        if header.HorizontalOrientation == HorizontalOrientation.RightToLeft then
+            dx = -1
+            xStart = header.Width-1
+            xEnd = 0
+        end
+    
+        -- start top to bottom vertical orientation
+        local dy = 1
+        local yStart = 0
+        local yEnd = header.Height-1
+        if header.VerticalOrientation == VerticalOrientation.BottomToTop then
+            dy = -1
+            yStart = header.Height-1
+            yEnd = 0
+        end
+    
+        -- Now do the actual iteration job
+        for y = yStart, yEnd, dy do 
+            for x=xStart,xEnd, dx do
+                coroutine.yield(x,y,pix)
+            end
         end
     end
-    
-    --print("targa.readBody, END")
+
+    return coroutine.wrap(iterator)
+end
+
+-- An iterator which will return the uncompressed
+-- pixels in row order
+local function uncompressedPixels(bs, header)
+    local function iterator()
+        local bytesPerPixel = header.BytesPerPixel
+        local pixtype = ffi.typeof("uint8_t[$]", bytesPerPixel)
+        local pix = ffi.new("struct Pixel32")
+        local databuff = pixtype()
+
+        for x,y in locations(header) do
+            local nRead = bs:readByteBuffer(bytesPerPixel, databuff)
+            decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType, header.ColorMap)
+            coroutine.yield(x,y,pix)
+        end
+    end
+
+    return coroutine.wrap(iterator)
+end
+
+local function compressedPixels(bs, header)
+    local function iterator()
+        local bytesPerPixel = header.BytesPerPixel
+        local pixtype = ffi.typeof("uint8_t[$]", bytesPerPixel)
+        local pix = ffi.new("struct Pixel32")
+        local databuff = pixtype()
+        
+        local pixelCount = 0
+        local repCount = 0
+
+        for x,y in locations(header) do
+            if pixelCount == 0 then
+                -- read repeatCount byte to see if it's RLE or RAW
+                -- and the number of repetitions                
+                repCount = bs:readOctet()
+                local isRLE = isset(repCount, 7)
+                --print("RLE: ", isRLE)
+                pixelCount = BITSVALUE(repCount,0,6) + 1
+                local nRead = bs:readByteBuffer(bytesPerPixel, databuff)
+                decodeSinglePixel(pix, databuff, header.PixelDepth, header.ImageType, header.ColorMap)
+                --print("pixelCount: ", pixelCount, pix)
+            end
+
+            coroutine.yield(x,y,pix)
+            pixelCount = pixelCount - 1
+        end
+    end
+
+    return coroutine.wrap(iterator)
+end
+
+local function readBody(bs, header)
+    --print("targa.readBody, BEGIN")
+
+    local pb = PixelBuffer(header.Width, header.Height)
+ 
+    if not header.Compressed then
+        for x,y,pixel in uncompressedPixels(bs, header) do
+            pb:set(x,y,pixel)
+        end
+    else
+        for x,y,pixel in compressedPixels(bs, header) do
+            pb:set(x,y,pixel)
+        end
+    end
 
     return pb
 end
 
-
+-- read a targa image from a stream
+-- This assumes other forms, like reading from a fill
+-- will create a stream to read from
 local function readFromStream(bs, res)
     res = res or {}
 
@@ -355,26 +409,12 @@ local function readFromStream(bs, res)
         return false, res
     end
 
-
-    local trueColor = tonumber(ImageType.TrueColor)
-    --print("ImageType.TrueColor:", header.ImageType, trueColor)
-
---[[
-    --print("header.ImageType == ImageType.TrueColor ", header.ImageType == ImageType.TrueColor)
-    if header.ImageType ~= trueColor then
-        res.Error = "can only read uncompressed TrueType"
-        return false, res
-    end
---]]
-    -- Read the body
+    -- We have the header, so we should be able
+    -- to read the body
     pixbuff, err = readBody(bs, header)
 
     res.PixelBuffer = pixbuff
     res.Error = err
-
-    if not pixbuff then
-        return false, res
-    end
 
     return pixbuff, header, footer
 end

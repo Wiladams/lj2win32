@@ -43,7 +43,6 @@ local function BITSVALUE(src, lowbit, highbit)
 	highbit = highbit or 0
 
 	return rshift(band(src, BITMASK(lowbit, highbit)), lowbit)
-	--return rshift(band(src, BITMASK(lowbit, highbit), lowbit))
 end
 
 local function getbitsvalue(src, lowbit, bitcount)

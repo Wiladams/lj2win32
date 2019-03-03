@@ -5,19 +5,14 @@ require("p5")
 local ffi = require("ffi")
 local C = ffi.C 
 
-local function loadImages(imageList)
-    for _, name in ipairs(imageList) do 
-        _G[name] = loadImage(string.format("images\\%s.tga", name))
-    end
-
-    return true;
-end
-
+-- A list of images to be loaded
+-- The names here match the actual filenames 
+-- without the .tga extension
 local imageList = {
-    "rgba_UL",
-    "rgba_UR",
-    "rgba_LL",
-    "rgba_LR",
+    "rgb_a_UL",
+    "rgb_a_UR",
+    "rgb_a_LL",
+    "rgb_a_LR",
 
     "grayscale_UL",
     "grayscale_UR",
@@ -29,11 +24,18 @@ local imageList = {
     "indexed_LL",
     "indexed_LR",
 
+    "ctc16",
     "ctc24",
     "ctc32",
+
+    "cbw8",
+    "ccm8",
+
+    "ubw8",
+    
     "utc24",
     "utc32",
-    "ubw8",
+
 
     "FLAG_B16",
     "FLAG_B24",
@@ -50,6 +52,19 @@ local imageList = {
 
     "MARBLES"
 }
+
+local function loadImages(imageList)
+    for _, name in ipairs(imageList) do 
+        local img = loadImage(string.format("images\\%s.tga", name))
+        _G[name] = img
+        --print("LOADING: ", name, img)
+    end
+
+    return true;
+end
+
+loadImages(imageList)
+print("indexed_LL", indexed_LL)
 
 
 local function drawOrientation()
@@ -68,18 +83,21 @@ end
 
 
 local playlist = {
-    --ubw8,
+    ubw8,
+    cbw8,
+    ccm8,
     
     --utc24,
     --utc32,
     
+    ctc16,
     ctc24,
     ctc32,
 
-    indexed_ul,
-    indexed_ur,
-    indexed_ll,
-    indexed_lr,
+    indexed_UL,
+    indexed_UR,
+    indexed_LL,
+    indexed_LR,
 ---[[
     MARBLES,
     FLAG_B16,
@@ -100,6 +118,7 @@ local currentItem = 1
 
 
 local function drawPlaylist()
+print("drawPlaylist: ", currentItem, playlist[currentItem])
     image(playlist[currentItem],0,0)
 end
 
