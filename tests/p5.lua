@@ -274,7 +274,8 @@ sqrt = math.sqrt
 ]]
 function color(...)
 	local nargs = select('#', ...)
-	local self = {}
+	--local self = {}
+    local pix = ffi.new("struct Pixel32")
 
 	-- There can be 1, 2, 3, or 4, arguments
 	--	print("Color.new - ", nargs)
@@ -305,15 +306,20 @@ function color(...)
 		b = select(3,...)
 		a = select(4,...)
 	end
-	
-	self.cref = wingdi.RGB(r,g,b)
-	
-	self.R = r
-	self.G = g
-	self.B = b
-	self.A = a
+    
+    pix.Red = r
+    pix.Green = g
+    pix.Blue = b 
+    --pix.Alpha = a  
 
-	return self;
+	--self.cref = wingdi.RGB(r,g,b)
+	
+	--self.R = r
+	--self.G = g
+	--self.B = b
+	--self.A = a
+
+	return pix;
 end
 
 

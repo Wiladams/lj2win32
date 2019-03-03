@@ -660,14 +660,19 @@ function image(img, dstX, dstY, awidth, aheight)
 		return false, 'no image specified'
 	end
 
-	print("image(), img.width, img.height: ", img.Width, img.Height)
-	print("  width, height: ", width, height)
+	--print("image(), img.width, img.height: ", img.Width, img.Height)
+	--print("  width, height: ", width, height)
 --	surface.DC:StretchBlt(img, dstX, dstY,awidth,aheight)
 ---[=[
 	-- need to do some clipping
 	dstX = dstX or 0
 	dstY = dstY or 0
 
+	-- find intersection of two rectangles
+	local r1 = Rectangle(dstX, dstY, img.Width, img.Height)
+	local r2 = Rectangle(0,0, width, height)
+	local visible = r2:intersect(r1)
+	
 	--print("image: ", src.Width, src.Height)
 	local pixelPtr = ffi.cast("struct Pixel32 *", surface.pixelData.data)
     for y= 0, img.Height-1 do

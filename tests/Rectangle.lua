@@ -67,9 +67,25 @@ end
 function Rect.union(self, rhs)
     local x1 = math.min(self.Left, rhs.Left)
     local x2 = math.max(self.Right, rhs.Right)
-    local y1 = math.min(self)
+    local y1 = math.min(self.Top, rhs.Top)
+    local y2 = math.max(self.Bottom, rhs.Bottom)
+
+    return Rect(x1, y1, x2-x1, y2-y1)
 end
 
+function Rect.intersection(self, rhs)
+    local x1 = math.max(self.Left, rhs.Left)
+    local x2 = math.min(self.Right, rhs.Right)
+    local y1 = math.max(self.Top, rhs.Top)
+    local y2 = math.min(self.Bottom, rhs.Bottom)
+    local w = x2-x1;
+    local h = y2-y1
 
-local r1 = Rect(10,10,100,100)
-print("r1: ", r1)
+    if w < 0 or h < 0 then
+        return nil
+    end
+
+    return Rect(x1, y1, w, h)
+end
+
+return Rect
