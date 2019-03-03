@@ -14,10 +14,20 @@ local imageList = {
     "rgb_a_LL",
     "rgb_a_LR",
 
+    "rgb_UL",
+    "rgb_UR",
+    "rgb_LL",
+    "rgb_LR",
+
     "grayscale_UL",
     "grayscale_UR",
     "grayscale_LL",
     "grayscale_LR",
+
+    "grayscale_a_UL",
+    "grayscale_a_UR",
+    "grayscale_a_LL",
+    "grayscale_a_LR",
 
     "indexed_UL",
     "indexed_UR",
@@ -32,7 +42,9 @@ local imageList = {
     "ccm8",
 
     "ubw8",
-    
+    "ucm8",
+
+    "utc16",
     "utc24",
     "utc32",
 
@@ -64,7 +76,6 @@ local function loadImages(imageList)
 end
 
 loadImages(imageList)
-print("indexed_LL", indexed_LL)
 
 
 local function drawOrientation()
@@ -83,42 +94,88 @@ end
 
 
 local playlist = {
+---[[
     ubw8,
+    ucm8,
+--]]
+
+---[[
     cbw8,
     ccm8,
-    
-    --utc24,
-    --utc32,
-    
+--]]
+
+--[[
+    utc16,
+    utc24,
+    utc32,
+--]]
+
+--[[
     ctc16,
     ctc24,
     ctc32,
+--]]
 
+--[[
+    grayscale_a_UL,
+    grayscale_a_UR,
+    grayscale_a_LL,
+    grayscale_a_LR,
+--]]
+
+--[[
+    grayscale_UL,
+    grayscale_UR,
+    grayscale_LL,
+    grayscale_LR,
+--]]
+
+--[[
     indexed_UL,
     indexed_UR,
     indexed_LL,
     indexed_LR,
----[[
+--]]
+
     MARBLES,
+
+---[[
     FLAG_B16,
     FLAG_B24,
     FLAG_B32,
     FLAG_T16,
     FLAG_T32,
+--]]
+
+--[[
     XING_B16,
     XING_B24,
     XING_B32,
     XING_T16,
     XING_T24,
-    --]]
     XING_T32
+--]]
+
+---[[
+    rgb_UL,
+    rgb_UR,
+    rgb_LL,
+    rgb_LR,
+--]]
+
+--[[
+    rgb_a_UL,
+    rgb_a_UR,
+    rgb_a_LL,
+    rgb_a_LR,
+--]]
 }
 local nItems = #playlist
 local currentItem = 1
 
 
 local function drawPlaylist()
-print("drawPlaylist: ", currentItem, playlist[currentItem])
+--print("drawPlaylist: ", currentItem, playlist[currentItem])
     image(playlist[currentItem],0,0)
 end
 
@@ -171,4 +228,4 @@ function keyTyped()
     redraw()
 end
 
-go({width=1024,height=512})
+go({width=1920,height=1080})

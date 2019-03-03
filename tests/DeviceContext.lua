@@ -413,9 +413,12 @@ function DeviceContext.StretchBlt(self, img, XDest, YDest,DestWidth,DestHeight)
 			YDest = YDest or 0
 			DestWidth = DestWidth or img.Width
 			DestHeight = DestHeight or img.Height
-
+--print("stretchBlt: ", XDest, YDest, DestWidth, DestHeight)
+--print(" Size: ", img.Width, img.Height, img.BitsPerElement)
+--print(" Data: ", img.Data, img.Pixels)
 			-- Draw a pixel buffer
-			local bmInfo = BITMAPINFO();
+			local bmInfo = ffi.new("BITMAPINFO")
+			bmInfo.bmiHeader.biSize = ffi.sizeof("BITMAPINFOHEADER")
 			bmInfo.bmiHeader.biWidth = img.Width;
 			bmInfo.bmiHeader.biHeight = img.Height;
 			bmInfo.bmiHeader.biPlanes = 1;

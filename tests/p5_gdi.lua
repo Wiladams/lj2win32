@@ -655,24 +655,30 @@ end
 
     need to do clipping
 ]]
-function image(src, dstX, dstY, awidth, aheight)
-	if not src then
+function image(img, dstX, dstY, awidth, aheight)
+	if not img then
 		return false, 'no image specified'
 	end
 
+	print("image(), img.width, img.height: ", img.Width, img.Height)
+	print("  width, height: ", width, height)
+--	surface.DC:StretchBlt(img, dstX, dstY,awidth,aheight)
+---[=[
 	-- need to do some clipping
 	dstX = dstX or 0
 	dstY = dstY or 0
 
 	--print("image: ", src.Width, src.Height)
----[[
-    for y=0,src.Height-1 do
-		for x=0,src.Width-1 do
-			local c = src:get(x,y)
-            set(dstX+x, dstY+y, c)
+	local pixelPtr = ffi.cast("struct Pixel32 *", surface.pixelData.data)
+    for y= 0, img.Height-1 do
+		for x=0, img.Width-1 do
+			local c = img:get(x,y)
+            --set(dstX+x, dstY+y, c)
+			pixelPtr[y*width+x].cref = c.cref
         end
 	end
---]]
+
+--]=]
 end
 
 function imageMode()

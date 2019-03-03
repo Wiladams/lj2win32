@@ -10,6 +10,14 @@
 -- other implementations
     https://unix4lyfe.org/targa/
     https://github.com/ftrvxmtrx/tga
+
+    Highlights of targa format
+    vertical orientation
+    horizontal orientation
+    truecolor (16, 24, 32)
+    color mapped
+    monochrome
+    compressed - RLE, RAW
 --]]
 
 local ffi = require("ffi")

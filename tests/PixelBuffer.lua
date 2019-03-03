@@ -14,7 +14,21 @@ if ffi.abi("le") then
 -- assuming typical x86, which
 -- can deal with byte aligned access efficiently
 ffi.cdef[[
-struct Pixel32 {
+typedef struct Pixel32 {
+    union {
+        struct {
+            uint8_t Red;
+           uint8_t Green;
+           uint8_t Blue;            
+           uint8_t Alpha;
+        };
+        uint32_t cref;
+    };
+} Pixel32;
+]]
+--[=[
+ffi.cdef[[
+typedef struct Pixel32 {
     union {
         struct {
             uint8_t Blue;            
@@ -24,8 +38,9 @@ struct Pixel32 {
         };
         uint32_t cref;
     };
-} ;
+} Pixel32;
 ]]
+--]=]
 else
     -- assuming bigendian systems do better 
     -- with 32-bit, and bit-fields
@@ -58,6 +73,7 @@ local PixelBuffer_mt = {
 function PixelBuffer.init(self, params)
 
     local obj = params or {}
+    params.Data = ffi.cast("uint8_t *", params.Pixels)
     setmetatable(obj, PixelBuffer_mt)
 
     return obj;
@@ -78,6 +94,7 @@ function PixelBuffer.new(self, width, height)
         Pixels = pixels, 
         Width=width, 
         Height=height, 
+        BitsPerElement = 32,
         Kind="struct Pixel32"})
 end
 
