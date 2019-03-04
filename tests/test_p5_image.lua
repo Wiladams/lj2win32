@@ -94,12 +94,12 @@ end
 
 
 local playlist = {
----[[
+--[[
     ubw8,
     ucm8,
 --]]
 
----[[
+--[[
     cbw8,
     ccm8,
 --]]
@@ -139,7 +139,7 @@ local playlist = {
 
     MARBLES,
 
----[[
+--[[
     FLAG_B16,
     FLAG_B24,
     FLAG_B32,
@@ -156,7 +156,7 @@ local playlist = {
     XING_T32
 --]]
 
----[[
+--[[
     rgb_UL,
     rgb_UR,
     rgb_LL,
@@ -229,3 +229,4 @@ function keyTyped()
 end
 
 go({width=1920,height=1080})
+--go()

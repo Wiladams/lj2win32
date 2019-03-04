@@ -5,6 +5,7 @@
 
 local ffi = require("ffi")
 local wingdi = require("win32.wingdi")
+local Rectangle = require("Rectangle")
 
 local solidBrushes = {}
 local solidPens = {}
@@ -671,15 +672,17 @@ function image(img, dstX, dstY, awidth, aheight)
 	-- find intersection of two rectangles
 	local r1 = Rectangle(dstX, dstY, img.Width, img.Height)
 	local r2 = Rectangle(0,0, width, height)
-	local visible = r2:intersect(r1)
+	local visible = r2:intersection(r1)
 	
 	--print("image: ", src.Width, src.Height)
 	local pixelPtr = ffi.cast("struct Pixel32 *", surface.pixelData.data)
     for y= 0, img.Height-1 do
 		for x=0, img.Width-1 do
-			local c = img:get(x,y)
-            --set(dstX+x, dstY+y, c)
-			pixelPtr[y*width+x].cref = c.cref
+			if visible:contains(x,y) then
+				local c = img:get(x,y)
+            	--set(dstX+x, dstY+y, c)
+				pixelPtr[y*width+x].cref = c.cref
+			end
         end
 	end
 
