@@ -81,8 +81,11 @@ local function solidBrush(c)
 end
 
 local function solidPen(...)
-	local c = color(...)
-
+	local c = select(1, ...)
+	if type(c) ~= "cdata" then
+		c = color(...)
+	end
+	
 	local apen = solidPens[tonumber(c.cref)]
 
 	if apen then
@@ -113,7 +116,11 @@ end
 
 
 function background(...)
-	local c = color(...)
+	local c = select(1,...)
+	if type(c) ~= "cdata" then
+		c = color(...)
+	end
+
 	local bbrush = solidBrush(c)
 	BackgroundColor = c;
 
@@ -140,7 +147,12 @@ end
 
 
 function fill(...)
-	local c = color(...)
+	local c = select(1,...)
+
+	if type(c) ~= "cdata" then
+		c = color(...)
+	end
+
 	local abrush = solidBrush(c)
 	FillColor = c;
 	if not abrush then
@@ -168,6 +180,7 @@ function noStroke()
 end
 
 function stroke(...)
+
 	local pen, c = solidPen(...);
 	StrokeColor = c;
 

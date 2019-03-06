@@ -274,7 +274,6 @@ sqrt = math.sqrt
 ]]
 function color(...)
 	local nargs = select('#', ...)
-	--local self = {}
     local pix = ffi.new("struct Pixel32")
 
 	-- There can be 1, 2, 3, or 4, arguments
@@ -287,13 +286,13 @@ function color(...)
 	
 	if (nargs == 1) then
 			r = select(1,...)
-			g = select(1,...)
-			b = select(1,...)
+			g = r
+			b = r
 			a = 255;
 	elseif nargs == 2 then
 			r = select(1,...)
-			g = select(1,...)
-			b = select(1,...)
+			g = r
+			b = r
 			a = select(2,...)
 	elseif nargs == 3 then
 			r = select(1,...)
@@ -306,7 +305,7 @@ function color(...)
 		b = select(3,...)
 		a = select(4,...)
 	end
-    
+print("r,g,b: ", r,g,b)
     pix.Red = r
     pix.Green = g
     pix.Blue = b 
