@@ -6575,28 +6575,28 @@ GetFileSecurityA (
 #endif
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+--]=]
 
+--[=[
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 
-
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
-#if(_WIN32_WINNT >= 0x0400)
-
+if(_WIN32_WINNT >= 0x0400) then
+ffi.cdef[[
 BOOL
 __stdcall
 ReadDirectoryChangesW(
-            HANDLE hDirectory,
-     LPVOID lpBuffer,
-            DWORD nBufferLength,
-            BOOL bWatchSubtree,
-            DWORD dwNotifyFilter,
-       LPDWORD lpBytesReturned,
-     LPOVERLAPPED lpOverlapped,
-        LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
-    );
+    HANDLE hDirectory,
+    LPVOID lpBuffer,
+    DWORD nBufferLength,
+    BOOL bWatchSubtree,
+    DWORD dwNotifyFilter,
+    LPDWORD lpBytesReturned,
+    LPOVERLAPPED lpOverlapped,
+    LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine);
+]]
 
-#if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
-
+if (NTDDI_VERSION >= NTDDI_WIN10_RS3) then
+ffi.cdef[[
 BOOL
 __stdcall
 ReadDirectoryChangesExW(
@@ -6610,34 +6610,35 @@ ReadDirectoryChangesExW(
         LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine,
             READ_DIRECTORY_NOTIFY_INFORMATION_CLASS ReadDirectoryNotifyInformationClass
     );
-#endif
-#endif /* _WIN32_WINNT >= 0x0400 */
+]]
+end
+end --/* _WIN32_WINNT >= 0x0400 */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+--]=]
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-#if _WIN32_WINNT >= 0x0600
+if _WIN32_WINNT >= 0x0600 then
 
 
- 
+ffi.cdef[[ 
 LPVOID
 __stdcall
 MapViewOfFileExNuma(
-         HANDLE hFileMappingObject,
-         DWORD dwDesiredAccess,
-         DWORD dwFileOffsetHigh,
-         DWORD dwFileOffsetLow,
-         SIZE_T dwNumberOfBytesToMap,
-     LPVOID lpBaseAddress,
-         DWORD nndPreferred
-    );
+    HANDLE hFileMappingObject,
+    DWORD dwDesiredAccess,
+    DWORD dwFileOffsetHigh,
+    DWORD dwFileOffsetLow,
+    SIZE_T dwNumberOfBytesToMap,
+    LPVOID lpBaseAddress,
+    DWORD nndPreferred);
+]]
 
 end  -- _WIN32_WINNT >= 0x0600
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 IsBadReadPtr(
@@ -6690,14 +6691,18 @@ IsBadStringPtrW(
      LPCWSTR lpsz,
          UINT_PTR ucchMax
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define IsBadStringPtr  IsBadStringPtrW
 else
 #define IsBadStringPtr  IsBadStringPtrA
 end  -- !UNICODE
+--]]
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
---]=]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
@@ -7084,16 +7089,13 @@ else
 end  -- !UNICODE
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-
+--]=]
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-#if (_WIN32_WINNT >= 0x0500)
-
-
-
-
+if (_WIN32_WINNT >= 0x0500) then
+ffi.cdef[[
 BOOL
 __stdcall
 DnsHostnameToComputerNameA (
@@ -7110,15 +7112,18 @@ DnsHostnameToComputerNameW (
      LPWSTR ComputerName,
      LPDWORD nSize
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define DnsHostnameToComputerName  DnsHostnameToComputerNameW
 else
 #define DnsHostnameToComputerName  DnsHostnameToComputerNameA
 end  -- !UNICODE
-
+--]]
 end  -- _WIN32_WINNT
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 GetUserNameA (
@@ -7132,12 +7137,17 @@ GetUserNameW (
      LPWSTR lpBuffer,
      LPDWORD pcbBuffer
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define GetUserName  GetUserNameW
 else
 #define GetUserName  GetUserNameA
 end  -- !UNICODE
+--]]
 
+--[[
 //
 // Logon Support APIs
 //
@@ -7163,10 +7173,10 @@ end  -- (_WIN32_WINNT >= 0x0500)
 #if(_WIN32_WINNT >= 0x0600)
 #define LOGON32_PROVIDER_VIRTUAL    4
 end  -- (_WIN32_WINNT >= 0x0600)
+--]]
 
-
-
-
+--[=[
+ffi.cdef[[
 BOOL
 __stdcall
 LogonUserA (
@@ -7188,13 +7198,17 @@ LogonUserW (
             DWORD dwLogonProvider,
      PHANDLE phToken
     );
+]]
+
+--[[
 #ifdef UNICODE
 #define LogonUser  LogonUserW
 else
 #define LogonUser  LogonUserA
 end  -- !UNICODE
+--]]
 
-
+ffi.cdef[[
 BOOL
 __stdcall
 LogonUserExA (
@@ -7224,15 +7238,18 @@ LogonUserExW (
            LPDWORD pdwProfileLength,
            PQUOTA_LIMITS pQuotaLimits
     );
+]]
+--]=]
+--[[
 #ifdef UNICODE
 #define LogonUserEx  LogonUserExW
 else
 #define LogonUserEx  LogonUserExA
 end  -- !UNICODE
+--]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-
-
+--[=[
 #if(_WIN32_WINNT >= 0x0600)
 
 

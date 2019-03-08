@@ -620,6 +620,7 @@ LowSpeed
                                 METHOD_BUFFERED,  \
                                 FILE_ANY_ACCESS)
 
+--[[
 /*
 IOCTL_USB_GET_NODE_CONNECTION_ATTRIBUTES
 
@@ -648,6 +649,7 @@ or overcurrent.
 PortAttributes
 -Extended port attributes defined in usb.h.
 */
+--]]
 
 #define IOCTL_USB_GET_NODE_CONNECTION_ATTRIBUTES  \
                                 CTL_CODE(FILE_DEVICE_USB,  \
@@ -655,6 +657,7 @@ PortAttributes
                                 METHOD_BUFFERED,  \
                                 FILE_ANY_ACCESS)
 
+--[[
 /*
 IOCTL_USB_GET_NODE_CONNECTION_INFORMATION_EX
 
@@ -703,6 +706,7 @@ USB_PIPE_INFO PipeList[0];
 - list of open pipes including schedule offset and endpoint descriptor.  This
 information can be used to calculate bandwidthusage.
 */
+--]]
 
 #define IOCTL_USB_GET_NODE_CONNECTION_INFORMATION_EX  \
                                 CTL_CODE(FILE_DEVICE_USB,  \
@@ -971,7 +975,7 @@ typedef struct _USB_HUB_CAPABILITIES {
         IOCTL_USB_GET_NODE_INFORMATION, this structure can be extended in the
         future to accomodate more data.  The IOCTL will return only as much
         data as indicated by the size of the request buffer, to maintain
-        backward compatibility with older callers that don't know about the
+        backward compatibility with older callers that dont know about the
         new data.
     */
 
@@ -1592,7 +1596,7 @@ typedef struct _USB_DEVICE_PERFORMANCE_INFO {
     // Total USB controller BW available in bits/32ms.
     ULONG Total32secBandwidth;
 
-    // Total USB BW available on the device's TT in bits/32ms
+    // Total USB BW available on the devices TT in bits/32ms
     ULONG TotalTtBandwidth;
 
     // Text description of the device
