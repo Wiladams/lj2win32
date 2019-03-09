@@ -13,4 +13,4 @@ function setup()
     noLoop()
 end
 
-go()
+go({width=640, height=640})

@@ -43,15 +43,29 @@ function Checkerboard.draw(self)
 
     rectMode(CORNER);
     
-	for c = 0, self.columns-1 do
-		for r = 0, self.rows-1 do
-		    fill(self.color1);
-			rect(c*tilewidth, r*tileheight, boxwidth, boxheight);
-			rect((c*tilewidth) + boxwidth, (r*tileheight) + boxheight, boxwidth, boxheight);
+    local c1 = self.color1;
+    local c2 = self.color2;
 
-			fill(self.color2);
-			rect((c*tilewidth) + boxwidth, r*tileheight, boxwidth, boxheight);
-			rect(c*tilewidth, (r*tileheight) + boxheight, boxwidth, boxheight);
+    for r = 0, self.rows-1 do
+        -- Flip which color comes first
+        -- per each row
+        if r % 2 == 0 then
+            c1 = self.color1
+            c2 = self.color2
+        else
+            c1 = self.color2;
+            c2 = self.color1;
+        end
+
+        for c = 0, (self.columns)-1 do
+            -- alternate colors per column
+            if c % 2 == 0 then
+		        fill(c1);
+                rect(c*tilewidth, r*tileheight, tilewidth, tileheight);
+            else
+                fill(c2)
+                rect(c*tilewidth, r*tileheight, tilewidth, tileheight);
+            end
         end
     end
 end

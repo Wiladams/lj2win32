@@ -305,7 +305,7 @@ function color(...)
 		b = select(3,...)
 		a = select(4,...)
 	end
-print("r,g,b: ", r,g,b)
+--print("r,g,b: ", r,g,b)
     pix.Red = r
     pix.Green = g
     pix.Blue = b 
