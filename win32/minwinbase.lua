@@ -284,6 +284,13 @@ typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 ]]
 
 ffi.cdef[[
+typedef LPVOID (__stdcall *PENCLAVE_ROUTINE)(
+    LPVOID lpThreadParameter
+    );
+typedef PENCLAVE_ROUTINE LPENCLAVE_ROUTINE;
+]]
+
+ffi.cdef[[
 typedef struct _EXCEPTION_DEBUG_INFO {
     EXCEPTION_RECORD ExceptionRecord;
     DWORD dwFirstChance;

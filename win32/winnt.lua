@@ -11793,11 +11793,14 @@ static const int SEC_IMAGE_NO_EXECUTE        = (SEC_IMAGE | SEC_NOCACHE);
 static const int MEM_IMAGE                   = SEC_IMAGE;
 static const int WRITE_WATCH_FLAG_RESET  = 0x01;
 static const int MEM_UNMAP_WITH_TRANSIENT_BOOST  = 0x01;
-
-static const int ENCLAVE_TYPE_SGX            = 0x00000001;
 ]]
 
---[==[
+ffi.cdef[[
+static const int ENCLAVE_TYPE_SGX           = 0x00000001;
+static const int ENCLAVE_TYPE_VBS           = 0x00000010;
+]]
+
+ffi.cdef[[
 typedef struct _ENCLAVE_CREATE_INFO_SGX {
     BYTE  Secs[4096];
 } ENCLAVE_CREATE_INFO_SGX, *PENCLAVE_CREATE_INFO_SGX;
@@ -11808,7 +11811,15 @@ typedef struct _ENCLAVE_INIT_INFO_SGX {
     BYTE  EInitToken[304];
     BYTE  Reserved2[1744];
 } ENCLAVE_INIT_INFO_SGX, *PENCLAVE_INIT_INFO_SGX;
+]]
 
+ffi.cdef[[
+ typedef struct _ENCLAVE_CREATE_INFO_VBS {
+    DWORD Flags;
+    BYTE  OwnerID[32];
+} ENCLAVE_CREATE_INFO_VBS, *PENCLAVE_CREATE_INFO_VBS;
+]]
+--[=[
 // begin_access
 
 //

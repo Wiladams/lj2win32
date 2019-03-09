@@ -11,13 +11,13 @@
     https://unix4lyfe.org/targa/
     https://github.com/ftrvxmtrx/tga
 
-    Highlights of targa format
+    Honors the following properties
     vertical orientation
     horizontal orientation
     truecolor (16, 24, 32)
-    color mapped
-    monochrome
-    compressed - RLE, RAW
+    indexed (16, 24, 32)
+    monochrome (8)
+    compressed - RLE, (not RAW)
 --]]
 
 local ffi = require("ffi")
@@ -33,9 +33,6 @@ local bitbang = require("bitbang")
 
 local BITSVALUE = bitbang.BITSVALUE
 local isset = bitbang.isset
-
-
-
 
 
 --[[
