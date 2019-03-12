@@ -11819,6 +11819,7 @@ ffi.cdef[[
     BYTE  OwnerID[32];
 } ENCLAVE_CREATE_INFO_VBS, *PENCLAVE_CREATE_INFO_VBS;
 ]]
+
 --[=[
 // begin_access
 
@@ -11880,7 +11881,7 @@ ffi.cdef[[
                                    FILE_EXECUTE             |\
                                    SYNCHRONIZE)
 // end_access
---]==]
+--]=]
 
 ffi.cdef[[
 static const int FILE_SHARE_READ                  = 0x00000001;  
@@ -11953,9 +11954,11 @@ static const int FILE_SUPPORTS_GHOSTING               = 0x40000000;
 ]]
 
 
---[==[
+--[[
 static const int FILE_INVALID_FILE_ID               ((LONGLONG)-1LL) 
+--]]
 
+ffi.cdef[[
 typedef struct _FILE_ID_128 {                               
     BYTE  Identifier[16];                                   
 } FILE_ID_128, *PFILE_ID_128;                               
@@ -11970,7 +11973,7 @@ typedef struct _FILE_NOTIFY_INFORMATION {
     DWORD FileNameLength;
     WCHAR FileName[1];
 } FILE_NOTIFY_INFORMATION, *PFILE_NOTIFY_INFORMATION;
---]==]
+]]
 
 ffi.cdef[[
 //

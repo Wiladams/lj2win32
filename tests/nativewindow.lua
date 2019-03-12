@@ -10,17 +10,6 @@ local winuser = require("win32.winuser");
 local menu = require("menu")
 
 
-ffi.cdef[[
-typedef struct {
-	HWND	Handle;
-} WindowHandle, *PWindowHandle;
-]]
-
-
-local WindowHandle_mt = {}
-ffi.metatype("WindowHandle", WindowHandle_mt);
-local WindowHandle = ffi.typeof("WindowHandle");
-
 local NativeWindow = {}
 setmetatable(NativeWindow, {
 	__call = function(self, ...)
@@ -34,7 +23,7 @@ local NativeWindow_mt = {
 
 function NativeWindow.init(self, rawhandle)
 	local obj = {
-		Handle = WindowHandle(rawhandle);
+		Handle = rawhandle;
 		ClientDC = ffi.C.GetDC(rawhandle);
 	}
 	setmetatable(obj, NativeWindow_mt);
@@ -84,13 +73,17 @@ end
 --]]
 
 -- Attributes
-function NativeWindow.getNativeHandle(self)
-	return self.Handle.Handle;
+function NativeWindow.getWindowDeviceContext(self)
+	if not self.WindowContext then
+		self.WindowContext = DeviceContext(ffi.C.GetWindowDC(self.Handle))
+	end
+
+	return self.WindowContext;
 end
 
 function NativeWindow.getDeviceContext(self)
 	if not self.ClientContext then
-		self.ClientContext = DeviceContext(ffi.C.GetDC(self:getNativeHandle()))
+		self.ClientContext = DeviceContext(ffi.C.GetDC(self.Handle))
 	end
 
 	return self.ClientContext;
@@ -110,7 +103,7 @@ end
 function NativeWindow.invalidate(self, lpRect, bErase)
 	bErase = bErase or 0;
 
-	local res = ffi.C.InvalidateRect(self:getNativeHandle(), r, bErase)
+	local res = ffi.C.InvalidateRect(self.Handle, r, bErase)
 end
 
 function NativeWindow.redraw(self, flags)
@@ -122,7 +115,7 @@ function NativeWindow.redraw(self, flags)
 	flags = flags or bor(ffi.C.RDW_UPDATENOW, ffi.C.RDW_INTERNALPAINT);
 
 	local res = ffi.C.RedrawWindow(
-  		self:getNativeHandle(),
+  		self.Handle,
   		lprcUpdate,
    		hrgnUpdate,
   		flags);
@@ -132,22 +125,22 @@ end
 
 function NativeWindow.menuBar(self, params)
 	local hMenuBar = menu.menubar(params)
-	ffi.C.SetMenu(self.Handle.Handle, hMenuBar);
+	ffi.C.SetMenu(self.Handle, hMenuBar);
 end
 
 function NativeWindow.show(self, kind)
 	kind = kind or ffi.C.SW_SHOWNORMAL;
 
-	return ffi.C.ShowWindow(self:getNativeHandle(), kind);
+	return ffi.C.ShowWindow(self.Handle, kind);
 end
 
 function NativeWindow.update(self)
-	ffi.C.UpdateWindow(self:getNativeHandle())
+	ffi.C.UpdateWindow(self.Handle)
 end
 
 function NativeWindow.getClientSize(self)
 	local csize = ffi.new( "RECT[1]" )
-	ffi.C.GetClientRect(self:getNativeHandle(), csize);
+	ffi.C.GetClientRect(self.Handle, csize);
 	csize = csize[0]
 	local width = csize.right-csize.left
 	local height = csize.bottom-csize.top
@@ -158,7 +151,7 @@ end
 function NativeWindow.getTitle(self)
 	local buf = ffi.new("char[?]", 256)
 	local lbuf = ffi.cast("intptr_t", buf)
-	if ffi.C.SendMessageA(self:getNativeHandle(), ffi.C.WM_GETTEXT, 255, lbuf) ~= 0 then
+	if ffi.C.SendMessageA(self.Handle, ffi.C.WM_GETTEXT, 255, lbuf) ~= 0 then
 		return ffi.string(buf)
 	end
 
