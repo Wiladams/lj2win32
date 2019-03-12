@@ -70,17 +70,17 @@ utc16.tga
 utc24.tga
 utc32.tga
 ]]
---local pixbuff, header, footer = targa.readFromFile("images\\rgb_UL.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\grayscale_UL.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\indexed_UL.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\utc24.tga")
-local pixbuff, header, footer = targa.readFromFile("images\\ctc24.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\xing_t32.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\XING_B24.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\XING_T16.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\MARBLES.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\ccm8.tga")
---local pixbuff, header, footer = targa.readFromFile("images\\indexed_ul.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\rgb_UL.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\grayscale_UL.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\indexed_UL.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\utc24.tga")
+local pixbuff, header, footer = targa.readFromFile("images\\tga\\ctc24.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\xing_t32.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\XING_B24.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\XING_T16.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\MARBLES.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\ccm8.tga")
+--local pixbuff, header, footer = targa.readFromFile("images\\tga\\indexed_ul.tga")
 
 
 if not pixbuff then

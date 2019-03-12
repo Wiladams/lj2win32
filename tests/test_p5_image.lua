@@ -67,7 +67,7 @@ local imageList = {
 
 local function loadImages(imageList)
     for _, name in ipairs(imageList) do 
-        local img = loadImage(string.format("images\\%s.tga", name))
+        local img = loadImage(string.format("images\\tga\\%s.tga", name))
         _G[name] = img
         --print("LOADING: ", name, img)
     end
