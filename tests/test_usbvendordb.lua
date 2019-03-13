@@ -8,5 +8,5 @@ local function order(t, a, b)
 end
 
 for k,v in spairs(db, order) do
-    print(string.format("0x%x, '%s'", k, v.name))
+    print(string.format("[0x%x] = '%s';", k, v.name))
 end

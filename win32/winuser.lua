@@ -4299,19 +4299,19 @@ end --/* WINVER >= 0x0400 */
 #define HWND_BOTTOM     ((HWND)1)
 #define HWND_TOPMOST    ((HWND)-1)
 #define HWND_NOTOPMOST  ((HWND)-2)
-
-#ifndef NOCTLMGR
-
+--]=]
+if not NOCTLMGR then
+--[[
 /*
  * WARNING:
  * The following structures must NOT be DWORD padded because they are
  * followed by strings, etc that do not have to be DWORD aligned.
  */
 #include <pshpack2.h>
+--]]
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
-
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 /*
  * original NT 32 bit dialog template:
  */
@@ -4324,36 +4324,45 @@ typedef struct {
     short cx;
     short cy;
 } DLGTEMPLATE;
-
+]]
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
-
+ffi.cdef[[
 typedef DLGTEMPLATE *LPDLGTEMPLATEA;
 typedef DLGTEMPLATE *LPDLGTEMPLATEW;
+]]
 
---[[
 if UNICODE then
+ffi.cdef[[
 typedef LPDLGTEMPLATEW LPDLGTEMPLATE;
+]]
 else
+ffi.cdef[[
 typedef LPDLGTEMPLATEA LPDLGTEMPLATE;
+]]
 end  -- UNICODE
---]]
+
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
-#pragma region Application Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef const DLGTEMPLATE *LPCDLGTEMPLATEA;
 typedef const DLGTEMPLATE *LPCDLGTEMPLATEW;
+]]
 if UNICODE then
+ffi.cdef[[
 typedef LPCDLGTEMPLATEW LPCDLGTEMPLATE;
+]]
 else
+ffi.cdef[[
 typedef LPCDLGTEMPLATEA LPCDLGTEMPLATE;
+]]
 end  -- UNICODE
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
@@ -4362,7 +4371,7 @@ end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) 
 
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
-
+ffi.cdef[[
 /*
  * 32 bit Dialog item template.
  */
@@ -4377,26 +4386,40 @@ typedef struct {
 } DLGITEMTEMPLATE;
 typedef DLGITEMTEMPLATE *PDLGITEMTEMPLATEA;
 typedef DLGITEMTEMPLATE *PDLGITEMTEMPLATEW;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef PDLGITEMTEMPLATEW PDLGITEMTEMPLATE;
+]]
 else
+ffi.cdef[[
 typedef PDLGITEMTEMPLATEA PDLGITEMTEMPLATE;
+]]
 end  -- UNICODE
+
+ffi.cdef[[
 typedef DLGITEMTEMPLATE *LPDLGITEMTEMPLATEA;
 typedef DLGITEMTEMPLATE *LPDLGITEMTEMPLATEW;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef LPDLGITEMTEMPLATEW LPDLGITEMTEMPLATE;
+]]
 else
+ffi.cdef[[
 typedef LPDLGITEMTEMPLATEA LPDLGITEMTEMPLATE;
+]]
 end  -- UNICODE
 
 end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
-#include <poppack.h> /* Resume normal packing */
+--#include <poppack.h> /* Resume normal packing */
 
-
+--[=[
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 
@@ -4417,6 +4440,7 @@ CreateDialogParamW(
      HWND hWndParent,
      DLGPROC lpDialogFunc,
      LPARAM dwInitParam);
+
 if UNICODE then
 #define CreateDialogParam  CreateDialogParamW
 else
@@ -4757,9 +4781,9 @@ else
 else
 #define DLGWINDOWEXTRA 48
 #endif
-
-end  -- !NOCTLMGR */
 --]=]
+end  -- !NOCTLMGR */
+
 
 if not NOMSG then
 
