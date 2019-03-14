@@ -9,7 +9,7 @@ require("win32.sdkddkver")
 local HIDInterface = require("hidinterface")
 local HIDDevice = require("HIDDevice")
 local spairs = require("spairs")
-
+local usbvendorlist = require("usbvendorlist")
 
 local hider = HIDInterface();
 
@@ -18,6 +18,10 @@ local function printDict(dict, name)
     name = name or "Dictionary"
     print("==", name, "==")
     for k,v in spairs(dict) do
+        if k == "VendorID" then 
+            k = "VENDOR" 
+            v = usbvendorlist[v]
+        end
         print(string.format("%15s: %s", k,tostring(v)))
     end
     print("---------------------")

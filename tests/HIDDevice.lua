@@ -82,7 +82,7 @@ end
 function HIDDevice.initAttributes(self)
     --print("== initAttributes ==")
 
-    local iohandle = FileHandle(openDevice(self.path, true))
+    local iohandle = FileHandle({RawFileHandle = openDevice(self.path, true)})
     
     local attrib = ffi.new("HIDD_ATTRIBUTES")
     attrib.Size = ffi.sizeof("HIDD_ATTRIBUTES")

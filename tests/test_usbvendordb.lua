@@ -7,6 +7,8 @@ local function order(t, a, b)
     return t[a].name < t[b].name
 end
 
+print("return {")
 for k,v in spairs(db, order) do
-    print(string.format("[0x%x] = '%s';", k, v.name))
+    print(string.format('[0x%x] = "%s";', k, v.name))
 end
+print("}")

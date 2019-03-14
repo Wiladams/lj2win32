@@ -7167,15 +7167,19 @@ typedef struct _SP_INF_SIGNER_INFO_V2_W {
 } SP_INF_SIGNER_INFO_V2_W, *PSP_INF_SIGNER_INFO_V2_W;
 ]]
 
---[[
-if UNICODE
+
+if UNICODE then
+ffi.cdef[[
 typedef SP_INF_SIGNER_INFO_V2_W SP_INF_SIGNER_INFO_V2;
 typedef PSP_INF_SIGNER_INFO_V2_W PSP_INF_SIGNER_INFO_V2;
+]]
 else
+ffi.cdef[[
 typedef SP_INF_SIGNER_INFO_V2_A SP_INF_SIGNER_INFO_V2;
 typedef PSP_INF_SIGNER_INFO_V2_A PSP_INF_SIGNER_INFO_V2;
+]]
 end
---]]
+
 
 ffi.cdef[[
 //

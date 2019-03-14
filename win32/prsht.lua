@@ -305,26 +305,81 @@ typedef const PROPSHEETPAGEA_V4 *LPCPROPSHEETPAGEA_V4;
 ]]
 end
 
---[=[
+
 ffi.cdef[[
 typedef struct _PROPSHEETPAGEW_V1
 {
-    PROPSHEETPAGEW_V1_FIELDS
+    DWORD           dwSize;        
+    DWORD           dwFlags;       
+    HINSTANCE       hInstance;     
+    union                          
+    {                              
+        LPCWSTR     pszTemplate;   
+        PROPSHEETPAGE_RESOURCE pResource; 
+    } ;              
+    union                          
+    {                              
+        HICON        hIcon;        
+        LPCWSTR      pszIcon;      
+    } ;             
+    LPCWSTR          pszTitle;     
+    DLGPROC          pfnDlgProc;   
+    LPARAM           lParam;       
+    LPFNPSPCALLBACKW pfnCallback;  
+    UINT             *pcRefParent; 
 } PROPSHEETPAGEW_V1, *LPPROPSHEETPAGEW_V1;
 typedef const PROPSHEETPAGEW_V1 *LPCPROPSHEETPAGEW_V1;
+]]
 
+ffi.cdef[[
 typedef struct _PROPSHEETPAGEW_V2
 {
-    PROPSHEETPAGEW_V1_FIELDS
+    DWORD           dwSize;        
+    DWORD           dwFlags;       
+    HINSTANCE       hInstance;     
+    union                          
+    {                              
+        LPCWSTR     pszTemplate;   
+        PROPSHEETPAGE_RESOURCE pResource; 
+    } ;              
+    union                          
+    {                              
+        HICON        hIcon;        
+        LPCWSTR      pszIcon;      
+    } ;             
+    LPCWSTR          pszTitle;     
+    DLGPROC          pfnDlgProc;   
+    LPARAM           lParam;       
+    LPFNPSPCALLBACKW pfnCallback;  
+    UINT             *pcRefParent; 
 
     LPCWSTR           pszHeaderTitle;    // this is displayed in the header
     LPCWSTR           pszHeaderSubTitle; //
 } PROPSHEETPAGEW_V2, *LPPROPSHEETPAGEW_V2;
 typedef const PROPSHEETPAGEW_V2 *LPCPROPSHEETPAGEW_V2;
+]]
 
+ffi.cdef[[
 typedef struct _PROPSHEETPAGEW_V3
 {
-    PROPSHEETPAGEW_V1_FIELDS
+    DWORD           dwSize;        
+    DWORD           dwFlags;       
+    HINSTANCE       hInstance;     
+    union                          
+    {                              
+        LPCWSTR     pszTemplate;   
+        PROPSHEETPAGE_RESOURCE pResource; 
+    } ;              
+    union                          
+    {                              
+        HICON        hIcon;        
+        LPCWSTR      pszIcon;      
+    } ;             
+    LPCWSTR          pszTitle;     
+    DLGPROC          pfnDlgProc;   
+    LPARAM           lParam;       
+    LPFNPSPCALLBACKW pfnCallback;  
+    UINT             *pcRefParent; 
 
     LPCWSTR           pszHeaderTitle;    // this is displayed in the header
     LPCWSTR           pszHeaderSubTitle; //
@@ -339,7 +394,24 @@ if (NTDDI_VERSION >= NTDDI_VISTA) then
 ffi.cdef[[
 typedef struct _PROPSHEETPAGEW_V4
 {
-    PROPSHEETPAGEW_V1_FIELDS
+    DWORD           dwSize;        
+    DWORD           dwFlags;       
+    HINSTANCE       hInstance;     
+    union                          
+    {                              
+        LPCWSTR     pszTemplate;   
+        PROPSHEETPAGE_RESOURCE pResource; 
+    } ;              
+    union                          
+    {                              
+        HICON        hIcon;        
+        LPCWSTR      pszIcon;      
+    } ;             
+    LPCWSTR          pszTitle;     
+    DLGPROC          pfnDlgProc;   
+    LPARAM           lParam;       
+    LPFNPSPCALLBACKW pfnCallback;  
+    UINT             *pcRefParent; 
 
     LPCWSTR           pszHeaderTitle;    // this is displayed in the header
     LPCWSTR           pszHeaderSubTitle; //
@@ -356,7 +428,7 @@ typedef struct _PROPSHEETPAGEW_V4
 typedef const PROPSHEETPAGEW_V4 *LPCPROPSHEETPAGEW_V4;
 ]]
 end
---]=]
+
 
 --[[
 #define PROPSHEETPAGEA_V1_SIZE sizeof(PROPSHEETPAGEA_V1)
@@ -688,10 +760,33 @@ typedef struct _PROPSHEETHEADERW_V1
 typedef const PROPSHEETHEADERW_V1 *LPCPROPSHEETHEADERW_V1;
 ]]
 
---[=[
+
+ffi.cdef[[
 typedef struct _PROPSHEETHEADERW_V2
 {
-    PROPSHEETHEADERW_V1_FIELDS
+        DWORD           dwSize;         
+        DWORD           dwFlags;        
+        HWND            hwndParent;     
+        HINSTANCE       hInstance;      
+        union                           
+        {                               
+            HICON       hIcon;          
+            LPCWSTR     pszIcon;        
+        } ;               
+        LPCWSTR         pszCaption;     
+        UINT            nPages;         
+        union                           
+        {                               
+            UINT        nStartPage;     
+            LPCWSTR     pStartPage;     
+        } ;              
+        union                           
+        {                               
+            LPCPROPSHEETPAGEW ppsp;     
+            HPROPSHEETPAGE *phpage;     
+        } ;              
+        PFNPROPSHEETCALLBACK pfnCallback;  
+
     union 
     {
         HBITMAP hbmWatermark;
@@ -705,21 +800,29 @@ typedef struct _PROPSHEETHEADERW_V2
     } ;
 } PROPSHEETHEADERW_V2, *LPPROPSHEETHEADERW_V2;
 typedef const PROPSHEETHEADERW_V2 *LPCPROPSHEETHEADERW_V2;
+]]
 
-static const int PROPSHEETHEADERA_V1_SIZE sizeof(PROPSHEETHEADERA_V1)
-static const int PROPSHEETHEADERW_V1_SIZE sizeof(PROPSHEETHEADERW_V1)
+ffi.cdef[[
+static const int PROPSHEETHEADERA_V1_SIZE =sizeof(PROPSHEETHEADERA_V1);
+static const int PROPSHEETHEADERW_V1_SIZE =sizeof(PROPSHEETHEADERW_V1);
+]]
 
-#define PROPSHEETHEADERA_V2_SIZE sizeof(PROPSHEETHEADERA_V2)
-#define PROPSHEETHEADERW_V2_SIZE sizeof(PROPSHEETHEADERW_V2)
+ffi.cdef[[
+static const int PROPSHEETHEADERA_V2_SIZE =sizeof(PROPSHEETHEADERA_V2);
+static const int PROPSHEETHEADERW_V2_SIZE =sizeof(PROPSHEETHEADERW_V2);
+]]
 
-#define    _PROPSHEETHEADERA        PROPSHEETHEADERA_V2;
-#define    _PROPSHEETHEADERW        PROPSHEETHEADERW_V2;
+--#define    _PROPSHEETHEADERA        PROPSHEETHEADERA_V2;
+--#define    _PROPSHEETHEADERW        PROPSHEETHEADERW_V2;
+
+ffi.cdef[[
 typedef    PROPSHEETHEADERA_V2      PROPSHEETHEADERA;
 typedef    PROPSHEETHEADERW_V2      PROPSHEETHEADERW;
 typedef  LPPROPSHEETHEADERA_V2      LPPROPSHEETHEADERA;
 typedef  LPPROPSHEETHEADERW_V2      LPPROPSHEETHEADERW;
 typedef LPCPROPSHEETHEADERA_V2      LPCPROPSHEETHEADERA;
 typedef LPCPROPSHEETHEADERW_V2      LPCPROPSHEETHEADERW;
+]]
 
 --[[
 #ifdef UNICODE
@@ -742,7 +845,7 @@ static const int PSCB_INITIALIZED  = 1;
 static const int PSCB_PRECREATE    = 2;
 ]]
 
-
+--[=[
 #if (NTDDI_VERSION >= NTDDI_WINXP)
 // PSCB_BUTTONPRESSED will be sent when the user clicks a button in the
 // property dialog (OK, Cancel, Apply, or Close).  The message will be sent
