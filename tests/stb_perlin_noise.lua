@@ -214,9 +214,10 @@ end
 
 local function stb_perlin_noise3_internal(x, y, z, x_wrap, y_wrap, z_wrap, seed)
     z = z or 0
-    x_wrap = x_wrap or 1
-    y_wrap = y_wrap or 1
-    z_wrap = z_wrap or 1
+    x_wrap = x_wrap or 0
+    y_wrap = y_wrap or 0
+    z_wrap = z_wrap or 0
+    seed = seed or 0
 
    local x_mask = band((x_wrap-1) , 255);
    local y_mask = band((y_wrap-1) , 255);
@@ -224,7 +225,8 @@ local function stb_perlin_noise3_internal(x, y, z, x_wrap, y_wrap, z_wrap, seed)
    local px = stb__perlin_fastfloor(x);
    local py = stb__perlin_fastfloor(y);
    local pz = stb__perlin_fastfloor(z);
-   
+print("p: ", px, py, pz)
+print("mask: ", x_mask, y_mask, z_mask)
    local x0 = band(px , x_mask)
    local x1 = band((px+1) , x_mask);
    local y0 = band(py , y_mask) 
@@ -240,7 +242,7 @@ local function stb_perlin_noise3_internal(x, y, z, x_wrap, y_wrap, z_wrap, seed)
    local v = stb__perlin_ease(y);
    z = z - pz; 
    local w = stb__perlin_ease(z);
-
+print("u,v,w: ", u,v,w)
    local r0 = stb__perlin_randtab[x0+seed];
    local r1 = stb__perlin_randtab[x1+seed];
 

@@ -7,20 +7,40 @@ local noise = perlin.noise3
 
 local noiseScale=0.005;
 
+function setup()
 
-function draw()
+    local noiseVal = noise(128/4, 72/4,0.3);
+print("noiseVal: ", noiseVal)
+
+--[[
+    for row = 0, height-1 do
+        for col =0, width-1 do
+            local noiseVal = noise(col, row);
+            io.write(noiseVal,' ')
+        end
+        print()
+    end
+--]]
+    noLoop();
+end
+
+
+local function draw()
     if not mouseX then
         return 
     end
 
     background(0);
+
+
     for x=0, width-1 do
         local noiseVal = noise((mouseX+x)*noiseScale, mouseY*noiseScale);
-        local g = noiseVal * 255    -- scale color
-        print(noiseVal, g)
+        local g = math.floor(abs(noiseVal) * 255)    -- scale color
+        --print(noiseVal, g)
         stroke(g);
-        line(x, mouseY+noiseVal*80, x, height);
+        local y = mouseY + math.floor(noiseVal*80)
+        line(x, y, x, height);
     end
 end
 
-go()
+go({width=320, height=240})
