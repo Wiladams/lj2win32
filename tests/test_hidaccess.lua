@@ -30,10 +30,15 @@ local function printDict(dict, name)
             v = usbvendorlist[v] or string.format("0x%x", v)
         elseif k == "Usage" then
             k = "USAGE"
-            v = lookupUsage(dict.UsagePage, v)
+            v = hidusagedb:lookupUsage(dict.UsagePage, v)
         elseif k == "UsagePage" then
             k = "USAGEPAGE"
-            v = hidusagedb.pages[v] or string.format("0x%x",v)
+            local page = hidusagedb[v]
+            if page then
+                v = page.name
+            else
+                v = string.format("0x%x",v)
+            end
         end 
 
         print(string.format("%15s: %s", k,tostring(v)))
@@ -41,6 +46,7 @@ local function printDict(dict, name)
     print("---------------------")
 end
 
+local function test_devicepaths()
 for path in hider:devicePaths() do
     --print("path: ", path)
     -- create a HIDDevice for each path
@@ -54,4 +60,17 @@ for path in hider:devicePaths() do
         print("ERROR: ", err, path)
     end
 end
+end
+
+local function test_hiddb()
+    -- generic
+    local page = hidusagedb[0x01]
+
+    local usage = page.usage[0x80]
+
+    print(page.name, usage)
+end
+
+test_devicepaths()
+--test_hiddb()
 
