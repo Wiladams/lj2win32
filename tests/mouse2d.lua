@@ -2,7 +2,9 @@ package.path = "../?.lua;"..package.path;
 
 require("p5")
 
-
+function setup()
+	rectMode(CORNER)
+end
 
 function draw()
 	background(51);
@@ -10,13 +12,13 @@ function draw()
 	if not mouseY then return false; end
 
 	fill(255, 0,0, 118);
-	rect(mouseX, height / 2, mouseY / 2 + 10, mouseY / 2 + 10);
+	rect(mouseX, height / 2, mouseX / 2 + 10, mouseY / 2 + 10);
 	
 
 	local inverseX = width - mouseX;
 	local inverseY = height - mouseY;
 	fill(0,0,255, 118);
-	rect(inverseX, height / 2, (inverseY / 2) + 10, (inverseY / 2) + 10);
+	rect(inverseX, height / 2, (inverseX / 2) + 10, (inverseY / 2) + 10);
 
 end
 

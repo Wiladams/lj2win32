@@ -2,20 +2,45 @@ package.path = "../?.lua;"..package.path;
 
 require("p5")
 
-local noiseScale=0.03;
+local perlin = require("stb_perlin_noise")
+local noise = perlin.noise3
+
+local noiseScale=0.005;
+
+function setup()
+
+    local noiseVal = noise(128/4, 72/4,0.3);
+print("noiseVal: ", noiseVal)
+
+--[[
+    for row = 0, height-1 do
+        for col =0, width-1 do
+            local noiseVal = noise(col, row);
+            io.write(noiseVal,' ')
+        end
+        print()
+    end
+--]]
+    noLoop();
+end
 
 
-function draw()
+local function draw()
     if not mouseX then
         return 
     end
 
     background(0);
+
+
     for x=0, width-1 do
         local noiseVal = noise((mouseX+x)*noiseScale, mouseY*noiseScale);
-        stroke(noiseVal*255);
-        line(x, mouseY+noiseVal*80, x, height);
+        local g = math.floor(abs(noiseVal) * 255)    -- scale color
+        --print(noiseVal, g)
+        stroke(g);
+        local y = mouseY + math.floor(noiseVal*80)
+        line(x, y, x, height);
     end
 end
 
-go()
+go({width=320, height=240})
