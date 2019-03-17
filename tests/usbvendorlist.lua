@@ -1,3 +1,5 @@
+-- This file is auto generated like this
+-- luajit test_usbvendordb.lua > usbvendorlist.lua
 return {
 [0x1c87] = "2N TELEKOMUNIKACE a.s.";
 [0x1630] = "2Wire, Inc.";
