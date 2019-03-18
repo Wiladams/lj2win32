@@ -1,13 +1,64 @@
+--[[
+    References
+    https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf
+
+    Usage page values are limited to 16-bit
+    Usage ID values are limited to 16-bit
+
+    Usages are 32-bit identifiers, where high order 16 bits are
+    the usage page, and the lower 16 bits are the usage ID
+]]
 local enum = require("enum")
 
+-- Each usage has one or more usage kinds associated with it
+-- that way you know what kinds of values you can 
+-- expect to read from the usage
+local usageTypeControl = enum {
+    LC  = 0x01,     -- linear control
+    OOC = 0x02,     -- On/Off control
+    MC  = 0x04,     -- Momentary control
+    OSC = 0x08,     -- OneShot control
+    RTC = 0x10      -- Re-trigger control
+}
+
+local usageTypeData = enum {
+    Set = 0x01,     -- Selector
+    SV  = 0x02,     -- Static Value
+    SF  = 0x04,     -- Static Flag
+    DV  = 0x08,     -- Dynamic Value
+    DF  = 0x10,     -- Dynamic Flag
+}
+
+local usageTypeCollection = enum {
+    NAry    = 0x01, -- Named array
+    CA      = 0x02, -- Application Collection
+    CL      = 0x04, -- Logicl Collection
+    CP      = 0x08, -- Physical Collection
+    US      = 0x10, -- Usage Switch
+    UM      = 0x20, -- Usage Modifier
+}
+
+local usageKind = enum {
+    CP  = 0x01,
+    CA  = 0X02,
+    DV  = 0X04,
+    DF  = 0x08,
+    CL  = 0x10,
+    OSC = 0x20,
+    OOC = 0x40,
+    RTC = 0x80,
+}
+
+-- The hidusagedb is the primary database that maps
+-- between HID pages and HID usages
 local hidusagedb = {
+    -- Nothing should be defined in this page
     [0x00] = {
         name = "UNDEFINED",
-        usage = enum {
-
-        }
+        usage = enum {}
     },
 
+    -- Generic Desktop Controls
     [0x01] = {
         name = "GENERIC",
         usage = enum {
@@ -95,6 +146,7 @@ local hidusagedb = {
         }
     },
 
+    -- Simulation Controls
     [0x02] = {
         name = "SIMULATION",
         usage = enum {
@@ -154,6 +206,7 @@ local hidusagedb = {
         },
     },
 
+    -- VR Controls
     [0x03] = {
         name = "VR",
         usage = enum {
@@ -174,6 +227,7 @@ local hidusagedb = {
         },
     },
 
+    -- Sport Controls
     [0x04] = {
         name = "SPORT",
         usage = enum {
@@ -216,6 +270,7 @@ local hidusagedb = {
         },
     },
 
+    -- Game Controls
     [0x05] = {
         name = "GAME",
         usage = enum {
@@ -252,6 +307,7 @@ local hidusagedb = {
         },
     },
 
+    -- Generic Device Controls
     [0x06] = {
         name = "DEVICE",
         usage = enum {
@@ -266,6 +322,7 @@ local hidusagedb = {
         },
     },
 
+    -- Keyboard/keypad controls
     [0x07] = {
         name = "KEYBOARD",
         usage = enum {
@@ -330,6 +387,7 @@ local hidusagedb = {
         },
     },
 
+    -- LEDs
     [0x08] = {
         name = "LED",
         usage = enum {
@@ -414,6 +472,7 @@ local hidusagedb = {
         },
     },
 
+    -- Button
     -- nothing here
     [0x09] = {
         name = "BUTTON",
@@ -422,6 +481,7 @@ local hidusagedb = {
         },
     },
 
+    -- Ordinal
     -- nothing here
     [0x0A] = {
         name = "ORDINAL",
@@ -430,6 +490,7 @@ local hidusagedb = {
         },
     },
 
+    -- Telephony
     [0x0B] = {
         name = "TELEPHONY",
         usage = enum {
@@ -453,6 +514,7 @@ local hidusagedb = {
         },
     },
 
+    -- Consumer
     [0x0C] = {
         name = "CONSUMER",
         usage = enum {
@@ -534,6 +596,7 @@ local hidusagedb = {
         },
     },
 
+    -- Digitizer
     [0x0D] = {
         name = "DIGITIZER",
         usage = enum {
@@ -580,54 +643,59 @@ local hidusagedb = {
         },
     },
     
+    -- Formerly reserved
     [0x0E] = {
         name = "HAPTICS",
         usage = {
             SIMPLE_CONTROLLER         = 0x01;
 
-WAVEFORM_LIST             = 0x10;
-DURATION_LIST             = 0x11;
+            WAVEFORM_LIST             = 0x10;
+            DURATION_LIST             = 0x11;
 
-AUTO_TRIGGER              = 0x20;
-MANUAL_TRIGGER            = 0x21;
-AUTO_ASSOCIATED_CONTROL   = 0x22;
-INTENSITY                 = 0x23;
-REPEAT_COUNT              = 0x24;
-RETRIGGER_PERIOD          = 0x25;
-WAVEFORM_VENDOR_PAGE      = 0x26;
-WAVEFORM_VENDOR_ID        = 0x27;
-WAVEFORM_CUTOFF_TIME      = 0x28;
+            AUTO_TRIGGER              = 0x20;
+            MANUAL_TRIGGER            = 0x21;
+            AUTO_ASSOCIATED_CONTROL   = 0x22;
+            INTENSITY                 = 0x23;
+            REPEAT_COUNT              = 0x24;
+            RETRIGGER_PERIOD          = 0x25;
+            WAVEFORM_VENDOR_PAGE      = 0x26;
+            WAVEFORM_VENDOR_ID        = 0x27;
+            WAVEFORM_CUTOFF_TIME      = 0x28;
 
--- Waveform types
-WAVEFORM_BEGIN            = 0x1000;
-WAVEFORM_STOP             = 0x1001;
-WAVEFORM_NULL             = 0x1002;
-WAVEFORM_CLICK            = 0x1003;
-WAVEFORM_BUZZ             = 0x1004;
-WAVEFORM_RUMBLE           = 0x1005;
-WAVEFORM_PRESS            = 0x1006;
-WAVEFORM_RELEASE          = 0x1007;
-WAVEFORM_END              = 0x1FFF;
+            -- Waveform types
+            WAVEFORM_BEGIN            = 0x1000;
+            WAVEFORM_STOP             = 0x1001;
+            WAVEFORM_NULL             = 0x1002;
+            WAVEFORM_CLICK            = 0x1003;
+            WAVEFORM_BUZZ             = 0x1004;
+            WAVEFORM_RUMBLE           = 0x1005;
+            WAVEFORM_PRESS            = 0x1006;
+            WAVEFORM_RELEASE          = 0x1007;
+            WAVEFORM_END              = 0x1FFF;
 
-WAVEFORM_VENDOR_BEGIN     = 0x2000;
-WAVEFORM_VENDOR_END       = 0x2FFF;
-
+            WAVEFORM_VENDOR_BEGIN     = 0x2000;
+            WAVEFORM_VENDOR_END       = 0x2FFF;
         },
     },
 
+    -- PID, force feedback
     -- nothing here
     [0x0F] = {
         name = "PID",
         usage = enum {},
     },
 
+    -- UNICODE
     -- nothing here
     [0x10] = {
         name = "UNICODE",
         usage = enum {},
     },
 
-    -- alphanumeric display
+    -- 0x11 - 0x13 Reserved
+
+
+    -- Alphanumeric display
     [0x14] = {
         name = "ALPHANUMERIC",
         usage = enum {
@@ -704,11 +772,19 @@ WAVEFORM_VENDOR_END       = 0x2FFF;
         },
     },
 
-    -- nothing here
+    -- 0x15 - 0x3f Reserved
+    -- Sensor
     [0x20] = {
         name = "SENSOR",
         usage = enum {},
     },
+
+    [0x40] = {
+        name = "MedicalInsruments",
+        usage = enum {};
+    },
+
+    -- 0x41-0x7f Reserved
 
     -- LAMPARRAY
     [0x59] = {
@@ -754,20 +830,33 @@ WAVEFORM_VENDOR_END       = 0x2FFF;
         }
     },
 
+    -- 0x80 - 0x83 Monitor Pages
+
+    -- 0x84 - 0x87 Power Pages
+
+    -- 0x88 - 0x8B Reserved
+
+    -- Bar Code Scanner
     [0x8C] = {
         name = "BARCODE_SCANNER",
         usage = enum {},
     },
+
+    -- Weighing Scale
     [0x8D] = {
         name = "WEIGHING_DEVICE",
         usage = enum {},
     },
 
+    -- Magnetic Stripe Reader
     [0x8E] = {
         name = "MAGNETIC_STRIPE_READER",
         usage = enum {},
     },
 
+    -- 0x8F Reserved Point of Sale Pages
+
+    -- Camera Control
     [0x90] = {
         name = "CAMERA_CONTROL",
         usage = enum {
@@ -776,10 +865,13 @@ WAVEFORM_VENDOR_END       = 0x2FFF;
         },
     },
 
+    -- Arcade
     [0x91] = {
         name = "ARCADE",
         usage = enum {},
     },
+
+    -- 0x92-0xFEFF  Reserved
 
     [0xFFF3] = {
         name = "MICROSOFT_BLUETOOTH_HANDSFREE",
@@ -789,6 +881,7 @@ WAVEFORM_VENDOR_END       = 0x2FFF;
         },
     },
 
+    -- 0xFF00 - 0xFFFF Vendor-defined
     [0xFF00] = {
         name = "VENDOR_DEFINED_BEGIN",
         usage = enum {},
