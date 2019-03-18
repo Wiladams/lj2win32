@@ -3,6 +3,7 @@ package.path = "../?.lua;"..package.path;
 require("win32.sdkddkver")
 require("p5")
 
+local spairs = require("spairs")
 
 
 local Joystick = require("Joystick")
@@ -10,7 +11,7 @@ local Joystick = require("Joystick")
 
 
 local function printDict(dict)
-    for k,v in pairs(dict) do
+    for k,v in spairs(dict) do
         print(string.format("%20s", k), v)
     end
 end
