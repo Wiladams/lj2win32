@@ -12,14 +12,8 @@ local spairs = require("spairs")
 local usbvendorlist = require("usbvendorlist")
 local hidusagedb = require("hidusagedb")
 
-local hider = HIDInterface();
+local HIDinter = HIDInterface();
 
-local function lookupUsage(usagePage, usage)
-    local page = hidusagedb.usage[usagePage]
-    if not page then return string.format("0x%x", usage) end
-
-    return page[usage] or string.format("0x%x", usage)
-end
 
 local function printDict(dict, name)
     name = name or "Dictionary"
@@ -47,7 +41,7 @@ local function printDict(dict, name)
 end
 
 local function test_devicepaths()
-for path in hider:devicePaths() do
+for path in HIDinter:devicePaths() do
     --print("path: ", path)
     -- create a HIDDevice for each path
     local dev, err = HIDDevice(path)
