@@ -13,6 +13,9 @@
 --]]
 
 local ffi = require("ffi")
+local bit = require("bit")
+local band, bor = bit.band, bit.bor
+local lshift, rshift = bit.lshift, bit.rshift
 
  require ("win32.winapifamily")
 
@@ -127,16 +130,21 @@ typedef struct mmtime_tag
 #define TIME_SMPTE      0x0008  /* SMPTE time */
 #define TIME_MIDI       0x0010  /* MIDI time */
 #define TIME_TICKS      0x0020  /* Ticks within MIDI stream */
-
-/*
- *
- *
- */
-#define MAKEFOURCC(ch0, ch1, ch2, ch3)                              \
-                ((DWORD)(BYTE)(ch0) | ((DWORD)(BYTE)(ch1) << 8) |   \
-                ((DWORD)(BYTE)(ch2) << 16) | ((DWORD)(BYTE)(ch3) << 24 ))
 --]=]
 
+local DWORD = ffi.typeof("uint32_t")
+
+--[[
+function MAKEFOURCC(ch0, ch1, ch2, ch3)                              
+    return            bor(DWORD(ffi.cast("BYTE",ch0)) , lshift(DWORD(ffi.cast("BYTE",ch1) , 8)) ,   
+                lshift(DWORD(ffi.cast("BYTE",ch2) , 16)) , lshiftDWORD(ffi.cast("BYTE",ch3) , 24 )))
+end
+--]]
+
+function MAKEFOURCC(ch0, ch1, ch2, ch3)                              
+    return            DWORD(bor(ffi.cast("BYTE",ch0) , lshift(ffi.cast("BYTE",ch1) , 8) ,   
+                lshift(ffi.cast("BYTE",ch2) , 16) , lshift(ffi.cast("BYTE",ch3) , 24 )))
+end
 -- Multimedia Extensions Window Messages
 ffi.cdef[[
 static const int MM_JOY1MOVE         = 0x3A0;           /* joystick */
