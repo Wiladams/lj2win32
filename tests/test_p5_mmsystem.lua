@@ -22,7 +22,7 @@ local function CHAR(x, low, high)
 end
 
 function setup()
-local fourc = MAKEFOURCC(B'j',B'p',B'e',B'g')
+local fourc = MAKEFOURCC(B'R',B'I',B'F',B'F')
 
     print("fourc type: ", ffi.typeof(fourc))
     print(string.format("0x%x",tonumber(fourc)))
