@@ -38,6 +38,7 @@ local GDISurface = require("GDISurface")
 local PixelBuffer = require("PixelBuffer")
 local targa = require("targa")
 local simplex = require("simplexnoise")
+local Joystick = require("Joystick")
 
 local exports = {}
 local lonMessage = false;
@@ -556,6 +557,22 @@ function KeyboardActivity(hwnd, msg, wparam, lparam)
     return res;
 end
 
+--[[
+static const int MM_JOY1MOVE         = 0x3A0;           /* joystick */
+static const int MM_JOY2MOVE         = 0x3A1;
+static const int MM_JOY1ZMOVE        = 0x3A2;
+static const int MM_JOY2ZMOVE        = 0x3A3;
+static const int MM_JOY1BUTTONDOWN   = 0x3B5;
+static const int MM_JOY2BUTTONDOWN   = 0x3B6;
+static const int MM_JOY1BUTTONUP     = 0x3B7;
+static const int MM_JOY2BUTTONUP     = 0x3B8;
+]]
+function JoystickActivity(hwnd, msg, wparam, lparam)
+    local res = 1;
+
+    return res;
+end
+
 function CommandActivity(hwnd, msg, wparam, lparam)
     if onCommand then
         onCommand({source = tonumber(HIWORD(wparam)), id=tonumber(LOWORD(wparam))})
@@ -596,7 +613,9 @@ function WindowProc(hwnd, msg, wparam, lparam)
     elseif msg >= ffi.C.WM_MOUSEFIRST and msg <= ffi.C.WM_MOUSELAST then
         res = MouseActivity(hwnd, msg, wparam, lparam)
     elseif msg >= ffi.C.WM_KEYFIRST and msg <= ffi.C.WM_KEYLAST then
-        res = KeyboardActivity(hwnd, msg, wparam, lparam)  
+        res = KeyboardActivity(hwnd, msg, wparam, lparam)
+    elseif msg >= ffi.C.MM_JOY1MOVE and msg <= ffi.C.MM_JOY2BUTTONUP then
+        res = JoystickActivity(hwnd, msg, wparam, lparam)
     elseif msg == ffi.C.WM_SETFOCUS then
         --print("WM_SETFOCUS")
         focused = true;
