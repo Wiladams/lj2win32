@@ -1,3 +1,10 @@
+--[[
+    This file encapsulates some fourcc routines
+    and well known constants.  In windows, the mmsyscom file
+    contains these routines, but perhaps they're useful on their
+    own without having to drag in the entirety of what's needed
+    to support that.
+]]
 local ffi = require("ffi")
 local bit = require("bit")
 local lshift, rshift = bit.lshift, bit.rshift
