@@ -47,7 +47,7 @@ function draw()
         return false;
     end
     
-    print("POS: ", pos.x, pos.y, pos.z, pos.r, pos.u, pos.v, string.format("0x%x", pos.buttons))
+    print(string.format("POS: %1.2f  %1.2f  %1.2f  %1.2f", pos.x, pos.y, pos.z, pos.r), string.format("0x%x", pos.buttons))
 end
 
 go()

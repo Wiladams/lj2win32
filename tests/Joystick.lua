@@ -96,8 +96,38 @@ function Joystick.getCapabilities(self, res)
     return res
 end
 
+local function joymap(x, olow, ohigh, rlow, rhigh)
+    rlow = rlow or olow
+    rhigh = rhigh or ohigh
+    return rlow + (x-olow)*((rhigh-rlow)/(ohigh-olow))
+end
+
+
 function Joystick.getPosition(self, res)
-    local res = res or {}
+    res = res or {}
+    self.info.dwFlags = C.JOY_RETURNALL
+
+    local result = joystickapi.joyGetPosEx(self.ID, self.info)
+    if result ~= 0 then
+        return false, result
+    end
+
+    local caps = self.caps
+    res.x = joymap(self.info.dwXpos, caps.xMin, caps.xMax, -1,1);
+    res.y = joymap(self.info.dwYpos, caps.yMin, caps.yMax, -1,1);
+    res.z = joymap(self.info.dwZpos, caps.zMin, caps.zMax, 1,0); -- throttle reverse
+    res.r = joymap(self.info.dwRpos, caps.rMin, caps.rMax, -1,1);
+    res.u = joymap(self.info.dwUpos, caps.uMin, caps.uMax, -1,1);
+    res.v = joymap(self.info.dwVpos, caps.vMin, caps.vMax, -1,1);
+    
+    res.buttons = self.info.dwButtons;
+
+    return res
+end
+
+
+function Joystick.getState(self, res)
+    res = res or {}
 
     self.info.dwFlags = C.JOY_RETURNALL
 
