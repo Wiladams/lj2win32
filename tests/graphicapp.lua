@@ -32,6 +32,7 @@ local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local rshift, lshift = bit.rshift, bit.lshift;
 
+require("win32.sdkddkver")
 local sched = require("scheduler")
 local wingdi = require("win32.wingdi")
 local winuser = require("win32.winuser")
