@@ -32,7 +32,10 @@ local function printDict(dict)
     for k,v in spairs(dict) do
         if k == "Id" or k == "Kind" then
             v = fourccToString(v)
+        elseif k == "FormatTag" then
+            v = string.format("0x%x", v)
         end
+
         print(string.format("%-10s: ", k),v)
     end
 end
@@ -100,6 +103,15 @@ local files = {
     "M_busy.ani",
     "M1F1-Alaw-AFsp.wav",
     
+    -- Sample files from GoldWave
+    "addf8-Alaw-GW.wav",
+    "addf8-mulaw-GW.wav",
+    "addf8-GSM-GW.wav",
+    
+    -- Multi-Channel examples
+    "6_Channel_ID.wav",
+    "8_Channel_ID.wav",
+
     -- Perverse files
     "Pmiscck.wav",      -- WAVE file (9 samples) with an odd length intermediate chunk (type XxXx)
     "Ptjunk.wav",       -- WAVE file with trailing junk after the RIFF chunk

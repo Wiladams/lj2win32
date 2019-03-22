@@ -69,8 +69,10 @@ function binstream.range(self, size, pos)
         return false, "pos > self.size"
     end
 
-    if ((size > (self.size - pos))) then 
-        return false, "size is greater than remainder";
+    if size > self:remaining() then 
+        -- truncate
+        size = self:remaining()
+        --return false, "size is greater than remainder";
     end
 
     return binstream(self.data+pos, size, 0 , not self.bigend)
