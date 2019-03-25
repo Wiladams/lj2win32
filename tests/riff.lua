@@ -56,6 +56,7 @@ local function read_chunk_LIST(bs, res)
     if res.Kind == hdrl then
         -- Aviriff.h
         --https://docs.microsoft.com/en-us/previous-versions/ms779632(v%3dvs.85)
+        -- https://docs.microsoft.com/en-us/previous-versions/ms779636%28v%3dvs.85%29
         --print("movi: ", res.Data, res.Size)
         local ls, err = binstream(res.Data, res.Size, 0, true )
         -- AVIMAINHEADER
