@@ -6,31 +6,19 @@ local mmap = require("mmap")
 local bitbang = require("bitbang")
 local BVALUE = bitbang.BITSVALUE
 local spairs = require("spairs")
+local fourcc = require("fourcc")
+local fourccToString = fourcc.fourccToString
 
 local function BYTEVALUE(x, low, high)
     return tonumber(BVALUE(x, low, high))
 end
 
 
-local function fourccToString(val)
-    local b0 = string.char(BYTEVALUE(val, 0, 7))
-    local b1 = string.char(BYTEVALUE(val, 8, 15))
-    local b2 = string.char(BYTEVALUE(val, 16, 23))
-    local b3 = string.char(BYTEVALUE(val, 24, 31))
-
-    local strTbl = {}
-    table.insert(strTbl, b0)
-    table.insert(strTbl, b1)
-    table.insert(strTbl, b2)
-    table.insert(strTbl, b3)
-
-    return table.concat(strTbl)
-end
 
 local function printDict(dict)
     print("==== Chunk ====")
     for k,v in spairs(dict) do
-        if k == "Id" or k == "Kind" then
+        if k == "Id" or k == "Kind" or k == "fcc" then
             v = fourccToString(v)
         elseif k == "FormatTag" then
             v = string.format("0x%x", v)
@@ -95,6 +83,7 @@ end
 local files = {
 
     "canimate.avi",
+--[[
     "chimes.wav",
     "sample.avi",
     "sample.rmi",
@@ -121,6 +110,7 @@ local files = {
     -- These files are from CCRMA at Stanford:  ftp://ftp-ccrma.stanford.edu/pub/Lisp/sf.tar.gz
     "truspech.wav",     -- WAVE file (format code 0x0022)
     "voxware.wav",      -- WAVE file (format code 0x181C)
+--]]
 }
 
 for _, filename in ipairs(files) do

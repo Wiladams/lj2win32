@@ -46,7 +46,6 @@ local function MAKETWOCC(ch0, ch1)
 end
 
 local function fourccToString(val)
-    -- BUGBUG
 
     local arr = ffi.new("uint8_t[4]",
         BYTEVALUE(val, 0, 7), 
@@ -56,21 +55,7 @@ local function fourccToString(val)
     )
     return ffi.string(arr,4)
 
---[[
-    -- clunky method
-    local b0 = string.char(BYTEVALUE(val, 0, 7))
-    local b1 = string.char(BYTEVALUE(val, 8, 15))
-    local b2 = string.char(BYTEVALUE(val, 16, 23))
-    local b3 = string.char(BYTEVALUE(val, 24, 31))
 
-    local strTbl = {}
-    table.insert(strTbl, b0)
-    table.insert(strTbl, b1)
-    table.insert(strTbl, b2)
-    table.insert(strTbl, b3)
-
-    return table.concat(strTbl)
---]]
 end
 
 local function stringToFourcc(str)
