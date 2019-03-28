@@ -49,12 +49,12 @@ static const int MAX_JOYSTICKOEMVXDNAME = 260; /* max oem vxd name length (inclu
  *  Microsoft Manufacturer and Product ID's (these have been moved to
  *  MMREG.H for Windows 4.00 and above).
  */
-#if (WINVER <= 0x0400)
-#ifndef MM_MICROSOFT
+if (WINVER <= 0x0400) then
+if not MM_MICROSOFT then
 #define MM_MICROSOFT            1   /* Microsoft Corporation */
-#endif
+end
 
-#ifndef MM_MIDI_MAPPER
+if not MM_MIDI_MAPPER then
 #define MM_MIDI_MAPPER          1   /* MIDI Mapper */
 #define MM_WAVE_MAPPER          2   /* Wave Mapper */
 #define MM_SNDBLST_MIDIOUT      3   /* Sound Blaster MIDI output port */
@@ -66,8 +66,8 @@ static const int MAX_JOYSTICKOEMVXDNAME = 260; /* max oem vxd name length (inclu
 #define MM_MPU401_MIDIOUT      10   /* MPU401-compatible MIDI output port */
 #define MM_MPU401_MIDIIN       11   /* MPU401-compatible MIDI input port */
 #define MM_PC_JOYSTICK         12   /* Joystick adapter */
-#endif
-#endif
+end
+end
 --]=]
 
 
@@ -180,35 +180,45 @@ static const int MM_MOM_CLOSE        = 0x3C8;
 static const int MM_MOM_DONE         = 0x3C9;
 ]]
 
---[=[
-/* these are also in msvideo.h */
-#ifndef MM_DRVM_OPEN
- #define MM_DRVM_OPEN       0x3D0           /* installable drivers */
- #define MM_DRVM_CLOSE      0x3D1
- #define MM_DRVM_DATA       0x3D2
- #define MM_DRVM_ERROR      0x3D3
-#endif
 
+-- these are also in msvideo.h */
+if not MM_DRVM_OPEN then
+ffi.cdef[[
+ static const int MM_DRVM_OPEN      = 0x3D0;           /* installable drivers */
+ static const int MM_DRVM_CLOSE     = 0x3D1;
+ static const int MM_DRVM_DATA      = 0x3D2;
+ static const int MM_DRVM_ERROR     = 0x3D3;
+]]
+end
+
+ffi.cdef[[
 /* these are used by msacm.h */
-#define MM_STREAM_OPEN      0x3D4
-#define MM_STREAM_CLOSE     0x3D5
-#define MM_STREAM_DONE      0x3D6
-#define MM_STREAM_ERROR     0x3D7
+static const int MM_STREAM_OPEN     = 0x3D4;
+static const int MM_STREAM_CLOSE    = 0x3D5;
+static const int MM_STREAM_DONE     = 0x3D6;
+static const int MM_STREAM_ERROR    = 0x3D7;
+]]
 
-#if(WINVER >= 0x0400)
-#define MM_MOM_POSITIONCB   0x3CA           /* Callback for MEVT_POSITIONCB */
+if(WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MM_MOM_POSITIONCB  = 0x3CA;           /* Callback for MEVT_POSITIONCB */
+]]
 
-#ifndef MM_MCISIGNAL
- #define MM_MCISIGNAL        0x3CB
-#endif
+if not MM_MCISIGNAL then
+ffi.cdef[[
+static const int MM_MCISIGNAL      =  0x3CB;
+]]
+end
 
-#define MM_MIM_MOREDATA      0x3CC          /* MIM_DONE w/ pending events */
+ffi.cdef[[
+static const int MM_MIM_MOREDATA    =  0x3CC;          /* MIM_DONE w/ pending events */
+]]
+end --/* WINVER >= 0x0400 */
 
-#endif /* WINVER >= 0x0400 */
-
-#define MM_MIXM_LINE_CHANGE     0x3D0       /* mixer line change notify */
-#define MM_MIXM_CONTROL_CHANGE  0x3D1       /* mixer control change notify */
---]=]
+ffi.cdef[[
+static const int MM_MIXM_LINE_CHANGE    = 0x3D0;       /* mixer line change notify */
+static const int MM_MIXM_CONTROL_CHANGE = 0x3D1;       /* mixer control change notify */
+]]
 
 ffi.cdef[[
 static const int MMSYSERR_BASE        =  0;
@@ -220,76 +230,82 @@ static const int MCIERR_BASE          =  256;
 static const int MIXERR_BASE          =  1024;
 ]]
 
---[=[
+ffi.cdef[[
 static const int MCI_STRING_OFFSET    =  512;
 static const int MCI_VD_OFFSET        =  1024;
 static const int MCI_CD_OFFSET        =  1088;
 static const int MCI_WAVE_OFFSET      =  1152;
 static const int MCI_SEQ_OFFSET       =  1216;
+]]
 
-/****************************************************************************
 
-                        General error return values
-
-****************************************************************************/
-
+--   General error return values
+ffi.cdef[[
 /* general error return values */
-#define MMSYSERR_NOERROR      0                    /* no error */
-#define MMSYSERR_ERROR        (MMSYSERR_BASE + 1)  /* unspecified error */
-#define MMSYSERR_BADDEVICEID  (MMSYSERR_BASE + 2)  /* device ID out of range */
-#define MMSYSERR_NOTENABLED   (MMSYSERR_BASE + 3)  /* driver failed enable */
-#define MMSYSERR_ALLOCATED    (MMSYSERR_BASE + 4)  /* device already allocated */
-#define MMSYSERR_INVALHANDLE  (MMSYSERR_BASE + 5)  /* device handle is invalid */
-#define MMSYSERR_NODRIVER     (MMSYSERR_BASE + 6)  /* no device driver present */
-#define MMSYSERR_NOMEM        (MMSYSERR_BASE + 7)  /* memory allocation error */
-#define MMSYSERR_NOTSUPPORTED (MMSYSERR_BASE + 8)  /* function isn't supported */
-#define MMSYSERR_BADERRNUM    (MMSYSERR_BASE + 9)  /* error value out of range */
-#define MMSYSERR_INVALFLAG    (MMSYSERR_BASE + 10) /* invalid flag passed */
-#define MMSYSERR_INVALPARAM   (MMSYSERR_BASE + 11) /* invalid parameter passed */
-#define MMSYSERR_HANDLEBUSY   (MMSYSERR_BASE + 12) /* handle being used */
+static const int MMSYSERR_NOERROR     = 0;                    /* no error */
+static const int MMSYSERR_ERROR       = (MMSYSERR_BASE + 1);  /* unspecified error */
+static const int MMSYSERR_BADDEVICEID = (MMSYSERR_BASE + 2);  /* device ID out of range */
+static const int MMSYSERR_NOTENABLED  = (MMSYSERR_BASE + 3);  /* driver failed enable */
+static const int MMSYSERR_ALLOCATED   = (MMSYSERR_BASE + 4);  /* device already allocated */
+static const int MMSYSERR_INVALHANDLE = (MMSYSERR_BASE + 5);  /* device handle is invalid */
+static const int MMSYSERR_NODRIVER    = (MMSYSERR_BASE + 6);  /* no device driver present */
+static const int MMSYSERR_NOMEM       = (MMSYSERR_BASE + 7);  /* memory allocation error */
+static const int MMSYSERR_NOTSUPPORTED= (MMSYSERR_BASE + 8);  /* function isn't supported */
+static const int MMSYSERR_BADERRNUM   = (MMSYSERR_BASE + 9);  /* error value out of range */
+static const int MMSYSERR_INVALFLAG   = (MMSYSERR_BASE + 10); /* invalid flag passed */
+static const int MMSYSERR_INVALPARAM  = (MMSYSERR_BASE + 11); /* invalid parameter passed */
+static const int MMSYSERR_HANDLEBUSY  = (MMSYSERR_BASE + 12); /* handle being used */
                                                    /* simultaneously on another */
                                                    /* thread (eg callback) */
-#define MMSYSERR_INVALIDALIAS (MMSYSERR_BASE + 13) /* specified alias not found */
-#define MMSYSERR_BADDB        (MMSYSERR_BASE + 14) /* bad registry database */
-#define MMSYSERR_KEYNOTFOUND  (MMSYSERR_BASE + 15) /* registry key not found */
-#define MMSYSERR_READERROR    (MMSYSERR_BASE + 16) /* registry read error */
-#define MMSYSERR_WRITEERROR   (MMSYSERR_BASE + 17) /* registry write error */
-#define MMSYSERR_DELETEERROR  (MMSYSERR_BASE + 18) /* registry delete error */
-#define MMSYSERR_VALNOTFOUND  (MMSYSERR_BASE + 19) /* registry value not found */
-#define MMSYSERR_NODRIVERCB   (MMSYSERR_BASE + 20) /* driver does not call DriverCallback */
-#define MMSYSERR_MOREDATA     (MMSYSERR_BASE + 21) /* more data to be returned */
-#define MMSYSERR_LASTERROR    (MMSYSERR_BASE + 21) /* last error in range */
+static const int MMSYSERR_INVALIDALIAS =(MMSYSERR_BASE + 13); /* specified alias not found */
+static const int MMSYSERR_BADDB        =(MMSYSERR_BASE + 14); /* bad registry database */
+static const int MMSYSERR_KEYNOTFOUND  =(MMSYSERR_BASE + 15); /* registry key not found */
+static const int MMSYSERR_READERROR    =(MMSYSERR_BASE + 16); /* registry read error */
+static const int MMSYSERR_WRITEERROR   =(MMSYSERR_BASE + 17); /* registry write error */
+static const int MMSYSERR_DELETEERROR  =(MMSYSERR_BASE + 18); /* registry delete error */
+static const int MMSYSERR_VALNOTFOUND  =(MMSYSERR_BASE + 19); /* registry value not found */
+static const int MMSYSERR_NODRIVERCB   =(MMSYSERR_BASE + 20); /* driver does not call DriverCallback */
+static const int MMSYSERR_MOREDATA     =(MMSYSERR_BASE + 21); /* more data to be returned */
+static const int MMSYSERR_LASTERROR    =(MMSYSERR_BASE + 21); /* last error in range */
+]]
 
-#if (WINVER < 0x030a) || defined(_WIN32)
-DECLARE_HANDLE(HDRVR);
-#endif /* ifdef WINVER < 0x030a */
+if (WINVER < 0x030a) or _WIN32 then
+DECLARE_HANDLE("HDRVR");
+end --/* ifdef WINVER < 0x030a */
 
 
-/****************************************************************************
 
-                          Driver callback support
-
-****************************************************************************/
-
+--                          Driver callback support
+ffi.cdef[[
 /* flags used with waveOutOpen(), waveInOpen(), midiInOpen(), and */
 /* midiOutOpen() to specify the type of the dwCallback parameter. */
 
-#define CALLBACK_TYPEMASK   0x00070000l    /* callback type mask */
-#define CALLBACK_NULL       0x00000000l    /* no callback */
-#define CALLBACK_WINDOW     0x00010000l    /* dwCallback is a HWND */
-#define CALLBACK_TASK       0x00020000l    /* dwCallback is a HTASK */
-#define CALLBACK_FUNCTION   0x00030000l    /* dwCallback is a FARPROC */
-#ifdef _WIN32
-#define CALLBACK_THREAD     (CALLBACK_TASK)/* thread ID replaces 16 bit task */
-#define CALLBACK_EVENT      0x00050000l    /* dwCallback is an EVENT Handle */
-#endif
-typedef void (CALLBACK DRVCALLBACK)(HDRVR hdrvr, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2);
+static const int CALLBACK_TYPEMASK  = 0x00070000;    /* callback type mask */
+static const int CALLBACK_NULL      = 0x00000000;    /* no callback */
+static const int CALLBACK_WINDOW    = 0x00010000;    /* dwCallback is a HWND */
+static const int CALLBACK_TASK      = 0x00020000;    /* dwCallback is a HTASK */
+static const int CALLBACK_FUNCTION  = 0x00030000;    /* dwCallback is a FARPROC */
+]]
 
-typedef DRVCALLBACK FAR *LPDRVCALLBACK;
-#ifdef _WIN32
+if _WIN32 then
+ffi.cdef[[
+static const int CALLBACK_THREAD   =  (CALLBACK_TASK); /* thread ID replaces 16 bit task */
+static const int CALLBACK_EVENT    =  0x00050000;    /* dwCallback is an EVENT Handle */
+]]
+end
+
+ffi.cdef[[
+typedef void (__stdcall DRVCALLBACK)(HDRVR hdrvr, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2);
+
+typedef DRVCALLBACK  *LPDRVCALLBACK;
+]]
+
+if _WIN32 then
+ffi.cdef[[
 typedef DRVCALLBACK     *PDRVCALLBACK;
-#endif
---]=]
+]]
+end
+
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */	
 

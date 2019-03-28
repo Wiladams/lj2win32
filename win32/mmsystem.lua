@@ -54,18 +54,18 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 if not MMNOMCI then
 -- MMNOMCI         MCI support
-require("win32.mciapi")
+-- NYI require("win32.mciapi")
 end -- #ifndef MMNOMCI
 
 -- MMNODRV - Installable driver support
-require("win32.mmiscapi")
-require("win32.mmiscapi2")
+-- NYI require("win32.mmiscapi")
+-- NYI require("win32.mmiscapi2")
 
 
 -- MMNOSOUND  Sound support */
 require("win32.playsoundapi")
 
-require("win32.mmeapi")
+-- NYI require("win32.mmeapi")
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -75,7 +75,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) t
 
 if not MMNOTIMER then
 --                            Timer support
-require ("win32.timeapi").h>
+require ("win32.timeapi")
 
 end  --/* ifndef MMNOTIMER */
 
@@ -85,25 +85,15 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYS
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
-
-//
-// Joystickapi API Set contract
-//
-#include <joystickapi.h>
+require("win32.joystickapi")
 
 
-
-/****************************************************************************
-
-                        DISPLAY Driver extensions
-
-****************************************************************************/
-
-#ifndef NEWTRANSPARENT
-    #define NEWTRANSPARENT  3           /* use with SetBkMode() */
-
-    #define QUERYROPSUPPORT 40          /* use to determine ROP support */
-#endif  /* ifndef NEWTRANSPARENT */
+if not NEWTRANSPARENT
+ffi.cdef[[
+static const int NEWTRANSPARENT  = 3;           /* use with SetBkMode() */
+static const int QUERYROPSUPPORT = 40;          /* use to determine ROP support */
+]]
+end  --/* ifndef NEWTRANSPARENT */
 
 /****************************************************************************
 
@@ -115,28 +105,18 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 #define DIBINDEX(n)     MAKELONG((n),0x10FF)
 
 
-/****************************************************************************
-
-                        ScreenSaver support
-
-    The current application will receive a syscommand of SC_SCREENSAVE just
-    before the screen saver is invoked.  If the app wishes to prevent a
-    screen save, return non-zero value, otherwise call DefWindowProc().
-
-****************************************************************************/
-
-#ifndef SC_SCREENSAVE
-
-    #define SC_SCREENSAVE   0xF140
-
-#endif  /* ifndef SC_SCREENSAVE */
+if not SC_SCREENSAVE then
+ffi.cdef[[
+static const int SC_SCREENSAVE  = 0xF140;
+]]
+end  --/* ifndef SC_SCREENSAVE */
 
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
+--[[
 #ifdef _WIN32
 #include <poppack.h>
 #else
@@ -144,8 +124,8 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 #pragma pack()
 #endif
 #endif
-
-#endif  /* _INC_MMSYSTEM */
+--]]
+end  -- _INC_MMSYSTEM
 
 
 
