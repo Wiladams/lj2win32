@@ -114,8 +114,27 @@ function colorMode(amode)
 	return true;
 end
 
+function clear()
+	local bbrush = solidBrush(BackgroundColor)
+
+	if not bbrush then
+		return false;
+	end
+
+	-- save old pen and brush
+	local oldbrush = surface.DC:SelectObject(bbrush);
+	local oldpen = surface.DC:SelectStockObject(ffi.C.NULL_PEN);
+
+	surface.DC:Rectangle(0, 0, width-1, height-1)
+	surface.DC:flush();
+
+	-- restore the old stuff
+	surface.DC:SelectObject(oldbrush);
+	surface.DC:SelectObject(oldpen);
+end
 
 function background(...)
+	local n = select('#', ...)
 	local c = select(1,...)
 	if type(c) ~= "cdata" then
 		c = color(...)

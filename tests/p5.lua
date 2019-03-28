@@ -567,8 +567,46 @@ static const int MM_JOY2BUTTONDOWN   = 0x3B6;
 static const int MM_JOY1BUTTONUP     = 0x3B7;
 static const int MM_JOY2BUTTONUP     = 0x3B8;
 ]]
+local function wm_joystick_event(hwnd, msg, wParam, lParam)
+    local event = {
+        Buttons = wParam;
+        x = LOWORD(lParam);
+        y = HIWORD(lParam);
+    }
+
+    if msg == C.MM_JOY1BUTTONDOWN or
+    msg == C.MM_JOY2BUTTONDOWN then
+        event.Buttons = wParam;
+    elseif msg == C.MM_JOY1BUTTONUP or
+    msg == C.MM_JOY2BUTTONUP then
+        event.Buttons = wParam;
+    elseif msg == C.MM_JOY1MOVE or 
+        msg == C.MM_JOY2MOVE then
+    elseif msg == C.MM_JOY1ZMOVE or
+        msg == C.MM_JOY2ZMOVE then
+    end
+
+
+    return event
+end
+
 function JoystickActivity(hwnd, msg, wparam, lparam)
+    --print("JoystickActivity: ", msg, wparam, lparam)
     local res = 1;
+
+    local event = wm_joystick_event(hwnd, msg, wparam, lparam)
+
+    if msg == C.MM_JOY1BUTTONDOWN or 
+        msg == C.MM_JOY2BUTTONDOWN then
+        signalAll("gap_joydown", event)
+    elseif msg == C.MM_JOY1BUTTONUP or msg == C.MM_JOY2BUTTONUP then
+        signalAll("gap_joyup", event)
+    elseif msg == C.MM_JOY1MOVE or msg == C.MM_JOY2MOVE then
+        signalAll("gap_joymove", event)
+    elseif msg == C.MM_JOY1ZMOVE or msg == C.MM_JOY2ZMOVE then
+        event.z = LOWORD(lparam)
+        signalAll("gap_joyzmove", event)
+    end
 
     return res;
 end
@@ -713,6 +751,12 @@ local function setupUIHandlers()
         {activity = 'gap_syskeydown', response = "sysKeyPressed"};
         {activity = 'gap_syskeyup', response = "sysKeyReleased"};
         {activity = 'gap_syskeytyped', response = "sysKeyTyped"};
+
+        {activity = 'gap_joymove', response = "joyMoved"};
+        {activity = 'gap_joyzmove', response = "joyZMoved"};
+        {activity = 'gap_joyup', response = "joyReleased"};
+        {activity = 'gap_joydown', response = "joyPressed"};
+
 
         {activity = 'gap_idle', response = "onIdle"};
         --{activity = 'gap_frame', response = "draw"};

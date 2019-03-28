@@ -89,7 +89,7 @@ typedef  UINT    *LPUINT;
 _MMRESULT_ = true
 
 
---[=[
+ffi.cdef[[
 /* MMTIME data structure */
 typedef struct mmtime_tag
 {
@@ -110,9 +110,9 @@ typedef struct mmtime_tag
             BYTE    frame;      /* frames  */
             BYTE    fps;        /* frames per second */
             BYTE    dummy;      /* pad */
---#ifdef _WIN32
+//#ifdef _WIN32
             BYTE    pad[2];
---#endif
+//#endif
         } smpte;
 
         /* MIDI */
@@ -121,16 +121,18 @@ typedef struct mmtime_tag
             DWORD songptrpos;   /* song pointer position */
         } midi;
     } u;
-} MMTIME, *PMMTIME, NEAR *NPMMTIME, FAR *LPMMTIME;
+} MMTIME, *PMMTIME, *NPMMTIME, *LPMMTIME;
+]]
 
+ffi.cdef[[
 /* types for wType field in MMTIME struct */
-#define TIME_MS         0x0001  /* time in milliseconds */
-#define TIME_SAMPLES    0x0002  /* number of wave samples */
-#define TIME_BYTES      0x0004  /* current byte offset */
-#define TIME_SMPTE      0x0008  /* SMPTE time */
-#define TIME_MIDI       0x0010  /* MIDI time */
-#define TIME_TICKS      0x0020  /* Ticks within MIDI stream */
---]=]
+static const int TIME_MS       =  0x0001;  /* time in milliseconds */
+static const int TIME_SAMPLES  =  0x0002;  /* number of wave samples */
+static const int TIME_BYTES    =  0x0004;  /* current byte offset */
+static const int TIME_SMPTE    =  0x0008;  /* SMPTE time */
+static const int TIME_MIDI     =  0x0010;  /* MIDI time */
+static const int TIME_TICKS    =  0x0020;  /* Ticks within MIDI stream */
+]]
 
 local DWORD = ffi.typeof("uint32_t")
 

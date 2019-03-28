@@ -120,7 +120,16 @@ function Joystick.getPosition(self, res)
     res.u = joymap(self.info.dwUpos, caps.uMin, caps.uMax, -1,1);
     res.v = joymap(self.info.dwVpos, caps.vMin, caps.vMax, -1,1);
     
+    res.flags = self.info.dwFlags;
     res.buttons = self.info.dwButtons;
+    res.numberOfButtons = self.info.dwButtonNumber;
+
+    if self.info.dwPOV == 0xffff then
+        res.POV = false;
+    else
+        res.POV = self.info.dwPOV / 100;
+    end
+
 
     return res
 end
@@ -144,9 +153,30 @@ function Joystick.getState(self, res)
     res.v = self.info.dwVpos;
     
     res.buttons = self.info.dwButtons;
+    res.numberOfButtons = self.info.dwButtonNumber;
+
+    if self.info.dwPOV == 0xffff then
+        res.POV = false;
+    else
+        res.POV = self.info.dwPOV / 100;
+    end
 
     return res;
 end
 
+function Joystick.capture(self, hwnd)
+    local fChanged = 1;
+    local uPeriod = 0;
+
+    local result = joystickapi.joySetCapture(hwnd,self.ID,uPeriod, fChanged);
+
+    return result == 0
+end
+
+function Joystick.release(self)
+    local result = joystickapi.joyReleaseCapture(self.ID);
+
+    return result == 0
+end
 
 return Joystick
