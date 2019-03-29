@@ -827,77 +827,91 @@ end --/* ifdef WINVER >= 0x030a */
 
 end  --/* ifndef MMNOWAVE */
 
---[=[
-#ifndef MMNOMIDI
-/****************************************************************************
 
-                            MIDI audio support
+if not MMNOMIDI then
+--                            MIDI audio support
 
-****************************************************************************/
-
+ffi.cdef[[
 /* MIDI error return values */
-#define MIDIERR_UNPREPARED    (MIDIERR_BASE + 0)   /* header not prepared */
-#define MIDIERR_STILLPLAYING  (MIDIERR_BASE + 1)   /* still something playing */
-#define MIDIERR_NOMAP         (MIDIERR_BASE + 2)   /* no configured instruments */
-#define MIDIERR_NOTREADY      (MIDIERR_BASE + 3)   /* hardware is still busy */
-#define MIDIERR_NODEVICE      (MIDIERR_BASE + 4)   /* port no longer connected */
-#define MIDIERR_INVALIDSETUP  (MIDIERR_BASE + 5)   /* invalid MIF */
-#define MIDIERR_BADOPENMODE   (MIDIERR_BASE + 6)   /* operation unsupported w/ open mode */
-#define MIDIERR_DONT_CONTINUE (MIDIERR_BASE + 7)   /* thru device 'eating' a message */
-#define MIDIERR_LASTERROR     (MIDIERR_BASE + 7)   /* last error in range */
+static const int MIDIERR_UNPREPARED   = (MIDIERR_BASE + 0);   /* header not prepared */
+static const int MIDIERR_STILLPLAYING = (MIDIERR_BASE + 1);   /* still something playing */
+static const int MIDIERR_NOMAP        = (MIDIERR_BASE + 2);   /* no configured instruments */
+static const int MIDIERR_NOTREADY     = (MIDIERR_BASE + 3);   /* hardware is still busy */
+static const int MIDIERR_NODEVICE     = (MIDIERR_BASE + 4);   /* port no longer connected */
+static const int MIDIERR_INVALIDSETUP = (MIDIERR_BASE + 5);   /* invalid MIF */
+static const int MIDIERR_BADOPENMODE  = (MIDIERR_BASE + 6);   /* operation unsupported w/ open mode */
+static const int MIDIERR_DONT_CONTINUE= (MIDIERR_BASE + 7);   /* thru device 'eating' a message */
+static const int MIDIERR_LASTERROR    = (MIDIERR_BASE + 7);   /* last error in range */
+]]
 
-/* MIDI audio data types */
-DECLARE_HANDLE(HMIDI);
-DECLARE_HANDLE(HMIDIIN);
-DECLARE_HANDLE(HMIDIOUT);
-DECLARE_HANDLE(HMIDISTRM);
+-- MIDI audio data types */
+DECLARE_HANDLE("HMIDI");
+DECLARE_HANDLE("HMIDIIN");
+DECLARE_HANDLE("HMIDIOUT");
+DECLARE_HANDLE("HMIDISTRM");
+
+ffi.cdef[[
 typedef HMIDI  *LPHMIDI;
 typedef HMIDIIN  *LPHMIDIIN;
 typedef HMIDIOUT  *LPHMIDIOUT;
 typedef HMIDISTRM  *LPHMIDISTRM;
 typedef DRVCALLBACK MIDICALLBACK;
 typedef MIDICALLBACK  *LPMIDICALLBACK;
-#define MIDIPATCHSIZE   128
+
+static const int MIDIPATCHSIZE   = 128;
+
 typedef WORD PATCHARRAY[MIDIPATCHSIZE];
 typedef WORD  *LPPATCHARRAY;
 typedef WORD KEYARRAY[MIDIPATCHSIZE];
 typedef WORD  *LPKEYARRAY;
+]]
 
+ffi.cdef[[
 /* MIDI callback messages */
-#define MIM_OPEN        MM_MIM_OPEN
-#define MIM_CLOSE       MM_MIM_CLOSE
-#define MIM_DATA        MM_MIM_DATA
-#define MIM_LONGDATA    MM_MIM_LONGDATA
-#define MIM_ERROR       MM_MIM_ERROR
-#define MIM_LONGERROR   MM_MIM_LONGERROR
-#define MOM_OPEN        MM_MOM_OPEN
-#define MOM_CLOSE       MM_MOM_CLOSE
-#define MOM_DONE        MM_MOM_DONE
+static const int MIM_OPEN      =  MM_MIM_OPEN;
+static const int MIM_CLOSE     =  MM_MIM_CLOSE;
+static const int MIM_DATA      =  MM_MIM_DATA;
+static const int MIM_LONGDATA  =  MM_MIM_LONGDATA;
+static const int MIM_ERROR     =  MM_MIM_ERROR;
+static const int MIM_LONGERROR =  MM_MIM_LONGERROR;
+static const int MOM_OPEN      =  MM_MOM_OPEN;
+static const int MOM_CLOSE     =  MM_MOM_CLOSE;
+static const int MOM_DONE      =  MM_MOM_DONE;
+]]
 
-if (WINVER >= 0x0400)
-#define MIM_MOREDATA      MM_MIM_MOREDATA
-#define MOM_POSITIONCB    MM_MOM_POSITIONCB
-end /* WINVER >= 0x0400 */
 
+if (WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MIM_MOREDATA    =  MM_MIM_MOREDATA;
+static const int MOM_POSITIONCB  =  MM_MOM_POSITIONCB;
+]]
+end --/* WINVER >= 0x0400 */
+
+ffi.cdef[[
 /* device ID for MIDI mapper */
-#define MIDIMAPPER     ((UINT)-1)
-#define MIDI_MAPPER    ((UINT)-1)
+static const int MIDIMAPPER    = ((UINT)-1);
+static const int MIDI_MAPPER   = ((UINT)-1);
+]]
 
-if (WINVER >= 0x0400)
+if (WINVER >= 0x0400) then
+ffi.cdef[[
 /* flags for dwFlags parm of midiInOpen() */
-#define MIDI_IO_STATUS      0x00000020L
-end /* WINVER >= 0x0400 */
+static const int MIDI_IO_STATUS     = 0x00000020L;
+]]
+end --/* WINVER >= 0x0400 */
 
+ffi.cdef[[
 /* flags for wFlags parm of midiOutCachePatches(), midiOutCacheDrumPatches() */
-#define MIDI_CACHE_ALL      1
-#define MIDI_CACHE_BESTFIT  2
-#define MIDI_CACHE_QUERY    3
-#define MIDI_UNCACHE        4
+static const int MIDI_CACHE_ALL     = 1;
+static const int MIDI_CACHE_BESTFIT = 2;
+static const int MIDI_CACHE_QUERY   = 3;
+static const int MIDI_UNCACHE       = 4;
+]]
 
 
-/* MIDI output device capabilities structure */
+--/* MIDI output device capabilities structure */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagMIDIOUTCAPSA {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -909,6 +923,9 @@ typedef struct tagMIDIOUTCAPSA {
     WORD    wChannelMask;          /* channels used (internal synth only) */
     DWORD   dwSupport;             /* functionality supported by driver */
 } MIDIOUTCAPSA, *PMIDIOUTCAPSA, *NPMIDIOUTCAPSA, *LPMIDIOUTCAPSA;
+]]
+
+ffi.cdef[[
 typedef struct tagMIDIOUTCAPSW {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -920,17 +937,25 @@ typedef struct tagMIDIOUTCAPSW {
     WORD    wChannelMask;          /* channels used (internal synth only) */
     DWORD   dwSupport;             /* functionality supported by driver */
 } MIDIOUTCAPSW, *PMIDIOUTCAPSW, *NPMIDIOUTCAPSW, *LPMIDIOUTCAPSW;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef MIDIOUTCAPSW MIDIOUTCAPS;
 typedef PMIDIOUTCAPSW PMIDIOUTCAPS;
 typedef NPMIDIOUTCAPSW NPMIDIOUTCAPS;
 typedef LPMIDIOUTCAPSW LPMIDIOUTCAPS;
+]]
 else
+ffi.cdef[[
 typedef MIDIOUTCAPSA MIDIOUTCAPS;
 typedef PMIDIOUTCAPSA PMIDIOUTCAPS;
 typedef NPMIDIOUTCAPSA NPMIDIOUTCAPS;
 typedef LPMIDIOUTCAPSA LPMIDIOUTCAPS;
+]]
 end   -- UNICODE
+
+ffi.cdef[[
 typedef struct tagMIDIOUTCAPS2A {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -945,6 +970,9 @@ typedef struct tagMIDIOUTCAPS2A {
     GUID    ProductGuid;           /* for extensible PID mapping */
     GUID    NameGuid;              /* for name lookup in registry */
 } MIDIOUTCAPS2A, *PMIDIOUTCAPS2A, *NPMIDIOUTCAPS2A, *LPMIDIOUTCAPS2A;
+]]
+
+ffi.cdef[[
 typedef struct tagMIDIOUTCAPS2W {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -959,19 +987,26 @@ typedef struct tagMIDIOUTCAPS2W {
     GUID    ProductGuid;           /* for extensible PID mapping */
     GUID    NameGuid;              /* for name lookup in registry */
 } MIDIOUTCAPS2W, *PMIDIOUTCAPS2W, *NPMIDIOUTCAPS2W, *LPMIDIOUTCAPS2W;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef MIDIOUTCAPS2W MIDIOUTCAPS2;
 typedef PMIDIOUTCAPS2W PMIDIOUTCAPS2;
 typedef NPMIDIOUTCAPS2W NPMIDIOUTCAPS2;
 typedef LPMIDIOUTCAPS2W LPMIDIOUTCAPS2;
+]]
 else
+ffi.cdef[[
 typedef MIDIOUTCAPS2A MIDIOUTCAPS2;
 typedef PMIDIOUTCAPS2A PMIDIOUTCAPS2;
 typedef NPMIDIOUTCAPS2A NPMIDIOUTCAPS2;
 typedef LPMIDIOUTCAPS2A LPMIDIOUTCAPS2;
+]]
 end   -- UNICODE
 
 else
+ffi.cdef[[
 typedef struct midioutcaps_tag {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -983,26 +1018,32 @@ typedef struct midioutcaps_tag {
     WORD    wChannelMask;          /* channels used (internal synth only) */
     DWORD   dwSupport;             /* functionality supported by driver */
 } MIDIOUTCAPS, *PMIDIOUTCAPS,  *NPMIDIOUTCAPS,  *LPMIDIOUTCAPS;
+]]
 end
 
+ffi.cdef[[
 /* flags for wTechnology field of MIDIOUTCAPS structure */
-#define MOD_MIDIPORT    1  /* output port */
-#define MOD_SYNTH       2  /* generic internal synth */
-#define MOD_SQSYNTH     3  /* square wave internal synth */
-#define MOD_FMSYNTH     4  /* FM internal synth */
-#define MOD_MAPPER      5  /* MIDI mapper */
-#define MOD_WAVETABLE   6  /* hardware wavetable synth */
-#define MOD_SWSYNTH     7  /* software synth */
+static const int MOD_MIDIPORT   = 1;  /* output port */
+static const int MOD_SYNTH      = 2;  /* generic internal synth */
+static const int MOD_SQSYNTH    = 3;  /* square wave internal synth */
+static const int MOD_FMSYNTH    = 4;  /* FM internal synth */
+static const int MOD_MAPPER     = 5;  /* MIDI mapper */
+static const int MOD_WAVETABLE  = 6;  /* hardware wavetable synth */
+static const int MOD_SWSYNTH    = 7;  /* software synth */
 
 /* flags for dwSupport field of MIDIOUTCAPS structure */
-#define MIDICAPS_VOLUME          0x0001  /* supports volume control */
-#define MIDICAPS_LRVOLUME        0x0002  /* separate left-right volume control */
-#define MIDICAPS_CACHE           0x0004
-if (WINVER >= 0x0400)
-#define MIDICAPS_STREAM          0x0008  /* driver supports midiStreamOut directly */
-end /* WINVER >= 0x0400 */
+static const int MIDICAPS_VOLUME    =      0x0001;  /* supports volume control */
+static const int MIDICAPS_LRVOLUME  =      0x0002;  /* separate left-right volume control */
+static const int MIDICAPS_CACHE     =      0x0004;
+]]
 
-/* MIDI input device capabilities structure */
+if (WINVER >= 0x0400) then
+ffi.cdef[[
+static const int MIDICAPS_STREAM       =   0x0008;  /* driver supports midiStreamOut directly */
+]]
+end --/* WINVER >= 0x0400 */
+
+--/* MIDI input device capabilities structure */
 if _WIN32 then
 ffi.cdef[[
 typedef struct tagMIDIINCAPSA {
@@ -1112,7 +1153,7 @@ typedef struct midihdr_tag {
     DWORD       dwBytesRecorded;      /* used for input only */
     DWORD_PTR   dwUser;               /* for clients use */
     DWORD       dwFlags;              /* assorted flags (see defines) */
-    struct midihdr_tag far *lpNext;   /* reserved for driver */
+    struct midihdr_tag *lpNext;   /* reserved for driver */
     DWORD_PTR   reserved;             /* reserved for driver */
 //if (WINVER >= 0x0400)
     DWORD       dwOffset;             /* Callback offset into buffer */
@@ -1138,14 +1179,18 @@ typedef struct midistrmbuffver_tag
     DWORD       dwOEMVersion;               /* Manufacturer version for custom ext */
 } MIDISTRMBUFFVER;
 ]]
-end /* WINVER >= 0x0400 */
+end --/* WINVER >= 0x0400 */
 
+ffi.cdef[[
 /* flags for dwFlags field of MIDIHDR structure */
-#define MHDR_DONE       0x00000001       /* done bit */
-#define MHDR_PREPARED   0x00000002       /* set if header prepared */
-#define MHDR_INQUEUE    0x00000004       /* reserved for driver */
-#define MHDR_ISSTRM     0x00000008       /* Buffer is stream buffer */
-if (WINVER >= 0x0400)
+static const int MHDR_DONE     =  0x00000001;       /* done bit */
+static const int MHDR_PREPARED =  0x00000002;       /* set if header prepared */
+static const int MHDR_INQUEUE  =  0x00000004;       /* reserved for driver */
+static const int MHDR_ISSTRM   =  0x00000008;       /* Buffer is stream buffer */
+]]
+
+if (WINVER >= 0x0400) then
+ffi.cdef[[
 /* */
 /* Type codes which go in the high byte of the event DWORD of a stream buffer */
 /* */
@@ -1156,16 +1201,18 @@ if (WINVER >= 0x0400)
 /* padded to be an even multiple of 4 bytes long. */
 /* */
 
-#define MEVT_F_SHORT        0x00000000L
-#define MEVT_F_LONG         0x80000000L
-#define MEVT_F_CALLBACK     0x40000000L
+static const int MEVT_F_SHORT      =  0x00000000L;
+static const int MEVT_F_LONG       =  0x80000000L;
+static const int MEVT_F_CALLBACK   =  0x40000000L;
+]]
 
-#define MEVT_EVENTTYPE(x)   ((BYTE)(((x)>>24)&0xFF))
-#define MEVT_EVENTPARM(x)   ((DWORD)((x)&0x00FFFFFFL))
+--local function MEVT_EVENTTYPE(x) return  ((BYTE)(((x)>>24)&0xFF)); end
+--local function MEVT_EVENTPARM(x) return ((DWORD)((x)&0x00FFFFFFL)); end
 
-#define MEVT_SHORTMSG       ((BYTE)0x00)    /* parm = shortmsg for midiOutShortMsg */
-#define MEVT_TEMPO          ((BYTE)0x01)    /* parm = new tempo in microsec/qn     */
-#define MEVT_NOP            ((BYTE)0x02)    /* parm = unused; does nothing         */
+ffi.cdef[[
+static const int MEVT_SHORTMSG     =  ((BYTE)0x00);    /* parm = shortmsg for midiOutShortMsg */
+static const int MEVT_TEMPO        =  ((BYTE)0x01);    /* parm = new tempo in microsec/qn     */
+static const int MEVT_NOP          =  ((BYTE)0x02);    /* parm = unused; does nothing         */
 
 /* 0x04-0x7F reserved */
 
@@ -1174,6 +1221,7 @@ static const int MEVT_COMMENT      =  ((BYTE)0x82);    /* parm = comment data   
 static const int MEVT_VERSION      =  ((BYTE)0x84);    /* parm = MIDISTRMBUFFVER struct       */
 
 /* 0x81-0xFF reserved */
+]]
 
 ffi.cdef[[
 static const int MIDISTRM_ERROR     = (-2);
@@ -1243,7 +1291,7 @@ MMRESULT
 __stdcall
 midiStreamProperty(
      HMIDISTRM hms,
-    _Inout_updates_bytes_(sizeof(DWORD) + sizeof(DWORD)) LPBYTE lppropdata,
+     LPBYTE lppropdata,
      DWORD dwProperty
     );
 
@@ -1252,7 +1300,7 @@ MMRESULT
 __stdcall
 midiStreamPosition(
      HMIDISTRM hms,
-    _Out_writes_bytes_(cbmmt) LPMMTIME lpmmt,
+     LPMMTIME lpmmt,
      UINT cbmmt
     );
 
@@ -1262,7 +1310,7 @@ MMRESULT
 __stdcall
 midiStreamOut(
      HMIDISTRM hms,
-    _Out_writes_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1308,7 +1356,7 @@ midiDisconnect(
     );
 ]]
 end
-end /* WINVER >= 0x0400 */
+end --/* WINVER >= 0x0400 */
 
 if _WIN32 then
 
@@ -1329,6 +1377,7 @@ midiOutGetDevCapsW(
      LPMIDIOUTCAPSW pmoc,
      UINT cbmoc
     );
+]]
 
 if UNICODE then
 --#define midiOutGetDevCaps  midiOutGetDevCapsW
@@ -1422,7 +1471,7 @@ MMRESULT
 __stdcall
 midiOutPrepareHeader(
      HMIDIOUT hmo,
-    _Inout_updates_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1431,7 +1480,7 @@ MMRESULT
 __stdcall
 midiOutUnprepareHeader(
      HMIDIOUT hmo,
-    _Inout_updates_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1448,7 +1497,7 @@ MMRESULT
 __stdcall
 midiOutLongMsg(
      HMIDIOUT hmo,
-    _In_reads_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1465,7 +1514,7 @@ __stdcall
 midiOutCachePatches(
      HMIDIOUT hmo,
      UINT uBank,
-    _In_reads_(MIDIPATCHSIZE) LPWORD pwpa,
+     LPWORD pwpa,
      UINT fuCache
     );
 
@@ -1475,7 +1524,7 @@ __stdcall
 midiOutCacheDrumPatches(
      HMIDIOUT hmo,
      UINT uPatch,
-    _In_reads_(MIDIPATCHSIZE) LPWORD pwkya,
+     LPWORD pwkya,
      UINT fuCache
     );
 
@@ -1522,7 +1571,7 @@ MMRESULT
 __stdcall
 midiInGetDevCapsA(
      UINT_PTR uDeviceID,
-    _Out_writes_bytes_(cbmic) LPMIDIINCAPSA pmic,
+     LPMIDIINCAPSA pmic,
      UINT cbmic
     );
 
@@ -1531,7 +1580,7 @@ MMRESULT
 __stdcall
 midiInGetDevCapsW(
      UINT_PTR uDeviceID,
-    _Out_writes_bytes_(cbmic) LPMIDIINCAPSW pmic,
+     LPMIDIINCAPSW pmic,
      UINT cbmic
     );
 ]]
@@ -1597,7 +1646,7 @@ MMRESULT
 __stdcall
 midiInPrepareHeader(
      HMIDIIN hmi,
-    _Inout_updates_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1606,7 +1655,7 @@ MMRESULT
 __stdcall
 midiInUnprepareHeader(
      HMIDIIN hmi,
-    _Inout_updates_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1615,7 +1664,7 @@ MMRESULT
 __stdcall
 midiInAddBuffer(
      HMIDIIN hmi,
-    _Out_writes_bytes_(cbmh) LPMIDIHDR pmh,
+     LPMIDIHDR pmh,
      UINT cbmh
     );
 
@@ -1649,7 +1698,7 @@ midiInGetID(
     );
 ]]
 
-if (WINVER >= 0x030a)
+if (WINVER >= 0x030a) then
 if _WIN32 then
 ffi.cdef[[
 MMRESULT
@@ -1666,26 +1715,23 @@ ffi.cdef[[
 DWORD __stdcall midiInMessage(HMIDIIN hmi, UINT uMsg, DWORD dw1, DWORD dw2);
 ]]
 end
-end /* ifdef WINVER >= 0x030a */
+end --/* ifdef WINVER >= 0x030a */
 
-end  /* ifndef MMNOMIDI */
---]=]
+end  --/* ifndef MMNOMIDI */
 
---[=[
-#ifndef MMNOAUX
-/****************************************************************************
 
-                        Auxiliary audio support
 
-****************************************************************************/
+if not MMNOAUX then
 
+--  Auxiliary audio support
+ffi.cdef[[
 /* device ID for aux device mapper */
-#define AUX_MAPPER     ((UINT)-1)
+static const int AUX_MAPPER   =  -1;
+]]
 
-
-/* Auxiliary audio device capabilities structure */
+--/* Auxiliary audio device capabilities structure */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagAUXCAPSA {
     WORD        wMid;                /* manufacturer ID */
     WORD        wPid;                /* product ID */
@@ -1695,6 +1741,9 @@ typedef struct tagAUXCAPSA {
     WORD        wReserved1;          /* padding */
     DWORD       dwSupport;           /* functionality supported by driver */
 } AUXCAPSA, *PAUXCAPSA, *NPAUXCAPSA, *LPAUXCAPSA;
+]]
+
+ffi.cdef[[
 typedef struct tagAUXCAPSW {
     WORD        wMid;                /* manufacturer ID */
     WORD        wPid;                /* product ID */
@@ -1704,17 +1753,25 @@ typedef struct tagAUXCAPSW {
     WORD        wReserved1;          /* padding */
     DWORD       dwSupport;           /* functionality supported by driver */
 } AUXCAPSW, *PAUXCAPSW, *NPAUXCAPSW, *LPAUXCAPSW;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef AUXCAPSW AUXCAPS;
 typedef PAUXCAPSW PAUXCAPS;
 typedef NPAUXCAPSW NPAUXCAPS;
 typedef LPAUXCAPSW LPAUXCAPS;
+]]
 else
+ffi.cdef[[
 typedef AUXCAPSA AUXCAPS;
 typedef PAUXCAPSA PAUXCAPS;
 typedef NPAUXCAPSA NPAUXCAPS;
 typedef LPAUXCAPSA LPAUXCAPS;
+]]
 end   -- UNICODE
+
+ffi.cdef[[
 typedef struct tagAUXCAPS2A {
     WORD        wMid;                /* manufacturer ID */
     WORD        wPid;                /* product ID */
@@ -1727,6 +1784,9 @@ typedef struct tagAUXCAPS2A {
     GUID        ProductGuid;         /* for extensible PID mapping */
     GUID        NameGuid;            /* for name lookup in registry */
 } AUXCAPS2A, *PAUXCAPS2A, *NPAUXCAPS2A, *LPAUXCAPS2A;
+]]
+
+ffi.cdef[[
 typedef struct tagAUXCAPS2W {
     WORD        wMid;                /* manufacturer ID */
     WORD        wPid;                /* product ID */
@@ -1739,19 +1799,26 @@ typedef struct tagAUXCAPS2W {
     GUID        ProductGuid;         /* for extensible PID mapping */
     GUID        NameGuid;            /* for name lookup in registry */
 } AUXCAPS2W, *PAUXCAPS2W, *NPAUXCAPS2W, *LPAUXCAPS2W;
+]]
+
 if UNICODE then
+ffi.cdef[[
 typedef AUXCAPS2W AUXCAPS2;
 typedef PAUXCAPS2W PAUXCAPS2;
 typedef NPAUXCAPS2W NPAUXCAPS2;
 typedef LPAUXCAPS2W LPAUXCAPS2;
+]]
 else
+ffi.cdef[[
 typedef AUXCAPS2A AUXCAPS2;
 typedef PAUXCAPS2A PAUXCAPS2;
 typedef NPAUXCAPS2A NPAUXCAPS2;
 typedef LPAUXCAPS2A LPAUXCAPS2;
+]]
 end   -- UNICODE
 
 else
+ffi.cdef[[
 typedef struct auxcaps_tag {
     WORD    wMid;                  /* manufacturer ID */
     WORD    wPid;                  /* product ID */
@@ -1760,16 +1827,20 @@ typedef struct auxcaps_tag {
     WORD    wTechnology;           /* type of device */
     DWORD   dwSupport;             /* functionality supported by driver */
 } AUXCAPS, *PAUXCAPS,  *NPAUXCAPS,  *LPAUXCAPS;
+]]
 end
 
+ffi.cdef[[
 /* flags for wTechnology field in AUXCAPS structure */
-#define AUXCAPS_CDAUDIO    1       /* audio from internal CD-ROM drive */
-#define AUXCAPS_AUXIN      2       /* audio from auxiliary input jacks */
+static const int AUXCAPS_CDAUDIO   = 1;       /* audio from internal CD-ROM drive */
+static const int AUXCAPS_AUXIN     = 2;       /* audio from auxiliary input jacks */
 
 /* flags for dwSupport field in AUXCAPS structure */
-#define AUXCAPS_VOLUME          0x0001  /* supports volume control */
-#define AUXCAPS_LRVOLUME        0x0002  /* separate left-right volume control */
+static const int AUXCAPS_VOLUME       =   0x0001;  /* supports volume control */
+static const int AUXCAPS_LRVOLUME     =   0x0002;  /* separate left-right volume control */
+]]
 
+ffi.cdef[[
 /* auxiliary audio function prototypes */
 
 UINT
@@ -1777,15 +1848,16 @@ __stdcall
 auxGetNumDevs(
     void
     );
+]]
 
 if _WIN32 then
 
-
+ffi.cdef[[
 MMRESULT
 __stdcall
 auxGetDevCapsA(
      UINT_PTR uDeviceID,
-    _Out_writes_bytes_(cbac) LPAUXCAPSA pac,
+     LPAUXCAPSA pac,
      UINT cbac
     );
 
@@ -1794,20 +1866,24 @@ MMRESULT
 __stdcall
 auxGetDevCapsW(
      UINT_PTR uDeviceID,
-    _Out_writes_bytes_(cbac) LPAUXCAPSW pac,
+     LPAUXCAPSW pac,
      UINT cbac
     );
+]]
 
 if UNICODE then
-#define auxGetDevCaps  auxGetDevCapsW
+--#define auxGetDevCaps  auxGetDevCapsW
 else
-#define auxGetDevCaps  auxGetDevCapsA
+--#define auxGetDevCaps  auxGetDevCapsA
 end   -- UNICODE
 
 else
+ffi.cdef[[
 MMRESULT __stdcall auxGetDevCaps(UINT uDeviceID, LPAUXCAPS pac, UINT cbac);
+]]
 end
 
+ffi.cdef[[
 MMRESULT
 __stdcall
 auxSetVolume(
@@ -1822,11 +1898,11 @@ auxGetVolume(
      UINT uDeviceID,
      LPDWORD pdwVolume
     );
+]]
 
-
-if (WINVER >= 0x030a)
+if (WINVER >= 0x030a) then
 if _WIN32 then
-
+ffi.cdef[[
 MMRESULT
 __stdcall
 auxOutMessage(
@@ -1835,14 +1911,16 @@ auxOutMessage(
      DWORD_PTR dw1,
      DWORD_PTR dw2
     );
-
+]]
 else
+ffi.cdef[[
 DWORD __stdcall auxOutMessage(UINT uDeviceID, UINT uMsg, DWORD dw1, DWORD dw2);
+]]
 end
-end /* ifdef WINVER >= 0x030a */
+end --/* ifdef WINVER >= 0x030a */
 
-end  /* ifndef MMNOAUX */
---]=]
+end  --/* ifndef MMNOAUX */
+
 
 
 if not  MMNOMIXER then
