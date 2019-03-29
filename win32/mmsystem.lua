@@ -65,7 +65,7 @@ end -- #ifndef MMNOMCI
 -- MMNOSOUND  Sound support */
 require("win32.playsoundapi")
 
--- NYI require("win32.mmeapi")
+require("win32.mmeapi")
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
@@ -95,15 +95,12 @@ static const int QUERYROPSUPPORT = 40;          /* use to determine ROP support 
 ]]
 end  --/* ifndef NEWTRANSPARENT */
 
-/****************************************************************************
 
-                        DIB Driver extensions
-
-****************************************************************************/
-
+--                        DIB Driver extensions
+--[[
 #define SELECTDIB       41                      /* DIB.DRV select dib escape */
 #define DIBINDEX(n)     MAKELONG((n),0x10FF)
-
+--]]
 
 if not SC_SCREENSAVE then
 ffi.cdef[[
