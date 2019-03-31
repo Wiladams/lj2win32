@@ -23,3 +23,31 @@ typedef struct in_addr {
     };
 } IN_ADDR, *PIN_ADDR, *LPIN_ADDR;
 ]]
+
+--[[
+IN_ADDR = ffi.typeof("struct in_addr");
+IN_ADDR_mt = {
+    __tostring = function(self)
+        local res = Lib.inet_ntoa(self)
+        if res then
+            return ffi.string(res)
+        end
+
+        return nil
+    end,
+
+    __index = {
+        Assign = function(self, rhs)
+            self.S_addr = rhs.S_addr
+            return self
+        end,
+
+        Clone = function(self)
+            local obj = IN_ADDR(self.S_addr)
+            return obj
+        end,
+
+    },
+}
+ffi.metatype(IN_ADDR, IN_ADDR_mt)
+--]]

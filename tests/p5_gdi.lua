@@ -1,11 +1,16 @@
 --[[
     This must be required by p5.lua, do not use it directly
-    as it utilizes globals found in there.
+	as it utilizes globals found in there.
+	
+	--transparency and GDI
+	https://parnassus.co/transparent-graphics-with-pure-gdi-part-2-and-introducing-the-ttransparentcanvas-class/
+
 ]]
 
 local ffi = require("ffi")
 local wingdi = require("win32.wingdi")
 local Rectangle = require("Rectangle")
+local PixelBuffer = require("PixelBuffer")
 
 local solidBrushes = {}
 local solidPens = {}
@@ -675,8 +680,9 @@ end
 --[==============================[
 	IMAGE
 --]==============================]
-function createImage(awidth, aheight, dtype)
-	local pm = PImage(awidth, aheight, dtype)
+function createImage(awidth, aheight)
+	local pm = PixelBuffer(awidth, aheight)
+
 	return pm
 end
 
