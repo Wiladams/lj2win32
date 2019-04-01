@@ -32,7 +32,7 @@ require ("win32.winapifamily")
 --]]
 
 if not _INC_MMSYSTEM then
-_INC_MMSYSTEM = true   /* #defined if mmsystem.h has been included */
+_INC_MMSYSTEM = true   --/* #defined if mmsystem.h has been included */
 
 
 require ("win32.mmsyscom")
@@ -58,8 +58,8 @@ if not MMNOMCI then
 end -- #ifndef MMNOMCI
 
 -- MMNODRV - Installable driver support
--- NYI require("win32.mmiscapi")
--- NYI require("win32.mmiscapi2")
+require("win32.mmiscapi")
+require("win32.mmiscapi2")
 
 
 -- MMNOSOUND  Sound support */
@@ -88,7 +88,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 require("win32.joystickapi")
 
 
-if not NEWTRANSPARENT
+if not NEWTRANSPARENT then
 ffi.cdef[[
 static const int NEWTRANSPARENT  = 3;           /* use with SetBkMode() */
 static const int QUERYROPSUPPORT = 40;          /* use to determine ROP support */
@@ -125,5 +125,5 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 end  -- _INC_MMSYSTEM
 
 
-
+return ffi.load("winmm")
 

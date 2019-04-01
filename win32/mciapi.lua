@@ -1380,7 +1380,7 @@ end
 
 /* parameter block for MCI_LOAD command message */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagMCI_OVLY_LOAD_PARMSA {
     DWORD_PTR   dwCallback;
     LPCSTR      lpfilename;
@@ -1391,21 +1391,29 @@ typedef struct tagMCI_OVLY_LOAD_PARMSW {
     LPCWSTR     lpfilename;
     RECT    rc;
 } MCI_OVLY_LOAD_PARMSW, *PMCI_OVLY_LOAD_PARMSW, * LPMCI_OVLY_LOAD_PARMSW;
-if UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef MCI_OVLY_LOAD_PARMSW MCI_OVLY_LOAD_PARMS;
 typedef PMCI_OVLY_LOAD_PARMSW PMCI_OVLY_LOAD_PARMS;
 typedef LPMCI_OVLY_LOAD_PARMSW LPMCI_OVLY_LOAD_PARMS;
+]]
 else
+ffi.cdef[[
 typedef MCI_OVLY_LOAD_PARMSA MCI_OVLY_LOAD_PARMS;
 typedef PMCI_OVLY_LOAD_PARMSA PMCI_OVLY_LOAD_PARMS;
 typedef LPMCI_OVLY_LOAD_PARMSA LPMCI_OVLY_LOAD_PARMS;
+]]
 end // UNICODE
 else
+ffi.cdef[[
 typedef struct tagMCI_OVLY_LOAD_PARMS {
     DWORD   dwCallback;
     LPCSTR  lpfilename;
     RECT    rc;
 } MCI_OVLY_LOAD_PARMS, FAR * LPMCI_OVLY_LOAD_PARMS;
+]]
 end
 
 ffi.cdef[[
@@ -1413,13 +1421,13 @@ ffi.cdef[[
 // APIs moved from mmddk.h - function prototypes for MCI driver functions
 //
 DWORD_PTR
-APIENTRY
+__stdcall
 mciGetDriverData(
     MCIDEVICEID wDeviceID
     );
 
 UINT
-APIENTRY
+__stdcall
 mciLoadCommandResource(
     HANDLE hInstance,
     LPCWSTR lpResName,
@@ -1427,20 +1435,20 @@ mciLoadCommandResource(
     );
 
 BOOL
-APIENTRY
+__stdcall
 mciSetDriverData(
     MCIDEVICEID wDeviceID,
     DWORD_PTR dwData
     );
 
 UINT
-APIENTRY
+__stdcall
 mciDriverYield(
     MCIDEVICEID wDeviceID
     );
 
 BOOL
-APIENTRY
+__stdcall
 mciDriverNotify(
     HANDLE hwndCallback,
     MCIDEVICEID wDeviceID,
@@ -1448,7 +1456,7 @@ mciDriverNotify(
     );
 
 BOOL
-APIENTRY
+__stdcall
 mciFreeCommandResource(
     UINT wTable
     );

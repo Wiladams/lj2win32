@@ -11,8 +11,8 @@
 local ffi = require("ffi")
 
 
---#ifndef _MMISCAPI_H_
---#define _MMISCAPI_H_
+if not _MMISCAPI_H_ then
+_MMISCAPI_H_ = true
 
 --#include <apiset.h>
 --#include <apisetcconv.h>
@@ -29,22 +29,25 @@ if not MMNODRV then
 
 --        Installable driver support
 
-#ifdef _WIN32 then
+if _WIN32 then
+ffi.cdef[[
 typedef struct DRVCONFIGINFOEX {
     DWORD   dwDCISize;
     LPCWSTR  lpszDCISectionName;
     LPCWSTR  lpszDCIAliasName;
     DWORD    dnDevNode;
 } DRVCONFIGINFOEX, *PDRVCONFIGINFOEX,  *NPDRVCONFIGINFOEX,  *LPDRVCONFIGINFOEX;
-
-#else
+]]
+else
+ffi.cdef[[
 typedef struct DRVCONFIGINFOEX {
     DWORD   dwDCISize;
     LPCSTR  lpszDCISectionName;
     LPCSTR  lpszDCIAliasName;
     DWORD    dnDevNode;
 } DRVCONFIGINFOEX, *PDRVCONFIGINFOEX,  *NPDRVCONFIGINFOEX,  *LPDRVCONFIGINFOEX;
-#endif
+]]
+end
 
 if (WINVER < 0x030a) or _WIN32 then
 
@@ -251,36 +254,37 @@ end  --/* ifndef MMNODRV */
 if not MMNOMMIO then
 
 --                        Multimedia File I/O support
-
+ffi.cdef[[
 /* MMIO error return values */
-#define MMIOERR_BASE                256
-#define MMIOERR_FILENOTFOUND        (MMIOERR_BASE + 1)  /* file not found */
-#define MMIOERR_OUTOFMEMORY         (MMIOERR_BASE + 2)  /* out of memory */
-#define MMIOERR_CANNOTOPEN          (MMIOERR_BASE + 3)  /* cannot open */
-#define MMIOERR_CANNOTCLOSE         (MMIOERR_BASE + 4)  /* cannot close */
-#define MMIOERR_CANNOTREAD          (MMIOERR_BASE + 5)  /* cannot read */
-#define MMIOERR_CANNOTWRITE         (MMIOERR_BASE + 6)  /* cannot write */
-#define MMIOERR_CANNOTSEEK          (MMIOERR_BASE + 7)  /* cannot seek */
-#define MMIOERR_CANNOTEXPAND        (MMIOERR_BASE + 8)  /* cannot expand file */
-#define MMIOERR_CHUNKNOTFOUND       (MMIOERR_BASE + 9)  /* chunk not found */
-#define MMIOERR_UNBUFFERED          (MMIOERR_BASE + 10) /*  */
-#define MMIOERR_PATHNOTFOUND        (MMIOERR_BASE + 11) /* path incorrect */
-#define MMIOERR_ACCESSDENIED        (MMIOERR_BASE + 12) /* file was protected */
-#define MMIOERR_SHARINGVIOLATION    (MMIOERR_BASE + 13) /* file in use */
-#define MMIOERR_NETWORKERROR        (MMIOERR_BASE + 14) /* network not responding */
-#define MMIOERR_TOOMANYOPENFILES    (MMIOERR_BASE + 15) /* no more file handles  */
-#define MMIOERR_INVALIDFILE         (MMIOERR_BASE + 16) /* default error file error */
+static const int MMIOERR_BASE              =  256;
+static const int MMIOERR_FILENOTFOUND      =  (MMIOERR_BASE + 1);  /* file not found */
+static const int MMIOERR_OUTOFMEMORY       =  (MMIOERR_BASE + 2);  /* out of memory */
+static const int MMIOERR_CANNOTOPEN        =  (MMIOERR_BASE + 3);  /* cannot open */
+static const int MMIOERR_CANNOTCLOSE       =  (MMIOERR_BASE + 4);  /* cannot close */
+static const int MMIOERR_CANNOTREAD        =  (MMIOERR_BASE + 5);  /* cannot read */
+static const int MMIOERR_CANNOTWRITE       =  (MMIOERR_BASE + 6);  /* cannot write */
+static const int MMIOERR_CANNOTSEEK        =  (MMIOERR_BASE + 7);  /* cannot seek */
+static const int MMIOERR_CANNOTEXPAND      =  (MMIOERR_BASE + 8);  /* cannot expand file */
+static const int MMIOERR_CHUNKNOTFOUND     =  (MMIOERR_BASE + 9);  /* chunk not found */
+static const int MMIOERR_UNBUFFERED        =  (MMIOERR_BASE + 10); /*  */
+static const int MMIOERR_PATHNOTFOUND      =  (MMIOERR_BASE + 11); /* path incorrect */
+static const int MMIOERR_ACCESSDENIED      =  (MMIOERR_BASE + 12); /* file was protected */
+static const int MMIOERR_SHARINGVIOLATION  =  (MMIOERR_BASE + 13); /* file in use */
+static const int MMIOERR_NETWORKERROR      =  (MMIOERR_BASE + 14); /* network not responding */
+static const int MMIOERR_TOOMANYOPENFILES  =  (MMIOERR_BASE + 15); /* no more file handles  */
+static const int MMIOERR_INVALIDFILE       =  (MMIOERR_BASE + 16); /* default error file error */
+]]
 
-/* MMIO constants */
-#define CFSEPCHAR       '+'             /* compound file name separator char. */
+--/* MMIO constants */
+--#define CFSEPCHAR       '+'             /* compound file name separator char. */
 
 ffi.cdef[[
 /* MMIO data types */
 typedef DWORD           FOURCC;         /* a four character code */
-typedef char _huge *    HPSTR;          /* a huge version of LPSTR */
+typedef char  *    HPSTR;          /* a huge version of LPSTR */
 ]]
 
-DECLARE_HANDLE("HMMIO");                  /* a handle to an open file */
+DECLARE_HANDLE("HMMIO");                  --/* a handle to an open file */
 
 ffi.cdef[[
 typedef LRESULT (__stdcall MMIOPROC)(LPSTR lpmmioinfo, UINT uMsg,
@@ -332,63 +336,70 @@ typedef struct _MMCKINFO
 typedef const MMCKINFO *LPCMMCKINFO;
 ]]
 
+ffi.cdef[[
 /* bit field masks */
-#define MMIO_RWMODE     0x00000003      /* open file for reading/writing/both */
-#define MMIO_SHAREMODE  0x00000070      /* file sharing mode number */
+static const int MMIO_RWMODE    = 0x00000003;      /* open file for reading/writing/both */
+static const int MMIO_SHAREMODE = 0x00000070;      /* file sharing mode number */
 
 /* constants for dwFlags field of MMIOINFO */
-#define MMIO_CREATE     0x00001000      /* create new file (or truncate file) */
-#define MMIO_PARSE      0x00000100      /* parse new file returning path */
-#define MMIO_DELETE     0x00000200      /* create new file (or truncate file) */
-#define MMIO_EXIST      0x00004000      /* checks for existence of file */
-#define MMIO_ALLOCBUF   0x00010000      /* mmioOpen() should allocate a buffer */
-#define MMIO_GETTEMP    0x00020000      /* mmioOpen() should retrieve temp name */
+static const int MMIO_CREATE    = 0x00001000;      /* create new file (or truncate file) */
+static const int MMIO_PARSE     = 0x00000100;      /* parse new file returning path */
+static const int MMIO_DELETE    = 0x00000200;      /* create new file (or truncate file) */
+static const int MMIO_EXIST     = 0x00004000;      /* checks for existence of file */
+static const int MMIO_ALLOCBUF  = 0x00010000;      /* mmioOpen() should allocate a buffer */
+static const int MMIO_GETTEMP   = 0x00020000;      /* mmioOpen() should retrieve temp name */
 
-#define MMIO_DIRTY      0x10000000      /* I/O buffer is dirty */
+static const int MMIO_DIRTY     = 0x10000000;      /* I/O buffer is dirty */
 
 /* read/write mode numbers (bit field MMIO_RWMODE) */
-#define MMIO_READ       0x00000000      /* open file for reading only */
-#define MMIO_WRITE      0x00000001      /* open file for writing only */
-#define MMIO_READWRITE  0x00000002      /* open file for reading and writing */
+static const int MMIO_READ      = 0x00000000;      /* open file for reading only */
+static const int MMIO_WRITE     = 0x00000001;      /* open file for writing only */
+static const int MMIO_READWRITE = 0x00000002;      /* open file for reading and writing */
 
 /* share mode numbers (bit field MMIO_SHAREMODE) */
-#define MMIO_COMPAT     0x00000000      /* compatibility mode */
-#define MMIO_EXCLUSIVE  0x00000010      /* exclusive-access mode */
-#define MMIO_DENYWRITE  0x00000020      /* deny writing to other processes */
-#define MMIO_DENYREAD   0x00000030      /* deny reading to other processes */
-#define MMIO_DENYNONE   0x00000040      /* deny nothing to other processes */
+static const int MMIO_COMPAT    = 0x00000000;      /* compatibility mode */
+static const int MMIO_EXCLUSIVE = 0x00000010;      /* exclusive-access mode */
+static const int MMIO_DENYWRITE = 0x00000020;      /* deny writing to other processes */
+static const int MMIO_DENYREAD  = 0x00000030;      /* deny reading to other processes */
+static const int MMIO_DENYNONE  = 0x00000040;      /* deny nothing to other processes */
 
 /* various MMIO flags */
-#define MMIO_FHOPEN             0x0010  /* mmioClose: keep file handle open */
-#define MMIO_EMPTYBUF           0x0010  /* mmioFlush: empty the I/O buffer */
-#define MMIO_TOUPPER            0x0010  /* mmioStringToFOURCC: to u-case */
-#define MMIO_INSTALLPROC    0x00010000  /* mmioInstallIOProc: install MMIOProc */
-#define MMIO_GLOBALPROC     0x10000000  /* mmioInstallIOProc: install globally */
-#define MMIO_REMOVEPROC     0x00020000  /* mmioInstallIOProc: remove MMIOProc */
-#define MMIO_UNICODEPROC    0x01000000  /* mmioInstallIOProc: Unicode MMIOProc */
-#define MMIO_FINDPROC       0x00040000  /* mmioInstallIOProc: find an MMIOProc */
-#define MMIO_FINDCHUNK          0x0010  /* mmioDescend: find a chunk by ID */
-#define MMIO_FINDRIFF           0x0020  /* mmioDescend: find a LIST chunk */
-#define MMIO_FINDLIST           0x0040  /* mmioDescend: find a RIFF chunk */
-#define MMIO_CREATERIFF         0x0020  /* mmioCreateChunk: make a LIST chunk */
-#define MMIO_CREATELIST         0x0040  /* mmioCreateChunk: make a RIFF chunk */
+static const int MMIO_FHOPEN         =    0x0010;  /* mmioClose: keep file handle open */
+static const int MMIO_EMPTYBUF       =    0x0010;  /* mmioFlush: empty the I/O buffer */
+static const int MMIO_TOUPPER        =    0x0010;  /* mmioStringToFOURCC: to u-case */
+static const int MMIO_INSTALLPROC   = 0x00010000;  /* mmioInstallIOProc: install MMIOProc */
+static const int MMIO_GLOBALPROC    = 0x10000000;  /* mmioInstallIOProc: install globally */
+static const int MMIO_REMOVEPROC    = 0x00020000;  /* mmioInstallIOProc: remove MMIOProc */
+static const int MMIO_UNICODEPROC   = 0x01000000;  /* mmioInstallIOProc: Unicode MMIOProc */
+static const int MMIO_FINDPROC      = 0x00040000;  /* mmioInstallIOProc: find an MMIOProc */
+static const int MMIO_FINDCHUNK        =  0x0010;  /* mmioDescend: find a chunk by ID */
+static const int MMIO_FINDRIFF         =  0x0020;  /* mmioDescend: find a LIST chunk */
+static const int MMIO_FINDLIST         =  0x0040;  /* mmioDescend: find a RIFF chunk */
+static const int MMIO_CREATERIFF       =  0x0020;  /* mmioCreateChunk: make a LIST chunk */
+static const int MMIO_CREATELIST       =  0x0040;  /* mmioCreateChunk: make a RIFF chunk */
+]]
 
-
-
+ffi.cdef[[
 /* message numbers for MMIOPROC I/O procedure functions */
-#define MMIOM_READ      MMIO_READ       /* read */
-#define MMIOM_WRITE    MMIO_WRITE       /* write */
-#define MMIOM_SEEK              2       /* seek to a new position in file */
-#define MMIOM_OPEN              3       /* open file */
-#define MMIOM_CLOSE             4       /* close file */
-#define MMIOM_WRITEFLUSH        5       /* write and flush */
+static const int MMIOM_READ   =   MMIO_READ;       /* read */
+static const int MMIOM_WRITE  =  MMIO_WRITE;       /* write */
+static const int MMIOM_SEEK            =  2;       /* seek to a new position in file */
+static const int MMIOM_OPEN            =  3;       /* open file */
+static const int MMIOM_CLOSE           =  4;       /* close file */
+static const int MMIOM_WRITEFLUSH      =  5;       /* write and flush */
+]]
 
-#if (WINVER >= 0x030a)
-#define MMIOM_RENAME            6       /* rename specified file */
-#endif /* ifdef WINVER >= 0x030a */
+if (WINVER >= 0x030a) then
+ffi.cdef[[
+static const int MMIOM_RENAME         =   6;       /* rename specified file */
+]]
+end --/* ifdef WINVER >= 0x030a */
 
-#define MMIOM_USER         0x8000       /* beginning of user-defined messages */
+ffi.cdef[[
+static const int MMIOM_USER       =  0x8000;       /* beginning of user-defined messages */
+]]
 
+--[[
 /* standard four character codes */
 #define FOURCC_RIFF     mmioFOURCC('R', 'I', 'F', 'F')
 #define FOURCC_LIST     mmioFOURCC('L', 'I', 'S', 'T')
@@ -396,19 +407,26 @@ typedef const MMCKINFO *LPCMMCKINFO;
 /* four character codes used to identify standard built-in I/O procedures */
 #define FOURCC_DOS      mmioFOURCC('D', 'O', 'S', ' ')
 #define FOURCC_MEM      mmioFOURCC('M', 'E', 'M', ' ')
+--]]
 
-/* flags for mmioSeek() */
-#ifndef SEEK_SET
-#define SEEK_SET        0               /* seek to an absolute position */
-#define SEEK_CUR        1               /* seek relative to current position */
-#define SEEK_END        2               /* seek relative to end of file */
-#endif  /* ifndef SEEK_SET */
 
+-- flags for mmioSeek()
+if not SEEK_SET then
+SEEK_SET = 0
+    ffi.cdef[[
+static const int SEEK_SET      =  0;               /* seek to an absolute position */
+static const int SEEK_CUR      =  1;               /* seek relative to current position */
+static const int SEEK_END      =  2;               /* seek relative to end of file */
+]]
+end  --/* ifndef SEEK_SET */
+
+ffi.cdef[[
 /* other constants */
-#define MMIO_DEFAULTBUFFER      8192    /* default buffer size */
+static const int MMIO_DEFAULTBUFFER     = 8192;    /* default buffer size */
+]]
 
-/* MMIO macros */
-#define mmioFOURCC(ch0, ch1, ch2, ch3)  MAKEFOURCC(ch0, ch1, ch2, ch3)
+--/* MMIO macros */
+--#define mmioFOURCC(ch0, ch1, ch2, ch3)  MAKEFOURCC(ch0, ch1, ch2, ch3)
 
 --/* MMIO function prototypes */
 if _WIN32 then
@@ -653,6 +671,6 @@ end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
 
---#endif // _MMISCAPI_H_
+end --// _MMISCAPI_H_
 
 
