@@ -64,6 +64,19 @@ function Rect.contains(self, x, y)
         y < self.Top or y > self.Bottom)
 end
 
+function Rect.containsPoint(self, pt)
+    return self:contains(pt.x, pt.y)
+end
+
+function Rect.offset(self, dx, dy)
+    self.Left = self.Left + dx;
+    self.Top = self.Top + dy;
+    self.Right = self.Right + dx;
+    self.Bottom = self.Bottom + dy;
+    
+    return self;
+end
+
 function Rect.union(self, rhs)
     local x1 = math.min(self.Left, rhs.Left)
     local x2 = math.max(self.Right, rhs.Right)

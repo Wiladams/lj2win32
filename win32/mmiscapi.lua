@@ -35,7 +35,7 @@ typedef struct DRVCONFIGINFOEX {
     LPCWSTR  lpszDCISectionName;
     LPCWSTR  lpszDCIAliasName;
     DWORD    dnDevNode;
-} DRVCONFIGINFOEX, *PDRVCONFIGINFOEX, NEAR *NPDRVCONFIGINFOEX, FAR *LPDRVCONFIGINFOEX;
+} DRVCONFIGINFOEX, *PDRVCONFIGINFOEX,  *NPDRVCONFIGINFOEX,  *LPDRVCONFIGINFOEX;
 
 #else
 typedef struct DRVCONFIGINFOEX {
@@ -43,136 +43,154 @@ typedef struct DRVCONFIGINFOEX {
     LPCSTR  lpszDCISectionName;
     LPCSTR  lpszDCIAliasName;
     DWORD    dnDevNode;
-} DRVCONFIGINFOEX, *PDRVCONFIGINFOEX, NEAR *NPDRVCONFIGINFOEX, FAR *LPDRVCONFIGINFOEX;
+} DRVCONFIGINFOEX, *PDRVCONFIGINFOEX,  *NPDRVCONFIGINFOEX,  *LPDRVCONFIGINFOEX;
 #endif
 
-#if (WINVER < 0x030a) || defined(_WIN32)
+if (WINVER < 0x030a) or _WIN32 then
 
-#ifndef DRV_LOAD
+if not DRV_LOAD then
+DRV_LOAD = true 
 
+ffi.cdef[[
 /* Driver messages */
-#define DRV_LOAD                0x0001
-#define DRV_ENABLE              0x0002
-#define DRV_OPEN                0x0003
-#define DRV_CLOSE               0x0004
-#define DRV_DISABLE             0x0005
-#define DRV_FREE                0x0006
-#define DRV_CONFIGURE           0x0007
-#define DRV_QUERYCONFIGURE      0x0008
-#define DRV_INSTALL             0x0009
-#define DRV_REMOVE              0x000A
-#define DRV_EXITSESSION         0x000B
-#define DRV_POWER               0x000F
-#define DRV_RESERVED            0x0800
-#define DRV_USER                0x4000
+static const int DRV_LOAD              =  0x0001;
+static const int DRV_ENABLE            =  0x0002;
+static const int DRV_OPEN              =  0x0003;
+static const int DRV_CLOSE             =  0x0004;
+static const int DRV_DISABLE           =  0x0005;
+static const int DRV_FREE              =  0x0006;
+static const int DRV_CONFIGURE         =  0x0007;
+static const int DRV_QUERYCONFIGURE    =  0x0008;
+static const int DRV_INSTALL           =  0x0009;
+static const int DRV_REMOVE            =  0x000A;
+static const int DRV_EXITSESSION       =  0x000B;
+static const int DRV_POWER             =  0x000F;
+static const int DRV_RESERVED          =  0x0800;
+static const int DRV_USER              =  0x4000;
+]]
 
-/* LPARAM of DRV_CONFIGURE message */
-#ifdef _WIN32
+--/* LPARAM of DRV_CONFIGURE message */
+if _WIN32 then
+ffi.cdef[[
 typedef struct tagDRVCONFIGINFO {
     DWORD   dwDCISize;
     LPCWSTR  lpszDCISectionName;
     LPCWSTR  lpszDCIAliasName;
-} DRVCONFIGINFO, *PDRVCONFIGINFO, NEAR *NPDRVCONFIGINFO, FAR *LPDRVCONFIGINFO;
-#else
+} DRVCONFIGINFO, *PDRVCONFIGINFO,  *NPDRVCONFIGINFO,  *LPDRVCONFIGINFO;
+]]
+else
+ffi.cdef[[
 typedef struct tagDRVCONFIGINFO {
     DWORD   dwDCISize;
     LPCSTR  lpszDCISectionName;
     LPCSTR  lpszDCIAliasName;
-} DRVCONFIGINFO, *PDRVCONFIGINFO, NEAR *NPDRVCONFIGINFO, FAR *LPDRVCONFIGINFO;
-#endif
+} DRVCONFIGINFO, *PDRVCONFIGINFO,  *NPDRVCONFIGINFO,  *LPDRVCONFIGINFO;
+]]
+end
 
+ffi.cdef[[
 /* Supported return values for DRV_CONFIGURE message */
-#define DRVCNF_CANCEL           0x0000
-#define DRVCNF_OK               0x0001
-#define DRVCNF_RESTART          0x0002
+static const int DRVCNF_CANCEL          = 0x0000;
+static const int DRVCNF_OK              = 0x0001;
+static const int DRVCNF_RESTART         = 0x0002;
+]]
 
-/* installable driver function prototypes */
-#ifdef _WIN32
+--/* installable driver function prototypes */
+if _WIN32 then
 
-typedef LRESULT (CALLBACK* DRIVERPROC)(DWORD_PTR, HDRVR, UINT, LPARAM, LPARAM);
+ffi.cdef[[
+typedef LRESULT (__stdcall* DRIVERPROC)(DWORD_PTR, HDRVR, UINT, LPARAM, LPARAM);
+]]
 
-WINMMAPI
+ffi.cdef[[
+
 LRESULT
-WINAPI
+__stdcall
 CloseDriver(
-    _In_ HDRVR hDriver,
-    _In_ LPARAM lParam1,
-    _In_ LPARAM lParam2
+     HDRVR hDriver,
+     LPARAM lParam1,
+     LPARAM lParam2
     );
 
-WINMMAPI
+
 HDRVR
-WINAPI
+__stdcall
 OpenDriver(
-    _In_ LPCWSTR szDriverName,
-    _In_ LPCWSTR szSectionName,
-    _In_ LPARAM lParam2
+     LPCWSTR szDriverName,
+     LPCWSTR szSectionName,
+     LPARAM lParam2
     );
 
-WINMMAPI
+
 LRESULT
-WINAPI
+__stdcall
 SendDriverMessage(
-    _In_ HDRVR hDriver,
-    _In_ UINT message,
-    _In_ LPARAM lParam1,
-    _In_ LPARAM lParam2
+     HDRVR hDriver,
+     UINT message,
+     LPARAM lParam1,
+     LPARAM lParam2
     );
 
-WINMMAPI
+
 HMODULE
-WINAPI
+__stdcall
 DrvGetModuleHandle(
-    _In_ HDRVR hDriver
+     HDRVR hDriver
     );
 
-WINMMAPI
+
 HMODULE
-WINAPI
+__stdcall
 GetDriverModuleHandle(
-    _In_ HDRVR hDriver
+     HDRVR hDriver
     );
 
-WINMMAPI
+
 LRESULT
-WINAPI
+__stdcall
 DefDriverProc(
-    _In_ DWORD_PTR dwDriverIdentifier,
-    _In_ HDRVR hdrvr,
-    _In_ UINT uMsg,
-    _In_ LPARAM lParam1,
-    _In_ LPARAM lParam2
+     DWORD_PTR dwDriverIdentifier,
+     HDRVR hdrvr,
+     UINT uMsg,
+     LPARAM lParam1,
+     LPARAM lParam2
     );
+]]
+else
+ffi.cdef[[
+LRESULT   __stdcall DrvClose(HDRVR hdrvr, LPARAM lParam1, LPARAM lParam2);
+HDRVR     __stdcall DrvOpen(LPCSTR szDriverName, LPCSTR szSectionName, LPARAM lParam2);
+LRESULT   __stdcall DrvSendMessage(HDRVR hdrvr, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
+HINSTANCE __stdcall DrvGetModuleHandle(HDRVR hdrvr);
+LRESULT   __stdcall DrvDefDriverProc(DWORD dwDriverIdentifier, HDRVR hdrvr, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
+]]
 
-#else
-LRESULT   WINAPI DrvClose(HDRVR hdrvr, LPARAM lParam1, LPARAM lParam2);
-HDRVR     WINAPI DrvOpen(LPCSTR szDriverName, LPCSTR szSectionName, LPARAM lParam2);
-LRESULT   WINAPI DrvSendMessage(HDRVR hdrvr, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
-HINSTANCE WINAPI DrvGetModuleHandle(HDRVR hdrvr);
-LRESULT   WINAPI DrvDefDriverProc(DWORD dwDriverIdentifier, HDRVR hdrvr, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
-#define DefDriverProc DrvDefDriverProc
-#endif /* ifdef _WIN32 */
-#endif /* DRV_LOAD */
-#endif /* ifdef (WINVER < 0x030a) || defined(_WIN32) */
+--#define DefDriverProc DrvDefDriverProc
 
-#if (WINVER >= 0x030a)
+end --/* ifdef _WIN32 */
+end --/* DRV_LOAD */
+end --/* ifdef (WINVER < 0x030a) || defined(_WIN32) */
+
+if (WINVER >= 0x030a) then
+ffi.cdef[[
 /* return values from DriverProc() function */
-#define DRV_CANCEL             DRVCNF_CANCEL
-#define DRV_OK                 DRVCNF_OK
-#define DRV_RESTART            DRVCNF_RESTART
+static const int DRV_CANCEL           =  DRVCNF_CANCEL;
+static const int DRV_OK               =  DRVCNF_OK;
+static const int DRV_RESTART          =  DRVCNF_RESTART;
+]]
+end --/* ifdef WINVER >= 0x030a */
 
-#endif /* ifdef WINVER >= 0x030a */
+ffi.cdef[[
+static const int DRV_MCI_FIRST        =  DRV_RESERVED;
+static const int DRV_MCI_LAST         =  (DRV_RESERVED + 0xFFF);
+]]
 
-#define DRV_MCI_FIRST          DRV_RESERVED
-#define DRV_MCI_LAST           (DRV_RESERVED + 0xFFF)
 
-/***************************************************************************
-   
-                      Driver Helper function moved from mmddk.h
+--                      Driver Helper function moved from mmddk.h
 
-***************************************************************************/
+ffi.cdef[[
 BOOL
-APIENTRY
+__stdcall
 DriverCallback(
     DWORD_PTR dwCallback,
     DWORD dwFlags,
@@ -182,21 +200,24 @@ DriverCallback(
     DWORD_PTR dwParam1,
     DWORD_PTR dwParam2
     );
+]]
 
-
+ffi.cdef[[
 /****************************************************************************
 
   Sound schemes
 
 ****************************************************************************/LONG
-WINAPI
+__stdcall
 sndOpenSound(
-    _In_ LPCWSTR EventName,
-    _In_ LPCWSTR AppName,
-    _In_ INT32 Flags,
-    _Outptr_ PHANDLE FileHandle
+     LPCWSTR EventName,
+     LPCWSTR AppName,
+     INT32 Flags,
+     PHANDLE FileHandle
     );
+]]
 
+--[[
 //
 // removed from winmmi.h
 
@@ -210,27 +231,26 @@ sndOpenSound(
 /* generic prototype for audio device driver entry-point functions
 // midMessage(), modMessage(), widMessage(), wodMessage(), auxMessage()
 */
-typedef DWORD (APIENTRY *DRIVERMSGPROC)(DWORD, DWORD, DWORD_PTR, DWORD_PTR, DWORD_PTR);
+--]]
+ffi.cdef[[
+typedef DWORD (__stdcall *DRIVERMSGPROC)(DWORD, DWORD, DWORD_PTR, DWORD_PTR, DWORD_PTR);
 
 UINT
-APIENTRY
+__stdcall
 mmDrvInstall(
     HDRVR hDriver,
     LPCWSTR wszDrvEntry,
     DRIVERMSGPROC drvMessage,
     UINT wFlags
     );
+]]
+
+end  --/* ifndef MMNODRV */
 
 
-#endif  /* ifndef MMNODRV */
+if not MMNOMMIO then
 
-
-#ifndef MMNOMMIO
-/****************************************************************************
-
-                        Multimedia File I/O support
-
-****************************************************************************/
+--                        Multimedia File I/O support
 
 /* MMIO error return values */
 #define MMIOERR_BASE                256
@@ -254,15 +274,21 @@ mmDrvInstall(
 /* MMIO constants */
 #define CFSEPCHAR       '+'             /* compound file name separator char. */
 
+ffi.cdef[[
 /* MMIO data types */
 typedef DWORD           FOURCC;         /* a four character code */
 typedef char _huge *    HPSTR;          /* a huge version of LPSTR */
-DECLARE_HANDLE(HMMIO);                  /* a handle to an open file */
-typedef LRESULT (CALLBACK MMIOPROC)(LPSTR lpmmioinfo, UINT uMsg,
+]]
+
+DECLARE_HANDLE("HMMIO");                  /* a handle to an open file */
+
+ffi.cdef[[
+typedef LRESULT (__stdcall MMIOPROC)(LPSTR lpmmioinfo, UINT uMsg,
             LPARAM lParam1, LPARAM lParam2);
-typedef MMIOPROC FAR *LPMMIOPROC;
+typedef MMIOPROC  *LPMMIOPROC;
+]]
 
-
+ffi.cdef[[
 /* general MMIO information data structure */
 typedef struct _MMIOINFO
 {
@@ -289,9 +315,11 @@ typedef struct _MMIOINFO
         DWORD           dwReserved1;    /* reserved for MMIO use */
         DWORD           dwReserved2;    /* reserved for MMIO use */
         HMMIO           hmmio;          /* handle to open file */
-} MMIOINFO, *PMMIOINFO, NEAR *NPMMIOINFO, FAR *LPMMIOINFO;
-typedef const MMIOINFO FAR *LPCMMIOINFO;
+} MMIOINFO, *PMMIOINFO,  *NPMMIOINFO,  *LPMMIOINFO;
+typedef const MMIOINFO  *LPCMMIOINFO;
+]]
 
+ffi.cdef[[
 /* RIFF chunk information data structure */
 typedef struct _MMCKINFO
 {
@@ -300,8 +328,9 @@ typedef struct _MMCKINFO
         FOURCC          fccType;        /* form type or list type */
         DWORD           dwDataOffset;   /* offset of data portion of chunk */
         DWORD           dwFlags;        /* flags used by MMIO functions */
-} MMCKINFO, *PMMCKINFO, NEAR *NPMMCKINFO, FAR *LPMMCKINFO;
+} MMCKINFO, *PMMCKINFO,  *NPMMCKINFO,  *LPMMCKINFO;
 typedef const MMCKINFO *LPCMMCKINFO;
+]]
 
 /* bit field masks */
 #define MMIO_RWMODE     0x00000003      /* open file for reading/writing/both */
@@ -381,228 +410,241 @@ typedef const MMCKINFO *LPCMMCKINFO;
 /* MMIO macros */
 #define mmioFOURCC(ch0, ch1, ch2, ch3)  MAKEFOURCC(ch0, ch1, ch2, ch3)
 
-/* MMIO function prototypes */
-#ifdef _WIN32
+--/* MMIO function prototypes */
+if _WIN32 then
 
-WINMMAPI
+ffi.cdef[[
 FOURCC
-WINAPI
+__stdcall
 mmioStringToFOURCCA(
     LPCSTR sz,
-    _In_ UINT uFlags
+     UINT uFlags
     );
 
-WINMMAPI
+
 FOURCC
-WINAPI
+__stdcall
 mmioStringToFOURCCW(
     LPCWSTR sz,
-    _In_ UINT uFlags
+     UINT uFlags
     );
+]]
 
-#ifdef UNICODE
-#define mmioStringToFOURCC  mmioStringToFOURCCW
-#else
-#define mmioStringToFOURCC  mmioStringToFOURCCA
-#endif // !UNICODE
-WINMMAPI
+if UNICODE then
+--#define mmioStringToFOURCC  mmioStringToFOURCCW
+else
+--#define mmioStringToFOURCC  mmioStringToFOURCCA
+end --// !UNICODE
+
+ffi.cdef[[
 LPMMIOPROC
-WINAPI
+__stdcall
 mmioInstallIOProcA(
-    _In_ FOURCC fccIOProc,
-    _In_opt_ LPMMIOPROC pIOProc,
-    _In_ DWORD dwFlags
+     FOURCC fccIOProc,
+     LPMMIOPROC pIOProc,
+     DWORD dwFlags
     );
 
-WINMMAPI
+
 LPMMIOPROC
-WINAPI
+__stdcall
 mmioInstallIOProcW(
-    _In_ FOURCC fccIOProc,
-    _In_opt_ LPMMIOPROC pIOProc,
-    _In_ DWORD dwFlags
+     FOURCC fccIOProc,
+     LPMMIOPROC pIOProc,
+     DWORD dwFlags
     );
+]]
 
-#ifdef UNICODE
-#define mmioInstallIOProc  mmioInstallIOProcW
-#else
-#define mmioInstallIOProc  mmioInstallIOProcA
-#endif // !UNICODE
-WINMMAPI
+if UNICODE then
+--#define mmioInstallIOProc  mmioInstallIOProcW
+else
+--#define mmioInstallIOProc  mmioInstallIOProcA
+end --// !UNICODE
+
+ffi.cdef[[
 HMMIO
-WINAPI
+__stdcall
 mmioOpenA(
-    _Inout_updates_bytes_opt_(128) LPSTR pszFileName,
-    _Inout_opt_ LPMMIOINFO pmmioinfo,
-    _In_ DWORD fdwOpen
+     LPSTR pszFileName,
+     LPMMIOINFO pmmioinfo,
+     DWORD fdwOpen
     );
 
-WINMMAPI
+
 HMMIO
-WINAPI
+__stdcall
 mmioOpenW(
-    _Inout_updates_bytes_opt_(128) LPWSTR pszFileName,
-    _Inout_opt_ LPMMIOINFO pmmioinfo,
-    _In_ DWORD fdwOpen
+     LPWSTR pszFileName,
+     LPMMIOINFO pmmioinfo,
+     DWORD fdwOpen
     );
+]]
 
-#ifdef UNICODE
-#define mmioOpen  mmioOpenW
-#else
-#define mmioOpen  mmioOpenA
-#endif // !UNICODE
-WINMMAPI
+if UNICODE then
+--#define mmioOpen  mmioOpenW
+else
+--#define mmioOpen  mmioOpenA
+end --// !UNICODE
+
+ffi.cdef[[
 MMRESULT
-WINAPI
+__stdcall
 mmioRenameA(
-    _In_ LPCSTR pszFileName,
-    _In_ LPCSTR pszNewFileName,
-    _In_opt_ LPCMMIOINFO pmmioinfo,
-    _In_ DWORD fdwRename
+     LPCSTR pszFileName,
+     LPCSTR pszNewFileName,
+     LPCMMIOINFO pmmioinfo,
+     DWORD fdwRename
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioRenameW(
-    _In_ LPCWSTR pszFileName,
-    _In_ LPCWSTR pszNewFileName,
-    _In_opt_ LPCMMIOINFO pmmioinfo,
-    _In_ DWORD fdwRename
+     LPCWSTR pszFileName,
+     LPCWSTR pszNewFileName,
+     LPCMMIOINFO pmmioinfo,
+     DWORD fdwRename
     );
+]]
 
-#ifdef UNICODE
-#define mmioRename  mmioRenameW
-#else
-#define mmioRename  mmioRenameA
-#endif // !UNICODE
-#else
-FOURCC WINAPI mmioStringToFOURCC( LPCSTR sz, UINT uFlags);
-LPMMIOPROC WINAPI mmioInstallIOProc( FOURCC fccIOProc, LPMMIOPROC pIOProc, DWORD dwFlags);
-HMMIO WINAPI mmioOpen(_Inout_opt_ LPSTR pszFileName, LPMMIOINFO pmmioinfo, DWORD fdwOpen);
-#if (WINVER >= 0x030a)
-MMRESULT WINAPI mmioRename( _In_ LPCSTR pszFileName, _In_ LPCSTR pszNewFileName, _In_opt_ const MMIOINFO FAR* pmmioinfo, _In_ DWORD fdwRename);
-#endif /* ifdef WINVER >= 0x030a */
-#endif
+if UNICODE then
+--#define mmioRename  mmioRenameW
+else
+--#define mmioRename  mmioRenameA
+end --// !UNICODE
 
-WINMMAPI
+else
+ffi.cdef[[
+FOURCC __stdcall mmioStringToFOURCC( LPCSTR sz, UINT uFlags);
+LPMMIOPROC __stdcall mmioInstallIOProc( FOURCC fccIOProc, LPMMIOPROC pIOProc, DWORD dwFlags);
+HMMIO __stdcall mmioOpen( LPSTR pszFileName, LPMMIOINFO pmmioinfo, DWORD fdwOpen);
+]]
+
+if (WINVER >= 0x030a) then
+ffi.cdef[[
+MMRESULT __stdcall mmioRename(  LPCSTR pszFileName,  LPCSTR pszNewFileName,  const MMIOINFO * pmmioinfo,  DWORD fdwRename);
+]]
+end --/* ifdef WINVER >= 0x030a */
+end
+
+ffi.cdef[[
 MMRESULT
-WINAPI
+__stdcall
 mmioClose(
-    _In_ HMMIO hmmio,
-    _In_ UINT fuClose
+     HMMIO hmmio,
+     UINT fuClose
     );
 
-WINMMAPI
+
 LONG
-WINAPI
+__stdcall
 mmioRead(
-    _In_ HMMIO hmmio,
-    _Out_writes_bytes_(cch) HPSTR pch,
-    _In_ LONG cch
+     HMMIO hmmio,
+     HPSTR pch,
+     LONG cch
     );
 
-WINMMAPI
+
 LONG
-WINAPI
+__stdcall
 mmioWrite(
-    _In_ HMMIO hmmio,
-    _In_reads_bytes_(cch) const char  _huge * pch,
-    _In_ LONG cch
+     HMMIO hmmio,
+     const char  * pch,
+     LONG cch
     );
 
-WINMMAPI
+
 LONG
-WINAPI
+__stdcall
 mmioSeek(
-    _In_ HMMIO hmmio,
-    _In_ LONG lOffset,
-    _In_ int iOrigin
+     HMMIO hmmio,
+     LONG lOffset,
+     int iOrigin
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioGetInfo(
-    _In_ HMMIO hmmio,
-    _Out_ LPMMIOINFO pmmioinfo,
-    _In_ UINT fuInfo
+     HMMIO hmmio,
+     LPMMIOINFO pmmioinfo,
+     UINT fuInfo
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioSetInfo(
-    _In_ HMMIO hmmio,
-    _In_ LPCMMIOINFO pmmioinfo,
-    _In_ UINT fuInfo
+     HMMIO hmmio,
+     LPCMMIOINFO pmmioinfo,
+     UINT fuInfo
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioSetBuffer(
-    _In_ HMMIO hmmio,
-    _Out_writes_opt_(cchBuffer) LPSTR pchBuffer,
-    _In_ LONG cchBuffer,
-    _In_ UINT fuBuffer
+     HMMIO hmmio,
+     LPSTR pchBuffer,
+     LONG cchBuffer,
+     UINT fuBuffer
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioFlush(
-    _In_ HMMIO hmmio,
-    _In_ UINT fuFlush
+     HMMIO hmmio,
+     UINT fuFlush
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioAdvance(
-    _In_ HMMIO hmmio,
-    _In_opt_ LPMMIOINFO pmmioinfo,
-    _In_ UINT fuAdvance
+     HMMIO hmmio,
+     LPMMIOINFO pmmioinfo,
+     UINT fuAdvance
     );
 
-WINMMAPI
+
 LRESULT
-WINAPI
+__stdcall
 mmioSendMessage(
-    _In_ HMMIO hmmio,
-    _In_ UINT uMsg,
-    _In_opt_ LPARAM lParam1,
-    _In_opt_ LPARAM lParam2
+     HMMIO hmmio,
+     UINT uMsg,
+     LPARAM lParam1,
+     LPARAM lParam2
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioDescend(
-    _In_ HMMIO hmmio,
-    _Inout_ LPMMCKINFO pmmcki,
-    _In_opt_ const MMCKINFO  FAR * pmmckiParent,
-    _In_ UINT fuDescend
+     HMMIO hmmio,
+     LPMMCKINFO pmmcki,
+     const MMCKINFO   * pmmckiParent,
+     UINT fuDescend
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioAscend(
-    _In_ HMMIO hmmio,
-    _In_ LPMMCKINFO pmmcki,
-    _In_ UINT fuAscend
+     HMMIO hmmio,
+     LPMMCKINFO pmmcki,
+     UINT fuAscend
     );
 
-WINMMAPI
+
 MMRESULT
-WINAPI
+__stdcall
 mmioCreateChunk(
-    _In_ HMMIO hmmio,
-    _In_ LPMMCKINFO pmmcki,
-    _In_ UINT fuCreate
+     HMMIO hmmio,
+     LPMMCKINFO pmmcki,
+     UINT fuCreate
     );
-
+]]
 
 end  --/* ifndef MMNOMMIO */
 
