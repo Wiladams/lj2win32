@@ -1229,8 +1229,7 @@ ffi.cdef[[
 ffi.cdef[[
 HINTERNET
 __stdcall
-WinHttpOpen
-(
+WinHttpOpen(
      LPCWSTR pszAgentW,
      DWORD dwAccessType,
      LPCWSTR pszProxyW,
@@ -1240,8 +1239,7 @@ WinHttpOpen
 
 
 BOOL  __stdcall
-WinHttpCloseHandle
-(
+WinHttpCloseHandle(
      HINTERNET hInternet
 );
 
@@ -1249,8 +1247,7 @@ WinHttpCloseHandle
 
 HINTERNET
 __stdcall
-WinHttpConnect
-(
+WinHttpConnect(
      HINTERNET hSession,
      LPCWSTR pswzServerName,
      INTERNET_PORT nServerPort,
@@ -1302,8 +1299,7 @@ WinHttpSetOption(
 
 ffi.cdef[[
 BOOL  __stdcall
-WinHttpSetTimeouts
-(
+WinHttpSetTimeouts(
      HINTERNET    hInternet,           // Session/Request handle.
      int          nResolveTimeout,
      int          nConnectTimeout,
