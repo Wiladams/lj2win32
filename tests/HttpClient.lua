@@ -102,11 +102,12 @@ function HttpRequest.responseHeaders(self)
             return nil;
         end
 
-        for _, str in  strdelim.mstriter({
+        for idx, str in  strdelim.mstriter({
             data = lpBuffer, 
-            datalength = rSize,
+            datalength = rSize/2,
             basetype = ffi.typeof("wchar_t")
         }) do 
+            print(idx, str)
             coroutine.yield(toAnsi(str))
         end
     end
