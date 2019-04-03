@@ -7,6 +7,7 @@ require("win32.minwindef")
 require("win32.minwinbase")
 
 local winhttp = require("win32.winhttp")
+local strdelim = require("strdelim")
 local unicode = require("unicode_util")
 local L = unicode.toUnicode
 local toAnsi = unicode.toAnsi
@@ -80,26 +81,37 @@ function HttpRequest.dataAvailable(self)
 end
 
 function HttpRequest.responseHeaders(self)
-    local dwInfoLevel = C.WINHTTP_QUERY_RAW_HEADERS_CRLF
-    local pwszName = WINHTTP_HEADER_NAME_BY_INDEX
-    local bufferLength = 1024 * 64;
-    local lpdwBufferLength = ffi.new("DWORD[1]",bufferLength);
-    local lpBuffer = ffi.new("uint8_t[?]", bufferLength)
-    local lpdwIndex = ffi.new("DWORD[1]")
+    local function visitor()
+        local dwInfoLevel = C.WINHTTP_QUERY_RAW_HEADERS
+        local pwszName = WINHTTP_HEADER_NAME_BY_INDEX
+        local bufferLength = 1024 * 64;
+        local lpdwBufferLength = ffi.new("DWORD[1]",bufferLength);
+        local lpBuffer = ffi.new("uint8_t[?]", bufferLength)
+        local lpdwIndex = ffi.new("DWORD[1]")
 
-    local bResult = winhttp.WinHttpQueryHeaders(self.RequestHandle,
+        local bResult = winhttp.WinHttpQueryHeaders(self.RequestHandle,
             dwInfoLevel,
             pwszName ,
             lpBuffer,
             lpdwBufferLength,
             WINHTTP_NO_HEADER_INDEX);
 
-    print("responseHeaders: ", bResult,lpdwBufferLength[0] )
-    local rSize = lpdwBufferLength[0]
-    if rSize > 0 then
-        return ffi.string(toAnsi(lpBuffer, rSize/2), rSize/2)
+        --print("responseHeaders: ", bResult,lpdwBufferLength[0] )
+        local rSize = lpdwBufferLength[0]
+        if rSize < 1 then
+            return nil;
+        end
+
+        for _, str in  strdelim.mstriter({
+            data = lpBuffer, 
+            datalength = rSize,
+            basetype = ffi.typeof("wchar_t")
+        }) do 
+            coroutine.yield(toAnsi(str))
+        end
     end
 
+    return coroutine.wrap(visitor)
 end
 
 --[[

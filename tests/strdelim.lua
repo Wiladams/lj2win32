@@ -117,7 +117,7 @@ end
     If the length of the string is 0, then a nil is returned.  This is not
         correct, as the length should determine when to terminate.
 ]]
-local function mstriter(params)
+function exports.mstriter(params)
     params = params or {}
  
     params.separator = params.separator or 0

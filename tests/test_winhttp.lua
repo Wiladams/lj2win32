@@ -14,11 +14,12 @@ local L = unicode.toUnicode
 
 local HttpClient = require("HttpClient")
 local HttpSession = HttpClient.HttpSession
+local HttpRequest = HttpClient.HttpRequest
+local HttpConnection = HttpClient.HttpConnection
 
 
 
 -- Test it out
-
 local session = HttpSession();
 
 
@@ -42,7 +43,7 @@ end
 local bResult = request:send()
 print("send: ", bResult)
 
-bResult = request:waitForResponse()
+local bResult = request:waitForResponse()
 
 print("waitForResponse: ", bResult)
 
@@ -52,7 +53,9 @@ end
 
 print("data available: ", request:dataAvailable())
 
-print(request:responseHeaders())
+for header in request:responseHeaders() do
+    print("HEADER: ", header)
+end
 
 --[[
     Wouldn't it be nice to do:
