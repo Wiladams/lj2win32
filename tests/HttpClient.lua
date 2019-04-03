@@ -107,8 +107,9 @@ function HttpRequest.responseHeaders(self)
             datalength = rSize/2,
             basetype = ffi.typeof("wchar_t")
         }) do 
-            print(idx, str)
-            coroutine.yield(toAnsi(str))
+            local ansi = toAnsi(str)
+            --print(idx, ansi)
+            coroutine.yield(ansi)
         end
     end
 

@@ -51,10 +51,16 @@ if not bResult then return
     false
 end
 
-print("data available: ", request:dataAvailable())
+
 
 for header in request:responseHeaders() do
     print("HEADER: ", header)
+end
+
+
+local dataAvail = request:dataAvailable()
+if dataAvail > 0 then
+    print("data available: ", dataAvail)
 end
 
 --[[

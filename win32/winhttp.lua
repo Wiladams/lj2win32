@@ -1596,8 +1596,7 @@ static const int WINHTTP_WEB_SOCKET_MIN_KEEPALIVE_VALUE = 15000;
 ffi.cdef[[
 HINTERNET
 __stdcall
-WinHttpWebSocketCompleteUpgrade
-(
+WinHttpWebSocketCompleteUpgrade(
      HINTERNET hRequest,
      DWORD_PTR pContext
 );
@@ -1605,8 +1604,7 @@ WinHttpWebSocketCompleteUpgrade
 
 DWORD
 __stdcall
-WinHttpWebSocketSend
-(
+WinHttpWebSocketSend(
      HINTERNET hWebSocket,
      WINHTTP_WEB_SOCKET_BUFFER_TYPE eBufferType,
      PVOID pvBuffer,
@@ -1616,8 +1614,7 @@ WinHttpWebSocketSend
 
 DWORD
 __stdcall
-WinHttpWebSocketReceive
-(
+WinHttpWebSocketReceive(
      HINTERNET hWebSocket,
      PVOID pvBuffer,
      DWORD dwBufferLength,
@@ -1628,8 +1625,7 @@ WinHttpWebSocketReceive
 
 DWORD
 __stdcall
-WinHttpWebSocketShutdown
-(
+WinHttpWebSocketShutdown(
      HINTERNET hWebSocket,
      USHORT usStatus,
      PVOID pvReason,
@@ -1639,8 +1635,7 @@ WinHttpWebSocketShutdown
 
 DWORD
 __stdcall
-WinHttpWebSocketClose
-(
+WinHttpWebSocketClose(
      HINTERNET hWebSocket,
      USHORT usStatus,
      PVOID pvReason,
@@ -1650,8 +1645,7 @@ WinHttpWebSocketClose
 
 DWORD
 __stdcall
-WinHttpWebSocketQueryCloseStatus
-(
+WinHttpWebSocketQueryCloseStatus(
      HINTERNET hWebSocket,
      USHORT *pusStatus,
      PVOID pvReason,

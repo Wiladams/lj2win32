@@ -1251,11 +1251,11 @@ typedef struct tagMCI_ANIM_UPDATE_PARMS {
 #define MCI_OVLY_WHERE_DESTINATION      0x00040000L
 #define MCI_OVLY_WHERE_FRAME            0x00080000L
 #define MCI_OVLY_WHERE_VIDEO            0x00100000L
+--]=]
 
-
-/* parameter block for MCI_OPEN command message */
+--/* parameter block for MCI_OPEN command message */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagMCI_OVLY_OPEN_PARMSA {
     DWORD_PTR   dwCallback;
     MCIDEVICEID wDeviceID;
@@ -1265,6 +1265,7 @@ typedef struct tagMCI_OVLY_OPEN_PARMSA {
     DWORD   dwStyle;
     HWND    hWndParent;
 } MCI_OVLY_OPEN_PARMSA, *PMCI_OVLY_OPEN_PARMSA, *LPMCI_OVLY_OPEN_PARMSA;
+
 typedef struct tagMCI_OVLY_OPEN_PARMSW {
     DWORD_PTR   dwCallback;
     MCIDEVICEID wDeviceID;
@@ -1274,17 +1275,24 @@ typedef struct tagMCI_OVLY_OPEN_PARMSW {
     DWORD   dwStyle;
     HWND    hWndParent;
 } MCI_OVLY_OPEN_PARMSW, *PMCI_OVLY_OPEN_PARMSW, *LPMCI_OVLY_OPEN_PARMSW;
-if UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef MCI_OVLY_OPEN_PARMSW MCI_OVLY_OPEN_PARMS;
 typedef PMCI_OVLY_OPEN_PARMSW PMCI_OVLY_OPEN_PARMS;
 typedef LPMCI_OVLY_OPEN_PARMSW LPMCI_OVLY_OPEN_PARMS;
+]]
 else
+ffi.cdef[[
 typedef MCI_OVLY_OPEN_PARMSA MCI_OVLY_OPEN_PARMS;
 typedef PMCI_OVLY_OPEN_PARMSA PMCI_OVLY_OPEN_PARMS;
 typedef LPMCI_OVLY_OPEN_PARMSA LPMCI_OVLY_OPEN_PARMS;
+]]
 end // UNICODE
 
 else
+ffi.cdef[[
 typedef struct tagMCI_OVLY_OPEN_PARMS {
     DWORD   dwCallback;
     MCIDEVICEID wDeviceID;
@@ -1296,12 +1304,13 @@ typedef struct tagMCI_OVLY_OPEN_PARMS {
     HWND        hWndParent;
     WORD        wReserved1;
 } MCI_OVLY_OPEN_PARMS, FAR *LPMCI_OVLY_OPEN_PARMS;
+]]
 end
 
 
 /* parameter block for MCI_WINDOW command message */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagMCI_OVLY_WINDOW_PARMSA {
     DWORD_PTR   dwCallback;
     HWND        hWnd;
@@ -1314,16 +1323,23 @@ typedef struct tagMCI_OVLY_WINDOW_PARMSW {
     UINT        nCmdShow;
     LPCWSTR     lpstrText;
 } MCI_OVLY_WINDOW_PARMSW, *PMCI_OVLY_WINDOW_PARMSW, * LPMCI_OVLY_WINDOW_PARMSW;
-if UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef MCI_OVLY_WINDOW_PARMSW MCI_OVLY_WINDOW_PARMS;
 typedef PMCI_OVLY_WINDOW_PARMSW PMCI_OVLY_WINDOW_PARMS;
 typedef LPMCI_OVLY_WINDOW_PARMSW LPMCI_OVLY_WINDOW_PARMS;
+]]
 else
+ffi.cdef[[
 typedef MCI_OVLY_WINDOW_PARMSA MCI_OVLY_WINDOW_PARMS;
 typedef PMCI_OVLY_WINDOW_PARMSA PMCI_OVLY_WINDOW_PARMS;
 typedef LPMCI_OVLY_WINDOW_PARMSA LPMCI_OVLY_WINDOW_PARMS;
+]]
 end // UNICODE
 else
+ffi.cdef[[
 typedef struct tagMCI_OVLY_WINDOW_PARMS {
     DWORD   dwCallback;
     HWND    hWnd;
@@ -1332,24 +1348,25 @@ typedef struct tagMCI_OVLY_WINDOW_PARMS {
     WORD    wReserved2;
     LPCSTR  lpstrText;
 } MCI_OVLY_WINDOW_PARMS, FAR * LPMCI_OVLY_WINDOW_PARMS;
+]]
 end
 
-
+ffi.cdef[[
 /* parameter block for MCI_PUT, MCI_UPDATE, and MCI_WHERE command messages */
 typedef struct tagMCI_OVLY_RECT_PARMS {
     DWORD_PTR   dwCallback;
-#ifdef MCI_USE_OFFEXT
-    POINT   ptOffset;
-    POINT   ptExtent;
-else   /* ifdef MCI_USE_OFFEXT */
+//#ifdef MCI_USE_OFFEXT
+//    POINT   ptOffset;
+//    POINT   ptExtent;
+//else   /* ifdef MCI_USE_OFFEXT */
     RECT    rc;
-end  /* ifdef MCI_USE_OFFEXT */
+//end  /* ifdef MCI_USE_OFFEXT */
 } MCI_OVLY_RECT_PARMS, *PMCI_OVLY_RECT_PARMS, FAR * LPMCI_OVLY_RECT_PARMS;
-
+]]
 
 /* parameter block for MCI_SAVE command message */
 if _WIN32 then
-
+ffi.cdef[[
 typedef struct tagMCI_OVLY_SAVE_PARMSA {
     DWORD_PTR   dwCallback;
     LPCSTR      lpfilename;
@@ -1360,25 +1377,33 @@ typedef struct tagMCI_OVLY_SAVE_PARMSW {
     LPCWSTR     lpfilename;
     RECT        rc;
 } MCI_OVLY_SAVE_PARMSW, *PMCI_OVLY_SAVE_PARMSW, * LPMCI_OVLY_SAVE_PARMSW;
-if UNICODE
+]]
+
+if UNICODE then
+ffi.cdef[[
 typedef MCI_OVLY_SAVE_PARMSW MCI_OVLY_SAVE_PARMS;
 typedef PMCI_OVLY_SAVE_PARMSW PMCI_OVLY_SAVE_PARMS;
 typedef LPMCI_OVLY_SAVE_PARMSW LPMCI_OVLY_SAVE_PARMS;
+]]
 else
+ffi.cdef[[
 typedef MCI_OVLY_SAVE_PARMSA MCI_OVLY_SAVE_PARMS;
 typedef PMCI_OVLY_SAVE_PARMSA PMCI_OVLY_SAVE_PARMS;
 typedef LPMCI_OVLY_SAVE_PARMSA LPMCI_OVLY_SAVE_PARMS;
+]]
 end // UNICODE
 else
+ffi.cdef[[
 typedef struct tagMCI_OVLY_SAVE_PARMS {
     DWORD   dwCallback;
     LPCSTR  lpfilename;
     RECT    rc;
 } MCI_OVLY_SAVE_PARMS, FAR * LPMCI_OVLY_SAVE_PARMS;
+]]
 end
 
 
-/* parameter block for MCI_LOAD command message */
+--/* parameter block for MCI_LOAD command message */
 if _WIN32 then
 ffi.cdef[[
 typedef struct tagMCI_OVLY_LOAD_PARMSA {
@@ -1461,7 +1486,7 @@ mciFreeCommandResource(
     UINT wTable
     );
 ]]
---]=]
+
 end --// WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
 
