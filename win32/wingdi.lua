@@ -6302,7 +6302,9 @@ static const int LPD_TRANSPARENT        = 0x00001000;
 
 static const int LPD_TYPE_RGBA       = 0;
 static const int LPD_TYPE_COLORINDEX = 1;
+]]
 
+ffi.cdef[[
 /* wglSwapLayerBuffers flags */
 static const int WGL_SWAP_MAIN_PLANE    = 0x00000001;
 static const int WGL_SWAP_OVERLAY1      = 0x00000002;

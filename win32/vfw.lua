@@ -44,8 +44,12 @@ local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local lshift, rshift = bit.lshift, bit.rshift
 
---#ifndef _INC_VFW
---#define _INC_VFW
+local utils = require("win32.utils")
+local makeStatic = utils.makeStatic
+
+
+if not _INC_VFW then
+_INC_VFW = true
 
 require("win32.winapifamily")
 
@@ -63,7 +67,7 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 --]]
 
 ffi.cdef[[
-DWORD  PASCAL VideoForWindowsVersion(void);
+DWORD  __stdcall VideoForWindowsVersion(void);
 ]]
 
 ffi.cdef[[
@@ -77,16 +81,11 @@ LONG __stdcall InitVFW(void);
 LONG __stdcall TermVFW(void);
 ]]
 
+************************************************************************/
 
-/****************************************************************************
- *
- *  do we need MMSYSTEM?
- *
- ****************************************************************************/
-
-#if !defined(_INC_MMSYSTEM) && (!defined(NOVIDEO) || !defined(NOAVICAP))
-    #include <mmsystem.h>
-#endif
+if not _INC_MMSYSTEM and (not NOVIDEO or not NOAVICAP)
+require("win32.mmsystem")
+end
 
 
 
@@ -103,24 +102,30 @@ mmioFOURCC = MKFOURCC
 end
 --]]
 
+--[[
 /****************************************************************************
  *
  *  COMPMAN - Installable Compression Manager.
  *
  ****************************************************************************/
+--]]
 
-#ifndef NOCOMPMAN
+if not NOCOMPMAN then
+ffi.cdef[[
+static const int ICVERSION    =   0x0104;
+]]
 
-#define ICVERSION       0x0104
+DECLARE_HANDLE("HIC");     --/* Handle to a Installable Compressor */
 
-DECLARE_HANDLE("HIC");     /* Handle to a Installable Compressor */
-
+ffi.cdef[[
 //
 // this code in biCompression means the DIB must be accesed via
 // 48 bit pointers! using *ONLY* the selector given.
 //
-#define BI_1632 = 0x32333631;     // '1632'
+static const int BI_1632 = 0x32333631;     // '1632'
+]]
 
+--[[
 #ifndef mmioFOURCC
 #define mmioFOURCC( ch0, ch1, ch2, ch3 )				\
 		( (DWORD)(BYTE)(ch0) | ( (DWORD)(BYTE)(ch1) << 8 ) |	\
@@ -135,92 +140,106 @@ DECLARE_HANDLE("HIC");     /* Handle to a Installable Compressor */
 #define ICTYPE_VIDEO    mmioFOURCC('v', 'i', 'd', 'c')
 #define ICTYPE_AUDIO    mmioFOURCC('a', 'u', 'd', 'c')
 #endif
+--]]
 
-#ifndef ICERR_OK
-#define ICERR_OK                0L
-#define ICERR_DONTDRAW          1L
-#define ICERR_NEWPALETTE        2L
-#define ICERR_GOTOKEYFRAME	3L
-#define ICERR_STOPDRAWING 	4L
 
-#define ICERR_UNSUPPORTED      -1L
-#define ICERR_BADFORMAT        -2L
-#define ICERR_MEMORY           -3L
-#define ICERR_INTERNAL         -4L
-#define ICERR_BADFLAGS         -5L
-#define ICERR_BADPARAM         -6L
-#define ICERR_BADSIZE          -7L
-#define ICERR_BADHANDLE        -8L
-#define ICERR_CANTUPDATE       -9L
-#define ICERR_ABORT	       -10L
-#define ICERR_ERROR            -100L
-#define ICERR_BADBITDEPTH      -200L
-#define ICERR_BADIMAGESIZE     -201L
+if not ICERR_OK then
+ICERR_OK = 0
+ffi.cdef[[
+static const int ICERR_OK             =   0L;
+static const int ICERR_DONTDRAW       =   1L;
+static const int ICERR_NEWPALETTE     =   2L;
+static const int ICERR_GOTOKEYFRAME	=3L;
+static const int ICERR_STOPDRAWING 	=4L;
 
-#define ICERR_CUSTOM           -400L    // errors less than ICERR_CUSTOM...
-#endif
+static const int ICERR_UNSUPPORTED    =  -1L;
+static const int ICERR_BADFORMAT      =  -2L;
+static const int ICERR_MEMORY         =  -3L;
+static const int ICERR_INTERNAL       =  -4L;
+static const int ICERR_BADFLAGS       =  -5L;
+static const int ICERR_BADPARAM       =  -6L;
+static const int ICERR_BADSIZE        =  -7L;
+static const int ICERR_BADHANDLE      =  -8L;
+static const int ICERR_CANTUPDATE     =  -9L;
+static const int ICERR_ABORT	      = -10L;
+static const int ICERR_ERROR       =     -100L;
+static const int ICERR_BADBITDEPTH  =    -200L;
+static const int ICERR_BADIMAGESIZE =    -201L;
 
-/* Values for dwFlags of ICOpen() */
-#ifndef ICMODE_COMPRESS
-#define ICMODE_COMPRESS		1
-#define ICMODE_DECOMPRESS	2
-#define ICMODE_FASTDECOMPRESS   3
-#define ICMODE_QUERY            4
-#define ICMODE_FASTCOMPRESS     5
-#define ICMODE_DRAW             8
-#endif
+static const int ICERR_CUSTOM       =    -400L;    // errors less than ICERR_CUSTOM...
+]]
+end
 
+
+--/* Values for dwFlags of ICOpen() */
+if not ICMODE_COMPRESS then
+ffi.cdef[[
+static const int ICMODE_COMPRESS        = 1;
+static const int ICMODE_DECOMPRESS      = 2;
+static const int ICMODE_FASTDECOMPRESS  = 3;
+static const int ICMODE_QUERY           = 4;
+static const int ICMODE_FASTCOMPRESS    = 5;
+static const int ICMODE_DRAW            = 8;
+]]
+end
+
+--[[
 #ifndef _WIN32					// ;Internal
 #define ICMODE_INTERNALF_FUNCTION32	= 0x8000;	// ;Internal
 #define ICMODE_INTERNALF_MASK		= 0x8000;	// ;Internal
 #endif						// ;Internal
+--]]
 
+ffi.cdef[[
 /* Flags for AVI file index */
-#define AVIIF_LIST	0x00000001L
-#define AVIIF_TWOCC	0x00000002L
-#define AVIIF_KEYFRAME	0x00000010L
+static const int AVIIF_LIST	    = 0x00000001L;
+static const int AVIIF_TWOCC	= 0x00000002L;
+static const int AVIIF_KEYFRAME	= 0x00000010L;
 
 /* quality flags */
-#define ICQUALITY_LOW       0
-#define ICQUALITY_HIGH      10000
-#define ICQUALITY_DEFAULT   -1
+static const int ICQUALITY_LOW      = 0;
+static const int ICQUALITY_HIGH     = 10000;
+static const int ICQUALITY_DEFAULT  = -1;
+]]
 
-/************************************************************************
-************************************************************************/
 
-#define ICM_USER          (DRV_USER+0x0000)
+ffi.cdef[[
+static const int ICM_USER         = (DRV_USER+0x0000);
 
-#define ICM_RESERVED      ICM_RESERVED_LOW
-#define ICM_RESERVED_LOW  (DRV_USER+0x1000)
-#define ICM_RESERVED_HIGH (DRV_USER+0x2000)
+static const int ICM_RESERVED     = ICM_RESERVED_LOW;
+static const int ICM_RESERVED_LOW = (DRV_USER+0x1000);
+static const int ICM_RESERVED_HIGH= (DRV_USER+0x2000);
+]]
 
+ffi.cdef[[
 /************************************************************************
 
     messages.
 
 ************************************************************************/
 
-#define ICM_GETSTATE                (ICM_RESERVED+0)    // Get compressor state
-#define ICM_SETSTATE                (ICM_RESERVED+1)    // Set compressor state
-#define ICM_GETINFO                 (ICM_RESERVED+2)    // Query info about the compressor
+static const int ICM_GETSTATE            =    (ICM_RESERVED+0);    // Get compressor state
+static const int ICM_SETSTATE            =    (ICM_RESERVED+1);    // Set compressor state
+static const int ICM_GETINFO             =    (ICM_RESERVED+2);    // Query info about the compressor
 
-#define ICM_CONFIGURE               (ICM_RESERVED+10)   // show the configure dialog
-#define ICM_ABOUT                   (ICM_RESERVED+11)   // show the about box
+static const int ICM_CONFIGURE           =    (ICM_RESERVED+10);   // show the configure dialog
+static const int ICM_ABOUT               =    (ICM_RESERVED+11);   // show the about box
 
-#define ICM_GETERRORTEXT            (ICM_RESERVED+12)   // get error text TBD ;Internal
-#define ICM_GETFORMATNAME	    (ICM_RESERVED+20)	// get a name for a format ;Internal
-#define ICM_ENUMFORMATS		    (ICM_RESERVED+21)	// cycle through formats ;Internal
+static const int ICM_GETERRORTEXT       =     (ICM_RESERVED+12);   // get error text TBD ;Internal
+static const int ICM_GETFORMATNAME	   = (ICM_RESERVED+20);	// get a name for a format ;Internal
+static const int ICM_ENUMFORMATS		   = (ICM_RESERVED+21);	// cycle through formats ;Internal
 
-#define ICM_GETDEFAULTQUALITY       (ICM_RESERVED+30)   // get the default value for quality
-#define ICM_GETQUALITY              (ICM_RESERVED+31)   // get the current value for quality
-#define ICM_SETQUALITY              (ICM_RESERVED+32)   // set the default value for quality
+static const int ICM_GETDEFAULTQUALITY      = (ICM_RESERVED+30);   // get the default value for quality
+static const int ICM_GETQUALITY             = (ICM_RESERVED+31);   // get the current value for quality
+static const int ICM_SETQUALITY             = (ICM_RESERVED+32);   // set the default value for quality
 
-#define ICM_SET			    (ICM_RESERVED+40)	// Tell the driver something
-#define ICM_GET			    (ICM_RESERVED+41)	// Ask the driver something
+static const int ICM_SET			  =  (ICM_RESERVED+40);	// Tell the driver something
+static const int ICM_GET			  =  (ICM_RESERVED+41);	// Ask the driver something
+]]
 
 // Constants for ICM_SET:
-#define ICM_FRAMERATE       mmioFOURCC('F','r','m','R')
-#define ICM_KEYFRAMERATE    mmioFOURCC('K','e','y','R')
+makeStatic("ICM_FRAMERATE", mmioFOURCC('F','r','m','R'))
+makeStatic("ICM_KEYFRAMERATE", mmioFOURCC('K','e','y','R'))
 
 ffi.cdef[[
 /************************************************************************
@@ -229,58 +248,58 @@ ffi.cdef[[
 
 ************************************************************************/
 
-#define ICM_COMPRESS_GET_FORMAT     (ICM_USER+4)    // get compress format or size
-#define ICM_COMPRESS_GET_SIZE       (ICM_USER+5)    // get output size
-#define ICM_COMPRESS_QUERY          (ICM_USER+6)    // query support for compress
-#define ICM_COMPRESS_BEGIN          (ICM_USER+7)    // begin a series of compress calls.
-#define ICM_COMPRESS                (ICM_USER+8)    // compress a frame
-#define ICM_COMPRESS_END            (ICM_USER+9)    // end of a series of compress calls.
+static const int ICM_COMPRESS_GET_FORMAT     (ICM_USER+4);    // get compress format or size
+static const int ICM_COMPRESS_GET_SIZE       (ICM_USER+5);    // get output size
+static const int ICM_COMPRESS_QUERY          (ICM_USER+6);    // query support for compress
+static const int ICM_COMPRESS_BEGIN          (ICM_USER+7);    // begin a series of compress calls.
+static const int ICM_COMPRESS                (ICM_USER+8);    // compress a frame
+static const int ICM_COMPRESS_END            (ICM_USER+9);    // end of a series of compress calls.
 
-#define ICM_DECOMPRESS_GET_FORMAT   (ICM_USER+10)   // get decompress format or size
-#define ICM_DECOMPRESS_QUERY        (ICM_USER+11)   // query support for dempress
-#define ICM_DECOMPRESS_BEGIN        (ICM_USER+12)   // start a series of decompress calls
-#define ICM_DECOMPRESS              (ICM_USER+13)   // decompress a frame
-#define ICM_DECOMPRESS_END          (ICM_USER+14)   // end a series of decompress calls
-#define ICM_DECOMPRESS_SET_PALETTE  (ICM_USER+29)   // fill in the DIB color table
-#define ICM_DECOMPRESS_GET_PALETTE  (ICM_USER+30)   // fill in the DIB color table
+static const int ICM_DECOMPRESS_GET_FORMAT   (ICM_USER+10);   // get decompress format or size
+static const int ICM_DECOMPRESS_QUERY        (ICM_USER+11);   // query support for dempress
+static const int ICM_DECOMPRESS_BEGIN        (ICM_USER+12);   // start a series of decompress calls
+static const int ICM_DECOMPRESS              (ICM_USER+13);   // decompress a frame
+static const int ICM_DECOMPRESS_END          (ICM_USER+14);   // end a series of decompress calls
+static const int ICM_DECOMPRESS_SET_PALETTE  (ICM_USER+29);   // fill in the DIB color table
+static const int ICM_DECOMPRESS_GET_PALETTE  (ICM_USER+30);   // fill in the DIB color table
 
-#define ICM_DRAW_QUERY              (ICM_USER+31)   // query support for dempress
-#define ICM_DRAW_BEGIN              (ICM_USER+15)   // start a series of draw calls
-#define ICM_DRAW_GET_PALETTE        (ICM_USER+16)   // get the palette needed for drawing
-#define ICM_DRAW_UPDATE             (ICM_USER+17)   // update screen with current frame ;Internal
-#define ICM_DRAW_START              (ICM_USER+18)   // start decompress clock
-#define ICM_DRAW_STOP               (ICM_USER+19)   // stop decompress clock
-#define ICM_DRAW_BITS               (ICM_USER+20)   // decompress a frame to screen ;Internal
-#define ICM_DRAW_END                (ICM_USER+21)   // end a series of draw calls
-#define ICM_DRAW_GETTIME            (ICM_USER+32)   // get value of decompress clock
-#define ICM_DRAW                    (ICM_USER+33)   // generalized "render" message
-#define ICM_DRAW_WINDOW             (ICM_USER+34)   // drawing window has moved or hidden
-#define ICM_DRAW_SETTIME            (ICM_USER+35)   // set correct value for decompress clock
-#define ICM_DRAW_REALIZE            (ICM_USER+36)   // realize palette for drawing
-#define ICM_DRAW_FLUSH	            (ICM_USER+37)   // clear out buffered frames
-#define ICM_DRAW_RENDERBUFFER       (ICM_USER+38)   // draw undrawn things in queue
+static const int ICM_DRAW_QUERY              (ICM_USER+31);   // query support for dempress
+static const int ICM_DRAW_BEGIN              (ICM_USER+15);   // start a series of draw calls
+static const int ICM_DRAW_GET_PALETTE        (ICM_USER+16);   // get the palette needed for drawing
+static const int ICM_DRAW_UPDATE             (ICM_USER+17);   // update screen with current frame ;Internal
+static const int ICM_DRAW_START              (ICM_USER+18);   // start decompress clock
+static const int ICM_DRAW_STOP               (ICM_USER+19);   // stop decompress clock
+static const int ICM_DRAW_BITS               (ICM_USER+20);   // decompress a frame to screen ;Internal
+static const int ICM_DRAW_END                (ICM_USER+21);   // end a series of draw calls
+static const int ICM_DRAW_GETTIME            (ICM_USER+32);   // get value of decompress clock
+static const int ICM_DRAW                    (ICM_USER+33);   // generalized "render" message
+static const int ICM_DRAW_WINDOW             (ICM_USER+34);   // drawing window has moved or hidden
+static const int ICM_DRAW_SETTIME            (ICM_USER+35);   // set correct value for decompress clock
+static const int ICM_DRAW_REALIZE            (ICM_USER+36);   // realize palette for drawing
+static const int ICM_DRAW_FLUSH	            (ICM_USER+37);   // clear out buffered frames
+static const int ICM_DRAW_RENDERBUFFER       (ICM_USER+38);   // draw undrawn things in queue
 
-#define ICM_DRAW_START_PLAY         (ICM_USER+39)   // start of a play
-#define ICM_DRAW_STOP_PLAY          (ICM_USER+40)   // end of a play
+static const int ICM_DRAW_START_PLAY         (ICM_USER+39);   // start of a play
+static const int ICM_DRAW_STOP_PLAY          (ICM_USER+40);   // end of a play
 
-#define ICM_DRAW_SUGGESTFORMAT      (ICM_USER+50)   // Like ICGetDisplayFormat
-#define ICM_DRAW_CHANGEPALETTE      (ICM_USER+51)   // for animating palette
+static const int ICM_DRAW_SUGGESTFORMAT      (ICM_USER+50);   // Like ICGetDisplayFormat
+static const int ICM_DRAW_CHANGEPALETTE      (ICM_USER+51);   // for animating palette
 
-#define ICM_DRAW_IDLE               (ICM_USER+52)   // send each frame time ;Internal
+static const int ICM_DRAW_IDLE               (ICM_USER+52);   // send each frame time ;Internal
 
-#define ICM_GETBUFFERSWANTED        (ICM_USER+41)   // ask about prebuffering
+static const int ICM_GETBUFFERSWANTED        (ICM_USER+41);   // ask about prebuffering
 
-#define ICM_GETDEFAULTKEYFRAMERATE  (ICM_USER+42)   // get the default value for key frames
+static const int ICM_GETDEFAULTKEYFRAMERATE  (ICM_USER+42);   // get the default value for key frames
 
 
-#define ICM_DECOMPRESSEX_BEGIN      (ICM_USER+60)   // start a series of decompress calls
-#define ICM_DECOMPRESSEX_QUERY      (ICM_USER+61)   // start a series of decompress calls
-#define ICM_DECOMPRESSEX            (ICM_USER+62)   // decompress a frame
-#define ICM_DECOMPRESSEX_END        (ICM_USER+63)   // end a series of decompress calls
+static const int ICM_DECOMPRESSEX_BEGIN      (ICM_USER+60);   // start a series of decompress calls
+static const int ICM_DECOMPRESSEX_QUERY      (ICM_USER+61);   // start a series of decompress calls
+static const int ICM_DECOMPRESSEX            (ICM_USER+62);   // decompress a frame
+static const int ICM_DECOMPRESSEX_END        (ICM_USER+63);   // end a series of decompress calls
 
-#define ICM_COMPRESS_FRAMES_INFO    (ICM_USER+70)   // tell about compress to come
-#define ICM_COMPRESS_FRAMES         (ICM_USER+71)   // compress a bunch of frames ;Internal
-#define ICM_SET_STATUS_PROC	        (ICM_USER+72)   // set status callback
+static const int ICM_COMPRESS_FRAMES_INFO    (ICM_USER+70);   // tell about compress to come
+static const int ICM_COMPRESS_FRAMES         (ICM_USER+71);   // compress a bunch of frames ;Internal
+static const int ICM_SET_STATUS_PROC	        (ICM_USER+72);   // set status callback
 ]]
 
 
@@ -357,6 +376,7 @@ typedef struct {
 
 #define ICCOMPRESSFRAMES_PADDING	0x00000001
 
+ffi.cdef[[
 typedef struct {
     DWORD               dwFlags;        // flags
 
@@ -382,7 +402,9 @@ typedef struct {
     LONG (CALLBACK *GetData)( LPARAM lInput,  LONG lFrame, writes_bytes_(len) LPVOID lpBits,  LONG len);
     LONG (CALLBACK *PutData)( LPARAM lOutput,  LONG lFrame, _In_reads_bytes_(len) LPVOID lpBits,  LONG len);
 } ICCOMPRESSFRAMES;
+]]
 
+ffi.cdef[[
 typedef struct {
     DWORD		dwFlags;
     LPARAM		lParam;
@@ -397,16 +419,18 @@ typedef struct {
 
     LONG (CALLBACK *Status) ( LPARAM lParam,  UINT message,  LONG l);
 } ICSETSTATUSPROC;
+]]
 
-/************************************************************************
-************************************************************************/
 
+ffi.cdef[[
 #define ICDECOMPRESS_HURRYUP      0x80000000L   // don't draw just buffer (hurry up!)
 #define ICDECOMPRESS_UPDATE       0x40000000L   // don't draw just update screen
 #define ICDECOMPRESS_PREROLL      0x20000000L   // this frame is before real start
 #define ICDECOMPRESS_NULLFRAME    0x10000000L   // repeat last frame
 #define ICDECOMPRESS_NOTKEYFRAME  0x08000000L   // this frame is not a key frame
+]]
 
+ffi.cdef[[
 typedef struct {
     DWORD               dwFlags;    // flags (from AVI index...)
 
@@ -420,7 +444,9 @@ typedef struct {
     LPVOID              lpOutput;
     DWORD		ckid;	    // ckid from AVI file
 } ICDECOMPRESS;
+]]
 
+ffi.cdef[[
 typedef struct {
     //
     // same as ICM_DECOMPRESS
@@ -447,17 +473,19 @@ typedef struct {
     int                 dySrc;
 
 } ICDECOMPRESSEX;
+]]
 
-
-#define ICDRAW_QUERY        0x00000001L   // test for support
-#define ICDRAW_FULLSCREEN   0x00000002L   // draw to full screen
-#define ICDRAW_HDC          0x00000004L   // draw to a HDC/HWND
-#define ICDRAW_ANIMATE	    0x00000008L	  // expect palette animation
-#define ICDRAW_CONTINUE	    0x00000010L	  // draw is a continuation of previous draw
-#define ICDRAW_MEMORYDC	    0x00000020L	  // DC is offscreen, by the way
-#define ICDRAW_UPDATING	    0x00000040L	  // We're updating, as opposed to playing
-#define ICDRAW_RENDER       0x00000080L   // used to render data not draw it
-#define ICDRAW_BUFFER       0x00000100L   // please buffer this data offscreen, we will need to update it
+ffi.cdef[[
+static const int ICDRAW_QUERY       = 0x00000001L;   // test for support
+static const int ICDRAW_FULLSCREEN  = 0x00000002L;   // draw to full screen
+static const int ICDRAW_HDC         = 0x00000004L;   // draw to a HDC/HWND
+static const int ICDRAW_ANIMATE	    =0x00000008L;	  // expect palette animation
+static const int ICDRAW_CONTINUE	=    0x00000010L;	  // draw is a continuation of previous draw
+static const int ICDRAW_MEMORYDC	=    0x00000020L;	  // DC is offscreen, by the way
+static const int ICDRAW_UPDATING	=    0x00000040L;	  // We're updating, as opposed to playing
+static const int ICDRAW_RENDER      = 0x00000080L;   // used to render data not draw it
+static const int ICDRAW_BUFFER      = 0x00000100L;   // please buffer this data offscreen, we will need to update it
+]]
 
 ffi.cdef[[
 typedef struct {
@@ -511,10 +539,9 @@ typedef struct {
     int			dyDst;
     HIC			hicDecompressor;// decompressor you can talk to
 } ICDRAWSUGGEST;
+]]
 
-/************************************************************************
-************************************************************************/
-
+ffi.cdef[[
 typedef struct {
     DWORD               dwFlags;    // flags (from AVI index...)
     int                 iStart;     // first palette to change
@@ -605,23 +632,28 @@ LRESULT VFWAPIV ICMessage(HIC hic, UINT msg, UINT cb, ...);
 #endif
 --]]
 
+ffi.cdef[[
 /* Values for wFlags of ICInstall() */
-#define ICINSTALL_UNICODE       0x8000
+static const int ICINSTALL_UNICODE      = 0x8000;
 
-#define ICINSTALL_FUNCTION      0x0001  // lParam is a DriverProc (function ptr)
-#define ICINSTALL_DRIVER        0x0002  // lParam is a driver name (string)
-#define ICINSTALL_HDRV          0x0004  // lParam is a HDRVR (driver handle)
+static const int ICINSTALL_FUNCTION     = 0x0001;  // lParam is a DriverProc (function ptr)
+static const int ICINSTALL_DRIVER       = 0x0002;  // lParam is a driver name (string)
+static const int ICINSTALL_HDRV         = 0x0004;  // lParam is a HDRVR (driver handle)
 
-#define ICINSTALL_DRIVERW       0x8002  // lParam is a unicode driver name
+static const int ICINSTALL_DRIVERW      = 0x8002;  // lParam is a unicode driver name
+]]
 
+ffi.cdef[[
 /************************************************************************
 
     query macros
 
 ************************************************************************/
-#define ICMF_CONFIGURE_QUERY     0x00000001
-#define ICMF_ABOUT_QUERY         0x00000001
+static const int ICMF_CONFIGURE_QUERY    = 0x00000001;
+static const int ICMF_ABOUT_QUERY        = 0x00000001;
+]]
 
+--[[
 #define ICQueryAbout(hic) \
     (ICSendMessage(hic, ICM_ABOUT, (DWORD_PTR) -1, ICMF_ABOUT_QUERY) == ICERR_OK)
 
@@ -669,6 +701,7 @@ static DWORD dwICValue;
 ************************************************************************/
 #define ICDrawWindow(hic, prc) \
     ICSendMessage(hic, ICM_DRAW_WINDOW, (DWORD_PTR)(LPVOID)(prc), sizeof(RECT))
+--]]
 
 /************************************************************************
 
@@ -969,6 +1002,7 @@ ICDecompressExQuery(
     ICSendMessage(hic, ICM_DECOMPRESSEX_END, 0, 0)
 --]=]
 
+--[=[
 ffi.cdef[[
 /************************************************************************
 
@@ -1572,14 +1606,15 @@ void WINAPI StretchDIB(
  *
  ****************************************************************************/
 
-#ifndef NOAVIFMT
-    #ifndef _INC_MMSYSTEM
-        typedef DWORD FOURCC;
-    #endif
-#ifdef _MSC_VER
-#pragma warning(disable:4200)
-#endif
+if not NOAVIFMT then
+if not _INC_MMSYSTEM then
+ffi.cdef[[
+typedef DWORD FOURCC;
+]]
+end
 
+
+--[[
 /* The following is a short description of the AVI file format.  Please
  * see the accompanying documentation for a full explanation.
  *
@@ -1644,7 +1679,7 @@ void WINAPI StretchDIB(
  *  Redmond, WA 98052-6399
  *
  */
-
+--]]
 
 #ifndef mmioFOURCC
 #define mmioFOURCC( ch0, ch1, ch2, ch3 )				\
@@ -1704,8 +1739,8 @@ typedef WORD TWOCC;
 #define StreamFromFOURCC(fcc) ((WORD) ((FromHex(LOBYTE(LOWORD(fcc))) << 4) + \
                                              (FromHex(HIBYTE(LOWORD(fcc))))))
 
-/* Macro to get TWOCC chunk type out of a FOURCC ckid */
-#define TWOCCFromFOURCC(fcc)    HIWORD(fcc)
+--/* Macro to get TWOCC chunk type out of a FOURCC ckid */
+local function TWOCCFromFOURCC(fcc)   return  HIWORD(fcc) end
 
 /* Macro to make a ckid for a chunk out of a TWOCC and a stream number
 ** from 0-255.
@@ -1715,21 +1750,23 @@ typedef WORD TWOCC;
         MAKELONG((ToHex((stream) & 0x0f) << 8) | \
 			    (ToHex(((stream) & 0xf0) >> 4)), tcc)
 
-
+ffi.cdef[[
 /*
 ** Main AVI File Header
 */	
 		
 /* flags for use in <dwFlags> in AVIFileHdr */
-#define AVIF_HASINDEX		0x00000010	// Index at end of file?
-#define AVIF_MUSTUSEINDEX	0x00000020
-#define AVIF_ISINTERLEAVED	0x00000100
-#define AVIF_WASCAPTUREFILE	0x00010000
-#define AVIF_COPYRIGHTED	0x00020000
+static const int AVIF_HASINDEX		= 0x00000010;	// Index at end of file?
+static const int AVIF_MUSTUSEINDEX	= 0x00000020;
+static const int AVIF_ISINTERLEAVED	= 0x00000100;
+static const int AVIF_WASCAPTUREFILE	= 0x00010000;
+static const int AVIF_COPYRIGHTED	= 0x00020000;
 
 /* The AVI File Header LIST chunk should be padded to this size */
 #define AVI_HEADERSIZE  2048                    // size of AVI header list
+]]
 
+ffi.cdef[[
 typedef struct
 {
     DWORD		dwMicroSecPerFrame;	// frame display rate (or 0L)
@@ -1747,16 +1784,18 @@ typedef struct
 
     DWORD		dwReserved[4];
 } MainAVIHeader;
+]]
 
-
+ffi.cdef[[
 /*
 ** Stream header
 */
 
-#define AVISF_DISABLED			0x00000001
+static const int AVISF_DISABLED			= 0x00000001;
+static const int AVISF_VIDEO_PALCHANGES		= 0x00010000;
+]]
 
-#define AVISF_VIDEO_PALCHANGES		0x00010000
-
+ffi.cdef[[
 typedef struct {
     FOURCC		fccType;
     FOURCC		fccHandler;
@@ -1773,7 +1812,9 @@ typedef struct {
     DWORD		dwSampleSize;
     RECT		rcFrame;
 } AVIStreamHeader;
+]]
 
+ffi.cdef[[
 /* Flags for index */
 #define AVIIF_LIST          0x00000001L // chunk is a 'LIST'
 #define AVIIF_KEYFRAME      0x00000010L // this frame is a key frame.
@@ -1783,7 +1824,9 @@ typedef struct {
 
 #define AVIIF_NOTIME	    0x00000100L // this frame doesn't take any time
 #define AVIIF_COMPUSE       0x0FFF0000L // these bits are for compressor use
+]]
 
+ffi.cdef[[
 typedef struct
 {
     DWORD		ckid;
@@ -1791,8 +1834,9 @@ typedef struct
     DWORD		dwChunkOffset;		// Position of chunk
     DWORD		dwChunkLength;		// Length of chunk
 } AVIINDEXENTRY;
+]]
 
-
+ffi.cdef[[
 /*
 ** Palette change chunk
 **
@@ -1805,37 +1849,36 @@ typedef struct
     WORD		wFlags;		/* Mostly to preserve alignment... */
     PALETTEENTRY	peNew[];	/* New color specifications */
 } AVIPALCHANGE;
+]]
+end --/* NOAVIFMT */
 
-#endif /* NOAVIFMT */
 
-#ifdef __cplusplus
-} // extern "C"
-#endif  /* __cplusplus */
 
 /****************************************************************************
  *
  *  MMREG.H (standard include file for MM defines, like FOURCC and things)
  *
  ***************************************************************************/
-
+--[[
 #ifndef RC_INVOKED
 #include "pshpack8.h"
 #endif
-#ifndef NOMMREG
-    #include <mmreg.h>
-#endif
+--]]
 
-#ifdef __cplusplus
-extern "C" {            /* Assume C declarations for C++ */
-#endif  /* __cplusplus */
+if not NOMMREG then
+require("win32.mmreg")
+end
 
+
+--[[
 /****************************************************************************
  *
  *  AVIFile - routines for reading/writing standard AVI files
  *
  ***************************************************************************/
+--]]
 
-#ifndef NOAVIFILE
+if not NOAVIFILE
 
 /*
  * Ansi - Unicode thunking.
@@ -3448,6 +3491,7 @@ typedef struct channel_caps_tag {
 #define WM_CAP_UNICODE_END              WM_CAP_PAL_SAVEW
 #define WM_CAP_END                      WM_CAP_UNICODE_END
 
+--[[
 // ------------------------------------------------------------------
 //  Message crackers for above
 // ------------------------------------------------------------------
@@ -3525,7 +3569,9 @@ typedef struct channel_caps_tag {
 #define capPalettePaste(hwnd)                      ((BOOL)AVICapSM(hwnd, WM_CAP_PAL_PASTE, (WPARAM) 0, (LPARAM)0L))
 #define capPaletteAuto(hwnd, iFrames, iColors)     ((BOOL)AVICapSM(hwnd, WM_CAP_PAL_AUTOCREATE, (WPARAM)(iFrames), (LPARAM)(DWORD)(iColors)))
 #define capPaletteManual(hwnd, fGrab, iColors)     ((BOOL)AVICapSM(hwnd, WM_CAP_PAL_MANUALCREATE, (WPARAM)(fGrab), (LPARAM)(DWORD)(iColors)))
+--]]
 
+ffi.cdef[[
 // ------------------------------------------------------------------
 //  Structures
 // ------------------------------------------------------------------
@@ -3545,7 +3591,9 @@ typedef struct tagCapDriverCaps {
     HANDLE      hVideoExtIn;                // Driver Ext In channel
     HANDLE      hVideoExtOut;               // Driver Ext Out channel
 } CAPDRIVERCAPS, *PCAPDRIVERCAPS,  *LPCAPDRIVERCAPS;
+]]
 
+ffi.cdef[[
 typedef struct tagCapStatus {
     UINT        uiImageWidth;               // Width of the image
     UINT        uiImageHeight;              // Height of the image
@@ -3566,7 +3614,9 @@ typedef struct tagCapStatus {
     UINT        wNumVideoAllocated;         // Actual number of video buffers
     UINT        wNumAudioAllocated;         // Actual number of audio buffers
 } CAPSTATUS, *PCAPSTATUS,  *LPCAPSTATUS;
+]]
 
+ffi.cdef[[
                                             // Default values in parenthesis
 typedef struct tagCaptureParms {
     DWORD       dwRequestMicroSecPerFrame;  // Requested capture rate
@@ -3594,7 +3644,9 @@ typedef struct tagCaptureParms {
     BOOL        fDisableWriteCache;         // Attempt to disable write cache
     UINT        AVStreamMaster;             // Which stream controls length?
 } CAPTUREPARMS, *PCAPTUREPARMS,  *LPCAPTUREPARMS;
+]]
 
+ffi.cdef[[
 // ------------------------------------------------------------------
 //  AVStreamMaster
 //  Since Audio and Video streams generally use non-synchronized capture
@@ -3614,8 +3666,9 @@ typedef struct tagCapInfoChunk {
     LPVOID      lpData;                     // pointer to data
     LONG        cbData;                     // size of lpData
 } CAPINFOCHUNK, *PCAPINFOCHUNK,  *LPCAPINFOCHUNK;
+]]
 
-
+ffi.cdef[[
 // ------------------------------------------------------------------
 //  Callback Definitions
 // ------------------------------------------------------------------
@@ -3625,23 +3678,29 @@ typedef LRESULT (CALLBACK* CAPSTATUSCALLBACKW) ( HWND hWnd,  int nID, LPCWSTR lp
 typedef LRESULT (CALLBACK* CAPERRORCALLBACKW)  ( HWND hWnd,  int nID, LPCWSTR lpsz);
 typedef LRESULT (CALLBACK* CAPSTATUSCALLBACKA) ( HWND hWnd,  int nID, LPCSTR lpsz);
 typedef LRESULT (CALLBACK* CAPERRORCALLBACKA)  ( HWND hWnd,  int nID, LPCSTR lpsz);
-#ifdef UNICODE
-#define CAPSTATUSCALLBACK  CAPSTATUSCALLBACKW
-#define CAPERRORCALLBACK   CAPERRORCALLBACKW
-#else
-#define CAPSTATUSCALLBACK  CAPSTATUSCALLBACKA
-#define CAPERRORCALLBACK   CAPERRORCALLBACKA
-#endif
+]]
+
+if UNICODE then
+--#define CAPSTATUSCALLBACK  CAPSTATUSCALLBACKW
+--#define CAPERRORCALLBACK   CAPERRORCALLBACKW
+else
+--#define CAPSTATUSCALLBACK  CAPSTATUSCALLBACKA
+--#define CAPERRORCALLBACK   CAPERRORCALLBACKA
+end
+
+ffi.cdef[[
 typedef LRESULT (CALLBACK* CAPVIDEOCALLBACK)  ( HWND hWnd,  LPVIDEOHDR lpVHdr);
 typedef LRESULT (CALLBACK* CAPWAVECALLBACK)   ( HWND hWnd,  LPWAVEHDR lpWHdr);
 typedef LRESULT (CALLBACK* CAPCONTROLCALLBACK)( HWND hWnd,  int nState);
+]]
 
 // ------------------------------------------------------------------
 //  CapControlCallback states
 // ------------------------------------------------------------------
-#define CONTROLCALLBACK_PREROLL         1 /* Waiting to start capture */
-#define CONTROLCALLBACK_CAPTURING       2 /* Now capturing */
+#define CONTROLCALLBACK_PREROLL       =  1; /* Waiting to start capture */
+#define CONTROLCALLBACK_CAPTURING     =  2; /* Now capturing */
 
+ffi.cdef[[
 // ------------------------------------------------------------------
 //  The only exported functions from AVICAP.DLL
 // ------------------------------------------------------------------
@@ -3665,6 +3724,9 @@ HWND __stdcall capCreateCaptureWindowW (
 BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
          LPWSTR lpszName,  int cbName,
          LPWSTR lpszVer,  int cbVer);
+]]
+
+--[[
 #ifdef UNICODE
 #define capCreateCaptureWindow  capCreateCaptureWindowW
 #define capGetDriverDescription capGetDriverDescriptionW
@@ -3672,6 +3734,7 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
 #define capCreateCaptureWindow  capCreateCaptureWindowA
 #define capGetDriverDescription capGetDriverDescriptionA
 #endif
+--]]
 
 #endif  /* RC_INVOKED */
 
@@ -3681,77 +3744,79 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
 #define infotypeDIGITIZATION_TIME  mmioFOURCC ('I','D','I','T')
 #define infotypeSMPTE_TIME         mmioFOURCC ('I','S','M','P')
 
+ffi.cdef[[
 // ------------------------------------------------------------------
 // String IDs from status and error callbacks
 // ------------------------------------------------------------------
 
-#define IDS_CAP_BEGIN               300  /* "Capture Start" */
-#define IDS_CAP_END                 301  /* "Capture End" */
+static const int IDS_CAP_BEGIN               300;  /* "Capture Start" */
+static const int IDS_CAP_END                 301;  /* "Capture End" */
 
-#define IDS_CAP_INFO                401  /* "%s" */
-#define IDS_CAP_OUTOFMEM            402  /* "Out of memory" */
-#define IDS_CAP_FILEEXISTS          403  /* "File '%s' exists -- overwrite it?" */
-#define IDS_CAP_ERRORPALOPEN        404  /* "Error opening palette '%s'" */
-#define IDS_CAP_ERRORPALSAVE        405  /* "Error saving palette '%s'" */
-#define IDS_CAP_ERRORDIBSAVE        406  /* "Error saving frame '%s'" */
-#define IDS_CAP_DEFAVIEXT           407  /* "avi" */
-#define IDS_CAP_DEFPALEXT           408  /* "pal" */
-#define IDS_CAP_CANTOPEN            409  /* "Cannot open '%s'" */
-#define IDS_CAP_SEQ_MSGSTART        410  /* "Select OK to start capture\nof video sequence\nto %s." */
-#define IDS_CAP_SEQ_MSGSTOP         411  /* "Hit ESCAPE or click to end capture" */
+static const int IDS_CAP_INFO                401;  /* "%s" */
+static const int IDS_CAP_OUTOFMEM            402;  /* "Out of memory" */
+static const int IDS_CAP_FILEEXISTS          403;  /* "File '%s' exists -- overwrite it?" */
+static const int IDS_CAP_ERRORPALOPEN        404;  /* "Error opening palette '%s'" */
+static const int IDS_CAP_ERRORPALSAVE        405;  /* "Error saving palette '%s'" */
+static const int IDS_CAP_ERRORDIBSAVE        406;  /* "Error saving frame '%s'" */
+static const int IDS_CAP_DEFAVIEXT           407;  /* "avi" */
+static const int IDS_CAP_DEFPALEXT           408;  /* "pal" */
+static const int IDS_CAP_CANTOPEN            409;  /* "Cannot open '%s'" */
+static const int IDS_CAP_SEQ_MSGSTART        410;  /* "Select OK to start capture\nof video sequence\nto %s." */
+static const int IDS_CAP_SEQ_MSGSTOP         411;  /* "Hit ESCAPE or click to end capture" */
 
-#define IDS_CAP_VIDEDITERR          412  /* "An error occurred while trying to run VidEdit." */
-#define IDS_CAP_READONLYFILE        413  /* "The file '%s' is a read-only file." */
-#define IDS_CAP_WRITEERROR          414  /* "Unable to write to file '%s'.\nDisk may be full." */
-#define IDS_CAP_NODISKSPACE         415  /* "There is no space to create a capture file on the specified device." */
-#define IDS_CAP_SETFILESIZE         416  /* "Set File Size" */
-#define IDS_CAP_SAVEASPERCENT       417  /* "SaveAs: %2ld%%  Hit Escape to abort." */
+static const int IDS_CAP_VIDEDITERR          412;  /* "An error occurred while trying to run VidEdit." */
+static const int IDS_CAP_READONLYFILE        413;  /* "The file '%s' is a read-only file." */
+static const int IDS_CAP_WRITEERROR          414;  /* "Unable to write to file '%s'.\nDisk may be full." */
+static const int IDS_CAP_NODISKSPACE         415;  /* "There is no space to create a capture file on the specified device." */
+static const int IDS_CAP_SETFILESIZE         416;  /* "Set File Size" */
+static const int IDS_CAP_SAVEASPERCENT       417;  /* "SaveAs: %2ld%%  Hit Escape to abort." */
 
-#define IDS_CAP_DRIVER_ERROR        418  /* Driver specific error message */
+static const int IDS_CAP_DRIVER_ERROR        418;  /* Driver specific error message */
 
-#define IDS_CAP_WAVE_OPEN_ERROR     419  /* "Error: Cannot open the wave input device.\nCheck sample size, frequency, and channels." */
-#define IDS_CAP_WAVE_ALLOC_ERROR    420  /* "Error: Out of memory for wave buffers." */
-#define IDS_CAP_WAVE_PREPARE_ERROR  421  /* "Error: Cannot prepare wave buffers." */
-#define IDS_CAP_WAVE_ADD_ERROR      422  /* "Error: Cannot add wave buffers." */
-#define IDS_CAP_WAVE_SIZE_ERROR     423  /* "Error: Bad wave size." */
+static const int IDS_CAP_WAVE_OPEN_ERROR     419;  /* "Error: Cannot open the wave input device.\nCheck sample size, frequency, and channels." */
+static const int IDS_CAP_WAVE_ALLOC_ERROR    420;  /* "Error: Out of memory for wave buffers." */
+static const int IDS_CAP_WAVE_PREPARE_ERROR  421;  /* "Error: Cannot prepare wave buffers." */
+static const int IDS_CAP_WAVE_ADD_ERROR      422;  /* "Error: Cannot add wave buffers." */
+static const int IDS_CAP_WAVE_SIZE_ERROR     423;  /* "Error: Bad wave size." */
 
-#define IDS_CAP_VIDEO_OPEN_ERROR    424  /* "Error: Cannot open the video input device." */
-#define IDS_CAP_VIDEO_ALLOC_ERROR   425  /* "Error: Out of memory for video buffers." */
-#define IDS_CAP_VIDEO_PREPARE_ERROR 426  /* "Error: Cannot prepare video buffers." */
-#define IDS_CAP_VIDEO_ADD_ERROR     427  /* "Error: Cannot add video buffers." */
-#define IDS_CAP_VIDEO_SIZE_ERROR    428  /* "Error: Bad video size." */
+static const int IDS_CAP_VIDEO_OPEN_ERROR    424;  /* "Error: Cannot open the video input device." */
+static const int IDS_CAP_VIDEO_ALLOC_ERROR   425;  /* "Error: Out of memory for video buffers." */
+static const int IDS_CAP_VIDEO_PREPARE_ERROR 426;  /* "Error: Cannot prepare video buffers." */
+static const int IDS_CAP_VIDEO_ADD_ERROR     427;  /* "Error: Cannot add video buffers." */
+static const int IDS_CAP_VIDEO_SIZE_ERROR    428;  /* "Error: Bad video size." */
 
-#define IDS_CAP_FILE_OPEN_ERROR     429  /* "Error: Cannot open capture file." */
-#define IDS_CAP_FILE_WRITE_ERROR    430  /* "Error: Cannot write to capture file.  Disk may be full." */
-#define IDS_CAP_RECORDING_ERROR     431  /* "Error: Cannot write to capture file.  Data rate too high or disk full." */
-#define IDS_CAP_RECORDING_ERROR2    432  /* "Error while recording" */
-#define IDS_CAP_AVI_INIT_ERROR      433  /* "Error: Unable to initialize for capture." */
-#define IDS_CAP_NO_FRAME_CAP_ERROR  434  /* "Warning: No frames captured.\nConfirm that vertical sync interrupts\nare configured and enabled." */
-#define IDS_CAP_NO_PALETTE_WARN     435  /* "Warning: Using default palette." */
-#define IDS_CAP_MCI_CONTROL_ERROR   436  /* "Error: Unable to access MCI device." */
-#define IDS_CAP_MCI_CANT_STEP_ERROR 437  /* "Error: Unable to step MCI device." */
-#define IDS_CAP_NO_AUDIO_CAP_ERROR  438  /* "Error: No audio data captured.\nCheck audio card settings." */
-#define IDS_CAP_AVI_DRAWDIB_ERROR   439  /* "Error: Unable to draw this data format." */
-#define IDS_CAP_COMPRESSOR_ERROR    440  /* "Error: Unable to initialize compressor." */
-#define IDS_CAP_AUDIO_DROP_ERROR    441  /* "Error: Audio data was lost during capture, reduce capture rate." */
-#define IDS_CAP_AUDIO_DROP_COMPERROR 442  /* "Error: Audio data was lost during capture.  Try capturing without compressing." */
+static const int IDS_CAP_FILE_OPEN_ERROR     429;  /* "Error: Cannot open capture file." */
+static const int IDS_CAP_FILE_WRITE_ERROR    430;  /* "Error: Cannot write to capture file.  Disk may be full." */
+static const int IDS_CAP_RECORDING_ERROR     431;  /* "Error: Cannot write to capture file.  Data rate too high or disk full." */
+static const int IDS_CAP_RECORDING_ERROR2    432;  /* "Error while recording" */
+static const int IDS_CAP_AVI_INIT_ERROR      433;  /* "Error: Unable to initialize for capture." */
+static const int IDS_CAP_NO_FRAME_CAP_ERROR  434;  /* "Warning: No frames captured.\nConfirm that vertical sync interrupts\nare configured and enabled." */
+static const int IDS_CAP_NO_PALETTE_WARN     435;  /* "Warning: Using default palette." */
+static const int IDS_CAP_MCI_CONTROL_ERROR   436;  /* "Error: Unable to access MCI device." */
+static const int IDS_CAP_MCI_CANT_STEP_ERROR 437;  /* "Error: Unable to step MCI device." */
+static const int IDS_CAP_NO_AUDIO_CAP_ERROR  438;  /* "Error: No audio data captured.\nCheck audio card settings." */
+static const int IDS_CAP_AVI_DRAWDIB_ERROR   439;  /* "Error: Unable to draw this data format." */
+static const int IDS_CAP_COMPRESSOR_ERROR    440;  /* "Error: Unable to initialize compressor." */
+static const int IDS_CAP_AUDIO_DROP_ERROR    441;  /* "Error: Audio data was lost during capture, reduce capture rate." */
+static const int IDS_CAP_AUDIO_DROP_COMPERROR 442;  /* "Error: Audio data was lost during capture.  Try capturing without compressing." */
 
 /* status string IDs */
-#define IDS_CAP_STAT_LIVE_MODE      500  /* "Live window" */
-#define IDS_CAP_STAT_OVERLAY_MODE   501  /* "Overlay window" */
-#define IDS_CAP_STAT_CAP_INIT       502  /* "Setting up for capture - Please wait" */
-#define IDS_CAP_STAT_CAP_FINI       503  /* "Finished capture, now writing frame %ld" */
-#define IDS_CAP_STAT_PALETTE_BUILD  504  /* "Building palette map" */
-#define IDS_CAP_STAT_OPTPAL_BUILD   505  /* "Computing optimal palette" */
-#define IDS_CAP_STAT_I_FRAMES       506  /* "%d frames" */
-#define IDS_CAP_STAT_L_FRAMES       507  /* "%ld frames" */
-#define IDS_CAP_STAT_CAP_L_FRAMES   508  /* "Captured %ld frames" */
-#define IDS_CAP_STAT_CAP_AUDIO      509  /* "Capturing audio" */
-#define IDS_CAP_STAT_VIDEOCURRENT   510  /* "Captured %ld frames (%ld dropped) %d.%03d sec." */
-#define IDS_CAP_STAT_VIDEOAUDIO     511  /* "Captured %d.%03d sec.  %ld frames (%ld dropped) (%d.%03d fps).  %ld audio bytes (%d,%03d sps)" */
-#define IDS_CAP_STAT_VIDEOONLY      512  /* "Captured %d.%03d sec.  %ld frames (%ld dropped) (%d.%03d fps)" */
-#define IDS_CAP_STAT_FRAMESDROPPED  513  /* "Dropped %ld of %ld frames (%d.%02d%%) during capture." */
-#endif  /* NOAVIFILE */
+static const int IDS_CAP_STAT_LIVE_MODE      500;  /* "Live window" */
+static const int IDS_CAP_STAT_OVERLAY_MODE   501;  /* "Overlay window" */
+static const int IDS_CAP_STAT_CAP_INIT       502;  /* "Setting up for capture - Please wait" */
+static const int IDS_CAP_STAT_CAP_FINI       503;  /* "Finished capture, now writing frame %ld" */
+static const int IDS_CAP_STAT_PALETTE_BUILD  504;  /* "Building palette map" */
+static const int IDS_CAP_STAT_OPTPAL_BUILD   505;  /* "Computing optimal palette" */
+static const int IDS_CAP_STAT_I_FRAMES       506;  /* "%d frames" */
+static const int IDS_CAP_STAT_L_FRAMES       507;  /* "%ld frames" */
+static const int IDS_CAP_STAT_CAP_L_FRAMES   508;  /* "Captured %ld frames" */
+static const int IDS_CAP_STAT_CAP_AUDIO      509;  /* "Capturing audio" */
+static const int IDS_CAP_STAT_VIDEOCURRENT   510;  /* "Captured %ld frames (%ld dropped) %d.%03d sec." */
+static const int IDS_CAP_STAT_VIDEOAUDIO     511;  /* "Captured %d.%03d sec.  %ld frames (%ld dropped) (%d.%03d fps).  %ld audio bytes (%d,%03d sps)" */
+static const int IDS_CAP_STAT_VIDEOONLY      512;  /* "Captured %d.%03d sec.  %ld frames (%ld dropped) (%d.%03d fps)" */
+static const int IDS_CAP_STAT_FRAMESDROPPED  513;  /* "Dropped %ld of %ld frames (%d.%02d%%) during capture." */
+]]
+end  --/* NOAVIFILE */
 
 
 
@@ -3764,16 +3829,17 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
 #ifndef NOMSACM
     #include <msacm.h>
 #endif
+--]=]
 
-
-
+--[[
 /****************************************************************************
  *
  *  FilePreview dialog.
  *
  ***************************************************************************/
-#ifdef OFN_READONLY
-
+--]]
+ if OFN_READONLY then
+ffi.cdef[[
     BOOL
     __stdcall
     GetOpenFileNamePreviewA(
@@ -3797,7 +3863,9 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
     GetSaveFileNamePreviewW(
          LPOPENFILENAMEW lpofn
         );
+]]
 
+--[[
     #ifdef UNICODE
         #define GetOpenFileNamePreview          GetOpenFileNamePreviewW
         #define GetSaveFileNamePreview          GetSaveFileNamePreviewW
@@ -3805,15 +3873,16 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
         #define GetOpenFileNamePreview          GetOpenFileNamePreviewA
         #define GetSaveFileNamePreview          GetSaveFileNamePreviewA
     #endif
+--]]
+end --// OFN_READONLY
 
-#endif // OFN_READONLY
-
+--[[
 #ifndef RC_INVOKED
 #include "poppack.h"
 #endif
+--]]
 
-
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 --end  --/* _INC_VFW */
