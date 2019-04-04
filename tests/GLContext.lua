@@ -155,7 +155,7 @@ local function CreateGLContext(hWnd, majorversion, minorversion, multisamplemode
 
 			0,0});
 
-		err = OglMan.wglChoosePixelFormatARB(dummydc, pixelAttribs, NULL, 1, pPixelFormat, pnFormats);
+		err = wgl.wglChoosePixelFormatARB(dummydc, pixelAttribs, NULL, 1, pPixelFormat, pnFormats);
 		CHECKGL("wglChoosePixelFormatARB");
 	else 
 		local pixelAttribs = ffi.new("int[32]",{
@@ -182,12 +182,12 @@ local function CreateGLContext(hWnd, majorversion, minorversion, multisamplemode
 	-- At this point, we have the wgl function pointers that we need,
 	-- and we've already used the dummy dc to select a pixel format,
 	-- so we can destroy the dummy window now.
-	User32.Lib.DestroyWindow(dummyWindow);
+	C.DestroyWindow(dummyWindow);
 
 	-- Now, we want to get the DC of the real window
 	-- and set the pixel format on that.
-	local hDC = User32.Lib.GetDC(hWnd);
-	err = GDI32.Lib.SetPixelFormat(hDC, pixelFormat, pfd);
+	local hDC = C.GetDC(hWnd);
+	err = C.SetPixelFormat(hDC, pixelFormat, pfd);
 
 --print("SetPixelFormat, RETURNED: %d", err);
 
@@ -205,7 +205,7 @@ local function CreateGLContext(hWnd, majorversion, minorversion, multisamplemode
 
 	local hRC = nil;
 	if OglMan.wglCreateContextAttribsARB then
-    	hRC = OglMan.wglCreateContextAttribsARB(ffi.cast("void *", hDC), nil, ctxAttribs);
+    	hRC = wgl.wglCreateContextAttribsARB(ffi.cast("void *", hDC), nil, ctxAttribs);
 		CHECKGL("wglCreateContextAttribsARB");
 
 		if hRC == nil then
