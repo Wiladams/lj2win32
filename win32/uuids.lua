@@ -1249,7 +1249,7 @@ OUR_GUID_ENTRY("MEDIATYPE_AnalogAudio",
 --
 -- DirectShow's include file based on ksmedia.h from WDM DDK
 --
---#include "ksuuids.h"
+require("win32.ksuuids")
 
 
 -- -- Well known time format GUIDs ---
