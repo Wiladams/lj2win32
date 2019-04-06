@@ -99,6 +99,7 @@ require("win32.dxgitype")
 require("win32.winapifamily")
 
 --[[
+-- these are in dxgitype
 ffi.cdef[[
 static const int DXGI_CPU_ACCESS_NONE               = 0;
 static const int DXGI_CPU_ACCESS_DYNAMIC            = 1;

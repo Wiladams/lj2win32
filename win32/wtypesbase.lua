@@ -144,11 +144,13 @@ end -- !_SECURITY_ATTRIBUTES_
 if not SECURITY_DESCRIPTOR_REVISION then
 ffi.cdef[[
 typedef USHORT SECURITY_DESCRIPTOR_CONTROL;
-
 typedef USHORT *PSECURITY_DESCRIPTOR_CONTROL;
-
 typedef PVOID PSID;
+]]
 
+if not _ACL_INC then
+_ACL_INC = true
+ffi.cdef[[
 typedef struct _ACL
    {
    UCHAR AclRevision;
@@ -159,7 +161,12 @@ typedef struct _ACL
    } 	ACL;
 
 typedef ACL *PACL;
+]]
+end
 
+if not _SECURITY_DESCRIPTOR_INC then
+_SECURITY_DESCRIPTOR_INC = true
+ffi.cdef[[
 typedef struct _SECURITY_DESCRIPTOR
    {
    UCHAR Revision;
@@ -173,6 +180,7 @@ typedef struct _SECURITY_DESCRIPTOR
 
 typedef struct _SECURITY_DESCRIPTOR *PISECURITY_DESCRIPTOR;
 ]]
+end
 end -- !SECURITY_DESCRIPTOR_REVISION
 end --_WINBASE_
 

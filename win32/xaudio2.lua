@@ -973,14 +973,14 @@ DECLARE_INTERFACE(IXAudio2VoiceCallback)
     STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error) PURE;
 };
 
-
+--[[
 /**************************************************************************
  *
  * Macros to make it easier to use the XAudio2 COM interfaces in C code.
  *
  **************************************************************************/
-
-#ifndef __cplusplus
+--]]
+--#ifndef __cplusplus
 
 // IXAudio2
 #define IXAudio2_QueryInterface(This,riid,ppvInterface) ((This)->lpVtbl->QueryInterface(This,riid,ppvInterface))
@@ -1092,7 +1092,7 @@ DECLARE_INTERFACE(IXAudio2VoiceCallback)
 
 #endif // #ifndef __cplusplus
 
-
+--[[
 /**************************************************************************
  *
  * Utility functions used to convert from pitch in semitones and volume
@@ -1101,60 +1101,60 @@ DECLARE_INTERFACE(IXAudio2VoiceCallback)
  * prior to #including xaudio2.h.
  *
  **************************************************************************/
+--]]
 
-#ifdef XAUDIO2_HELPER_FUNCTIONS
-
-#define _USE_MATH_DEFINES   // Make math.h define M_PI
-#include <math.h>           // For powf, log10f, sinf and asinf
+if XAUDIO2_HELPER_FUNCTIONS then
+--[=[
+--#define _USE_MATH_DEFINES   // Make math.h define M_PI
+--#include <math.h>           // For powf, log10f, sinf and asinf
+local M_PI = math.PI
 
 // Calculate the argument to SetVolume from a decibel value
-__inline float XAudio2DecibelsToAmplitudeRatio(float Decibels)
-{
-    return powf(10.0f, Decibels / 20.0f);
-}
+local function XAudio2DecibelsToAmplitudeRatio(float Decibels)
+    return powf(10.0, Decibels / 20.0);
+end
 
 // Recover a volume in decibels from an amplitude factor
-__inline float XAudio2AmplitudeRatioToDecibels(float Volume)
-{
-    if (Volume == 0)
-    {
+local function XAudio2AmplitudeRatioToDecibels(float Volume)
+
+    if (Volume == 0) then
         return -3.402823466e+38f; // Smallest float value (-FLT_MAX)
-    }
-    return 20.0f * log10f(Volume);
-}
+    end
+
+    return 20.0 * log10f(Volume);
+end
 
 // Calculate the argument to SetFrequencyRatio from a semitone value
-__inline float XAudio2SemitonesToFrequencyRatio(float Semitones)
-{
-    // FrequencyRatio = 2 ^ Octaves
-    //                = 2 ^ (Semitones / 12)
-    return powf(2.0f, Semitones / 12.0f);
-}
+local function XAudio2SemitonesToFrequencyRatio(float Semitones)
 
-// Recover a pitch in semitones from a frequency ratio
-__inline float XAudio2FrequencyRatioToSemitones(float FrequencyRatio)
-{
-    // Semitones = 12 * log2(FrequencyRatio)
-    //           = 12 * log2(10) * log10(FrequencyRatio)
+    -- FrequencyRatio = 2 ^ Octaves
+    --                = 2 ^ (Semitones / 12)
+    return powf(2.0f, Semitones / 12.0f);
+end
+
+-- Recover a pitch in semitones from a frequency ratio
+local function XAudio2FrequencyRatioToSemitones(float FrequencyRatio)
+    -- Semitones = 12 * log2(FrequencyRatio)
+    --           = 12 * log2(10) * log10(FrequencyRatio)
     return 39.86313713864835f * log10f(FrequencyRatio);
-}
+end
 
 // Convert from filter cutoff frequencies expressed in Hertz to the radian
 // frequency values used in XAUDIO2_FILTER_PARAMETERS.Frequency, state-variable
 // filter types only.  Use XAudio2CutoffFrequencyToOnePoleCoefficient() for one-pole filter types.
 // Note that the highest CutoffFrequency supported is SampleRate/6.
 // Higher values of CutoffFrequency will return XAUDIO2_MAX_FILTER_FREQUENCY.
-__inline float XAudio2CutoffFrequencyToRadians(float CutoffFrequency, UINT32 SampleRate)
-{
-    if ((UINT32)(CutoffFrequency * 6.0f) >= SampleRate)
+local function XAudio2CutoffFrequencyToRadians(float CutoffFrequency, UINT32 SampleRate)
+
+    if ((UINT32)(CutoffFrequency * 6.0) >= SampleRate) then
     {
         return XAUDIO2_MAX_FILTER_FREQUENCY;
     }
-    return 2.0f * sinf((float)M_PI * CutoffFrequency / SampleRate);
-}
+    return 2.0 * sinf((float)M_PI * CutoffFrequency / SampleRate);
+end
 
 // Convert from radian frequencies back to absolute frequencies in Hertz
-__inline float XAudio2RadiansToCutoffFrequency(float Radians, float SampleRate)
+local function XAudio2RadiansToCutoffFrequency(float Radians, float SampleRate)
 {
     return SampleRate * asinf(Radians / 2.0f) / (float)M_PI;
 }
@@ -1163,7 +1163,7 @@ __inline float XAudio2RadiansToCutoffFrequency(float Radians, float SampleRate)
 // coefficients used with XAUDIO2_FILTER_PARAMETERS.Frequency,
 // LowPassOnePoleFilter and HighPassOnePoleFilter filter types only.
 // Use XAudio2CutoffFrequencyToRadians() for state-variable filter types.
-__inline float XAudio2CutoffFrequencyToOnePoleCoefficient(float CutoffFrequency, UINT32 SampleRate)
+local function XAudio2CutoffFrequencyToOnePoleCoefficient(float CutoffFrequency, UINT32 SampleRate)
 {
     if ((UINT32)CutoffFrequency >= SampleRate)
     {
@@ -1171,11 +1171,11 @@ __inline float XAudio2CutoffFrequencyToOnePoleCoefficient(float CutoffFrequency,
     }
     return ( 1.0f - powf(1.0f - 2.0f * CutoffFrequency / SampleRate, 2.0f) );
 }
+--]=]
 
+end -- #ifdef XAUDIO2_HELPER_FUNCTIONS
 
-#endif // #ifdef XAUDIO2_HELPER_FUNCTIONS
-
-
+--[[
 /**************************************************************************
  *
  * XAudio2Create: Top-level function that creates an XAudio2 instance.
@@ -1193,24 +1193,28 @@ __inline float XAudio2CutoffFrequencyToOnePoleCoefficient(float CutoffFrequency,
  *          each platform.
  *
  **************************************************************************/
+--]]
 
-#if (defined XAUDIO2_EXPORT)
-    // We're building xaudio2.dll
-    #define XAUDIO2_STDAPI extern "C" __declspec(dllexport) HRESULT __stdcall
-#else
-    // We're an xaudio2 client
-    #define XAUDIO2_STDAPI extern "C" __declspec(dllimport) HRESULT __stdcall
-#endif
+if XAUDIO2_EXPORT then
+    -- We're building xaudio2.dll
+    --#define XAUDIO2_STDAPI extern "C" __declspec(dllexport) HRESULT __stdcall
+else
+    -- We're an xaudio2 client
+    --#define XAUDIO2_STDAPI extern "C" __declspec(dllimport) HRESULT __stdcall
+end
 
-XAUDIO2_STDAPI XAudio2Create(_Outptr_ IXAudio2** ppXAudio2, UINT32 Flags X2DEFAULT(0),
+ffi.cdef[[
+HRESULT __stdcall XAudio2Create(_Outptr_ IXAudio2** ppXAudio2, UINT32 Flags X2DEFAULT(0),
                              XAUDIO2_PROCESSOR XAudio2Processor X2DEFAULT(XAUDIO2_DEFAULT_PROCESSOR));
-// Undo the #pragma pack(push, 1) directive at the top of this file
-#pragma pack(pop)
+]]
 
-#endif // #ifndef GUID_DEFS_ONLY
+--// Undo the #pragma pack(push, 1) directive at the top of this file
+--#pragma pack(pop)
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_TV_APP | WINAPI_PARTITION_TV_TITLE) */
-#pragma endregion
+end --// #ifndef GUID_DEFS_ONLY
 
-#endif // #ifndef __XAUDIO2_INCLUDED__
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_TV_APP | WINAPI_PARTITION_TV_TITLE) */
+
+
+end --// #ifndef __XAUDIO2_INCLUDED__
 

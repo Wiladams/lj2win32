@@ -6,12 +6,12 @@ local ffi = require("ffi")
 --[[
 /* verify that the <rpcndr.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
-#define __REQUIRED_RPCNDR_H_VERSION__ 500
+local function __REQUIRED_RPCNDR_H_VERSION__ 500
 #endif
 
 /* verify that the <rpcsal.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCSAL_H_VERSION__
-#define __REQUIRED_RPCSAL_H_VERSION__ 100
+local function __REQUIRED_RPCSAL_H_VERSION__ 100
 #endif
 
 #include "rpc.h"
@@ -24,8 +24,8 @@ local ffi = require("ffi")
 
 
 if not COM_NO_WINDOWS_H then
-require("win32.windows")
-require("win32.ole2")
+--require("win32.windows")
+--require("win32.ole2")
 end -- COM_NO_WINDOWS_H
 
 
@@ -89,14 +89,14 @@ typedef struct IUnknown
 #ifdef COBJMACROS
 
 
-#define IUnknown_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+local function IUnknown_QueryInterface(self, riid,ppvObject)	\
+   ( self.lpVtbl.QueryInterface(self, riid,ppvObject) ) 
 
-#define IUnknown_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
+local function IUnknown_AddRef(self)	\
+   ( self.lpVtbl.AddRef(self) ) 
 
-#define IUnknown_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
+local function IUnknown_Release(self)	\
+   ( self.lpVtbl.Release(self) ) 
 
 #endif /* COBJMACROS */
 --]]
@@ -158,7 +158,7 @@ extern RPC_IF_HANDLE __MIDL_itf_unknwn_0000_0001_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_unknwn_0000_0001_v0_0_s_ifspec;
 
 #ifndef __AsyncIUnknown_INTERFACE_DEFINED__
-#define __AsyncIUnknown_INTERFACE_DEFINED__
+local function __AsyncIUnknown_INTERFACE_DEFINED__
 
 /* interface AsyncIUnknown */
 /* [unique][uuid][object][local] */ 
@@ -242,33 +242,33 @@ EXTERN_C const IID IID_AsyncIUnknown;
 #ifdef COBJMACROS
 
 
-#define AsyncIUnknown_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+local function AsyncIUnknown_QueryInterface(self, riid,ppvObject)	\
+   ( self.lpVtbl.QueryInterface(self, riid,ppvObject) ) 
 
-#define AsyncIUnknown_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
+local function AsyncIUnknown_AddRef(self)	\
+   ( self.lpVtbl.AddRef(self) ) 
 
-#define AsyncIUnknown_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
+local function AsyncIUnknown_Release(self)	\
+   ( self.lpVtbl.Release(self) ) 
 
 
-#define AsyncIUnknown_Begin_QueryInterface(This,riid)	\
-   ( (This)->lpVtbl -> Begin_QueryInterface(This,riid) ) 
+local function AsyncIUnknown_Begin_QueryInterface(self, riid)	\
+   ( self.lpVtbl.Begin_QueryInterface(self, riid) ) 
 
-#define AsyncIUnknown_Finish_QueryInterface(This,ppvObject)	\
-   ( (This)->lpVtbl -> Finish_QueryInterface(This,ppvObject) ) 
+local function AsyncIUnknown_Finish_QueryInterface(self, ppvObject)	\
+   ( self.lpVtbl.Finish_QueryInterface(self, ppvObject) ) 
 
-#define AsyncIUnknown_Begin_AddRef(This)	\
-   ( (This)->lpVtbl -> Begin_AddRef(This) ) 
+local function AsyncIUnknown_Begin_AddRef(self)	\
+   ( self.lpVtbl.Begin_AddRef(self) ) 
 
-#define AsyncIUnknown_Finish_AddRef(This)	\
-   ( (This)->lpVtbl -> Finish_AddRef(This) ) 
+local function AsyncIUnknown_Finish_AddRef(self)	\
+   ( self.lpVtbl.Finish_AddRef(self) ) 
 
-#define AsyncIUnknown_Begin_Release(This)	\
-   ( (This)->lpVtbl -> Begin_Release(This) ) 
+local function AsyncIUnknown_Begin_Release(self)	\
+   ( self.lpVtbl.Begin_Release(self) ) 
 
-#define AsyncIUnknown_Finish_Release(This)	\
-   ( (This)->lpVtbl -> Finish_Release(This) ) 
+local function AsyncIUnknown_Finish_Release(self)	\
+   ( self.lpVtbl.Finish_Release(self) ) 
 
 #endif /* COBJMACROS */
 
@@ -332,22 +332,26 @@ ffi.cdef[[
 ]]
    
 
---[[
-#define IClassFactory_QueryInterface(This,riid,ppvObject)	\
-   ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+---[[
+local function IClassFactory_QueryInterface(self, riid,ppvObject)
+   return self.lpVtbl.QueryInterface(self, riid,ppvObject)
+end
 
-#define IClassFactory_AddRef(This)	\
-   ( (This)->lpVtbl -> AddRef(This) ) 
+local function IClassFactory_AddRef(self)
+   return self.lpVtbl.AddRef(self)
+end
 
-#define IClassFactory_Release(This)	\
-   ( (This)->lpVtbl -> Release(This) ) 
+local function IClassFactory_Release(self)
+   return self.lpVtbl.Release(self)
+end
 
+local function IClassFactory_CreateInstance(self, pUnkOuter,riid,ppvObject)
+   return self.lpVtbl.CreateInstance(self, pUnkOuter,riid,ppvObject)
+end
 
-#define IClassFactory_CreateInstance(This,pUnkOuter,riid,ppvObject)	\
-   ( (This)->lpVtbl -> CreateInstance(This,pUnkOuter,riid,ppvObject) ) 
-
-#define IClassFactory_LockServer(This,fLock)	\
-   ( (This)->lpVtbl -> LockServer(This,fLock) ) 
+local function IClassFactory_LockServer(self, fLock)
+   return self.lpVtbl.LockServer(self, fLock)
+end
 --]]
 
 

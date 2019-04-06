@@ -9052,7 +9052,11 @@ static const int ACL_REVISION4    = (4);
 
 static const int MIN_ACL_REVISION = ACL_REVISION2;
 static const int MAX_ACL_REVISION = ACL_REVISION4;
+]]
 
+if not _ACL_INC then
+_ACL_INC = true
+ffi.cdef[[
 typedef struct _ACL {
     BYTE  AclRevision;
     BYTE  Sbz1;
@@ -9062,6 +9066,7 @@ typedef struct _ACL {
 } ACL;
 typedef ACL *PACL;
 ]]
+end
 
 --[==[
 // end_wdm
@@ -9471,7 +9476,11 @@ typedef struct _SECURITY_DESCRIPTOR_RELATIVE {
     DWORD Sacl;
     DWORD Dacl;
     } SECURITY_DESCRIPTOR_RELATIVE, *PISECURITY_DESCRIPTOR_RELATIVE;
+]]
 
+if not _SECURITY_DESCRIPTOR_INC then
+_SECURITY_DESCRIPTOR_INC = true
+ffi.cdef[[
 typedef struct _SECURITY_DESCRIPTOR {
    BYTE  Revision;
    BYTE  Sbz1;
@@ -9482,8 +9491,10 @@ typedef struct _SECURITY_DESCRIPTOR {
    PACL Dacl;
 
    } SECURITY_DESCRIPTOR, *PISECURITY_DESCRIPTOR;
+]]
+end
 
-   
+ffi.cdef[[
 typedef struct _SECURITY_OBJECT_AI_PARAMS {
     DWORD Size;             //Set to sizeof(SECURITY_OBJECT_AI_PARAMS)
     DWORD ConstraintMask;

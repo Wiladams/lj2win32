@@ -9,9 +9,9 @@ require("win32.combaseapi")
 --require("win32.objidl")
 --require("win32.propidlbase")
 
---[=[
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
 
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) then
+--[=[
 //
 // Common typedefs for paramaters used in Storage APIs, gleamed from storage.h
 // Also contains Storage error codes, which should be moved into the storage
@@ -285,7 +285,7 @@ GetConvertStg(
     );
 ]]
 
-end /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP) */
 
---]=]
+
 
