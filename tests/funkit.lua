@@ -4,6 +4,10 @@
     Inspired by luafun, but using coroutine iterator model, just for kicks
 
     The fundamental structure is a producer/consumer thing.
+
+    References:
+    https://luafun.github.io/
+    http://www.corsix.org/content/page5
 ]]
 
 local exports = {}
@@ -22,6 +26,12 @@ end
   
 local  function send (...)
     coroutine.yield(...)
+end
+
+local function maybeyield(...)
+    if ... ~= nil then
+        coroutine.yield(...)
+    end
 end
 
 --[[
@@ -107,7 +117,13 @@ function exports.range(start, stop, step)
             stop = start
             start = stop > 0 and 1 or -1
         end
-        step = start <= stop and 1 or -1
+        
+        --step = start <= stop and 1 or -1
+        if start <= stop then
+            step = 1
+        else
+            step = -1
+        end
     end
     
     assert(type(start) == "number", "start must be a number")
@@ -115,6 +131,7 @@ function exports.range(start, stop, step)
     assert(type(step) == "number", "step must be a number")
     assert(step ~= 0, "step must not be zero")
 
+    -- counting negatively
     if step < 0 then
         return coroutine.create(function ()
             local i = start
@@ -125,6 +142,7 @@ function exports.range(start, stop, step)
         end)
     end
 
+    -- counting positively
     return coroutine.create(function ()
         local i = start
         while i <= stop do
@@ -279,6 +297,13 @@ local function take_n_prod(n, prod)
 end
 exports.take_n = take_n_prod
 
+local function take(n_or_fun, prod)
+    if type(n_or_fun) == "number" then
+        return take_n(n_or_fun,prod)
+    else
+        return take_while(n_or_fun, prod)
+    end
+end
 
 
 -- return the 'nth' iterated value
@@ -309,6 +334,7 @@ exports.car = exports.head
 
 
 
+
 function exports.each(func, prod)
     if not func then return false end
     
@@ -326,11 +352,6 @@ function exports.each(func, prod)
         success, results = receive(prod)
     end
 
---[[
-    while coroutine.status(iter) ~= "dead" do
-        func(receive(prod))
-    end
---]]
 end
 
 

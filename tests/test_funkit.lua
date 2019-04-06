@@ -1,5 +1,5 @@
---require("funkit")()
-require("fun")()
+require("funkit")()
+--require("fun")()
 
 --local take = take_n
 
@@ -143,17 +143,17 @@ end
 
 
 
-test_all();
+--test_all();
 --test_duplicate();
-test_each();
-test_grep();
-test_length();
+--test_each();
+--test_grep();
+--test_length();
 --test_maximum();
 --test_minimum();
 --test_ones();
 --test_nth();
-test_range();
+--test_range();
 test_take_n();
-test_totable();
-test_zeros();
+--test_totable();
+--test_zeros();
 

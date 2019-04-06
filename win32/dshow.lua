@@ -8,6 +8,8 @@
 //------------------------------------------------------------------------------
 --]]
 
+local ffi = require("ffi")
+
 if not __DSHOW_INCLUDED__ then
 __DSHOW_INCLUDED__ = true
 
@@ -25,39 +27,40 @@ if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 #endif  // MSC_VER
 --]]
 
---[[
-#include <windows.h>
-#include <windowsx.h>
-#include <olectl.h>
-#include <ddraw.h>
-#include <mmsystem.h>
---]]
 
-if not NO_DSHOW_STRSAFE
+--#include <windows.h>
+--#include <windowsx.h>
+--#include <olectl.h>
+--#include <ddraw.h>
+require("win32.mmsystem")
+
+
+if not NO_DSHOW_STRSAFE then
 NO_SHLWAPI_STRFCNS = true
--- NYIrequire("win32.strsafe")  
+-- require("win32.strsafe")  
 end
 
 if not NUMELMS then
 function NUMELMS(aa) return (ffi.sizeof(aa)/ffi.sizeof((aa)[0])) end
 end
 
-require("win32.strmif")     -- Generated IDL header file for streams interfaces
-require("win32.amvideo")    -- ActiveMovie video interfaces and definitions
+--require("win32.strmif")     -- Generated IDL header file for streams interfaces
+--require("win32.amvideo")    -- ActiveMovie video interfaces and definitions
 
 if DSHOW_USE_AMAUDIO then
 require("win32.amaudio")    -- ActiveMovie audio interfaces and definitions
 end
 
---[[
-#include <control.h>    // generated from control.odl
-#include <evcode.h>     // event code definitions
-#include <uuids.h>      // declaration of type GUIDs and well-known clsids
-#include <errors.h>     // HRESULT status and error definitions
-#include <edevdefs.h>   // External device control interface defines
-#include <audevcod.h>   // audio filter device error event codes
-#include <dvdevcod.h>   // DVD error event codes
 
+--#include <control.h>    // generated from control.odl
+--#include <evcode.h>     // event code definitions
+require("win32.uuids")     -- declaration of type GUIDs and well-known clsids
+require("win32.errors")    -- HRESULT status and error definitions
+--#include <edevdefs.h>   // External device control interface defines
+--#include <audevcod.h>   // audio filter device error event codes
+--#include <dvdevcod.h>   // DVD error event codes
+
+--[[
 ///////////////////////////////////////////////////////////////////////////
 // Define OLE Automation constants
 ///////////////////////////////////////////////////////////////////////////
