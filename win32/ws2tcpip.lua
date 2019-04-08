@@ -27,15 +27,6 @@ _WS2TCPIP_H_ = true
 
 require("win32.winapifamily")
 
---[[
-#if _MSC_VER >= 1200
-#pragma warning(push)
-#pragma warning(disable:4365) // signed/unsigned mixup
-#pragma warning(disable:4574) // #define FOO; #if FOO -- did you mean #ifdef FOO?
-#pragma warning(disable:4668) // #if not_defined treated as #if 0
-#pragma warning(disable:4820) // padding added after data member
-#endif
---]]
 
 --[[
 #if !defined(_WINSOCK_DEPRECATED_BY)
@@ -51,96 +42,100 @@ require("win32.winsock2")
 require("win32.ws2ipdef")
 --#include <limits.h>
 
-#ifdef _PREFAST_
-#pragma prefast(push)
-#pragma prefast(disable: 24002, "This code requires explicit usage of IPv4 address types.")
-#endif
 
+ffi.cdef[[
 /* Option to use with [gs]etsockopt at the IPPROTO_UDP level */
 
-#define UDP_NOCHECKSUM  1
-#define UDP_CHECKSUM_COVERAGE   20  /* Set/get UDP-Lite checksum coverage */
+static const int UDP_NOCHECKSUM = 1;
+static const int UDP_CHECKSUM_COVERAGE  = 20;  /* Set/get UDP-Lite checksum coverage */
+]]
 
-#ifdef _MSC_VER
-#define WS2TCPIP_INLINE __inline
-#else
-#define WS2TCPIP_INLINE extern inline /* GNU style */
-#endif
-
+ffi.cdef[[
 /* Error codes from getaddrinfo() */
 
-#define EAI_AGAIN           WSATRY_AGAIN
-#define EAI_BADFLAGS        WSAEINVAL
-#define EAI_FAIL            WSANO_RECOVERY
-#define EAI_FAMILY          WSAEAFNOSUPPORT
-#define EAI_MEMORY          WSA_NOT_ENOUGH_MEMORY
-#define EAI_NOSECURENAME    WSA_SECURE_HOST_NOT_FOUND
-//#define EAI_NODATA        WSANO_DATA
-#define EAI_NONAME          WSAHOST_NOT_FOUND
-#define EAI_SERVICE         WSATYPE_NOT_FOUND
-#define EAI_SOCKTYPE        WSAESOCKTNOSUPPORT
-#define EAI_IPSECPOLICY     WSA_IPSEC_NAME_POLICY_ERROR
+static const int EAI_AGAIN         =  WSATRY_AGAIN;
+static const int EAI_BADFLAGS      =  WSAEINVAL;
+static const int EAI_FAIL          =  WSANO_RECOVERY;
+static const int EAI_FAMILY        =  WSAEAFNOSUPPORT;
+static const int EAI_MEMORY        =  WSA_NOT_ENOUGH_MEMORY;
+static const int EAI_NOSECURENAME  =  WSA_SECURE_HOST_NOT_FOUND;
+//static const int EAI_NODATA      =  WSANO_DATA;
+static const int EAI_NONAME        =  WSAHOST_NOT_FOUND;
+static const int EAI_SERVICE       =  WSATYPE_NOT_FOUND;
+static const int EAI_SOCKTYPE      =  WSAESOCKTNOSUPPORT;
+static const int EAI_IPSECPOLICY   =  WSA_IPSEC_NAME_POLICY_ERROR;
 //
 //  DCR_FIX:  EAI_NODATA remove or fix
 //
 //  EAI_NODATA was removed from rfc2553bis
 //  need to find out from the authors why and
 //  determine the error for "no records of this type"
-//  temporarily, we'll keep #define to avoid changing
+//  temporarily, we'll keep static const int to avoid changing
 //  code that could change back;  use NONAME
 //
 
-#define EAI_NODATA      EAI_NONAME
+static const int EAI_NODATA     = EAI_NONAME;
+]]
 
-//  Switchable definition for GetAddrInfo()
+--  Switchable definition for GetAddrInfo()
 
-#ifdef UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef ADDRINFOW       ADDRINFOT, *PADDRINFOT;
-#else
+]]
+else
+ffi.cdef[[
 typedef ADDRINFOA       ADDRINFOT, *PADDRINFOT;
-#endif
+]]
+end
 
+ffi.cdef[[
 //  RFC standard definition for getaddrinfo()
 
-typedef ADDRINFOA       ADDRINFO, FAR * LPADDRINFO;
+typedef ADDRINFOA       ADDRINFO,  * LPADDRINFO;
+]]
 
-#if (_WIN32_WINNT >= 0x0600)
+if (_WIN32_WINNT >= 0x0600) then
 
-#ifdef UNICODE
+if UNICODE then
+ffi.cdef[[
 typedef ADDRINFOEXW     ADDRINFOEX, *PADDRINFOEX;
-#else
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+]]
+else
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+ffi.cdef[[
 typedef ADDRINFOEXA     ADDRINFOEX, *PADDRINFOEX;
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
-#endif
+]]
+end -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) 
 
-#endif
+end     -- UNICODE
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+end  -- (_WIN32_WINNT >= 0x0600)
 
-WINSOCK_API_LINKAGE
+
+
+ffi.cdef[[
 INT
-WSAAPI
+__stdcall
 getaddrinfo(
-    _In_opt_        PCSTR               pNodeName,
-    _In_opt_        PCSTR               pServiceName,
-    _In_opt_        const ADDRINFOA *   pHints,
-    _Outptr_        PADDRINFOA *        ppResult
+            PCSTR               pNodeName,
+            PCSTR               pServiceName,
+            const ADDRINFOA *   pHints,
+            PADDRINFOA *        ppResult
     );
+]]
 
+--[=[
 #if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 GetAddrInfoW(
-    _In_opt_        PCWSTR              pNodeName,
-    _In_opt_        PCWSTR              pServiceName,
-    _In_opt_        const ADDRINFOW *   pHints,
-    _Outptr_        PADDRINFOW *        ppResult
+            PCWSTR              pNodeName,
+            PCWSTR              pServiceName,
+            const ADDRINFOW *   pHints,
+            PADDRINFOW *        ppResult
     );
 
 #define GetAddrInfoA    getaddrinfo
@@ -155,20 +150,20 @@ GetAddrInfoW(
 #if INCL_WINSOCK_API_TYPEDEFS
 typedef
 INT
-(WSAAPI * LPFN_GETADDRINFO)(
-    _In_opt_        PCSTR               pNodeName,
-    _In_opt_        PCSTR               pServiceName,
-    _In_opt_        const ADDRINFOA *   pHints,
-    _Outptr_        PADDRINFOA *        ppResult
+(__stdcall * LPFN_GETADDRINFO)(
+            PCSTR               pNodeName,
+            PCSTR               pServiceName,
+            const ADDRINFOA *   pHints,
+            PADDRINFOA *        ppResult
     );
 
 typedef
 INT
-(WSAAPI * LPFN_GETADDRINFOW)(
-    _In_opt_        PCWSTR              pNodeName,
-    _In_opt_        PCWSTR              pServiceName,
-    _In_opt_        const ADDRINFOW *   pHints,
-    _Outptr_        PADDRINFOW *        ppResult
+(__stdcall * LPFN_GETADDRINFOW)(
+            PCWSTR              pNodeName,
+            PCWSTR              pServiceName,
+            const ADDRINFOW *   pHints,
+            PADDRINFOW *        ppResult
     );
 
 #define LPFN_GETADDRINFOA      LPFN_GETADDRINFO
@@ -185,60 +180,60 @@ INT
 typedef
 void
 (CALLBACK * LPLOOKUPSERVICE_COMPLETION_ROUTINE)(
-    _In_      DWORD    dwError,
-    _In_      DWORD    dwBytes,
-    _In_      LPWSAOVERLAPPED lpOverlapped
+          DWORD    dwError,
+          DWORD    dwBytes,
+          LPWSAOVERLAPPED lpOverlapped
     );
 
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 _WINSOCK_DEPRECATED_BY("GetAddrInfoExW()")
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 GetAddrInfoExA(
-    _In_opt_    PCSTR           pName,
-    _In_opt_    PCSTR           pServiceName,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    const ADDRINFOEXA *hints,
-    _Outptr_    PADDRINFOEXA *  ppResult,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+        PCSTR           pName,
+        PCSTR           pServiceName,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        const ADDRINFOEXA *hints,
+        PADDRINFOEXA *  ppResult,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-WINSOCK_API_LINKAGE
+
+
 INT
-WSAAPI
+__stdcall
 GetAddrInfoExW(
-    _In_opt_    PCWSTR          pName,
-    _In_opt_    PCWSTR          pServiceName,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    const ADDRINFOEXW *hints,
-    _Outptr_    PADDRINFOEXW *  ppResult,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+        PCWSTR          pName,
+        PCWSTR          pServiceName,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        const ADDRINFOEXW *hints,
+        PADDRINFOEXW *  ppResult,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpHandle
     );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 GetAddrInfoExCancel(
-    _In_        LPHANDLE        lpHandle
+            LPHANDLE        lpHandle
     );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 GetAddrInfoExOverlappedResult(
-    _In_        LPOVERLAPPED    lpOverlapped
+            LPOVERLAPPED    lpOverlapped
     );
 
 #ifdef UNICODE
@@ -252,46 +247,46 @@ GetAddrInfoExOverlappedResult(
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 typedef
 INT
-(WSAAPI *LPFN_GETADDRINFOEXA)(
-    _In_        PCSTR           pName,
-    _In_opt_    PCSTR           pServiceName,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    const ADDRINFOEXA *hints,
-    _Outptr_    PADDRINFOEXA   *ppResult,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+(__stdcall *LPFN_GETADDRINFOEXA)(
+            PCSTR           pName,
+        PCSTR           pServiceName,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        const ADDRINFOEXA *hints,
+        PADDRINFOEXA   *ppResult,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 typedef
 INT
-(WSAAPI *LPFN_GETADDRINFOEXW)(
-    _In_        PCWSTR          pName,
-    _In_opt_    PCWSTR          pServiceName,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    const ADDRINFOEXW *hints,
-    _Outptr_    PADDRINFOEXW   *ppResult,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+(__stdcall *LPFN_GETADDRINFOEXW)(
+            PCWSTR          pName,
+        PCWSTR          pServiceName,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        const ADDRINFOEXW *hints,
+        PADDRINFOEXW   *ppResult,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpHandle
     );
 
 typedef
 INT
-(WSAAPI *LPFN_GETADDRINFOEXCANCEL)(
-    _In_        LPHANDLE        lpHandle
+(__stdcall *LPFN_GETADDRINFOEXCANCEL)(
+            LPHANDLE        lpHandle
     );
 
 typedef
 INT
-(WSAAPI *LPFN_GETADDRINFOEXOVERLAPPEDRESULT)(
-    _In_        LPOVERLAPPED    lpOverlapped
+(__stdcall *LPFN_GETADDRINFOEXOVERLAPPEDRESULT)(
+            LPOVERLAPPED    lpOverlapped
     );
 
 
@@ -308,41 +303,41 @@ INT
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 _WINSOCK_DEPRECATED_BY("SetAddrInfoExW()")
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 SetAddrInfoExA(
-    _In_        PCSTR           pName,
-    _In_opt_    PCSTR           pServiceName,
-    _In_opt_    SOCKET_ADDRESS *pAddresses,
-    _In_        DWORD           dwAddressCount,
-    _In_opt_    LPBLOB          lpBlob,
-    _In_        DWORD           dwFlags,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+            PCSTR           pName,
+        PCSTR           pServiceName,
+        SOCKET_ADDRESS *pAddresses,
+            DWORD           dwAddressCount,
+        LPBLOB          lpBlob,
+            DWORD           dwFlags,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-WINSOCK_API_LINKAGE
+
+
 INT
-WSAAPI
+__stdcall
 SetAddrInfoExW(
-    _In_        PCWSTR          pName,
-    _In_opt_    PCWSTR          pServiceName,
-    _In_opt_    SOCKET_ADDRESS *pAddresses,
-    _In_        DWORD           dwAddressCount,
-    _In_opt_    LPBLOB          lpBlob,
-    _In_        DWORD           dwFlags,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+            PCWSTR          pName,
+        PCWSTR          pServiceName,
+        SOCKET_ADDRESS *pAddresses,
+            DWORD           dwAddressCount,
+        LPBLOB          lpBlob,
+            DWORD           dwFlags,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 
@@ -357,37 +352,37 @@ SetAddrInfoExW(
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 typedef
 INT
-(WSAAPI *LPFN_SETADDRINFOEXA)(
-    _In_        PCSTR           pName,
-    _In_opt_    PCSTR           pServiceName,
-    _In_opt_    SOCKET_ADDRESS *pAddresses,
-    _In_        DWORD           dwAddressCount,
-    _In_opt_    LPBLOB          lpBlob,
-    _In_        DWORD           dwFlags,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+(__stdcall *LPFN_SETADDRINFOEXA)(
+            PCSTR           pName,
+        PCSTR           pServiceName,
+        SOCKET_ADDRESS *pAddresses,
+            DWORD           dwAddressCount,
+        LPBLOB          lpBlob,
+            DWORD           dwFlags,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+
 
 typedef
 INT
-(WSAAPI *LPFN_SETADDRINFOEXW)(
-    _In_        PCWSTR          pName,
-    _In_opt_    PCWSTR          pServiceName,
-    _In_opt_    SOCKET_ADDRESS *pAddresses,
-    _In_        DWORD           dwAddressCount,
-    _In_opt_    LPBLOB          lpBlob,
-    _In_        DWORD           dwFlags,
-    _In_        DWORD           dwNameSpace,
-    _In_opt_    LPGUID          lpNspId,
-    _In_opt_    struct timeval *timeout,
-    _In_opt_    LPOVERLAPPED    lpOverlapped,
-    _In_opt_    LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
+(__stdcall *LPFN_SETADDRINFOEXW)(
+            PCWSTR          pName,
+        PCWSTR          pServiceName,
+        SOCKET_ADDRESS *pAddresses,
+            DWORD           dwAddressCount,
+        LPBLOB          lpBlob,
+            DWORD           dwFlags,
+            DWORD           dwNameSpace,
+        LPGUID          lpNspId,
+        struct timeval *timeout,
+        LPOVERLAPPED    lpOverlapped,
+        LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
     _Out_opt_   LPHANDLE        lpNameHandle
     );
 
@@ -399,20 +394,23 @@ INT
 #endif
 
 #endif
+--]=]
 
-WINSOCK_API_LINKAGE
+ffi.cdef[[
 VOID
-WSAAPI
+__stdcall
 freeaddrinfo(
-    _In_opt_        PADDRINFOA      pAddrInfo
+            PADDRINFOA      pAddrInfo
     );
+]]
 
+--[=[
 #if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
-WINSOCK_API_LINKAGE
+
 VOID
-WSAAPI
+__stdcall
 FreeAddrInfoW(
-    _In_opt_        PADDRINFOW      pAddrInfo
+            PADDRINFOW      pAddrInfo
     );
 
 #define FreeAddrInfoA   freeaddrinfo
@@ -428,13 +426,13 @@ FreeAddrInfoW(
 #if INCL_WINSOCK_API_TYPEDEFS
 typedef
 VOID
-(WSAAPI * LPFN_FREEADDRINFO)(
-    _In_opt_        PADDRINFOA      pAddrInfo
+(__stdcall * LPFN_FREEADDRINFO)(
+            PADDRINFOA      pAddrInfo
     );
 typedef
 VOID
-(WSAAPI * LPFN_FREEADDRINFOW)(
-    _In_opt_        PADDRINFOW      pAddrInfo
+(__stdcall * LPFN_FREEADDRINFOW)(
+            PADDRINFOW      pAddrInfo
     );
 
 #define LPFN_FREEADDRINFOA      LPFN_FREEADDRINFO
@@ -451,20 +449,20 @@ VOID
 #pragma region Desktop Family or OneCore Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 _WINSOCK_DEPRECATED_BY("FreeAddrInfoExW()")
-WINSOCK_API_LINKAGE
+
 void
-WSAAPI
+__stdcall
 FreeAddrInfoEx(
-    _In_opt_  PADDRINFOEXA    pAddrInfoEx
+      PADDRINFOEXA    pAddrInfoEx
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
 
-WINSOCK_API_LINKAGE
+
+
 void
-WSAAPI
+__stdcall
 FreeAddrInfoExW(
-    _In_opt_  PADDRINFOEXW    pAddrInfoEx
+      PADDRINFOEXW    pAddrInfoEx
     );
 
 #define FreeAddrInfoExA     FreeAddrInfoEx
@@ -478,16 +476,16 @@ FreeAddrInfoExW(
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
 typedef
 void
-(WSAAPI *LPFN_FREEADDRINFOEXA)(
-    _In_    PADDRINFOEXA    pAddrInfoEx
+(__stdcall *LPFN_FREEADDRINFOEXA)(
+        PADDRINFOEXA    pAddrInfoEx
     );
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+
 
 typedef
 void
-(WSAAPI *LPFN_FREEADDRINFOEXW)(
-    _In_    PADDRINFOEXW    pAddrInfoEx
+(__stdcall *LPFN_FREEADDRINFOEXW)(
+        PADDRINFOEXW    pAddrInfoEx
     );
 
 
@@ -502,31 +500,31 @@ void
 
 typedef int socklen_t;
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 getnameinfo(
     _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
-    _In_                                socklen_t           SockaddrLength,
+                                    socklen_t           SockaddrLength,
     _Out_writes_opt_(NodeBufferSize)    PCHAR               pNodeBuffer,
-    _In_                                DWORD               NodeBufferSize,
+                                    DWORD               NodeBufferSize,
     _Out_writes_opt_(ServiceBufferSize) PCHAR               pServiceBuffer,
-    _In_                                DWORD               ServiceBufferSize,
-    _In_                                INT                 Flags
+                                    DWORD               ServiceBufferSize,
+                                    INT                 Flags
     );
 
 #if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 GetNameInfoW(
     _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
-    _In_                                socklen_t           SockaddrLength,
+                                    socklen_t           SockaddrLength,
     _Out_writes_opt_(NodeBufferSize)    PWCHAR              pNodeBuffer,
-    _In_                                DWORD               NodeBufferSize,
+                                    DWORD               NodeBufferSize,
     _Out_writes_opt_(ServiceBufferSize) PWCHAR              pServiceBuffer,
-    _In_                                DWORD               ServiceBufferSize,
-    _In_                                INT                 Flags
+                                    DWORD               ServiceBufferSize,
+                                    INT                 Flags
     );
 
 #define GetNameInfoA    getnameinfo
@@ -541,26 +539,26 @@ GetNameInfoW(
 #if INCL_WINSOCK_API_TYPEDEFS
 typedef
 int
-(WSAAPI * LPFN_GETNAMEINFO)(
+(__stdcall * LPFN_GETNAMEINFO)(
     _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
-    _In_                                socklen_t           SockaddrLength,
+                                    socklen_t           SockaddrLength,
     _Out_writes_opt_(NodeBufferSize)    PCHAR               pNodeBuffer,
-    _In_                                DWORD               NodeBufferSize,
+                                    DWORD               NodeBufferSize,
     _Out_writes_opt_(ServiceBufferSize) PCHAR               pServiceBuffer,
-    _In_                                DWORD               ServiceBufferSize,
-    _In_                                INT                 Flags
+                                    DWORD               ServiceBufferSize,
+                                    INT                 Flags
     );
 
 typedef
 INT
-(WSAAPI * LPFN_GETNAMEINFOW)(
+(__stdcall * LPFN_GETNAMEINFOW)(
     _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
-    _In_                                socklen_t           SockaddrLength,
+                                    socklen_t           SockaddrLength,
     _Out_writes_opt_(NodeBufferSize)    PWCHAR              pNodeBuffer,
-    _In_                                DWORD               NodeBufferSize,
+                                    DWORD               NodeBufferSize,
     _Out_writes_opt_(ServiceBufferSize) PWCHAR              pServiceBuffer,
-    _In_                                DWORD               ServiceBufferSize,
-    _In_                                INT                 Flags
+                                    DWORD               ServiceBufferSize,
+                                    INT                 Flags
     );
 
 #define LPFN_GETNAMEINFOA      LPFN_GETNAMEINFO
@@ -574,43 +572,43 @@ INT
 
 
 #if (NTDDI_VERSION >= NTDDI_VISTA)
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 inet_pton(
-    _In_                                      INT             Family,
-    _In_                                      PCSTR           pszAddrString,
+                                          INT             Family,
+                                          PCSTR           pszAddrString,
     _When_(Family == AF_INET, _Out_writes_bytes_(sizeof(IN_ADDR)))
     _When_(Family == AF_INET6, _Out_writes_bytes_(sizeof(IN6_ADDR)))
                                               PVOID           pAddrBuf
     );
 
 INT
-WSAAPI
+__stdcall
 InetPtonW(
-    _In_                                      INT             Family,
-    _In_                                      PCWSTR          pszAddrString,
+                                          INT             Family,
+                                          PCWSTR          pszAddrString,
     _When_(Family == AF_INET, _Out_writes_bytes_(sizeof(IN_ADDR)))
     _When_(Family == AF_INET6, _Out_writes_bytes_(sizeof(IN6_ADDR)))
                                               PVOID           pAddrBuf
     );
 
 PCSTR
-WSAAPI
+__stdcall
 inet_ntop(
-    _In_                                INT             Family,
-    _In_                                const VOID *    pAddr,
+                                    INT             Family,
+                                    const VOID *    pAddr,
     _Out_writes_(StringBufSize)         PSTR            pStringBuf,
-    _In_                                size_t          StringBufSize
+                                    size_t          StringBufSize
     );
 
 PCWSTR
-WSAAPI
+__stdcall
 InetNtopW(
-    _In_                                INT             Family,
-    _In_                                const VOID *    pAddr,
+                                    INT             Family,
+                                    const VOID *    pAddr,
     _Out_writes_(StringBufSize)         PWSTR           pStringBuf,
-    _In_                                size_t          StringBufSize
+                                    size_t          StringBufSize
     );
 
 #define InetPtonA       inet_pton
@@ -627,36 +625,36 @@ InetNtopW(
 #if INCL_WINSOCK_API_TYPEDEFS
 typedef
 INT
-(WSAAPI * LPFN_INET_PTONA)(
-    _In_                                      INT             Family,
-    _In_                                      PCSTR           pszAddrString,
+(__stdcall * LPFN_INET_PTONA)(
+                                          INT             Family,
+                                          PCSTR           pszAddrString,
     _Out_writes_bytes_(sizeof(IN6_ADDR))      PVOID           pAddrBuf
     );
 
 typedef
 INT
-(WSAAPI * LPFN_INET_PTONW)(
-    _In_                                INT             Family,
-    _In_                                      PCWSTR          pszAddrString,
+(__stdcall * LPFN_INET_PTONW)(
+                                    INT             Family,
+                                          PCWSTR          pszAddrString,
     _Out_writes_bytes_(sizeof(IN6_ADDR))      PVOID           pAddrBuf
     );
 
 typedef
 PCSTR
-(WSAAPI * LPFN_INET_NTOPA)(
-    _In_                                INT             Family,
-    _In_                                PVOID           pAddr,
+(__stdcall * LPFN_INET_NTOPA)(
+                                    INT             Family,
+                                    PVOID           pAddr,
     _Out_writes_(StringBufSize)         PSTR            pStringBuf,
-    _In_                                size_t          StringBufSize
+                                    size_t          StringBufSize
     );
 
 typedef
 PCWSTR
-(WSAAPI * LPFN_INET_NTOPW)(
-    _In_                                INT             Family,
-    _In_                                PVOID           pAddr,
+(__stdcall * LPFN_INET_NTOPW)(
+                                    INT             Family,
+                                    PVOID           pAddr,
     _Out_writes_(StringBufSize)         PWSTR           pStringBuf,
-    _In_                                size_t          StringBufSize
+                                    size_t          StringBufSize
     );
 
 #ifdef UNICODE
@@ -680,7 +678,7 @@ PCWSTR
 #endif  /* UNICODE */
 
 // WARNING: The gai_strerror inline functions below use static buffers,
-// and hence are not thread-safe.  We'll use buffers long enough to hold
+// and hence are not thread-safe.  Well use buffers long enough to hold
 // 1k characters.  Any system error messages longer than this will be
 // returned as empty strings.  However 1k should work for the error codes
 // used by getaddrinfo().
@@ -689,7 +687,7 @@ PCWSTR
 WS2TCPIP_INLINE
 char *
 gai_strerrorA(
-    _In_ int ecode)
+     int ecode)
 {
     static char buff[GAI_STRERROR_BUFFER_SIZE + 1];
 
@@ -709,7 +707,7 @@ gai_strerrorA(
 WS2TCPIP_INLINE
 WCHAR *
 gai_strerrorW(
-    _In_ int ecode
+     int ecode
     )
 {
     static WCHAR buff[GAI_STRERROR_BUFFER_SIZE + 1];
@@ -734,11 +732,11 @@ gai_strerrorW(
 WS2TCPIP_INLINE
 int
 setipv4sourcefilter(
-    _In_ SOCKET Socket,
-    _In_ IN_ADDR Interface,
-    _In_ IN_ADDR Group,
-    _In_ MULTICAST_MODE_TYPE FilterMode,
-    _In_ ULONG SourceCount,
+     SOCKET Socket,
+     IN_ADDR Interface,
+     IN_ADDR Group,
+     MULTICAST_MODE_TYPE FilterMode,
+     ULONG SourceCount,
     _In_reads_(SourceCount) CONST IN_ADDR *SourceList
     )
 {
@@ -780,11 +778,11 @@ _Success_(return == 0)
 WS2TCPIP_INLINE
 int
 getipv4sourcefilter(
-    _In_ SOCKET Socket,
-    _In_ IN_ADDR Interface,
-    _In_ IN_ADDR Group,
+     SOCKET Socket,
+     IN_ADDR Interface,
+     IN_ADDR Group,
     _Out_ MULTICAST_MODE_TYPE *FilterMode,
-    _Inout_ ULONG *SourceCount,
+     ULONG *SourceCount,
     _Out_writes_(*SourceCount) IN_ADDR *SourceList
     )
 {
@@ -830,12 +828,12 @@ getipv4sourcefilter(
 WS2TCPIP_INLINE
 int
 setsourcefilter(
-    _In_ SOCKET Socket,
-    _In_ ULONG Interface,
-    _In_ CONST SOCKADDR *Group,
-    _In_ int GroupLength,
-    _In_ MULTICAST_MODE_TYPE FilterMode,
-    _In_ ULONG SourceCount,
+     SOCKET Socket,
+     ULONG Interface,
+     CONST SOCKADDR *Group,
+     int GroupLength,
+     MULTICAST_MODE_TYPE FilterMode,
+     ULONG SourceCount,
     _In_reads_(SourceCount) CONST SOCKADDR_STORAGE *SourceList
     )
 {
@@ -878,12 +876,12 @@ _Success_(return == 0)
 WS2TCPIP_INLINE
 int
 getsourcefilter(
-    _In_ SOCKET Socket,
-    _In_ ULONG Interface,
-    _In_ CONST SOCKADDR *Group,
-    _In_ int GroupLength,
+     SOCKET Socket,
+     ULONG Interface,
+     CONST SOCKADDR *Group,
+     int GroupLength,
     _Out_ MULTICAST_MODE_TYPE *FilterMode,
-    _Inout_ ULONG *SourceCount,
+     ULONG *SourceCount,
     _Out_writes_(*SourceCount) SOCKADDR_STORAGE *SourceList
     )
 {
@@ -928,7 +926,7 @@ getsourcefilter(
 #endif
 
 #ifdef IDEAL_SEND_BACKLOG_IOCTLS
-
+--[[
 //
 // Wrapper functions for the ideal send backlog query and change notification
 // ioctls
@@ -937,7 +935,7 @@ getsourcefilter(
 WS2TCPIP_INLINE 
 int  
 idealsendbacklogquery(
-    _In_ SOCKET s,
+     SOCKET s,
     _Out_ ULONG *pISB
     )
 {
@@ -951,9 +949,9 @@ idealsendbacklogquery(
 WS2TCPIP_INLINE 
 int  
 idealsendbacklognotify(
-    _In_ SOCKET s,
-    _In_opt_ LPWSAOVERLAPPED lpOverlapped,
-    _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
+     SOCKET s,
+     LPWSAOVERLAPPED lpOverlapped,
+     LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
     )
 {
     DWORD bytes;
@@ -962,7 +960,7 @@ idealsendbacklognotify(
                     NULL, 0, NULL, 0, &bytes, 
                     lpOverlapped, lpCompletionRoutine);
 }
-
+--]]
 #endif
 
 #if (_WIN32_WINNT >= 0x0600)
@@ -974,68 +972,68 @@ idealsendbacklognotify(
 // Secure socket API definitions
 //
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSASetSocketSecurity (
-   _In_ SOCKET Socket,
-   _In_reads_bytes_opt_(SecuritySettingsLen) const SOCKET_SECURITY_SETTINGS* SecuritySettings,
-   _In_ ULONG SecuritySettingsLen,
-   _In_opt_ LPWSAOVERLAPPED Overlapped,
-   _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
+    SOCKET Socket,
+   const SOCKET_SECURITY_SETTINGS* SecuritySettings,
+    ULONG SecuritySettingsLen,
+    LPWSAOVERLAPPED Overlapped,
+    LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
 );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSAQuerySocketSecurity (
-   _In_ SOCKET Socket,
-   _In_reads_bytes_opt_(SecurityQueryTemplateLen) const SOCKET_SECURITY_QUERY_TEMPLATE* SecurityQueryTemplate,
-   _In_ ULONG SecurityQueryTemplateLen,
-   _Out_writes_bytes_to_opt_(*SecurityQueryInfoLen, *SecurityQueryInfoLen) SOCKET_SECURITY_QUERY_INFO* SecurityQueryInfo,
-   _Inout_ ULONG* SecurityQueryInfoLen,
-   _In_opt_ LPWSAOVERLAPPED Overlapped,
-   _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
+    SOCKET Socket,
+    const SOCKET_SECURITY_QUERY_TEMPLATE* SecurityQueryTemplate,
+    ULONG SecurityQueryTemplateLen,
+   SOCKET_SECURITY_QUERY_INFO* SecurityQueryInfo,
+    ULONG* SecurityQueryInfoLen,
+    LPWSAOVERLAPPED Overlapped,
+    LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
 );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSASetSocketPeerTargetName (
-   _In_ SOCKET Socket,
-   _In_reads_bytes_(PeerTargetNameLen) const SOCKET_PEER_TARGET_NAME* PeerTargetName,
-   _In_ ULONG PeerTargetNameLen,
-   _In_opt_ LPWSAOVERLAPPED Overlapped,
-   _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
+    SOCKET Socket,
+    const SOCKET_PEER_TARGET_NAME* PeerTargetName,
+    ULONG PeerTargetNameLen,
+    LPWSAOVERLAPPED Overlapped,
+    LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
 );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSADeleteSocketPeerTargetName (
-   _In_ SOCKET Socket,
-   _In_reads_bytes_(PeerAddrLen) const struct sockaddr* PeerAddr,
-   _In_ ULONG PeerAddrLen,
-   _In_opt_ LPWSAOVERLAPPED Overlapped,
-   _In_opt_ LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
+    SOCKET Socket,
+    const struct sockaddr* PeerAddr,
+    ULONG PeerAddrLen,
+    LPWSAOVERLAPPED Overlapped,
+    LPWSAOVERLAPPED_COMPLETION_ROUTINE CompletionRoutine
 );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSAImpersonateSocketPeer (
-   _In_ SOCKET Socket,
+    SOCKET Socket,
    _In_reads_bytes_opt_(PeerAddrLen) const struct sockaddr* PeerAddr,
-   _In_ ULONG PeerAddrLen
+    ULONG PeerAddrLen
 );
 
-WINSOCK_API_LINKAGE
+
 INT
-WSAAPI
+__stdcall
 WSARevertImpersonation ();
 
 #endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PKG_APPRUNTIME) */
-#pragma endregion
+
 #endif //_SECURE_SOCKET_TYPES_DEFINED_
 #endif //(_WIN32_WINNT >= 0x0600)
 
@@ -1043,9 +1041,7 @@ WSARevertImpersonation ();
 }
 #endif
 
-#ifdef _PREFAST_
-#pragma prefast(pop)
-#endif
+
 
 #pragma region Desktop Family
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
@@ -1054,14 +1050,14 @@ WSARevertImpersonation ();
 // platforms that include built-in getaddrinfo() support, include
 // the backwards-compatibility version of the relevant APIs.
 //
-#if !defined(_WIN32_WINNT) || (_WIN32_WINNT <= 0x0500)
-#include <wspiapi.h>
-#endif
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
-#pragma endregion
+if not _WIN32_WINNT or (_WIN32_WINNT <= 0x0500) then
+require("win32.wspiapi")
+end
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-#if _MSC_VER >= 1200
-#pragma warning(pop)
-#endif
 
-#endif  /* _WS2TCPIP_H_ */
+
+--]=]
+end  -- _WS2TCPIP_H_
+
+return ffi.load("Ws2_32")

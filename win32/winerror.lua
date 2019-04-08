@@ -22983,100 +22983,38 @@ static const int WSAEAFNOSUPPORT                 = 10047;
 static const int WSAEADDRINUSE                   = 10048;
 static const int WSAEADDRNOTAVAIL                = 10049;
 static const int WSAENETDOWN                     = 10050;
-
-
 static const int WSAENETUNREACH                  = 10051;
-
-
 static const int WSAENETRESET                    = 10052;
-
-
 static const int WSAECONNABORTED                 = 10053;
-
-
 static const int WSAECONNRESET                   = 10054;
-
-
 static const int WSAENOBUFS                      = 10055;
-
-
 static const int WSAEISCONN                      = 10056;
-
-
 static const int WSAENOTCONN                     = 10057;
-
-
 static const int WSAESHUTDOWN                    = 10058;
-
-
 static const int WSAETOOMANYREFS                 = 10059;
-
-
 static const int WSAETIMEDOUT                    = 10060;
-
-
 static const int WSAECONNREFUSED                 = 10061;
-
-
 static const int WSAELOOP                        = 10062;
-
 static const int WSAENAMETOOLONG                 = 10063;
-
-
 static const int WSAEHOSTDOWN                    = 10064;
-
-
 static const int WSAEHOSTUNREACH                 = 10065;
-
-
 static const int WSAENOTEMPTY                    = 10066;
-
 static const int WSAEPROCLIM                     = 10067;
-
 static const int WSAEUSERS                       = 10068;
-
-
 static const int WSAEDQUOT                       = 10069;
-
-
 static const int WSAESTALE                       = 10070;
-
-
 static const int WSAEREMOTE                      = 10071;
-
-
 static const int WSASYSNOTREADY                  = 10091;
-
-
 static const int WSAVERNOTSUPPORTED              = 10092;
-
-
 static const int WSANOTINITIALISED               = 10093;
-
-
 static const int WSAEDISCON                      = 10101;
-
-
 static const int WSAENOMORE                      = 10102;
-
-
 static const int WSAECANCELLED                   = 10103;
-
-
 static const int WSAEINVALIDPROCTABLE            = 10104;
-
 static const int WSAEINVALIDPROVIDER             = 10105;
-
-
 static const int WSAEPROVIDERFAILEDINIT          = 10106;
-
-
 static const int WSASYSCALLFAILURE               = 10107;
-
-
 static const int WSASERVICE_NOT_FOUND            = 10108;
-
-
 static const int WSATYPE_NOT_FOUND               = 10109;
 static const int WSA_E_NO_MORE                   = 10110;
 static const int WSA_E_CANCELLED                 = 10111;

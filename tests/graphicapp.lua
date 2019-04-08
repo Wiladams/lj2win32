@@ -57,13 +57,6 @@ height = 768;
 mouseX = false;
 mouseY = false;
 
-local function HIWORD(val)
-    return band(rshift(val, 16), 0xffff)
-end
-
-local function LOWORD(val)
-    return band(val, 0xffff)
-end
 
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)

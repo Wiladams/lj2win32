@@ -207,14 +207,19 @@ function MAKEWORD(low,high)
 end
 end
 
---[[
---#define MAKEWORD(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
---#define MAKELONG(a, b)      ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xffff)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xffff))) << 16))
---#define LOWORD(l)           ((WORD)(((DWORD_PTR)(l)) & 0xffff))
---#define HIWORD(l)           ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
---#define LOBYTE(w)           ((BYTE)(((DWORD_PTR)(w)) & 0xff))
---#define HIBYTE(w)           ((BYTE)((((DWORD_PTR)(w)) >> 8) & 0xff))
---]]
+local BYTE = ffi.typeof("BYTE")
+local WORD = ffi.typeof("WORD")
+local DWORD = ffi.typeof("DWORD")
+local LONG = ffi.typeof("LONG")
+local DWORD_PTR = ffi.typeof("DWORD_PTR")
+
+function MAKEWORD(a, b)    return  WORD(bor(BYTE(band(DWORD_PTR(a) , 0xff)) , WORD(lshift(BYTE(band(DWORD_PTR(b) , 0xff)) , 8)))) end
+function MAKELONG(a, b)    return  LONG(bor(WORD(band(DWORD_PTR(a) , 0xffff)) , lshift(DWORD(WORD(band(DWORD_PTR(b) , 0xffff))) , 16))) end
+function LOWORD(l)         return  WORD(band(DWORD_PTR(l) , 0xffff)) end
+function HIWORD(l)         return  WORD(band(rshift(DWORD_PTR(l) , 16) , 0xffff)) end
+function LOBYTE(w)         return BYTE(band(DWORD_PTR(w) , 0xff)) end
+function HIBYTE(w)         return  BYTE(band(rshift(DWORD_PTR(w), 8) , 0xff)) end
+
 
 ffi.cdef[[
 typedef HANDLE          *SPHANDLE;

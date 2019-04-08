@@ -368,6 +368,10 @@ function loadImage(filename)
 end
 
 -- timing
+function seconds()
+    return SWatch:seconds();
+end
+
 function millis()
     -- get millis from p5 stopwatch
     return SWatch:millis();
@@ -430,13 +434,6 @@ end
 
 -- Very Windows specific
 
-local function HIWORD(val)
-    return band(rshift(val, 16), 0xffff)
-end
-
-local function LOWORD(val)
-    return band(val, 0xffff)
-end
 
 -- encapsulate a mouse event
 local function wm_mouse_event(hwnd, msg, wparam, lparam)

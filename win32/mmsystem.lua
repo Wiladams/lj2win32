@@ -97,10 +97,11 @@ end  --/* ifndef NEWTRANSPARENT */
 
 
 --                        DIB Driver extensions
---[[
-#define SELECTDIB       41                      /* DIB.DRV select dib escape */
-#define DIBINDEX(n)     MAKELONG((n),0x10FF)
---]]
+ffi.cdef[[
+static const int SELECTDIB      = 41;                      /* DIB.DRV select dib escape */
+]]
+function DIBINDEX(n)     return MAKELONG(n,0x10FF) end
+
 
 if not SC_SCREENSAVE then
 ffi.cdef[[

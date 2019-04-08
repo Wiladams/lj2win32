@@ -1600,11 +1600,13 @@ void WINAPI StretchDIB(
 
 #endif  /* NODRAWDIB */
 
+--[[
 /****************************************************************************
  *
  *  AVIFMT - AVI file format definitions
  *
  ****************************************************************************/
+--]]
 
 if not NOAVIFMT then
 if not _INC_MMSYSTEM then
@@ -1727,28 +1729,39 @@ typedef WORD TWOCC;
 #define ckidAVIPADDING          mmioFOURCC('J', 'U', 'N', 'K')
 
 
-/*
+--[[
 ** Useful macros
 **
 ** Warning: These are nasty macro, and MS C 6.0 compiles some of them
 ** incorrectly if optimizations are on.  Ack.
-*/
+--]]
 
-/* Macro to get stream number out of a FOURCC ckid */
-#define FromHex(n)	(((n) >= 'A') ? ((n) + 10 - 'A') : ((n) - '0'))
-#define StreamFromFOURCC(fcc) ((WORD) ((FromHex(LOBYTE(LOWORD(fcc))) << 4) + \
+local B_A = string.byte('A')
+local B_0 = string.byte('0')
+
+-- Macro to get stream number out of a FOURCC ckid */
+function FromHex(n)	
+    (((n) >= 'A') ? ((n) + 10 - 'A') : ((n) - '0'))
+end
+
+function StreamFromFOURCC(fcc) 
+((WORD) ((FromHex(LOBYTE(LOWORD(fcc))) << 4) + 
                                              (FromHex(HIBYTE(LOWORD(fcc))))))
+end
 
 --/* Macro to get TWOCC chunk type out of a FOURCC ckid */
 local function TWOCCFromFOURCC(fcc)   return  HIWORD(fcc) end
 
-/* Macro to make a ckid for a chunk out of a TWOCC and a stream number
-** from 0-255.
-*/
-#define ToHex(n)	((BYTE) (((n) > 9) ? ((n) - 10 + 'A') : ((n) + '0')))
-#define MAKEAVICKID(tcc, stream) \
-        MAKELONG((ToHex((stream) & 0x0f) << 8) | \
+-- Macro to make a ckid for a chunk out of a TWOCC and a stream number
+-- from 0-255.
+
+
+
+function ToHex(n)	((BYTE) (((n) > 9) ? ((n) - 10 + B_A) : ((n) + B_0))) end
+function MAKEAVICKID(tcc, stream) 
+        MAKELONG((ToHex((stream) & 0x0f) << 8) | 
 			    (ToHex(((stream) & 0xf0) >> 4)), tcc)
+end
 
 ffi.cdef[[
 /*
@@ -3658,9 +3671,11 @@ ffi.cdef[[
 //  AVSTREAMMASTER_NONE   - No master, audio and video streams may be of
 //                          different lengths
 // ------------------------------------------------------------------
-#define AVSTREAMMASTER_AUDIO            0 /* Audio master (VFW 1.0, 1.1) */
-#define AVSTREAMMASTER_NONE             1 /* No master */
+#define AVSTREAMMASTER_AUDIO          =  0; /* Audio master (VFW 1.0, 1.1) */
+#define AVSTREAMMASTER_NONE           =  1; /* No master */
+]]
 
+ffi.cdef[[
 typedef struct tagCapInfoChunk {
     FOURCC      fccInfoID;                  // Chunk ID, "ICOP" for copyright
     LPVOID      lpData;                     // pointer to data
@@ -3673,11 +3688,11 @@ ffi.cdef[[
 //  Callback Definitions
 // ------------------------------------------------------------------
 
-typedef LRESULT (CALLBACK* CAPYIELDCALLBACK)  ( HWND hWnd);
-typedef LRESULT (CALLBACK* CAPSTATUSCALLBACKW) ( HWND hWnd,  int nID, LPCWSTR lpsz);
-typedef LRESULT (CALLBACK* CAPERRORCALLBACKW)  ( HWND hWnd,  int nID, LPCWSTR lpsz);
-typedef LRESULT (CALLBACK* CAPSTATUSCALLBACKA) ( HWND hWnd,  int nID, LPCSTR lpsz);
-typedef LRESULT (CALLBACK* CAPERRORCALLBACKA)  ( HWND hWnd,  int nID, LPCSTR lpsz);
+typedef LRESULT (__stdcall* CAPYIELDCALLBACK)  ( HWND hWnd);
+typedef LRESULT (__stdcall* CAPSTATUSCALLBACKW) ( HWND hWnd,  int nID, LPCWSTR lpsz);
+typedef LRESULT (__stdcall* CAPERRORCALLBACKW)  ( HWND hWnd,  int nID, LPCWSTR lpsz);
+typedef LRESULT (__stdcall* CAPSTATUSCALLBACKA) ( HWND hWnd,  int nID, LPCSTR lpsz);
+typedef LRESULT (__stdcall* CAPERRORCALLBACKA)  ( HWND hWnd,  int nID, LPCSTR lpsz);
 ]]
 
 if UNICODE then
@@ -3694,11 +3709,13 @@ typedef LRESULT (CALLBACK* CAPWAVECALLBACK)   ( HWND hWnd,  LPWAVEHDR lpWHdr);
 typedef LRESULT (CALLBACK* CAPCONTROLCALLBACK)( HWND hWnd,  int nState);
 ]]
 
+ffi.cdef[[
 // ------------------------------------------------------------------
 //  CapControlCallback states
 // ------------------------------------------------------------------
-#define CONTROLCALLBACK_PREROLL       =  1; /* Waiting to start capture */
-#define CONTROLCALLBACK_CAPTURING     =  2; /* Now capturing */
+static const int CONTROLCALLBACK_PREROLL       =  1; /* Waiting to start capture */
+static const int CONTROLCALLBACK_CAPTURING     =  2; /* Now capturing */
+]]
 
 ffi.cdef[[
 // ------------------------------------------------------------------
@@ -3736,7 +3753,7 @@ BOOL __stdcall capGetDriverDescriptionW (UINT wDriverIndex,
 #endif
 --]]
 
-#endif  /* RC_INVOKED */
+end  --/* RC_INVOKED */
 
 // ------------------------------------------------------------------
 // New Information chunk IDs

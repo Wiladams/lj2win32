@@ -30,6 +30,9 @@ Environment:
 --*/
 --]]
 
+local ffi = require("ffi")
+local C = ffi.C 
+
 local C_ASSERT = assert
 
 if not _WS2IPDEF_ then
@@ -44,13 +47,6 @@ if not  WS2IPDEF_ASSERT then
 local function WS2IPDEF_ASSERT(exp) return (0) end
 end
 
---[[
-#ifdef _MSC_VER
-#define WS2TCPIP_INLINE __inline
-#else
-#define WS2TCPIP_INLINE extern inline /* GNU style */
-#endif
---]]
 
 require("win32.in6addr")
 
@@ -173,11 +169,13 @@ static const int IP_NRT_INTERFACE         = 74; // Set NRT interface constraint 
 static const int IP_RECVERR               = 75; // Receive ICMP errors.
 ]]
 
+ffi.cdef[[
+static const int IP_UNSPECIFIED_TYPE_OF_SERVICE = -1;
+]]
 
-#define IP_UNSPECIFIED_TYPE_OF_SERVICE -1
+--#define IPV6_ADDRESS_BITS RTL_BITS_OF(IN6_ADDR)
 
-#define IPV6_ADDRESS_BITS RTL_BITS_OF(IN6_ADDR)
-
+--[[
 //
 // IPv6 socket address structure, RFC 3493.
 //
@@ -187,6 +185,7 @@ static const int IP_RECVERR               = 75; // Receive ICMP errors.
 // than sockaddr_in6_lh.  This is to make sure that standard sockets apps
 // that conform to RFC 2553 (Basic Socket Interface Extensions for IPv6).
 //
+--]]
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 ffi.cdef[[
@@ -199,7 +198,7 @@ typedef struct sockaddr_in6 {
         ULONG sin6_scope_id;     // Set of interfaces for a scope.
         SCOPE_ID sin6_scope_struct;
     };
-} SOCKADDR_IN6_LH, *PSOCKADDR_IN6_LH, FAR *LPSOCKADDR_IN6_LH;
+} SOCKADDR_IN6_LH, *PSOCKADDR_IN6_LH,  *LPSOCKADDR_IN6_LH;
 ]]
 
 ffi.cdef[[
@@ -209,26 +208,26 @@ typedef struct sockaddr_in6_w2ksp1 {
     ULONG  sin6_flowinfo;      /* IPv6 flow information */
     struct in6_addr sin6_addr;  /* IPv6 address */
     ULONG sin6_scope_id;       /* set of interfaces for a scope */
-} SOCKADDR_IN6_W2KSP1, *PSOCKADDR_IN6_W2KSP1, FAR *LPSOCKADDR_IN6_W2KSP1;
+} SOCKADDR_IN6_W2KSP1, *PSOCKADDR_IN6_W2KSP1,  *LPSOCKADDR_IN6_W2KSP1;
 ]]
 
 if (NTDDI_VERSION >= NTDDI_VISTA) then
 ffi.cdef[[
 typedef SOCKADDR_IN6_LH SOCKADDR_IN6;
 typedef SOCKADDR_IN6_LH *PSOCKADDR_IN6;
-typedef SOCKADDR_IN6_LH FAR *LPSOCKADDR_IN6;
+typedef SOCKADDR_IN6_LH  *LPSOCKADDR_IN6;
 ]]
-elseif(NTDDI_VERSION >= NTDDI_WIN2KSP1)
+elseif(NTDDI_VERSION >= NTDDI_WIN2KSP1) then
 ffi.cdef[[
 typedef SOCKADDR_IN6_W2KSP1 SOCKADDR_IN6;
 typedef SOCKADDR_IN6_W2KSP1 *PSOCKADDR_IN6;
-typedef SOCKADDR_IN6_W2KSP1 FAR *LPSOCKADDR_IN6;
+typedef SOCKADDR_IN6_W2KSP1  *LPSOCKADDR_IN6;
 ]]
 else
 ffi.cdef[[
 typedef SOCKADDR_IN6_LH SOCKADDR_IN6;
 typedef SOCKADDR_IN6_LH *PSOCKADDR_IN6;
-typedef SOCKADDR_IN6_LH FAR *LPSOCKADDR_IN6;
+typedef SOCKADDR_IN6_LH  *LPSOCKADDR_IN6;
 ]]
 end
 
@@ -381,7 +380,7 @@ extern CONST IN6_ADDR in6addr_teredoprefix_old;
 
 --if not __midl then
 --[=[
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_ADDR_EQUAL(CONST IN6_ADDR *x, CONST IN6_ADDR *y)
 {
@@ -399,7 +398,7 @@ IN6_ADDR_EQUAL(CONST IN6_ADDR *x, CONST IN6_ADDR *y)
 //
 #define IN6_ARE_ADDR_EQUAL IN6_ADDR_EQUAL
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_UNSPECIFIED(CONST IN6_ADDR *a)
 {
@@ -417,7 +416,7 @@ IN6_IS_ADDR_UNSPECIFIED(CONST IN6_ADDR *a)
                      (a->s6_words[7] == 0));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_LOOPBACK(CONST IN6_ADDR *a)
 {
@@ -435,7 +434,7 @@ IN6_IS_ADDR_LOOPBACK(CONST IN6_ADDR *a)
                      (a->s6_words[7] == 0x0100));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MULTICAST(CONST IN6_ADDR *a)
 {
@@ -446,7 +445,7 @@ IN6_IS_ADDR_MULTICAST(CONST IN6_ADDR *a)
 //  Does the address have a format prefix
 //  that indicates it uses EUI-64 interface identifiers?
 //
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_EUI64(CONST IN6_ADDR *a)
 {
@@ -461,7 +460,7 @@ IN6_IS_ADDR_EUI64(CONST IN6_ADDR *a)
 //  Is this the subnet router anycast address?
 //  See RFC 2373.
 //
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_SUBNET_ROUTER_ANYCAST(CONST IN6_ADDR *a)
 {
@@ -480,7 +479,7 @@ IN6_IS_ADDR_SUBNET_ROUTER_ANYCAST(CONST IN6_ADDR *a)
 //  it shouldn't apply to multicast or v4-compatible
 //  addresses.
 //
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_SUBNET_RESERVED_ANYCAST(CONST IN6_ADDR *a)
 {
@@ -495,7 +494,7 @@ IN6_IS_ADDR_SUBNET_RESERVED_ANYCAST(CONST IN6_ADDR *a)
 //  As best we can tell from simple inspection,
 //  is this an anycast address?
 //
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_ANYCAST(CONST IN6_ADDR *a)
 {
@@ -503,7 +502,7 @@ IN6_IS_ADDR_ANYCAST(CONST IN6_ADDR *a)
             IN6_IS_ADDR_SUBNET_ROUTER_ANYCAST(a));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_LINKLOCAL(CONST IN6_ADDR *a)
 {
@@ -511,7 +510,7 @@ IN6_IS_ADDR_LINKLOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xc0) == 0x80));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_SITELOCAL(CONST IN6_ADDR *a)
 {
@@ -519,7 +518,7 @@ IN6_IS_ADDR_SITELOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xc0) == 0xc0));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_GLOBAL(CONST IN6_ADDR *a)
 {
@@ -533,7 +532,7 @@ IN6_IS_ADDR_GLOBAL(CONST IN6_ADDR *a)
     return (BOOLEAN)((High != 0) && (High != 0xf0));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_V4MAPPED(CONST IN6_ADDR *a)
 {
@@ -545,7 +544,7 @@ IN6_IS_ADDR_V4MAPPED(CONST IN6_ADDR *a)
                      (a->s6_words[5] == 0xffff));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_V4COMPAT(CONST IN6_ADDR *a)
 {
@@ -560,7 +559,7 @@ IN6_IS_ADDR_V4COMPAT(CONST IN6_ADDR *a)
                        ((a->s6_addr[15] == 0) || (a->s6_addr[15] == 1))));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_V4TRANSLATED(CONST IN6_ADDR *a)
 {
@@ -572,7 +571,7 @@ IN6_IS_ADDR_V4TRANSLATED(CONST IN6_ADDR *a)
                      (a->s6_words[5] == 0));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MC_NODELOCAL(CONST IN6_ADDR *a)
 {
@@ -580,7 +579,7 @@ IN6_IS_ADDR_MC_NODELOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xf) == 1));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MC_LINKLOCAL(CONST IN6_ADDR *a)
 {
@@ -588,7 +587,7 @@ IN6_IS_ADDR_MC_LINKLOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xf) == 2));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MC_SITELOCAL(CONST IN6_ADDR *a)
 {
@@ -596,7 +595,7 @@ IN6_IS_ADDR_MC_SITELOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xf) == 5));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MC_ORGLOCAL(CONST IN6_ADDR *a)
 {
@@ -604,7 +603,7 @@ IN6_IS_ADDR_MC_ORGLOCAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xf) == 8));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6_IS_ADDR_MC_GLOBAL(CONST IN6_ADDR *a)
 {
@@ -612,7 +611,7 @@ IN6_IS_ADDR_MC_GLOBAL(CONST IN6_ADDR *a)
                      ((a->s6_bytes[1] & 0xf) == 0xe));
 }
 
-WS2TCPIP_INLINE
+
 VOID
 IN6_SET_ADDR_UNSPECIFIED(PIN6_ADDR a)
 {
@@ -623,7 +622,7 @@ IN6_SET_ADDR_UNSPECIFIED(PIN6_ADDR a)
     memset(a->s6_bytes, 0, sizeof(IN6_ADDR));
 }
 
-WS2TCPIP_INLINE
+
 VOID
 IN6_SET_ADDR_LOOPBACK(PIN6_ADDR a)
 {
@@ -635,7 +634,7 @@ IN6_SET_ADDR_LOOPBACK(PIN6_ADDR a)
     a->s6_bytes[15] = 1;
 }
 
-WS2TCPIP_INLINE
+
 VOID
 IN6ADDR_SETANY(PSOCKADDR_IN6 a)
 {
@@ -646,7 +645,7 @@ IN6ADDR_SETANY(PSOCKADDR_IN6 a)
     a->sin6_scope_id = 0;
 }
 
-WS2TCPIP_INLINE
+
 VOID
 IN6ADDR_SETLOOPBACK(PSOCKADDR_IN6 a)
 {
@@ -657,7 +656,7 @@ IN6ADDR_SETLOOPBACK(PSOCKADDR_IN6 a)
     a->sin6_scope_id = 0;
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6ADDR_ISANY(CONST SOCKADDR_IN6 *a)
 {
@@ -665,7 +664,7 @@ IN6ADDR_ISANY(CONST SOCKADDR_IN6 *a)
     return IN6_IS_ADDR_UNSPECIFIED(&a->sin6_addr);
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6ADDR_ISLOOPBACK(CONST SOCKADDR_IN6 *a)
 {
@@ -673,7 +672,7 @@ IN6ADDR_ISLOOPBACK(CONST SOCKADDR_IN6 *a)
     return IN6_IS_ADDR_LOOPBACK(&a->sin6_addr);
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6ADDR_ISEQUAL(CONST SOCKADDR_IN6 *a, CONST SOCKADDR_IN6 *b)
 {
@@ -682,7 +681,7 @@ IN6ADDR_ISEQUAL(CONST SOCKADDR_IN6 *a, CONST SOCKADDR_IN6 *b)
                      IN6_ADDR_EQUAL(&a->sin6_addr, &b->sin6_addr));
 }
 
-WS2TCPIP_INLINE
+
 BOOLEAN
 IN6ADDR_ISUNSPECIFIED(CONST SOCKADDR_IN6 *a)
 {
@@ -833,7 +832,7 @@ static const int IPV6_RECVERR               = 75; // Receive ICMPv6 errors.
 ffi.cdef[[
 static const int IP_UNSPECIFIED_HOP_LIMIT = -1;
 
-static const int  IP_PROTECTION_LEVEL  = IPV6_PROTECTION_LEVEL=
+static const int  IP_PROTECTION_LEVEL  = IPV6_PROTECTION_LEVEL;
 ]]
 
 ffi.cdef[[
@@ -902,9 +901,11 @@ typedef struct group_filter {
 ]]
 
 local function GROUP_FILTER_SIZE(numsrc)
-   return (ffi.sizeof("GROUP_FILTER") - ffi.sizeof("SOCKADDR_STORAGE") \
-   + (numsrc) * ffi.sizeof("SOCKADDR_STORAGE"));
+   return (ffi.sizeof("GROUP_FILTER") - ffi.sizeof("SOCKADDR_STORAGE") 
+   + numsrc * ffi.sizeof("SOCKADDR_STORAGE"));
 end
+
+end     -- (NTDDI_VERSION >= NTDDI_WINXP)
 
 ffi.cdef[[
 //
@@ -1021,4 +1022,4 @@ static const int TCP_KEEPINTVL           = 17;
 ]]
 
 
-end
+end  -- _WS2IPDEF_

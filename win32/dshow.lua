@@ -60,23 +60,25 @@ require("win32.errors")    -- HRESULT status and error definitions
 --#include <audevcod.h>   // audio filter device error event codes
 --#include <dvdevcod.h>   // DVD error event codes
 
---[[
-///////////////////////////////////////////////////////////////////////////
-// Define OLE Automation constants
-///////////////////////////////////////////////////////////////////////////
-#ifndef OATRUE
-#define OATRUE (-1)
-#endif // OATRUE
-#ifndef OAFALSE
-#define OAFALSE (0)
-#endif // OAFALSE
---]]
 
---[[
-///////////////////////////////////////////////////////////////////////////
-// Define Win64 interfaces if not already defined
-///////////////////////////////////////////////////////////////////////////
---]]
+-- Define OLE Automation constants
+
+if not OATRUE then
+OATRUE = -1;
+ffi.cdef[[
+static const int OATRUE = -1;
+]]
+end -- OATRUE
+
+if not OAFALSE then
+OAFALSE = 0;
+ffi.cdef[[
+static const int OAFALSE = 0;
+]]
+end --// OAFALSE
+
+
+-- Define Win64 interfaces if not already defined
 
 --[[
 // InterlockedExchangePointer

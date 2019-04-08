@@ -281,16 +281,17 @@ typedef WORD PROPVAR_PAD3;
 ]]
 --#define tag_inner_PROPVARIANT
 
---[=[
-#if !defined(_MSC_EXTENSIONS)
 
+if not _MSC_EXTENSIONS then
+ffi.cdef[[
 struct tagPROPVARIANT;
+]]
+else
 
-#else
-#ifndef MIDL_PASS
+ffi.cdef[[
 struct tagPROPVARIANT {
  union {
-#endif
+
 struct tag_inner_PROPVARIANT
    {
    VARTYPE vt;
@@ -375,67 +376,49 @@ struct tag_inner_PROPVARIANT
        /* [case()] */ PROPVARIANT *pvarVal;
        } 	;
    } ;
-#ifndef MIDL_PASS
+
    DECIMAL decVal;
  };
 };
-#endif
+]]
 
-#endif /* _MSC_EXTENSIONS */
---]=]
+end --/* _MSC_EXTENSIONS */
 
-#ifdef MIDL_PASS
-// This is the LPPROPVARIANT definition for marshaling.
-typedef struct tag_inner_PROPVARIANT *LPPROPVARIANT;
 
-typedef const PROPVARIANT *REFPROPVARIANT;
 
-#else
-
+ffi.cdef[[
 // This is the standard C layout of the PROPVARIANT.
 typedef struct tagPROPVARIANT * LPPROPVARIANT;
+]]
 
-#ifndef _REFPROPVARIANT_DEFINED
-#define _REFPROPVARIANT_DEFINED
-#ifdef __cplusplus
-#define REFPROPVARIANT const PROPVARIANT &
-#else
-#define REFPROPVARIANT const PROPVARIANT * __MIDL_CONST
-#endif
-#endif
+if not _REFPROPVARIANT_DEFINED then
+_REFPROPVARIANT_DEFINED = true;
+ffi.cdef[[
+typedef  const PROPVARIANT * const  REFPROPVARIANT
+]]
+end
 
-#endif // MIDL_PASS
 
 ffi.cdef[[
 // Reserved global Property IDs
-#define	PID_DICTIONARY	( 0 )
+static const int 	PID_DICTIONARY	         = 0;
+static const int 	PID_CODEPAGE	         = 0x1;
+static const int 	PID_FIRST_USABLE	      = 0x2;
+static const int 	PID_FIRST_NAME_DEFAULT	= 0xfff;
+static const int 	PID_LOCALE	            = 0x80000000;
+static const int 	PID_MODIFY_TIME	      = 0x80000001;
+static const int 	PID_SECURITY	         = 0x80000002;
+static const int 	PID_BEHAVIOR	         = 0x80000003;
+static const int 	PID_ILLEGAL	            = 0xffffffff;
+]]
 
-#define	PID_CODEPAGE	( 0x1 )
-
-#define	PID_FIRST_USABLE	( 0x2 )
-
-#define	PID_FIRST_NAME_DEFAULT	( 0xfff )
-
-#define	PID_LOCALE	( 0x80000000 )
-
-#define	PID_MODIFY_TIME	( 0x80000001 )
-
-#define	PID_SECURITY	( 0x80000002 )
-
-#define	PID_BEHAVIOR	( 0x80000003 )
-
-#define	PID_ILLEGAL	( 0xffffffff )
-
+ffi.cdef[[
 // Range which is read-only to downlevel implementations
-#define	PID_MIN_READONLY	( 0x80000000 )
-
-#define	PID_MAX_READONLY	( 0xbfffffff )
-
-#define	PRSPEC_INVALID	( 0xffffffff )
-
-#define	PRSPEC_LPWSTR	( 0 )
-
-#define	PRSPEC_PROPID	( 1 )
+static const int 	PID_MIN_READONLY	= 0x80000000;
+static const int 	PID_MAX_READONLY	= 0xbfffffff;
+static const int 	PRSPEC_INVALID	   = 0xffffffff;
+static const int 	PRSPEC_LPWSTR	   = 0;
+static const int 	PRSPEC_PROPID	   = 1;
 ]]
 
 ffi.cdef[[
@@ -460,12 +443,12 @@ typedef struct tagSTATPROPSTG
 
 
 // Macros for parsing the OS Version of the Property Set Header
-#define PROPSETHDR_OSVER_KIND(dwOSVer)      HIWORD( (dwOSVer) )
-#define PROPSETHDR_OSVER_MAJOR(dwOSVer)     LOBYTE(LOWORD( (dwOSVer) ))
-#define PROPSETHDR_OSVER_MINOR(dwOSVer)     HIBYTE(LOWORD( (dwOSVer) ))
+local function PROPSETHDR_OSVER_KIND(dwOSVer)     return HIWORD( (dwOSVer) ) end
+local function PROPSETHDR_OSVER_MAJOR(dwOSVer)    return LOBYTE(LOWORD( (dwOSVer) )) end
+local function PROPSETHDR_OSVER_MINOR(dwOSVer)    return HIBYTE(LOWORD( (dwOSVer) )) end
 
 ffi.cdef[[
-#define PROPSETHDR_OSVERSION_UNKNOWN        0xFFFFFFFF
+static const int PROPSETHDR_OSVERSION_UNKNOWN      =  0xFFFFFFFF;
 ]]
 
 ffi.cdef[[
@@ -493,139 +476,83 @@ typedef struct tagSTATPROPSETSTG
 
 
  const IID IID_IPropertyStorage;
+ MIDL_INTERFACE("00000138-0000-0000-C000-000000000046")
 
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("00000138-0000-0000-C000-000000000046")
-   IPropertyStorage : public IUnknown
-   {
-   public:
-       virtual HRESULT STDMETHODCALLTYPE ReadMultiple( 
-            ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-           /* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[  ]) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE WriteMultiple( 
-            ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT rgpropvar[  ],
-            PROPID propidNameFirst) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE DeleteMultiple( 
-            ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ]) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE ReadPropertyNames( 
-            ULONG cpropid,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
-           /* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR rglpwstrName[  ]) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE WritePropertyNames( 
-            ULONG cpropid,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
-           /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR rglpwstrName[  ]) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE DeletePropertyNames( 
-            ULONG cpropid,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ]) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Commit( 
-            DWORD grfCommitFlags) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Revert( void) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Enum( 
-            __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE SetTimes( 
-             const FILETIME *pctime,
-             const FILETIME *patime,
-             const FILETIME *pmtime) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE SetClass( 
-             REFCLSID clsid) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Stat( 
-             STATPROPSETSTG *pstatpsstg) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
+
 
    typedef struct IPropertyStorageVtbl
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
             IPropertyStorage * This,
              REFIID riid,
            /* [annotation][iid_is][out] */ 
            _COM_Outptr_  void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
             IPropertyStorage * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
             IPropertyStorage * This);
        
-       HRESULT ( STDMETHODCALLTYPE *ReadMultiple )( 
+       HRESULT ( __stdcall *ReadMultiple )( 
             IPropertyStorage * This,
             ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-           /* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[  ]);
+           /* [size_is][in] */  const PROPSPEC rgpspec[  ],
+           /* [size_is][out] */  PROPVARIANT rgpropvar[  ]);
        
-       HRESULT ( STDMETHODCALLTYPE *WriteMultiple )( 
+       HRESULT ( __stdcall *WriteMultiple )( 
             IPropertyStorage * This,
             ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT rgpropvar[  ],
+           /* [size_is][in] */  const PROPSPEC rgpspec[  ],
+           /* [size_is][in] */  const PROPVARIANT rgpropvar[  ],
             PROPID propidNameFirst);
        
-       HRESULT ( STDMETHODCALLTYPE *DeleteMultiple )( 
+       HRESULT ( __stdcall *DeleteMultiple )( 
             IPropertyStorage * This,
             ULONG cpspec,
-           /* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ]);
+           /* [size_is][in] */  const PROPSPEC rgpspec[  ]);
        
-       HRESULT ( STDMETHODCALLTYPE *ReadPropertyNames )( 
+       HRESULT ( __stdcall *ReadPropertyNames )( 
             IPropertyStorage * This,
             ULONG cpropid,
            /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
            /* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR rglpwstrName[  ]);
        
-       HRESULT ( STDMETHODCALLTYPE *WritePropertyNames )( 
+       HRESULT ( __stdcall *WritePropertyNames )( 
             IPropertyStorage * This,
             ULONG cpropid,
            /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
            /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR rglpwstrName[  ]);
        
-       HRESULT ( STDMETHODCALLTYPE *DeletePropertyNames )( 
+       HRESULT ( __stdcall *DeletePropertyNames )( 
             IPropertyStorage * This,
             ULONG cpropid,
            /* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ]);
        
-       HRESULT ( STDMETHODCALLTYPE *Commit )( 
+       HRESULT ( __stdcall *Commit )( 
             IPropertyStorage * This,
             DWORD grfCommitFlags);
        
-       HRESULT ( STDMETHODCALLTYPE *Revert )( 
+       HRESULT ( __stdcall *Revert )( 
             IPropertyStorage * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Enum )( 
+       HRESULT ( __stdcall *Enum )( 
             IPropertyStorage * This,
             __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum);
        
-       HRESULT ( STDMETHODCALLTYPE *SetTimes )( 
+       HRESULT ( __stdcall *SetTimes )( 
             IPropertyStorage * This,
              const FILETIME *pctime,
              const FILETIME *patime,
              const FILETIME *pmtime);
        
-       HRESULT ( STDMETHODCALLTYPE *SetClass )( 
+       HRESULT ( __stdcall *SetClass )( 
             IPropertyStorage * This,
              REFCLSID clsid);
        
-       HRESULT ( STDMETHODCALLTYPE *Stat )( 
+       HRESULT ( __stdcall *Stat )( 
             IPropertyStorage * This,
              STATPROPSETSTG *pstatpsstg);
        
@@ -691,7 +618,7 @@ typedef struct tagSTATPROPSETSTG
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
+
 
 
 
@@ -709,53 +636,27 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
 
 
  const IID IID_IPropertySetStorage;
+ MIDL_INTERFACE("0000013A-0000-0000-C000-000000000046")
 
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("0000013A-0000-0000-C000-000000000046")
-   IPropertySetStorage : public IUnknown
-   {
-   public:
-       virtual HRESULT STDMETHODCALLTYPE Create( 
-             REFFMTID rfmtid,
-           /* [unique][in] */ __RPC__in_opt const CLSID *pclsid,
-            DWORD grfFlags,
-            DWORD grfMode,
-            __RPC__deref_out_opt IPropertyStorage **ppprstg) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Open( 
-             REFFMTID rfmtid,
-            DWORD grfMode,
-            __RPC__deref_out_opt IPropertyStorage **ppprstg) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Delete( 
-             REFFMTID rfmtid) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Enum( 
-            __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
+
 
    typedef struct IPropertySetStorageVtbl
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
             IPropertySetStorage * This,
              REFIID riid,
            /* [annotation][iid_is][out] */ 
            _COM_Outptr_  void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
             IPropertySetStorage * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
             IPropertySetStorage * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Create )( 
+       HRESULT ( __stdcall *Create )( 
             IPropertySetStorage * This,
              REFFMTID rfmtid,
            /* [unique][in] */ __RPC__in_opt const CLSID *pclsid,
@@ -763,17 +664,17 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
             DWORD grfMode,
             __RPC__deref_out_opt IPropertyStorage **ppprstg);
        
-       HRESULT ( STDMETHODCALLTYPE *Open )( 
+       HRESULT ( __stdcall *Open )( 
             IPropertySetStorage * This,
              REFFMTID rfmtid,
             DWORD grfMode,
             __RPC__deref_out_opt IPropertyStorage **ppprstg);
        
-       HRESULT ( STDMETHODCALLTYPE *Delete )( 
+       HRESULT ( __stdcall *Delete )( 
             IPropertySetStorage * This,
              REFFMTID rfmtid);
        
-       HRESULT ( STDMETHODCALLTYPE *Enum )( 
+       HRESULT ( __stdcall *Enum )( 
             IPropertySetStorage * This,
             __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum);
        
@@ -815,7 +716,6 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
 
 
 
@@ -833,50 +733,27 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG
 
 
  const IID IID_IEnumSTATPROPSTG;
+ MIDL_INTERFACE("00000139-0000-0000-C000-000000000046")
 
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("00000139-0000-0000-C000-000000000046")
-   IEnumSTATPROPSTG : public IUnknown
-   {
-   public:
-       virtual  HRESULT STDMETHODCALLTYPE Next( 
-            ULONG celt,
-            
-             STATPROPSTG *rgelt,
-            
-              ULONG *pceltFetched) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Skip( 
-            ULONG celt) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
-            __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
+
 
    typedef struct IEnumSTATPROPSTGVtbl
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
             IEnumSTATPROPSTG * This,
              REFIID riid,
            /* [annotation][iid_is][out] */ 
            _COM_Outptr_  void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
             IEnumSTATPROPSTG * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
             IEnumSTATPROPSTG * This);
        
-        HRESULT ( STDMETHODCALLTYPE *Next )( 
+        HRESULT ( __stdcall *Next )( 
            IEnumSTATPROPSTG * This,
             ULONG celt,
             
@@ -884,14 +761,14 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG
             
               ULONG *pceltFetched);
        
-       HRESULT ( STDMETHODCALLTYPE *Skip )( 
+       HRESULT ( __stdcall *Skip )( 
             IEnumSTATPROPSTG * This,
             ULONG celt);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
+       HRESULT ( __stdcall *Reset )( 
             IEnumSTATPROPSTG * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
+       HRESULT ( __stdcall *Clone )( 
             IEnumSTATPROPSTG * This,
             __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum);
        
@@ -933,11 +810,11 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
 
 
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSTG_RemoteNext_Proxy( 
+ffi.cdef[[
+ HRESULT __stdcall IEnumSTATPROPSTG_RemoteNext_Proxy( 
     IEnumSTATPROPSTG * This,
     ULONG celt,
      STATPROPSTG *rgelt,
@@ -949,7 +826,7 @@ void __RPC_STUB IEnumSTATPROPSTG_RemoteNext_Stub(
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
    DWORD *_pdwStubPhase);
-
+]]
 
 
 #endif 	/* __IEnumSTATPROPSTG_INTERFACE_DEFINED__ */
@@ -965,50 +842,27 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSETSTG *LPENUMSTATPROP
 
 
  const IID IID_IEnumSTATPROPSETSTG;
+ MIDL_INTERFACE("0000013B-0000-0000-C000-000000000046")
 
-#if defined(__cplusplus) && !defined(CINTERFACE)
-   
-   MIDL_INTERFACE("0000013B-0000-0000-C000-000000000046")
-   IEnumSTATPROPSETSTG : public IUnknown
-   {
-   public:
-       virtual  HRESULT STDMETHODCALLTYPE Next( 
-            ULONG celt,
-            
-             STATPROPSETSTG *rgelt,
-            
-              ULONG *pceltFetched) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Skip( 
-            ULONG celt) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
-       
-       virtual HRESULT STDMETHODCALLTYPE Clone( 
-            __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum) = 0;
-       
-   };
-   
-   
-#else 	/* C style interface */
+
 
    typedef struct IEnumSTATPROPSETSTGVtbl
    {
        BEGIN_INTERFACE
        
-       HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+       HRESULT ( __stdcall *QueryInterface )( 
             IEnumSTATPROPSETSTG * This,
              REFIID riid,
            /* [annotation][iid_is][out] */ 
            _COM_Outptr_  void **ppvObject);
        
-       ULONG ( STDMETHODCALLTYPE *AddRef )( 
+       ULONG ( __stdcall *AddRef )( 
             IEnumSTATPROPSETSTG * This);
        
-       ULONG ( STDMETHODCALLTYPE *Release )( 
+       ULONG ( __stdcall *Release )( 
             IEnumSTATPROPSETSTG * This);
        
-        HRESULT ( STDMETHODCALLTYPE *Next )( 
+        HRESULT ( __stdcall *Next )( 
            IEnumSTATPROPSETSTG * This,
             ULONG celt,
             
@@ -1016,14 +870,14 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSETSTG *LPENUMSTATPROP
             
               ULONG *pceltFetched);
        
-       HRESULT ( STDMETHODCALLTYPE *Skip )( 
+       HRESULT ( __stdcall *Skip )( 
             IEnumSTATPROPSETSTG * This,
             ULONG celt);
        
-       HRESULT ( STDMETHODCALLTYPE *Reset )( 
+       HRESULT ( __stdcall *Reset )( 
             IEnumSTATPROPSETSTG * This);
        
-       HRESULT ( STDMETHODCALLTYPE *Clone )( 
+       HRESULT ( __stdcall *Clone )( 
             IEnumSTATPROPSETSTG * This,
             __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum);
        
@@ -1065,11 +919,11 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSETSTG *LPENUMSTATPROP
 #endif /* COBJMACROS */
 
 
-#endif 	/* C style interface */
 
 
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSETSTG_RemoteNext_Proxy( 
+ffi.cdef[[
+ HRESULT __stdcall IEnumSTATPROPSETSTG_RemoteNext_Proxy( 
     IEnumSTATPROPSETSTG * This,
     ULONG celt,
      STATPROPSETSTG *rgelt,
@@ -1081,7 +935,7 @@ void __RPC_STUB IEnumSTATPROPSETSTG_RemoteNext_Stub(
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
    DWORD *_pdwStubPhase);
-
+]]
 
 
 #endif 	/* __IEnumSTATPROPSETSTG_INTERFACE_DEFINED__ */
@@ -1092,71 +946,76 @@ void __RPC_STUB IEnumSTATPROPSETSTG_RemoteNext_Stub(
 
 typedef /* [unique] */  __RPC_unique_pointer IPropertyStorage *LPPROPERTYSTORAGE;
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
-#pragma endregion
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
+
 
 #define _PROPIDLBASE_
 #endif
 #include <coml2api.h>
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-// Property IDs for the DiscardableInformation Property Set
 
-#define PIDDI_THUMBNAIL          0x00000002L // VT_BLOB
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+-- Property IDs for the DiscardableInformation Property Set
 
+ffi.cdef[[
+static const int PIDDI_THUMBNAIL          = 0x00000002; // VT_BLOB
+]]
+
+ffi.cdef[[
 // Property IDs for the SummaryInformation Property Set
 
-#define PIDSI_TITLE               0x00000002L  // VT_LPSTR
-#define PIDSI_SUBJECT             0x00000003L  // VT_LPSTR
-#define PIDSI_AUTHOR              0x00000004L  // VT_LPSTR
-#define PIDSI_KEYWORDS            0x00000005L  // VT_LPSTR
-#define PIDSI_COMMENTS            0x00000006L  // VT_LPSTR
-#define PIDSI_TEMPLATE            0x00000007L  // VT_LPSTR
-#define PIDSI_LASTAUTHOR          0x00000008L  // VT_LPSTR
-#define PIDSI_REVNUMBER           0x00000009L  // VT_LPSTR
-#define PIDSI_EDITTIME            0x0000000aL  // VT_FILETIME (UTC)
-#define PIDSI_LASTPRINTED         0x0000000bL  // VT_FILETIME (UTC)
-#define PIDSI_CREATE_DTM          0x0000000cL  // VT_FILETIME (UTC)
-#define PIDSI_LASTSAVE_DTM        0x0000000dL  // VT_FILETIME (UTC)
-#define PIDSI_PAGECOUNT           0x0000000eL  // VT_I4
-#define PIDSI_WORDCOUNT           0x0000000fL  // VT_I4
-#define PIDSI_CHARCOUNT           0x00000010L  // VT_I4
-#define PIDSI_THUMBNAIL           0x00000011L  // VT_CF
-#define PIDSI_APPNAME             0x00000012L  // VT_LPSTR
-#define PIDSI_DOC_SECURITY        0x00000013L  // VT_I4
+static const int PIDSI_TITLE               = 0x00000002;  // VT_LPSTR
+static const int PIDSI_SUBJECT             = 0x00000003;  // VT_LPSTR
+static const int PIDSI_AUTHOR              = 0x00000004;  // VT_LPSTR
+static const int PIDSI_KEYWORDS            = 0x00000005;  // VT_LPSTR
+static const int PIDSI_COMMENTS            = 0x00000006;  // VT_LPSTR
+static const int PIDSI_TEMPLATE            = 0x00000007;  // VT_LPSTR
+static const int PIDSI_LASTAUTHOR          = 0x00000008;  // VT_LPSTR
+static const int PIDSI_REVNUMBER           = 0x00000009;  // VT_LPSTR
+static const int PIDSI_EDITTIME            = 0x0000000a;  // VT_FILETIME (UTC)
+static const int PIDSI_LASTPRINTED         = 0x0000000b;  // VT_FILETIME (UTC)
+static const int PIDSI_CREATE_DTM          = 0x0000000c;  // VT_FILETIME (UTC)
+static const int PIDSI_LASTSAVE_DTM        = 0x0000000d;  // VT_FILETIME (UTC)
+static const int PIDSI_PAGECOUNT           = 0x0000000e;  // VT_I4
+static const int PIDSI_WORDCOUNT           = 0x0000000f;  // VT_I4
+static const int PIDSI_CHARCOUNT           = 0x00000010;  // VT_I4
+static const int PIDSI_THUMBNAIL           = 0x00000011;  // VT_CF
+static const int PIDSI_APPNAME             = 0x00000012;  // VT_LPSTR
+static const int PIDSI_DOC_SECURITY        = 0x00000013;  // VT_I4
+]]
 
+ffi.cdef[[
 // Property IDs for the DocSummaryInformation Property Set
 
-#define PIDDSI_CATEGORY          0x00000002 // VT_LPSTR
-#define PIDDSI_PRESFORMAT        0x00000003 // VT_LPSTR
-#define PIDDSI_BYTECOUNT         0x00000004 // VT_I4
-#define PIDDSI_LINECOUNT         0x00000005 // VT_I4
-#define PIDDSI_PARCOUNT          0x00000006 // VT_I4
-#define PIDDSI_SLIDECOUNT        0x00000007 // VT_I4
-#define PIDDSI_NOTECOUNT         0x00000008 // VT_I4
-#define PIDDSI_HIDDENCOUNT       0x00000009 // VT_I4
-#define PIDDSI_MMCLIPCOUNT       0x0000000A // VT_I4
-#define PIDDSI_SCALE             0x0000000B // VT_BOOL
-#define PIDDSI_HEADINGPAIR       0x0000000C // VT_VARIANT | VT_VECTOR
-#define PIDDSI_DOCPARTS          0x0000000D // VT_LPSTR | VT_VECTOR
-#define PIDDSI_MANAGER           0x0000000E // VT_LPSTR
-#define PIDDSI_COMPANY           0x0000000F // VT_LPSTR
-#define PIDDSI_LINKSDIRTY        0x00000010 // VT_BOOL
-
+static const int PIDDSI_CATEGORY          = 0x00000002; // VT_LPSTR
+static const int PIDDSI_PRESFORMAT        = 0x00000003; // VT_LPSTR
+static const int PIDDSI_BYTECOUNT         = 0x00000004; // VT_I4
+static const int PIDDSI_LINECOUNT         = 0x00000005; // VT_I4
+static const int PIDDSI_PARCOUNT          = 0x00000006; // VT_I4
+static const int PIDDSI_SLIDECOUNT        = 0x00000007; // VT_I4
+static const int PIDDSI_NOTECOUNT         = 0x00000008; // VT_I4
+static const int PIDDSI_HIDDENCOUNT       = 0x00000009; // VT_I4
+static const int PIDDSI_MMCLIPCOUNT       = 0x0000000A; // VT_I4
+static const int PIDDSI_SCALE             = 0x0000000B; // VT_BOOL
+static const int PIDDSI_HEADINGPAIR       = 0x0000000C; // VT_VARIANT | VT_VECTOR
+static const int PIDDSI_DOCPARTS          = 0x0000000D; // VT_LPSTR | VT_VECTOR
+static const int PIDDSI_MANAGER           = 0x0000000E; // VT_LPSTR
+static const int PIDDSI_COMPANY           = 0x0000000F; // VT_LPSTR
+static const int PIDDSI_LINKSDIRTY        = 0x00000010; // VT_BOOL
+]]
 
 ffi.cdef[[
 //  FMTID_MediaFileSummaryInfo - Property IDs
 
-#define PIDMSI_EDITOR                   0x00000002L  // VT_LPWSTR
-#define PIDMSI_SUPPLIER                 0x00000003L  // VT_LPWSTR
-#define PIDMSI_SOURCE                   0x00000004L  // VT_LPWSTR
-#define PIDMSI_SEQUENCE_NO              0x00000005L  // VT_LPWSTR
-#define PIDMSI_PROJECT                  0x00000006L  // VT_LPWSTR
-#define PIDMSI_STATUS                   0x00000007L  // VT_UI4
-#define PIDMSI_OWNER                    0x00000008L  // VT_LPWSTR
-#define PIDMSI_RATING                   0x00000009L  // VT_LPWSTR
-#define PIDMSI_PRODUCTION               0x0000000AL  // VT_FILETIME (UTC)
-#define PIDMSI_COPYRIGHT                0x0000000BL  // VT_LPWSTR
+static const int PIDMSI_EDITOR                   = 0x00000002;  // VT_LPWSTR
+static const int PIDMSI_SUPPLIER                 = 0x00000003;  // VT_LPWSTR
+static const int PIDMSI_SOURCE                   = 0x00000004;  // VT_LPWSTR
+static const int PIDMSI_SEQUENCE_NO              = 0x00000005;  // VT_LPWSTR
+static const int PIDMSI_PROJECT                  = 0x00000006;  // VT_LPWSTR
+static const int PIDMSI_STATUS                   = 0x00000007;  // VT_UI4
+static const int PIDMSI_OWNER                    = 0x00000008;  // VT_LPWSTR
+static const int PIDMSI_RATING                   = 0x00000009;  // VT_LPWSTR
+static const int PIDMSI_PRODUCTION               = 0x0000000A;  // VT_FILETIME (UTC)
+static const int PIDMSI_COPYRIGHT                = 0x0000000B;  // VT_LPWSTR
 ]]
 
 ffi.cdef[[
@@ -1180,38 +1039,31 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYS
 
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP , WINAPI_PARTITION_SYSTEM) then
 ffi.cdef[[
- WINOLEAPI PropVariantCopy(
-            PROPVARIANT* pvarDest,
-            const PROPVARIANT * pvarSrc);
+HRESULT __stdcall PropVariantCopy(PROPVARIANT* pvarDest, const PROPVARIANT * pvarSrc);
 
-WINOLEAPI PropVariantClear( PROPVARIANT* pvar);
+HRESULT __stdcall PropVariantClear( PROPVARIANT* pvar);
 
-WINOLEAPI FreePropVariantArray(
-            ULONG cVariants,
-           _Inout_updates_(cVariants) PROPVARIANT* rgvars);
+HRESULT __stdcall FreePropVariantArray(ULONG cVariants, PROPVARIANT* rgvars);
 ]]
 
+--[=[
 if _MSC_EXTENSIONS
 
-
 #define _PROPVARIANTINIT_DEFINED_
-
-#   ifdef __cplusplus
+#ifdef __cplusplus
 
 inline void PropVariantInit ( PROPVARIANT * pvar )
 {
    memset ( pvar, 0, sizeof(PROPVARIANT) );
 }
 
-#   else
-
-#   define PropVariantInit(pvar) memset ( (pvar), 0, sizeof(PROPVARIANT) )
-
-#   endif
+#else
+#define PropVariantInit(pvar) memset ( (pvar), 0, sizeof(PROPVARIANT) )
+#endif
 
 
 end --/* _MSC_EXTENSIONS */
-
+--]=]
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
@@ -1273,28 +1125,29 @@ end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 ffi.cdef[[
 /* Additional Prototypes for ALL interfaces */
 
-unsigned long             __stdcall  BSTR_UserSize(      unsigned long *, unsigned long            ,  BSTR * ); 
-unsigned char * __stdcall  BSTR_UserMarshal(   unsigned long *, __RPC__inout_xcount(0) unsigned char *,  BSTR * ); 
-unsigned char * __stdcall  BSTR_UserUnmarshal( unsigned long *, __RPC__in_xcount(0) unsigned char *,  BSTR * ); 
-void                      __stdcall  BSTR_UserFree(      unsigned long *,  BSTR * ); 
+unsigned long   __stdcall  BSTR_UserSize(      unsigned long *, unsigned long            ,  BSTR * ); 
+unsigned char * __stdcall  BSTR_UserMarshal(   unsigned long *,  unsigned char *,  BSTR * ); 
+unsigned char * __stdcall  BSTR_UserUnmarshal( unsigned long *,  unsigned char *,  BSTR * ); 
+void            __stdcall  BSTR_UserFree(      unsigned long *,  BSTR * ); 
 
-unsigned long             __stdcall  LPSAFEARRAY_UserSize(      unsigned long *, unsigned long            ,  LPSAFEARRAY * ); 
-unsigned char * __stdcall  LPSAFEARRAY_UserMarshal(   unsigned long *, __RPC__inout_xcount(0) unsigned char *,  LPSAFEARRAY * ); 
-unsigned char * __stdcall  LPSAFEARRAY_UserUnmarshal( unsigned long *, __RPC__in_xcount(0) unsigned char *,  LPSAFEARRAY * ); 
-void                      __stdcall  LPSAFEARRAY_UserFree(      unsigned long *,  LPSAFEARRAY * ); 
+unsigned long   __stdcall  LPSAFEARRAY_UserSize(      unsigned long *, unsigned long            ,  LPSAFEARRAY * ); 
+unsigned char * __stdcall  LPSAFEARRAY_UserMarshal(   unsigned long *,  unsigned char *,  LPSAFEARRAY * ); 
+unsigned char * __stdcall  LPSAFEARRAY_UserUnmarshal( unsigned long *,  unsigned char *,  LPSAFEARRAY * ); 
+void            __stdcall  LPSAFEARRAY_UserFree(      unsigned long *,  LPSAFEARRAY * ); 
 
-unsigned long             __stdcall  BSTR_UserSize64(      unsigned long *, unsigned long            ,  BSTR * ); 
-unsigned char * __stdcall  BSTR_UserMarshal64(   unsigned long *, __RPC__inout_xcount(0) unsigned char *,  BSTR * ); 
-unsigned char * __stdcall  BSTR_UserUnmarshal64( unsigned long *, __RPC__in_xcount(0) unsigned char *,  BSTR * ); 
-void                      __stdcall  BSTR_UserFree64(      unsigned long *,  BSTR * ); 
+unsigned long   __stdcall  BSTR_UserSize64(      unsigned long *, unsigned long            ,  BSTR * ); 
+unsigned char * __stdcall  BSTR_UserMarshal64(   unsigned long *,  unsigned char *,  BSTR * ); 
+unsigned char * __stdcall  BSTR_UserUnmarshal64( unsigned long *,  unsigned char *,  BSTR * ); 
+void            __stdcall  BSTR_UserFree64(      unsigned long *,  BSTR * ); 
 
-unsigned long             __stdcall  LPSAFEARRAY_UserSize64(      unsigned long *, unsigned long            ,  LPSAFEARRAY * ); 
-unsigned char * __stdcall  LPSAFEARRAY_UserMarshal64(   unsigned long *, __RPC__inout_xcount(0) unsigned char *,  LPSAFEARRAY * ); 
-unsigned char * __stdcall  LPSAFEARRAY_UserUnmarshal64( unsigned long *, __RPC__in_xcount(0) unsigned char *,  LPSAFEARRAY * ); 
-void                      __stdcall  LPSAFEARRAY_UserFree64(      unsigned long *,  LPSAFEARRAY * ); 
+unsigned long   __stdcall  LPSAFEARRAY_UserSize64(      unsigned long *, unsigned long            ,  LPSAFEARRAY * ); 
+unsigned char * __stdcall  LPSAFEARRAY_UserMarshal64(   unsigned long *,  unsigned char *,  LPSAFEARRAY * ); 
+unsigned char * __stdcall  LPSAFEARRAY_UserUnmarshal64( unsigned long *,  unsigned char *,  LPSAFEARRAY * ); 
+void            __stdcall  LPSAFEARRAY_UserFree64(      unsigned long *,  LPSAFEARRAY * ); 
 ]]
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSTG_Next_Proxy( 
+ffi.cdef[[
+ HRESULT __stdcall IEnumSTATPROPSTG_Next_Proxy( 
    IEnumSTATPROPSTG * This,
     ULONG celt,
     
@@ -1303,13 +1156,13 @@ void                      __stdcall  LPSAFEARRAY_UserFree64(      unsigned long 
       ULONG *pceltFetched);
 
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSTG_Next_Stub( 
+ HRESULT __stdcall IEnumSTATPROPSTG_Next_Stub( 
     IEnumSTATPROPSTG * This,
     ULONG celt,
      STATPROPSTG *rgelt,
      ULONG *pceltFetched);
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSETSTG_Next_Proxy( 
+ HRESULT __stdcall IEnumSTATPROPSETSTG_Next_Proxy( 
    IEnumSTATPROPSETSTG * This,
     ULONG celt,
     
@@ -1318,12 +1171,12 @@ void                      __stdcall  LPSAFEARRAY_UserFree64(      unsigned long 
       ULONG *pceltFetched);
 
 
- HRESULT STDMETHODCALLTYPE IEnumSTATPROPSETSTG_Next_Stub( 
+ HRESULT __stdcall IEnumSTATPROPSETSTG_Next_Stub( 
     IEnumSTATPROPSETSTG * This,
     ULONG celt,
      STATPROPSETSTG *rgelt,
      ULONG *pceltFetched);
-
+]]
 
 
 -- end of Additional Prototypes
