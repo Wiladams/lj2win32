@@ -20,6 +20,31 @@ local socktypes = {
     [tonumber(C.SOCK_DGRAM)] = "SOCK_DGRAM",
 }
 
+local protocols = {
+    [tonumber(ffi.C.IPPROTO_IP)]    = "IPPROTO_IP",
+    [tonumber(ffi.C.IPPROTO_ICMP)]  = "IPPROTO_ICMP",
+    [tonumber(ffi.C.IPPROTO_IGMP)]  = "IPPROTO_IGMP",
+    [tonumber(ffi.C.IPPROTO_GGP)]   = "IPPROTO_GGP",
+    [tonumber(ffi.C.IPPROTO_TCP)]   = "IPPROTO_TCP",
+    [tonumber(ffi.C.IPPROTO_PUP)]   = "IPPROTO_PUP",
+    [tonumber(ffi.C.IPPROTO_UDP)]   = "IPPROTO_UDP",
+    [tonumber(ffi.C.IPPROTO_IDP)]   = "IPPROTO_IDP",
+    [tonumber(ffi.C.IPPROTO_RDP)]   = "IPPROTO_RDP",
+    [tonumber(ffi.C.IPPROTO_IPV6)]  = "IPPROTO_IPV6",
+    [tonumber(ffi.C.IPPROTO_ROUTING)]   = "IPPROTO_ROUTING",
+    [tonumber(ffi.C.IPPROTO_FRAGMENT)]  = "IPPROTO_FRAGMENT",
+    [tonumber(ffi.C.IPPROTO_ESP)]       = "IPPROTO_ESP",
+    [tonumber(ffi.C.IPPROTO_AH)]        = "IPPROTO_AH",
+    [tonumber(ffi.C.IPPROTO_ICMPV6)]    = "IPPROTO_ICMPV6",
+    [tonumber(ffi.C.IPPROTO_NONE)]      = "IPPROTO_NONE",
+    [tonumber(ffi.C.IPPROTO_DSTOPTS)]   = "IPPROTO_DSTOPTS",
+    [tonumber(ffi.C.IPPROTO_ND)]        = "IPPROTO_ND",
+    [tonumber(ffi.C.IPPROTO_ICLFXBM)]   = "IPPROTO_ICLFXBM",
+    [tonumber(ffi.C.IPPROTO_PIM)]       = "IPPROTO_PIM",
+    [tonumber(ffi.C.IPPROTO_PGM)]       = "IPPROTO_PGM",
+    [tonumber(ffi.C.IPPROTO_L2TP)]      = "IPPROTO_L2TP",
+    [tonumber(ffi.C.IPPROTO_SCTP)]      = "IPPROTO_SCTP",
+}
 
 --[[
     Definition of some structures
@@ -135,10 +160,10 @@ print("  newSocketAddress, family: ", sockaddrptr.sa_family)
 end
 
 
-local function host_serv(hostname, servicename, family, socktype, isnumericstring)
-    print("== host_serv: ", hostname, servicename, family, socktype, isnumericstring)
+local function host_addresses(hostname, family, socktype, isnumericstring)
+    print("== host_addresses: ", hostname, servicename, family, socktype, isnumericstring)
 
-	hostname = hostname or "localhost"
+	hostname = hostname or "..localmachine"
 	family = family or C.AF_UNSPEC;
 	socktype = socktype or C.SOCK_STREAM;
 
@@ -154,20 +179,55 @@ local function host_serv(hostname, servicename, family, socktype, isnumericstrin
 	end
 
 	err = ws2tcpip.getaddrinfo(hostname, servicename, hints, res)
-print("  host_serv.getaddrinfo, err: ", err);
+print("  host_addresses.getaddrinfo, err: ", err);
 	if err ~= 0 then
 		-- error condition
 		return nil, err
 	end
 
-	return res[0]
+--[[
+typedef struct addrinfo
+{
+    int                 ai_flags;       // AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+    int                 ai_family;      // PF_xxx
+    int                 ai_socktype;    // SOCK_xxx
+    int                 ai_protocol;    // 0 or IPPROTO_xxx for IPv4 and IPv6
+    size_t              ai_addrlen;     // Length of ai_addr
+    char *              ai_canonname;   // Canonical name for nodename
+     struct sockaddr *   ai_addr;        // Binary address
+    struct addrinfo *   ai_next;        // Next structure in linked list
+}
+ADDRINFOA, *PADDRINFOA;
+    ]]
+
+    local current = res[0]
+    local entries = {}
+    repeat
+        table.insert(entries, {
+            Flags = current.ai_flags;
+            Family = current.ai_family;
+            SockType = current.ai_socktype;
+            Protocol = current.ai_protocol;
+            AddressLength = current.ai_addrlen; -- probably need to copy physical memory
+            Address = current.ai_addr;
+        })
+        current = current.ai_next;
+    until current.ai_next == nil
+
+	return entries
+end
+
+local function host_serv(hostname, servicename, family, socktype, isnumericstring)
+    local hostaddrs = host_addresses(hostname, family, socktype, isnumericstring)
+
+    return hostaddrs[1]
 end
 
 
 local CreateIPV4WildcardAddress= function(family, port)
 	local inetaddr = sockaddr_in()
 	inetaddr.sin_family = family;
-	inetaddr.sin_addr.S_addr = ws2tcpip.htonl(INADDR_ANY);
+	inetaddr.sin_addr.S_addr = ws2tcpip.htonl(C.INADDR_ANY);
 	inetaddr.sin_port = ws2tcpip.htons(port);
 
 	return inetaddr
@@ -216,10 +276,15 @@ end
 
 return {
 	host_serv = host_serv,
-	
+    host_addresses = host_addresses,
+    
 	CreateIPV4WildcardAddress = CreateIPV4WildcardAddress,
 	CreateSocketAddress = CreateSocketAddress,
 
 	--CreateTcpServerSocket = CreateTcpServerSocket,
-	--CreateTcpClientSocket = CreateTcpClientSocket,
+    --CreateTcpClientSocket = CreateTcpClientSocket,
+    
+    families = families;
+    socktypes = socktypes;
+    protocols = protocols;
 }

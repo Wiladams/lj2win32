@@ -29,10 +29,10 @@ require("win32.winapifamily")
 
 
 --[[
-#if !defined(_WINSOCK_DEPRECATED_BY)
-#if ((defined(_WINSOCK_DEPRECATED_NO_WARNINGS) || defined(BUILD_WINDOWS)) && !defined(_WINSOCK_DEPRECATE_WARNINGS)) || defined(MIDL_PASS)
+if !defined(_WINSOCK_DEPRECATED_BY)
+if ((defined(_WINSOCK_DEPRECATED_NO_WARNINGS) or defined(BUILD_WINDOWS)) && !defined(_WINSOCK_DEPRECATE_WARNINGS)) or defined(MIDL_PASS)
 #define _WINSOCK_DEPRECATED_BY(replacement)
-#else
+else
 #define _WINSOCK_DEPRECATED_BY(replacement) __declspec(deprecated("Use " replacement " instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings"))
 #endif
 #endif
@@ -126,9 +126,10 @@ getaddrinfo(
     );
 ]]
 
---[=[
-#if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
 
+if (NTDDI_VERSION >= NTDDI_WINXPSP2) or (_WIN32_WINNT >= 0x0502) then
+
+ffi.cdef[[
 INT
 __stdcall
 GetAddrInfoW(
@@ -137,17 +138,23 @@ GetAddrInfoW(
             const ADDRINFOW *   pHints,
             PADDRINFOW *        ppResult
     );
+]]
 
-#define GetAddrInfoA    getaddrinfo
+--#define GetAddrInfoA    getaddrinfo
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define GetAddrInfo     GetAddrInfoW
-#else
+else
 #define GetAddrInfo     GetAddrInfoA
-#endif
-#endif
+end
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
+end
+
+
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_GETADDRINFO)(
@@ -166,29 +173,35 @@ INT
             PADDRINFOW *        ppResult
     );
 
-#define LPFN_GETADDRINFOA      LPFN_GETADDRINFO
+typedef LPFN_GETADDRINFO  LPFN_GETADDRINFOA;
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_GETADDRINFOT      LPFN_GETADDRINFOW
-#else
+else
 #define LPFN_GETADDRINFOT      LPFN_GETADDRINFOA
 #endif
-#endif
+--]]
 
-#if (_WIN32_WINNT >= 0x0600)
+end
 
+
+if (_WIN32_WINNT >= 0x0600) then
+ffi.cdef[[
 typedef
 void
-(CALLBACK * LPLOOKUPSERVICE_COMPLETION_ROUTINE)(
+(__stdcall * LPLOOKUPSERVICE_COMPLETION_ROUTINE)(
           DWORD    dwError,
           DWORD    dwBytes,
           LPWSAOVERLAPPED lpOverlapped
     );
+]]
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-_WINSOCK_DEPRECATED_BY("GetAddrInfoExW()")
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--_WINSOCK_DEPRECATED_BY("GetAddrInfoExW()")
 
+ffi.cdef[[
 INT
 __stdcall
 GetAddrInfoExA(
@@ -201,12 +214,13 @@ GetAddrInfoExA(
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-
+ffi.cdef[[
 INT
 __stdcall
 GetAddrInfoExW(
@@ -219,7 +233,7 @@ GetAddrInfoExW(
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpHandle
+       LPHANDLE        lpHandle
     );
 
 
@@ -235,16 +249,20 @@ __stdcall
 GetAddrInfoExOverlappedResult(
             LPOVERLAPPED    lpOverlapped
     );
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define GetAddrInfoEx       GetAddrInfoExW
-#else
+else
 #define GetAddrInfoEx       GetAddrInfoExA
 #endif
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
-#pragma region Desktop Family or OneCore Family 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if INCL_WINSOCK_API_TYPEDEFS then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+ffi.cdef[[
 typedef
 INT
 (__stdcall *LPFN_GETADDRINFOEXA)(
@@ -257,11 +275,12 @@ INT
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-
+ffi.cdef[[
 typedef
 INT
 (__stdcall *LPFN_GETADDRINFOEXW)(
@@ -274,7 +293,7 @@ INT
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpHandle
+       LPHANDLE        lpHandle
     );
 
 typedef
@@ -288,22 +307,27 @@ INT
 (__stdcall *LPFN_GETADDRINFOEXOVERLAPPEDRESULT)(
             LPOVERLAPPED    lpOverlapped
     );
+]]
 
-
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_GETADDRINFOEX      LPFN_GETADDRINFOEXW
-#else
+else
 #define LPFN_GETADDRINFOEX      LPFN_GETADDRINFOEXA
-#endif
-#endif
+end
+--]]
 
-#endif
+end
 
-#if (_WIN32_WINNT >= 0x0600)
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-_WINSOCK_DEPRECATED_BY("SetAddrInfoExW()")
+end
 
+
+if (_WIN32_WINNT >= 0x0600) then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--_WINSOCK_DEPRECATED_BY("SetAddrInfoExW()")
+
+ffi.cdef[[
 INT
 __stdcall
 SetAddrInfoExA(
@@ -318,12 +342,13 @@ SetAddrInfoExA(
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+]]
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-
+ffi.cdef[[
 INT
 __stdcall
 SetAddrInfoExW(
@@ -338,18 +363,22 @@ SetAddrInfoExW(
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define SetAddrInfoEx       SetAddrInfoExW
-#else
+else
 #define SetAddrInfoEx       SetAddrInfoExA
 #endif
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+if INCL_WINSOCK_API_TYPEDEFS then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+ffi.cdef[[
 typedef
 INT
 (__stdcall *LPFN_SETADDRINFOEXA)(
@@ -364,11 +393,12 @@ INT
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
+]]
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
-
+ffi.cdef[[
 typedef
 INT
 (__stdcall *LPFN_SETADDRINFOEXW)(
@@ -383,18 +413,23 @@ INT
         struct timeval *timeout,
         LPOVERLAPPED    lpOverlapped,
         LPLOOKUPSERVICE_COMPLETION_ROUTINE  lpCompletionRoutine,
-    _Out_opt_   LPHANDLE        lpNameHandle
+       LPHANDLE        lpNameHandle
     );
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_SETADDRINFOEX      LPFN_SETADDRINFOEXW
-#else
+else
 #define LPFN_SETADDRINFOEX      LPFN_SETADDRINFOEXA
 #endif
-#endif
+--]]
 
-#endif
---]=]
+end
+
+
+end
+
 
 ffi.cdef[[
 VOID
@@ -404,26 +439,31 @@ freeaddrinfo(
     );
 ]]
 
---[=[
-#if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
 
+if (NTDDI_VERSION >= NTDDI_WINXPSP2) or (_WIN32_WINNT >= 0x0502) then
+ffi.cdef[[
 VOID
 __stdcall
 FreeAddrInfoW(
             PADDRINFOW      pAddrInfo
     );
+]]
 
-#define FreeAddrInfoA   freeaddrinfo
+--#define FreeAddrInfoA   freeaddrinfo
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define FreeAddrInfo    FreeAddrInfoW
-#else
+else
 #define FreeAddrInfo    FreeAddrInfoA
 #endif
-#endif
+--]]
+
+end
 
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 VOID
 (__stdcall * LPFN_FREEADDRINFO)(
@@ -434,117 +474,140 @@ VOID
 (__stdcall * LPFN_FREEADDRINFOW)(
             PADDRINFOW      pAddrInfo
     );
+]]
 
-#define LPFN_FREEADDRINFOA      LPFN_FREEADDRINFO
+--#define LPFN_FREEADDRINFOA      LPFN_FREEADDRINFO
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_FREEADDRINFOT      LPFN_FREEADDRINFOW
-#else
+else
 #define LPFN_FREEADDRINFOT      LPFN_FREEADDRINFOA
 #endif
-#endif
+--]]
 
-#if (_WIN32_WINNT >= 0x0600)
+end
 
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
-_WINSOCK_DEPRECATED_BY("FreeAddrInfoExW()")
+if (_WIN32_WINNT >= 0x0600) then
 
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+--_WINSOCK_DEPRECATED_BY("FreeAddrInfoExW()")
+ffi.cdef[[
 void
 __stdcall
 FreeAddrInfoEx(
       PADDRINFOEXA    pAddrInfoEx
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+]]
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
 
-
+ffi.cdef[[
 void
 __stdcall
 FreeAddrInfoExW(
       PADDRINFOEXW    pAddrInfoEx
     );
+]]
 
-#define FreeAddrInfoExA     FreeAddrInfoEx
+--#define FreeAddrInfoExA     FreeAddrInfoEx
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define FreeAddrInfoEx      FreeAddrInfoExW
 #endif
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
-#pragma region Desktop Family or OneCore Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+if INCL_WINSOCK_API_TYPEDEFS then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_SYSTEM) then
+
+ffi.cdef[[
 typedef
 void
 (__stdcall *LPFN_FREEADDRINFOEXA)(
         PADDRINFOEXA    pAddrInfoEx
     );
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
+    ]]
+end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM) */
 
-
+ffi.cdef[[
 typedef
 void
 (__stdcall *LPFN_FREEADDRINFOEXW)(
         PADDRINFOEXW    pAddrInfoEx
     );
+]]
 
-
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_FREEADDRINFOEX     LPFN_FREEADDRINFOEXW
-#else
+else
 #define LPFN_FREEADDRINFOEX     LPFN_FREEADDRINFOEXA
-#endif
+end
+--]]
 
-#endif
-#endif
+end
+end
 
+
+ffi.cdef[[
 typedef int socklen_t;
 
 
 INT
 __stdcall
 getnameinfo(
-    _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
+        const SOCKADDR *    pSockaddr,
                                     socklen_t           SockaddrLength,
-    _Out_writes_opt_(NodeBufferSize)    PCHAR               pNodeBuffer,
+        PCHAR               pNodeBuffer,
                                     DWORD               NodeBufferSize,
-    _Out_writes_opt_(ServiceBufferSize) PCHAR               pServiceBuffer,
+     PCHAR               pServiceBuffer,
                                     DWORD               ServiceBufferSize,
                                     INT                 Flags
     );
+]]
 
-#if (NTDDI_VERSION >= NTDDI_WINXPSP2) || (_WIN32_WINNT >= 0x0502)
 
+if (NTDDI_VERSION >= NTDDI_WINXPSP2) or (_WIN32_WINNT >= 0x0502) then
+ffi.cdef[[
 INT
 __stdcall
 GetNameInfoW(
-    _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
-                                    socklen_t           SockaddrLength,
-    _Out_writes_opt_(NodeBufferSize)    PWCHAR              pNodeBuffer,
-                                    DWORD               NodeBufferSize,
-    _Out_writes_opt_(ServiceBufferSize) PWCHAR              pServiceBuffer,
-                                    DWORD               ServiceBufferSize,
-                                    INT                 Flags
+    const SOCKADDR *    pSockaddr,
+    socklen_t           SockaddrLength,
+    PWCHAR              pNodeBuffer,
+    DWORD               NodeBufferSize,
+    PWCHAR              pServiceBuffer,
+    DWORD               ServiceBufferSize,
+    INT                 Flags
     );
+]]
 
-#define GetNameInfoA    getnameinfo
+--#define GetNameInfoA    getnameinfo
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define GetNameInfo     GetNameInfoW
-#else
+else
 #define GetNameInfo     GetNameInfoA
-#endif
-#endif
+end
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
+end
+
+
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 int
 (__stdcall * LPFN_GETNAMEINFO)(
-    _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
+        const SOCKADDR *    pSockaddr,
                                     socklen_t           SockaddrLength,
-    _Out_writes_opt_(NodeBufferSize)    PCHAR               pNodeBuffer,
+        PCHAR               pNodeBuffer,
                                     DWORD               NodeBufferSize,
-    _Out_writes_opt_(ServiceBufferSize) PCHAR               pServiceBuffer,
+     PCHAR               pServiceBuffer,
                                     DWORD               ServiceBufferSize,
                                     INT                 Flags
     );
@@ -552,77 +615,81 @@ int
 typedef
 INT
 (__stdcall * LPFN_GETNAMEINFOW)(
-    _In_reads_bytes_(SockaddrLength)    const SOCKADDR *    pSockaddr,
+        const SOCKADDR *    pSockaddr,
                                     socklen_t           SockaddrLength,
-    _Out_writes_opt_(NodeBufferSize)    PWCHAR              pNodeBuffer,
+        PWCHAR              pNodeBuffer,
                                     DWORD               NodeBufferSize,
-    _Out_writes_opt_(ServiceBufferSize) PWCHAR              pServiceBuffer,
+     PWCHAR              pServiceBuffer,
                                     DWORD               ServiceBufferSize,
                                     INT                 Flags
     );
 
-#define LPFN_GETNAMEINFOA      LPFN_GETNAMEINFO
+typedef LPFN_GETNAMEINFO  LPFN_GETNAMEINFOA;
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_GETNAMEINFOT      LPFN_GETNAMEINFOW
-#else
+else
 #define LPFN_GETNAMEINFOT      LPFN_GETNAMEINFOA
-#endif
-#endif
+end
+--]]
+
+end
 
 
-#if (NTDDI_VERSION >= NTDDI_VISTA)
-
+if (NTDDI_VERSION >= NTDDI_VISTA) then
+ffi.cdef[[
 INT
 __stdcall
 inet_pton(
-                                          INT             Family,
-                                          PCSTR           pszAddrString,
-    _When_(Family == AF_INET, _Out_writes_bytes_(sizeof(IN_ADDR)))
-    _When_(Family == AF_INET6, _Out_writes_bytes_(sizeof(IN6_ADDR)))
-                                              PVOID           pAddrBuf
+    INT             Family,
+    PCSTR           pszAddrString,
+    PVOID           pAddrBuf
     );
 
 INT
 __stdcall
 InetPtonW(
-                                          INT             Family,
-                                          PCWSTR          pszAddrString,
-    _When_(Family == AF_INET, _Out_writes_bytes_(sizeof(IN_ADDR)))
-    _When_(Family == AF_INET6, _Out_writes_bytes_(sizeof(IN6_ADDR)))
-                                              PVOID           pAddrBuf
+    INT             Family,
+    PCWSTR          pszAddrString,
+    PVOID           pAddrBuf
     );
 
 PCSTR
 __stdcall
 inet_ntop(
-                                    INT             Family,
-                                    const VOID *    pAddr,
-    _Out_writes_(StringBufSize)         PSTR            pStringBuf,
-                                    size_t          StringBufSize
+    INT             Family,
+    const VOID *    pAddr,
+    PSTR            pStringBuf,
+    size_t          StringBufSize
     );
 
 PCWSTR
 __stdcall
 InetNtopW(
-                                    INT             Family,
-                                    const VOID *    pAddr,
-    _Out_writes_(StringBufSize)         PWSTR           pStringBuf,
-                                    size_t          StringBufSize
+    INT             Family,
+    const VOID *    pAddr,
+    PWSTR           pStringBuf,
+    size_t          StringBufSize
     );
+]]
 
-#define InetPtonA       inet_pton
-#define InetNtopA       inet_ntop
+--#define InetPtonA       inet_pton
+--#define InetNtopA       inet_ntop
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define InetPton        InetPtonW
 #define InetNtop        InetNtopW
-#else
+else
 #define InetPton        InetPtonA
 #define InetNtop        InetNtopA
 #endif
+--]]
 
-#if INCL_WINSOCK_API_TYPEDEFS
+if INCL_WINSOCK_API_TYPEDEFS then
+ffi.cdef[[
 typedef
 INT
 (__stdcall * LPFN_INET_PTONA)(
@@ -644,7 +711,7 @@ PCSTR
 (__stdcall * LPFN_INET_NTOPA)(
                                     INT             Family,
                                     PVOID           pAddr,
-    _Out_writes_(StringBufSize)         PSTR            pStringBuf,
+             PSTR            pStringBuf,
                                     size_t          StringBufSize
     );
 
@@ -653,27 +720,30 @@ PCWSTR
 (__stdcall * LPFN_INET_NTOPW)(
                                     INT             Family,
                                     PVOID           pAddr,
-    _Out_writes_(StringBufSize)         PWSTR           pStringBuf,
+             PWSTR           pStringBuf,
                                     size_t          StringBufSize
     );
+]]
 
-#ifdef UNICODE
+--[[
+if UNICODE then
 #define LPFN_INET_PTON          LPFN_INET_PTONW
 #define LPFN_INET_NTOP          LPFN_INET_NTOPW
-#else
+else
 #define LPFN_INET_PTON          LPFN_INET_PTONA
 #define LPFN_INET_NTOP          LPFN_INET_NTOPA
 #endif
+--]]
 
-#endif  //  TYPEDEFS
-#endif  //  (NTDDI_VERSION >= NTDDI_VISTA)
+end  --  TYPEDEFS
+end  --  (NTDDI_VERSION >= NTDDI_VISTA)
 
 
-
-#if INCL_WINSOCK_API_PROTOTYPES
-#ifdef UNICODE
+--[=[
+if INCL_WINSOCK_API_PROTOTYPES
+if UNICODE then
 #define gai_strerror   gai_strerrorW
-#else
+else
 #define gai_strerror   gai_strerrorA
 #endif  /* UNICODE */
 
@@ -684,7 +754,7 @@ PCWSTR
 // used by getaddrinfo().
 #define GAI_STRERROR_BUFFER_SIZE 1024
 
-WS2TCPIP_INLINE
+
 char *
 gai_strerrorA(
      int ecode)
@@ -704,7 +774,7 @@ gai_strerrorA(
     return buff;
 }
 
-WS2TCPIP_INLINE
+
 WCHAR *
 gai_strerrorW(
      int ecode
@@ -724,12 +794,12 @@ gai_strerrorW(
 
     return buff;
 }
-#endif /* INCL_WINSOCK_API_PROTOTYPES */
+end  -- INCL_WINSOCK_API_PROTOTYPES */
+--]=]
 
+-- Multicast source filter APIs from RFC 3678. */
 
-/* Multicast source filter APIs from RFC 3678. */
-
-WS2TCPIP_INLINE
+--[=[
 int
 setipv4sourcefilter(
      SOCKET Socket,
@@ -774,16 +844,16 @@ setipv4sourcefilter(
     return Error;
 }
 
-_Success_(return == 0)
-WS2TCPIP_INLINE
+
+
 int
 getipv4sourcefilter(
      SOCKET Socket,
      IN_ADDR Interface,
      IN_ADDR Group,
-    _Out_ MULTICAST_MODE_TYPE *FilterMode,
+     MULTICAST_MODE_TYPE *FilterMode,
      ULONG *SourceCount,
-    _Out_writes_(*SourceCount) IN_ADDR *SourceList
+     IN_ADDR *SourceList
     )
 {
     int Error;
@@ -824,8 +894,8 @@ getipv4sourcefilter(
     return Error;
 }
 
-#if (NTDDI_VERSION >= NTDDI_WINXP)
-WS2TCPIP_INLINE
+if (NTDDI_VERSION >= NTDDI_WINXP) then
+if  then
 int
 setsourcefilter(
      SOCKET Socket,
@@ -872,17 +942,17 @@ setsourcefilter(
     return Error;
 }
 
-_Success_(return == 0)
-WS2TCPIP_INLINE
+
+
 int
 getsourcefilter(
      SOCKET Socket,
      ULONG Interface,
      CONST SOCKADDR *Group,
      int GroupLength,
-    _Out_ MULTICAST_MODE_TYPE *FilterMode,
+     MULTICAST_MODE_TYPE *FilterMode,
      ULONG *SourceCount,
-    _Out_writes_(*SourceCount) SOCKADDR_STORAGE *SourceList
+     SOCKADDR_STORAGE *SourceList
     )
 {
     int Error;
@@ -923,20 +993,22 @@ getsourcefilter(
 
     return Error;
 }
-#endif
 
-#ifdef IDEAL_SEND_BACKLOG_IOCTLS
+end
+--]=]
+
+if IDEAL_SEND_BACKLOG_IOCTLS then
 --[[
 //
 // Wrapper functions for the ideal send backlog query and change notification
 // ioctls
 //
 
-WS2TCPIP_INLINE 
+ 
 int  
 idealsendbacklogquery(
      SOCKET s,
-    _Out_ ULONG *pISB
+     ULONG *pISB
     )
 {
     DWORD bytes;
@@ -946,7 +1018,7 @@ idealsendbacklogquery(
 }
 
 
-WS2TCPIP_INLINE 
+ 
 int  
 idealsendbacklognotify(
      SOCKET s,
@@ -961,13 +1033,14 @@ idealsendbacklognotify(
                     lpOverlapped, lpCompletionRoutine);
 }
 --]]
-#endif
+end
 
-#if (_WIN32_WINNT >= 0x0600)
-#ifdef _SECURE_SOCKET_TYPES_DEFINED_
-#pragma region Desktop Family or AppRuntime Package
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PKG_APPRUNTIME)
 
+if (_WIN32_WINNT >= 0x0600) then
+if _SECURE_SOCKET_TYPES_DEFINED_ then
+
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP , WINAPI_PARTITION_PKG_APPRUNTIME) then
+ffi.cdef[[
 //
 // Secure socket API definitions
 //
@@ -1023,7 +1096,7 @@ INT
 __stdcall
 WSAImpersonateSocketPeer (
     SOCKET Socket,
-   _In_reads_bytes_opt_(PeerAddrLen) const struct sockaddr* PeerAddr,
+    const struct sockaddr* PeerAddr,
     ULONG PeerAddrLen
 );
 
@@ -1031,33 +1104,28 @@ WSAImpersonateSocketPeer (
 INT
 __stdcall
 WSARevertImpersonation ();
+]]
+end  -- WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PKG_APPRUNTIME) */
 
-#endif /* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_PKG_APPRUNTIME) */
-
-#endif //_SECURE_SOCKET_TYPES_DEFINED_
-#endif //(_WIN32_WINNT >= 0x0600)
-
-#ifdef __cplusplus
-}
-#endif
+end  --_SECURE_SOCKET_TYPES_DEFINED_
+end  --(_WIN32_WINNT >= 0x0600)
 
 
 
-#pragma region Desktop Family
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-//
+if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
+--[[
 // Unless the build environment is explicitly targeting only
 // platforms that include built-in getaddrinfo() support, include
 // the backwards-compatibility version of the relevant APIs.
-//
+--]]
 if not _WIN32_WINNT or (_WIN32_WINNT <= 0x0500) then
-require("win32.wspiapi")
+--require("win32.wspiapi")
 end
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) */
 
 
 
---]=]
+
 end  -- _WS2TCPIP_H_
 
 return ffi.load("Ws2_32")
