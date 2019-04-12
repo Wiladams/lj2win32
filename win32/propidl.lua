@@ -687,7 +687,7 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
    };
 
    
-
+--[[
 #ifdef COBJMACROS
 
 
@@ -714,7 +714,7 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
    ( (This)->lpVtbl -> Enum(This,ppenum) ) 
 
 #endif /* COBJMACROS */
-
+--]]
 
 
 
@@ -732,11 +732,11 @@ typedef /* [unique] */  __RPC_unique_pointer IPropertySetStorage *LPPROPERTYSETS
 typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG;
 
 
- const IID IID_IEnumSTATPROPSTG;
- MIDL_INTERFACE("00000139-0000-0000-C000-000000000046")
+-- const IID IID_IEnumSTATPROPSTG;
+-- MIDL_INTERFACE("00000139-0000-0000-C000-000000000046")
 
 
-
+ffi.cdef[[
    typedef struct IEnumSTATPROPSTGVtbl
    {
        BEGIN_INTERFACE
@@ -779,9 +779,9 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG
    {
        CONST_VTBL struct IEnumSTATPROPSTGVtbl *lpVtbl;
    };
-
+]]
    
-
+--[[
 #ifdef COBJMACROS
 
 
@@ -808,7 +808,7 @@ typedef /* [unique] */  __RPC_unique_pointer IEnumSTATPROPSTG *LPENUMSTATPROPSTG
    ( (This)->lpVtbl -> Clone(This,ppenum) ) 
 
 #endif /* COBJMACROS */
-
+--]]
 
 
 
@@ -821,7 +821,7 @@ ffi.cdef[[
      ULONG *pceltFetched);
 
 
-void __RPC_STUB IEnumSTATPROPSTG_RemoteNext_Stub(
+void __stdcall IEnumSTATPROPSTG_RemoteNext_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -930,7 +930,7 @@ ffi.cdef[[
      ULONG *pceltFetched);
 
 
-void __RPC_STUB IEnumSTATPROPSETSTG_RemoteNext_Stub(
+void __stdcall IEnumSTATPROPSETSTG_RemoteNext_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -1046,24 +1046,12 @@ HRESULT __stdcall PropVariantClear( PROPVARIANT* pvar);
 HRESULT __stdcall FreePropVariantArray(ULONG cVariants, PROPVARIANT* rgvars);
 ]]
 
---[=[
-if _MSC_EXTENSIONS
 
-#define _PROPVARIANTINIT_DEFINED_
-#ifdef __cplusplus
-
-inline void PropVariantInit ( PROPVARIANT * pvar )
-{
-   memset ( pvar, 0, sizeof(PROPVARIANT) );
-}
-
-#else
-#define PropVariantInit(pvar) memset ( (pvar), 0, sizeof(PROPVARIANT) )
-#endif
-
-
+if _MSC_EXTENSIONS then
+_PROPVARIANTINIT_DEFINED_ = true
+--#define PropVariantInit(pvar) memset ( (pvar), 0, sizeof(PROPVARIANT) )
 end --/* _MSC_EXTENSIONS */
---]=]
+
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 

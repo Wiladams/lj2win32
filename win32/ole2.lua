@@ -20,7 +20,7 @@ _OLE2_H_ = true
 
 
 ffi.cdef[[
-    #pragma pack (push, 8)
+    //#pragma pack (push, 8)
 ]]
 --// Set packing to 8
 --#include <pshpack8.h>

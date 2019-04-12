@@ -112,7 +112,7 @@ HRESULT __stdcall IUnknown_QueryInterface_Proxy(
      void **ppvObject);
 
 
-void __RPC_STUB IUnknown_QueryInterface_Stub(
+void __stdcall IUnknown_QueryInterface_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -123,7 +123,7 @@ ULONG __stdcall IUnknown_AddRef_Proxy(
    IUnknown * This);
 
 
-void __RPC_STUB IUnknown_AddRef_Stub(
+void __stdcall IUnknown_AddRef_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -134,7 +134,7 @@ ULONG __stdcall IUnknown_Release_Proxy(
    IUnknown * This);
 
 
-void __RPC_STUB IUnknown_Release_Stub(
+void __stdcall IUnknown_Release_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -363,7 +363,7 @@ end
    /* [iid_is][out] */ __RPC__deref_out_opt IUnknown **ppvObject);
 
 
-void __RPC_STUB IClassFactory_RemoteCreateInstance_Stub(
+void __stdcall IClassFactory_RemoteCreateInstance_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,
@@ -375,7 +375,7 @@ void __RPC_STUB IClassFactory_RemoteCreateInstance_Stub(
    /* [in] */ BOOL fLock);
 
 
-void __RPC_STUB IClassFactory_RemoteLockServer_Stub(
+void __stdcall IClassFactory_RemoteLockServer_Stub(
    IRpcStubBuffer *This,
    IRpcChannelBuffer *_pRpcChannelBuffer,
    PRPC_MESSAGE _pRpcMessage,

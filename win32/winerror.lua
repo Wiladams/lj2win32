@@ -27409,13 +27409,13 @@ static const int ERROR_API_UNAVAILABLE            15841L
 // indicate success).
 //
 
-#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+#define SUCCEEDED(hr) (((hr)) >= 0)
 
 //
 // and the inverse
 //
 
-#define FAILED(hr) (((HRESULT)(hr)) < 0)
+#define FAILED(hr) (((hr)) < 0)
 
 
 //
@@ -27475,7 +27475,7 @@ end
 // HRESULT_FROM_WIN32(x) used to be a macro, however we now run it as an inline function
 // to prevent double evaluation of 'x'. If you still need the macro, you can use __HRESULT_FROM_WIN32(x)
 //
-#define __HRESULT_FROM_WIN32(x) ((HRESULT)(x) <= 0 ? ((HRESULT)(x)) : ((HRESULT) (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000)))
+#define __HRESULT_FROM_WIN32(x) ((x) <= 0 ? ((x)) : ( (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000)))
 
 #if !defined(_HRESULT_DEFINED) && !defined(__midl)
 #define _HRESULT_DEFINED
@@ -27486,7 +27486,7 @@ typedef _Return_type_success_(return >= 0) long HRESULT;
 #if defined(__cplusplus) && _MSC_VER >= 1900 && !defined(SORTPP_PASS)
 constexpr
 #endif
-FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned long x) { return (HRESULT)(x) <= 0 ? (HRESULT)(x) : (HRESULT) (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000);}
+FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned long x) { return (x) <= 0 ? (x) :  (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000);}
 #else
 #define HRESULT_FROM_WIN32(x) __HRESULT_FROM_WIN32(x)
 #endif
@@ -27495,7 +27495,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // Map an NT status value into a HRESULT
 //
 
-#define HRESULT_FROM_NT(x)      ((HRESULT) ((x) | FACILITY_NT_BIT))
+#define HRESULT_FROM_NT(x)      ( ((x) | FACILITY_NT_BIT))
 
 
 // ****** OBSOLETE functions
@@ -27510,11 +27510,11 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 
 // Convert an SCODE into an HRESULT.
 
-#define ResultFromScode(sc) ((HRESULT) (sc))
+#define ResultFromScode(sc) ( (sc))
 
 
 // PropagateResult is a noop
-#define PropagateResult(hrPrevious, scBase) ((HRESULT) scBase)
+#define PropagateResult(hrPrevious, scBase) ( scBase)
 
 
 // ****** End of OBSOLETE functions.
@@ -27531,7 +27531,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 #ifdef RC_INVOKED
 #define _HRESULT_TYPEDEF_(_sc) _sc
 #else // RC_INVOKED
-#define _HRESULT_TYPEDEF_(_sc) ((HRESULT)_sc)
+#define _HRESULT_TYPEDEF_(_sc) (_sc)
 #endif // RC_INVOKED
 
 #define NOERROR             0
@@ -27554,8 +27554,10 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // Catastrophic failure
 //
 #define E_UNEXPECTED                     _HRESULT_TYPEDEF_(0x8000FFFFL)
+--]=]
 
-#if defined(_WIN32) && !defined(_MAC)
+
+ffi.cdef[[
 //
 // MessageId: E_NOTIMPL
 //
@@ -27563,7 +27565,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Not implemented
 //
-#define E_NOTIMPL                        _HRESULT_TYPEDEF_(0x80004001L)
+static const int  E_NOTIMPL                       = (0x80004001);
 
 //
 // MessageId: E_OUTOFMEMORY
@@ -27572,7 +27574,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Ran out of memory
 //
-#define E_OUTOFMEMORY                    _HRESULT_TYPEDEF_(0x8007000EL)
+static const int  E_OUTOFMEMORY                   = (0x8007000E);
 
 //
 // MessageId: E_INVALIDARG
@@ -27581,7 +27583,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // One or more arguments are invalid
 //
-#define E_INVALIDARG                     _HRESULT_TYPEDEF_(0x80070057L)
+static const int  E_INVALIDARG                    = (0x80070057);
 
 //
 // MessageId: E_NOINTERFACE
@@ -27590,7 +27592,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // No such interface supported
 //
-#define E_NOINTERFACE                    _HRESULT_TYPEDEF_(0x80004002L)
+static const int  E_NOINTERFACE                   = (0x80004002);
 
 //
 // MessageId: E_POINTER
@@ -27599,7 +27601,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Invalid pointer
 //
-#define E_POINTER                        _HRESULT_TYPEDEF_(0x80004003L)
+static const int  E_POINTER                       = (0x80004003);
 
 //
 // MessageId: E_HANDLE
@@ -27608,7 +27610,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Invalid handle
 //
-#define E_HANDLE                         _HRESULT_TYPEDEF_(0x80070006L)
+static const int  E_HANDLE                        = (0x80070006);
 
 //
 // MessageId: E_ABORT
@@ -27617,7 +27619,9 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Operation aborted
 //
-#define E_ABORT                          _HRESULT_TYPEDEF_(0x80004004L)
+static const int  E_ABORT                         = (0x80004004);
+
+
 
 //
 // MessageId: E_FAIL
@@ -27626,7 +27630,10 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Unspecified error
 //
-#define E_FAIL                           _HRESULT_TYPEDEF_(0x80004005L)
+static const int E_FAIL                         =  (0x80004005);
+
+
+
 
 //
 // MessageId: E_ACCESSDENIED
@@ -27635,91 +27642,11 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // General access denied error
 //
-#define E_ACCESSDENIED                   _HRESULT_TYPEDEF_(0x80070005L)
+static const int  E_ACCESSDENIED                  = (0x80070005);
+]]
 
-#else
-//
-// MessageId: E_NOTIMPL
-//
-// MessageText:
-//
-// Not implemented
-//
-#define E_NOTIMPL                        _HRESULT_TYPEDEF_(0x80000001L)
 
-//
-// MessageId: E_OUTOFMEMORY
-//
-// MessageText:
-//
-// Ran out of memory
-//
-#define E_OUTOFMEMORY                    _HRESULT_TYPEDEF_(0x80000002L)
-
-//
-// MessageId: E_INVALIDARG
-//
-// MessageText:
-//
-// One or more arguments are invalid
-//
-#define E_INVALIDARG                     _HRESULT_TYPEDEF_(0x80000003L)
-
-//
-// MessageId: E_NOINTERFACE
-//
-// MessageText:
-//
-// No such interface supported
-//
-#define E_NOINTERFACE                    _HRESULT_TYPEDEF_(0x80000004L)
-
-//
-// MessageId: E_POINTER
-//
-// MessageText:
-//
-// Invalid pointer
-//
-#define E_POINTER                        _HRESULT_TYPEDEF_(0x80000005L)
-
-//
-// MessageId: E_HANDLE
-//
-// MessageText:
-//
-// Invalid handle
-//
-#define E_HANDLE                         _HRESULT_TYPEDEF_(0x80000006L)
-
-//
-// MessageId: E_ABORT
-//
-// MessageText:
-//
-// Operation aborted
-//
-#define E_ABORT                          _HRESULT_TYPEDEF_(0x80000007L)
-
-//
-// MessageId: E_FAIL
-//
-// MessageText:
-//
-// Unspecified error
-//
-#define E_FAIL                           _HRESULT_TYPEDEF_(0x80000008L)
-
-//
-// MessageId: E_ACCESSDENIED
-//
-// MessageText:
-//
-// General access denied error
-//
-#define E_ACCESSDENIED                   _HRESULT_TYPEDEF_(0x80000009L)
-
-#endif //WIN32
+--[=[
 //
 // MessageId: E_PENDING
 //
@@ -28336,8 +28263,8 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // Success codes
 //
-#define S_OK                                   ((HRESULT)0L)
-#define S_FALSE                                ((HRESULT)1L)
+#define S_OK                                   (0L)
+#define S_FALSE                                (1L)
 
 // ******************
 // FACILITY_ITF
@@ -28353,10 +28280,10 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // Generic OLE errors that may be returned by many inerfaces
 //
 
-#define OLE_E_FIRST ((HRESULT)0x80040000L)
-#define OLE_E_LAST  ((HRESULT)0x800400FFL)
-#define OLE_S_FIRST ((HRESULT)0x00040000L)
-#define OLE_S_LAST  ((HRESULT)0x000400FFL)
+#define OLE_E_FIRST (0x80040000L)
+#define OLE_E_LAST  (0x800400FFL)
+#define OLE_S_FIRST (0x00040000L)
+#define OLE_S_LAST  (0x000400FFL)
 
 //
 // Old OLE errors
@@ -29253,11 +29180,16 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // Moniker could not be enumerated
 //
 #define MK_E_ENUMERATION_FAILED          _HRESULT_TYPEDEF_(0x800401EFL)
+--]=]
 
-#define CO_E_FIRST        0x800401F0L
-#define CO_E_LAST         0x800401FFL
-#define CO_S_FIRST        0x000401F0L
-#define CO_S_LAST         0x000401FFL
+ffi.cdef[[
+static const int CO_E_FIRST      =  0x800401F0;
+static const int CO_E_LAST       =  0x800401FF;
+static const int CO_S_FIRST      =  0x000401F0;
+static const int CO_S_LAST       =  0x000401FF;
+]]
+
+ffi.cdef[[
 //
 // MessageId: CO_E_NOTINITIALIZED
 //
@@ -29265,8 +29197,10 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 //
 // CoInitialize has not been called.
 //
-#define CO_E_NOTINITIALIZED              _HRESULT_TYPEDEF_(0x800401F0L)
+static const int CO_E_NOTINITIALIZED             = (0x800401F0);
+]]
 
+--[=[
 //
 // MessageId: CO_E_ALREADYINITIALIZED
 //
@@ -36934,7 +36868,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // macro to map either Win32 or SetupAPI error codes into an HRESULT.
 //
 #define HRESULT_FROM_SETUPAPI(x) ((((x) & (APPLICATION_ERROR_MASK|ERROR_SEVERITY_ERROR)) == (APPLICATION_ERROR_MASK|ERROR_SEVERITY_ERROR)) \
-                                 ? ((HRESULT) (((x) & 0x0000FFFF) | (FACILITY_SETUPAPI << 16) | 0x80000000))                               \
+                                 ? ( (((x) & 0x0000FFFF) | (FACILITY_SETUPAPI << 16) | 0x80000000))                               \
                                  : HRESULT_FROM_WIN32(x))
 //
 // MessageId: SPAPI_E_EXPECTED_SECTION_NAME
@@ -39567,7 +39501,7 @@ FORCEINLINE _Translates_Win32_to_HRESULT_(x) HRESULT HRESULT_FROM_WIN32(unsigned
 // Translation macro for converting FilterManager error codes only from:
 //     NTSTATUS  --> HRESULT
 //
-#define FILTER_HRESULT_FROM_FLT_NTSTATUS(x) (ASSERT((x & 0xfff0000) == 0x001c0000),(HRESULT) (((x) & 0x8000FFFF) | (FACILITY_USERMODE_FILTER_MANAGER << 16)))
+#define FILTER_HRESULT_FROM_FLT_NTSTATUS(x) (ASSERT((x & 0xfff0000) == 0x001c0000), (((x) & 0x8000FFFF) | (FACILITY_USERMODE_FILTER_MANAGER << 16)))
 //
 // MessageId: ERROR_FLT_IO_COMPLETE
 //

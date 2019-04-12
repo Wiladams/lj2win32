@@ -11,7 +11,7 @@ local lshift, rshift = bit.lshift, bit.rshift
 local bor, band = bit.bor, bit.band
 local bswap = bit.bswap
 
-local bitbang = require("bitbang")
+local bitbang = require("win32.bitbang")
 local BVALUE = bitbang.BITSVALUE
 
 

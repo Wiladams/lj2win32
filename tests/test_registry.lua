@@ -98,4 +98,7 @@ end
 --printKey(Registry.HKEY_PERFORMANCE_NLSTEXT, "HKEY_PERFORMANCE_NLSTEXT")
 
 -- Print the fonts in the system
-printKey(Registry.HKEY_LOCAL_MACHINE.SOFTWARE.Microsoft["Windows NT"].CurrentVersion.Fonts, "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts")
+--printKey(Registry.HKEY_LOCAL_MACHINE.SOFTWARE.Microsoft["Windows NT"].CurrentVersion.Fonts, "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts")
+
+--#define REGSTR_PATH_DDHW                "Hardware\\DirectDrawDrivers"
+printKey(Registry.HKEY_LOCAL_MACHINE.HARDWARE, "HKEY_LOCAL_MACHINE.HARDWARE")
