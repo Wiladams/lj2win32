@@ -3999,7 +3999,9 @@ UpdateLayeredWindow(
      COLORREF crKey,
      BLENDFUNCTION* pblend,
      DWORD dwFlags);
+]]
 
+ffi.cdef[[
 /*
  * Layered Window Update information
  */
@@ -4016,9 +4018,9 @@ typedef struct tagUPDATELAYEREDWINDOWINFO
     DWORD dwFlags;
     const RECT* prcDirty;
 } UPDATELAYEREDWINDOWINFO, *PUPDATELAYEREDWINDOWINFO;
-]]
 
-ffi.cdef[[
+
+
 BOOL
 __stdcall
 UpdateLayeredWindowIndirect(
@@ -4033,13 +4035,13 @@ GetLayeredWindowAttributes(
     COLORREF* pcrKey,
     BYTE* pbAlpha,
     DWORD* pdwFlags);
-
-static const int PW_CLIENTONLY          = 0x00000001;
-static const int PW_RENDERFULLCONTENT   = 0x00000002;
 ]]
 
-
 ffi.cdef[[
+static const int PW_CLIENTONLY          = 0x00000001;
+static const int PW_RENDERFULLCONTENT   = 0x00000002;
+
+
 BOOL
 __stdcall
 PrintWindow(
