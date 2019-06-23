@@ -2935,6 +2935,7 @@ typedef struct _WIN32_STREAM_ID {
         WCHAR          cStreamName[ ANYSIZE_ARRAY ] ;
 } WIN32_STREAM_ID, *LPWIN32_STREAM_ID ;
 ]]
+--]=]
 
 ffi.cdef[[
 //
@@ -2981,6 +2982,7 @@ static const int STARTF_USESTDHANDLES      = 0x00000100;
 ]]
 
 if(WINVER >= 0x0400) then
+--[=[
 ffi.cdef[[
 static const int STARTF_USEHOTKEY          = 0x00000200;
 static const int STARTF_TITLEISLINKNAME    = 0x00000800;
@@ -5563,10 +5565,10 @@ end --// _WIN32_WINNT >= 0x0601
 
 end --/* WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM) */
 
+
+end --/* _WIN32_WINNT >= 0x0400 */
+
 --[=[
-#endif /* _WIN32_WINNT >= 0x0400 */
-
-
 if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) then
 
 

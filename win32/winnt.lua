@@ -11831,9 +11831,8 @@ ffi.cdef[[
 } ENCLAVE_CREATE_INFO_VBS, *PENCLAVE_CREATE_INFO_VBS;
 ]]
 
---[=[
-// begin_access
 
+ffi.cdef[[
 //
 // Define access rights to files and directories
 //
@@ -11846,53 +11845,53 @@ ffi.cdef[[
 // both DOS and NT.
 //
 
-#define FILE_READ_DATA            ( 0x0001 )    // file & pipe
-#define FILE_LIST_DIRECTORY       ( 0x0001 )    // directory
+static const int FILE_READ_DATA          =  ( 0x0001 );    // file & pipe
+static const int FILE_LIST_DIRECTORY     =  ( 0x0001 );    // directory
 
-#define FILE_WRITE_DATA           ( 0x0002 )    // file & pipe
-#define FILE_ADD_FILE             ( 0x0002 )    // directory
+static const int FILE_WRITE_DATA         =  ( 0x0002 );    // file & pipe
+static const int FILE_ADD_FILE           =  ( 0x0002 );    // directory
 
-#define FILE_APPEND_DATA          ( 0x0004 )    // file
-#define FILE_ADD_SUBDIRECTORY     ( 0x0004 )    // directory
-#define FILE_CREATE_PIPE_INSTANCE ( 0x0004 )    // named pipe
+static const int FILE_APPEND_DATA         = ( 0x0004 );    // file
+static const int FILE_ADD_SUBDIRECTORY    = ( 0x0004 );    // directory
+static const int FILE_CREATE_PIPE_INSTANCE= ( 0x0004 );    // named pipe
 
 
-#define FILE_READ_EA              ( 0x0008 )    // file & directory
+static const int FILE_READ_EA             = ( 0x0008 );    // file & directory
 
-#define FILE_WRITE_EA             ( 0x0010 )    // file & directory
+static const int FILE_WRITE_EA            = ( 0x0010 );    // file & directory
 
-#define FILE_EXECUTE              ( 0x0020 )    // file
-#define FILE_TRAVERSE             ( 0x0020 )    // directory
+static const int FILE_EXECUTE             = ( 0x0020 );    // file
+static const int FILE_TRAVERSE            = ( 0x0020 );    // directory
 
-#define FILE_DELETE_CHILD         ( 0x0040 )    // directory
+static const int FILE_DELETE_CHILD        = ( 0x0040 );    // directory
 
-#define FILE_READ_ATTRIBUTES      ( 0x0080 )    // all
+static const int FILE_READ_ATTRIBUTES     = ( 0x0080 );    // all
 
-#define FILE_WRITE_ATTRIBUTES     ( 0x0100 )    // all
+static const int FILE_WRITE_ATTRIBUTES    = ( 0x0100 );    // all
 
-#define FILE_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF)
+static const int FILE_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF);
 
-#define FILE_GENERIC_READ         (STANDARD_RIGHTS_READ     |\
+static const int FILE_GENERIC_READ        = (STANDARD_RIGHTS_READ     |\
                                    FILE_READ_DATA           |\
                                    FILE_READ_ATTRIBUTES     |\
                                    FILE_READ_EA             |\
-                                   SYNCHRONIZE)
+                                   SYNCHRONIZE);
 
 
-#define FILE_GENERIC_WRITE        (STANDARD_RIGHTS_WRITE    |\
+static const int FILE_GENERIC_WRITE      =  (STANDARD_RIGHTS_WRITE    |\
                                    FILE_WRITE_DATA          |\
                                    FILE_WRITE_ATTRIBUTES    |\
                                    FILE_WRITE_EA            |\
                                    FILE_APPEND_DATA         |\
-                                   SYNCHRONIZE)
+                                   SYNCHRONIZE);
 
 
-#define FILE_GENERIC_EXECUTE      (STANDARD_RIGHTS_EXECUTE  |\
+static const int FILE_GENERIC_EXECUTE    =  (STANDARD_RIGHTS_EXECUTE  |\
                                    FILE_READ_ATTRIBUTES     |\
                                    FILE_EXECUTE             |\
-                                   SYNCHRONIZE)
-// end_access
---]=]
+                                   SYNCHRONIZE);
+]]
+
 
 ffi.cdef[[
 static const int FILE_SHARE_READ                  = 0x00000001;  

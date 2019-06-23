@@ -6,6 +6,7 @@ local lshift, rshift = bit.lshift, bit.rshift
 -- BUGBUG, this STRICT global should not be here
 -- but I put it here just in case
 STRICT = true
+CINTERFACE = true
 
 -- _WIN32_WINNT version constants
 --
