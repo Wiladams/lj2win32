@@ -13479,21 +13479,14 @@ ffi.cdef[[
 typedef struct tagRAWKEYBOARD {
     USHORT MakeCode;
     USHORT Flags;
-
     USHORT Reserved;
-
     USHORT VKey;
     UINT   Message;
-
     ULONG ExtraInformation;
 } RAWKEYBOARD, *PRAWKEYBOARD, *LPRAWKEYBOARD;
 ]]
 
 ffi.cdef[[
-/*
- * Define the keyboard overrun MakeCode.
- */
-
 static const int KEYBOARD_OVERRUN_MAKE_CODE   = 0xFF;
 
 /*
@@ -13642,7 +13635,9 @@ GetRawInputBuffer(
     PRAWINPUT pData,
      PUINT pcbSize,
      UINT cbSizeHeader);
+]]
 
+ffi.cdef[[
 /*
  * Raw Input request APIs
  */
