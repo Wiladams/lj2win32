@@ -7,7 +7,7 @@
 then
 
     
--- cl /E blend2d.h > blend2d_ffi.txt
+-- cl /EP blend2d.h > blend2d_ffi.txt
 
 --Then run this file on the resulting blend2d_ffi.txt
 -- luajit preproc.lua blend2d_ffi.txt > blend2d_ffi.lua
