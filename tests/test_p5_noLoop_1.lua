@@ -3,7 +3,6 @@ package.path = "../?.lua;"..package.path;
 require("p5")
 
 function setup() 
-    createCanvas(100, 100);
     background(200);
     noLoop();
 end
@@ -13,4 +12,4 @@ function draw()
 end
 
 
-go({title="test_p5_noLoop"});
+go({title="test_p5_noLoop", width=100, height=100});

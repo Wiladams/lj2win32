@@ -7,7 +7,6 @@ local y = 1;
 local easing = 0.05;
 
 function setup()
-  --createCanvas(720, 400);
   fill(255)
   noStroke();
 end

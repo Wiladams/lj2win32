@@ -5,7 +5,6 @@ require("p5")
 local x = 0;
 
 function setup()
-   createCanvas(100, 100);
    noLoop();
 end
 
@@ -19,5 +18,4 @@ function mousePressed()
     redraw();
 end
 
-
-go()
+go({width = 320, height=240})

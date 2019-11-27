@@ -419,15 +419,6 @@ function redraw()
     return true;
 end
 
---[[
-function createCanvas(width, height)
-    return false;
-end
---]]
-
-
-
-
 
 
 

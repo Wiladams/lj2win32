@@ -4,7 +4,6 @@ require("p5")
 
 
 function setup()
---    createCanvas(720, 400);
     noStroke();
     noLoop();
 end
