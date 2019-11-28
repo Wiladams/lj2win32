@@ -85,6 +85,11 @@ local function solidBrush(c)
 	return abrush, c;
 end
 
+--[[
+	BUGBUG
+	Need some sort of cache here.  After we create enough
+	random pens, we won't be able to create any more.
+]]
 local function solidPen(...)
 	local c = select(1, ...)
 	if type(c) ~= "cdata" then
