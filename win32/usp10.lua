@@ -1,5 +1,10 @@
 
--- Unicode text shaping API (Uniscribe)
+--[[
+    Unicode text shaping API (Uniscribe)
+    
+    https://docs.microsoft.com/en-us/windows/win32/intl/uniscribe
+    https://maxradi.us/documents/uniscribe/
+--]]
 
 local ffi = require("ffi")
 
@@ -88,13 +93,13 @@ typedef struct tag_SCRIPT_ITEM {
 
 ffi.cdef[[
 HRESULT  ScriptItemize(
-    const WCHAR                   *pwcInChars,    // In   Unicode string to be itemized
-    int                                                 cInChars,       // In   Codepoint count to itemize
-    int                                                 cMaxItems,      // In   Max length of itemization array
-    const SCRIPT_CONTROL             *psControl,     // In   Analysis control (optional)
-    const SCRIPT_STATE               *psState,       // In   Initial bidi algorithm state (optional)
-    SCRIPT_ITEM  *pItems,        // Out  Array to receive itemization
-    int                                 *pcItems);      // Out  Count of items processed (optional)
+    const WCHAR                 *pwcInChars,
+    int                         cInChars,
+    int                         cMaxItems,
+    const SCRIPT_CONTROL        *psControl,
+    const SCRIPT_STATE          *psState,
+    SCRIPT_ITEM                 *pItems,
+    int                         *pcItems);
 
 
 
@@ -177,20 +182,20 @@ HRESULT  ScriptPlace(
 
 ffi.cdef[[
  HRESULT  ScriptTextOut(
-    const HDC                               hdc,            // In     OS handle to device context (required)
-    SCRIPT_CACHE        *psc,           // InOut  Cache handle
-    int                                     x,              // In     x,y position for first glyph
-    int                                     y,              // In
-    UINT                                    fuOptions,      // In     ExtTextOut options
-     const RECT           *lprc,          // In     optional clipping/opaquing rectangle
-    const SCRIPT_ANALYSIS    *psa,           // In     Result of ScriptItemize
-    const WCHAR                  *pwcReserved,   // In     Reserved (requires NULL)
-    int                          iReserved,      // In     Reserved (requires 0)
-     const WORD         *pwGlyphs,      // In     Glyph buffer from prior ScriptShape call
-    int                                     cGlyphs,        // In     Number of glyphs
-     const int          *piAdvance,     // In     Advance widths from ScriptPlace
-    const int      *piJustify,     // In     Justified advance widths (optional)
-     const GOFFSET      *pGoffset);     // In     x,y offset for combining glyph
+    const HDC                               hdc,
+    SCRIPT_CACHE        *psc,
+    int                                     x,
+    int                                     y,
+    UINT                                    fuOptions,
+     const RECT           *lprc,
+    const SCRIPT_ANALYSIS    *psa,
+    const WCHAR                  *pwcReserved,
+    int                          iReserved,
+     const WORD         *pwGlyphs,
+    int                  cGlyphs,
+     const int          *piAdvance,
+    const int      *piJustify,
+     const GOFFSET      *pGoffset);
 
 
  HRESULT  ScriptJustify(
@@ -400,25 +405,15 @@ typedef void* SCRIPT_STRING_ANALYSIS;
 
 
 ffi.cdef[[
- HRESULT  ScriptStringFree(
-     SCRIPT_STRING_ANALYSIS  *pssa);  //InOut Address of pointer to analysis
+HRESULT  ScriptStringFree(SCRIPT_STRING_ANALYSIS  *pssa);  //InOut Address of pointer to analysis
 
+const SIZE*  ScriptString_pSize(SCRIPT_STRING_ANALYSIS   ssa); 
 
-const SIZE*  ScriptString_pSize(
-    SCRIPT_STRING_ANALYSIS   ssa); 
+const int*  ScriptString_pcOutChars(SCRIPT_STRING_ANALYSIS   ssa); 
 
+const SCRIPT_LOGATTR*  ScriptString_pLogAttr(SCRIPT_STRING_ANALYSIS   ssa); 
 
-const int*  ScriptString_pcOutChars(
-    SCRIPT_STRING_ANALYSIS   ssa); 
-
-
-const SCRIPT_LOGATTR*  ScriptString_pLogAttr(
-    SCRIPT_STRING_ANALYSIS   ssa); 
-
-
- HRESULT  ScriptStringGetOrder(
-    SCRIPT_STRING_ANALYSIS   ssa,
-    UINT                                    *puOrder); 
+HRESULT  ScriptStringGetOrder(SCRIPT_STRING_ANALYSIS ssa, UINT *puOrder); 
 
  HRESULT  ScriptStringCPtoX(
     SCRIPT_STRING_ANALYSIS   ssa,        //In  String analysis
@@ -542,12 +537,11 @@ typedef struct script_glyphprop{
 
     SCRIPT_VISATTR sva;
     WORD           reserved; // Reserved
-
 } SCRIPT_GLYPHPROP;
 ]]
 
 ffi.cdef[[
- HRESULT  ScriptShapeOpenType(
+HRESULT  ScriptShapeOpenType(
                        HDC                     hdc,            // In    Optional (see under caching)
                         SCRIPT_CACHE           *psc,            // InOut Cache handle
                         SCRIPT_ANALYSIS        *psa,            // InOut Result of ScriptItemize (may have fNoGlyphIndex set)
@@ -570,13 +564,11 @@ ffi.cdef[[
                                         int      *pcGlyphs);      // Out   Count of glyphs generated
 
 
- HRESULT  ScriptPlaceOpenType(
-    HDC                     hdc,            // In    Optional (see under caching)
-                        SCRIPT_CACHE           *psc,            // InOut Cache handle
-                        SCRIPT_ANALYSIS        *psa,            // InOut Result of ScriptItemize (may have fNoGlyphIndex set)
-
-                           OPENTYPE_TAG            tagScript,      // In    Font script tag for shaping
-                           OPENTYPE_TAG            tagLangSys,     // In    Font language system tag for shaping
+HRESULT  ScriptPlaceOpenType(HDC                     hdc,
+                        SCRIPT_CACHE           *psc,
+                        SCRIPT_ANALYSIS        *psa,
+                           OPENTYPE_TAG            tagScript,
+                           OPENTYPE_TAG            tagLangSys,
     int                     *rcRangeChars,      // In    Array of number of characters per range
     TEXTRANGE_PROPERTIES   **rpRangeProperties, // In    Array of range properties (for each range)
     int                     cRanges,           // In    Number of ranges
@@ -595,7 +587,7 @@ ffi.cdef[[
     ABC                    *pABC);          // Out   Composite ABC for the whole run (Optional)
 
 
- HRESULT  ScriptItemizeOpenType(
+HRESULT  ScriptItemizeOpenType(
     const WCHAR                   *pwcInChars,    // In   Unicode string to be itemized
     int                            cInChars,      // In   Codepoint count to itemize
     int                            cMaxItems,     // In   Max length of itemization array
@@ -607,26 +599,23 @@ ffi.cdef[[
 
 
 
- HRESULT  ScriptGetFontScriptTags(
-               HDC                              hdc,             // In    Optional (see under caching)
-                SCRIPT_CACHE                    *psc,             // InOut Cache handle
-               SCRIPT_ANALYSIS                 *psa,             // In    Result of ScriptItemize (can be NULL)
-                   int                              cMaxTags,        // In    Length of pScriptTags array
-    OPENTYPE_TAG  *pScriptTags,     // Out:  list of script tags in the font
-                  int                             *pcTags           // Out:  Number of tags returned
+HRESULT  ScriptGetFontScriptTags(
+               HDC                              hdc,
+                SCRIPT_CACHE                    *psc,
+               SCRIPT_ANALYSIS                 *psa,
+                   int                              cMaxTags,
+    OPENTYPE_TAG  *pScriptTags,
+                  int                             *pcTags
 );
 
 
- HRESULT  ScriptGetFontLanguageTags(
-               HDC                    hdc,             // In    Optional (see under caching)
-                SCRIPT_CACHE          *psc,             // InOut Cache handle
-               SCRIPT_ANALYSIS       *psa,             // In    Result of ScriptItemize  (can be NULL)
-                   OPENTYPE_TAG           tagScript,       // In    Font script tag
-    
-                   int                    cMaxTags,        // In    Length of pLangsys tags array
-    OPENTYPE_TAG *pLangsysTags,    // Out:  list of Langsys tags in the font
-                  int                   *pcTags           // Out:  Number of tags returned
-);
+HRESULT  ScriptGetFontLanguageTags(HDC                    hdc,
+                SCRIPT_CACHE          *psc,
+               SCRIPT_ANALYSIS       *psa,
+                   OPENTYPE_TAG           tagScript,
+                   int                    cMaxTags,
+    OPENTYPE_TAG *pLangsysTags,
+                  int                   *pcTags);
 
 
 HRESULT  ScriptGetFontFeatureTags(
@@ -642,7 +631,7 @@ HRESULT  ScriptGetFontFeatureTags(
 );
 
 
- HRESULT  ScriptGetFontAlternateGlyphs(
+HRESULT  ScriptGetFontAlternateGlyphs(
                HDC                    hdc,             // In    Optional (see under caching)
                 SCRIPT_CACHE          *psc,             // InOut Cache handle
                SCRIPT_ANALYSIS       *psa,             // In    Result of ScriptItemize  (can be NULL)
@@ -672,22 +661,23 @@ HRESULT  ScriptGetFontFeatureTags(
 );
 
 
- HRESULT  ScriptPositionSingleGlyph(
-               HDC                    hdc,             // In    Optional (see under caching)
-                SCRIPT_CACHE          *psc,             // InOut Cache handle
-               SCRIPT_ANALYSIS       *psa,             // In    Result of ScriptItemize  (can be NULL)
-                   OPENTYPE_TAG           tagScript,       // In    Font script tag
-                   OPENTYPE_TAG           tagLangSys,      // In    Font language system tag for shaping
-                   OPENTYPE_TAG           tagFeature,      // In    Feature tag to test for alternates
-                   LONG                   lParameter,      // In    Feature parameter
+HRESULT  ScriptPositionSingleGlyph(
+               HDC                    hdc,
+                SCRIPT_CACHE          *psc,
+               SCRIPT_ANALYSIS       *psa,
+                   OPENTYPE_TAG           tagScript,
+                   OPENTYPE_TAG           tagLangSys,
+                   OPENTYPE_TAG           tagFeature,
+                   LONG                   lParameter,
 
-                   WORD                   wGlyphId,         // In    Glyph id to be moved
-                   int                    iAdvance,         // In    Original glyph advance width
-                   GOFFSET                GOffset,          // In    Original glyph offset
-                  int                   *piOutAdvance,     // Out   Adjusted advance width
-                  GOFFSET               *pOutGoffset       // Out   Adjusted offset
-);
+                   WORD                   wGlyphId,
+                   int                    iAdvance,
+                   GOFFSET                GOffset,
+                  int                   *piOutAdvance,
+                  GOFFSET               *pOutGoffset);
 ]]
 
 
+local lib = ffi.load("usp10")
 
+return lib;
