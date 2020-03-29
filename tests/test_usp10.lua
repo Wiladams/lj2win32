@@ -4,8 +4,10 @@ local ffi = require("ffi")
 local C = ffi.C 
 
 require("win32.sdkddkver")
-require("win32.wingdi")
-local unic = require("unicode_util")
+
+
+
+local unis = require("uniscriber")
 
 --[[
 Call ScriptItemize on your input string. This will itentify the “runs” in the string that consist of a single direction of text. Most of the rest of the Uniscribe functions operate on these runs individually, so you’ll have to keep track of them yourself.
@@ -16,11 +18,6 @@ Optional: call ScriptJustify to fill the text out to a given width.
 Optional: call ScriptCPtoX and ScriptXtoCP as needed to convert between character offsets and pixel positions in a run.
 Call ScriptTextOut to draw the placed glyphs on the screen.
 --]]
---print("typeof: ABC => ", ffi.typeof("ABC"));
-
-local usp = require("win32.usp10")
-
-
 
 print("SGCM_RTL: ", ffi.C.SGCM_RTL);
 
@@ -30,71 +27,98 @@ local function printChars(chars, count)
     end
 end
 
-local function printItems(items, count)
-    for i=0,count-1 do
-        print(string.format("pos: %d", items[i].iCharPos));
+local function printItems(runs)
+    print(string.format("== Items[%d] ==", #runs));
+
+    for i=1,#runs do
+        print(string.format("pos: %d", ryns[i].position));
     end
 
 end
 
---[[
-    scriptItemize
-    Take a simple string and divide it into a number
-    of items.  Each item is a run of characters that have
-    the same style and direction.
---]]
-local function scriptItemize(str)
-    local pwcInChars, cInChars = unic.toUnicode("Hello, World")
-    local cMaxItems = math.floor((1.5*cInChars)+16);
-    local psControl = ffi.new("SCRIPT_CONTROL");
-    local psState = ffi.new("SCRIPT_STATE");
-    local pItems = ffi.new("SCRIPT_ITEM[?]", cMaxItems);
-    local pcItems = ffi.new("int[1]");
+local function printLayout(layout)
+    print("-- LAYOUT --");
+    --print("cRuns: ", layout.cRuns);
+    print(string.format("visualToLogical: %p", layout.visualToLogical))
+    print(string.format("logicalToVisual: %p", layout.logicalToVisual))
 
-    local res = usp.ScriptItemize(pwcInChars, cInChars,
-        cMaxItems,psControl,psState,
-        pItems,pcItems);
+    for i=1,#layout.items-1 do
+        print(string.format("-- ITEM [%d]--", i))
+        print(string.format("      level: %d", layout.levels[i-1]))
 
-    local success = (res == 0);
-
-    if not success then
-        return false, res;
+        if layout.logicalToVisual then
+            print(string.format("   toVisual: %d", layout.logicalToVisual[i-1]))
+        end
     end
-
-    return pItems, pcItems[0];
 end
 
---[[
-HRESULT  ScriptLayout(
-    int                             cRuns,                  // In   Number of runs to process
-    const BYTE    *pbLevel,               // In   Array of run embedding levels
-    int *piVisualToLogical,     // Out  List of run indices in visual order
-    int *piLogicalToVisual);    // Out  List of visual run positions
---]]
-local function scriptLayout()
-end
+
+
+
+
+
 
 local function test_ScriptItemize()
-    items, count = scriptItemize("Hello, World");
+    -- itemize should return a table of glyph runs, which 
+    -- will then need to be layed out, shaped, and placed
+    local runs, count, nChars = unis.scriptItemize("Hello, World");
+    if not runs then
+        print("scriptItemize failed: ", count)
+        return false;
+    end
+
+    printItems(runs)
+end
+
+local function test_Layout()
+    print("==== test_LayoutAndShape ====")
+
+    -- First itemize
+    local items, count, nChars = unis.scriptItemize("Hello, World");
     if not items then
         print("scriptItemize failed: ", count)
         return false;
     end
 
-    printItems(items, count)
-
-    -- free items
-end
-
-local function test_unicode()
-    local pwcInChars, cInChars = unic.toUnicode("Hello, World")
-    print("cInChars: ", cInChars);
-
-
-    for i=0, cInChars-1 do 
-        print("char: ", string.char(pwcInChars[i]));
+    -- Do Layout
+    local layout, err = unis.scriptLayout(items);
+    if not layout then
+        print("scriptLayout ERROR: ", err)
+        return false;
     end
+
+    printLayout(layout);
+
 end
 
-test_ScriptItemize();
---test_unicode();
+local function test_ShapeAndPlace(paragraph)
+    print("==== test_ShapeAndPlace ====")
+    
+    -- First itemize
+    local items, count, nChars = unis.scriptItemize("Hello, World");
+    if not items then
+        print("scriptItemize failed: ", count)
+        return false;
+    end
+
+    -- do layout
+    local layout, err = unis.scriptLayout(items)
+
+    if not layout then
+        print("scriptLayout failed: ", err);
+        return false;
+    end
+
+    -- Then Shape, figure out which glyphs to use for each run
+
+
+
+end
+
+
+
+
+
+--test_ScriptItemize();
+test_Layout();
+test_Shape();
