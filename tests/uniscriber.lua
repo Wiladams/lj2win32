@@ -1,8 +1,59 @@
+local ffi = require("ffi")
+
 require("win32.wingdi")
 local usp = require("win32.usp10")
 local unic = require("unicode_util")
+local DC = require("DeviceContext")
+
 
 local exports = {}
+
+local fontCache = {}
+
+-- create a new font of the specified size
+local function getFont(name, size)
+	local namecache = fontCache[name];
+	if namecache then
+		local afont = namecache[size]
+		if afont then
+			return afont
+		end
+	else
+		namecache = {}
+		fontCache[name] = namecache
+	end
+
+--[[
+    local afont = ffi.C.CreateFontA(  int cHeight,  int cWidth,  
+        int cEscapement,  int cOrientation,  int cWeight,  DWORD bItalic,
+        DWORD bUnderline,  DWORD bStrikeOut,  DWORD iCharSet,  
+        DWORD iOutPrecision,  DWORD iClipPrecision,
+        DWORD iQuality,  DWORD iPitchAndFamily,  
+        LPCSTR pszFaceName);
+--]]
+	local cHeight = size;
+	local cWidth = 0;
+	local cEscapement = 0;
+	local cOrientation = 0;
+	local cWeight = ffi.C.FW_BOLD;
+	local bItalic = 0;
+	local bUnderline = 0;
+	local bStrikeOut = 0;
+	local iCharSet = 0;
+	local iOutPrecision = 0;
+	local iClipPrecision = 0;
+	local iQuality = 2;
+	local iPitchAndFamily = 0;
+	local pszFaceName = name
+	local afont = ffi.C.CreateFontA(cHeight, cWidth, cEscapement, cOrientation,  cWeight,  bItalic,
+	bUnderline,  bStrikeOut,  iCharSet,  iOutPrecision,  iClipPrecision,
+	iQuality,  iPitchAndFamily,  pszFaceName);
+	
+	-- add it to the name cache
+	namecache[size] = afont;
+
+	return afont;
+end
 
 --[[
     scriptItemize
@@ -94,7 +145,15 @@ end
     int                                     *pcGlyphs);     // Out   Count of glyphs generated
 ]]
 
-local exports.scriptShape(aRun)
+function exports.scriptShape(aRun, fontname, fontsize)
+    -- create a device context to select font into
+    fontname = fontname or "DEFAULT_GUI_FONT"
+    fontsize = fontsize or 14
+    local glyphRun = {}
+    local hdc = DC:CreateForMemory(nil)
+    local afont = getFont("DEFAULT_GUI_FONT", 14);
+    hdc:SelectObject(afont);
+
     glyphRun.cache = aRun.cache or ffi.new("SCRIPT_CACHE[1]")
     local pwcChars = aRun.chars;    -- the actual characters
     local cChars = aRun.nChars;
@@ -105,8 +164,9 @@ local exports.scriptShape(aRun)
     local pcGlyphs = ffi.new("int[1]")
 
     -- The hdc must already have the intended font selected
-    local res = usp.ScriptShape(hdc, psc,
-        pwcChars,cChars,cMaxGlyphs,psa,
+    local res = usp.ScriptShape(hdc.Handle, psc,
+        pwcChars,cChars,
+        cMaxGlyphs,psa,
         pwOutGlyphs,pwLogClust,psva,pcGlyphs);
 
     if res ~= 0 then

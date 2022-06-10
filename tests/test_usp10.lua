@@ -5,8 +5,6 @@ local C = ffi.C
 
 require("win32.sdkddkver")
 
-
-
 local unis = require("uniscriber")
 
 --[[
@@ -91,11 +89,12 @@ local function test_Layout()
 
 end
 
-local function test_ShapeAndPlace(paragraph)
+local function test_Shape()
     print("==== test_ShapeAndPlace ====")
     
     -- First itemize
-    local items, count, nChars = unis.scriptItemize("Hello, World");
+    local paragraph = "Hello, World";
+    local items, count, nChars = unis.scriptItemize(paragraph);
     if not items then
         print("scriptItemize failed: ", count)
         return false;
@@ -110,8 +109,11 @@ local function test_ShapeAndPlace(paragraph)
     end
 
     -- Then Shape, figure out which glyphs to use for each run
-
-
+    local arun, err = unis.scriptShape(items)
+    if not arun then
+        print(string.format("scriptShape error: %d", err));
+        return false;
+    end
 
 end
 
@@ -120,5 +122,6 @@ end
 
 
 --test_ScriptItemize();
-test_Layout();
+--test_Layout();
 test_Shape();
+--test_ShapeAndPlace()

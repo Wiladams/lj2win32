@@ -4,7 +4,6 @@ local ffi = require("ffi")
 local C = ffi.C 
 
 require("win32.sdkddkver")
-
 require("win32.winerror")
 local Registry = require("registry")
 
@@ -98,6 +97,7 @@ printKey(Registry.HKEY_LOCAL_MACHINE.SOFTWARE.Microsoft["Windows NT"].CurrentVer
 --printKey(Registry.HKEY_LOCAL_MACHINE.HARDWARE.DEVICEMAP, "HKEY_LOCAL_MACHINE.HARDWARE.DEVICEMAP")
 
 --printKey(Registry.HKEY_USERS, "HKEY_USERS")
+--printKey(Registry.HKEY_USERS[".Default"]["Control Panel"], "['HKEY_USERS/.Default/Control Panel']")
 
 --printKey(Registry.HKEY_PERFORMANCE_DATA, "HKEY_PERFORMANCE_DATA")
 --printKey(Registry.HKEY_PERFORMANCE_TEXT, "HKEY_PERFORMANCE_TEXT")
